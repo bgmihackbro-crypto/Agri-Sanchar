@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,13 +37,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  useEffect(() => {
-    // Clear any previous verifiers on component unmount
-    return () => {
-      window.recaptchaVerifier?.clear();
-    };
-  }, []);
-
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
@@ -72,14 +65,14 @@ export default function LoginPage() {
       });
       return;
     }
-
-    const appVerifier = new RecaptchaVerifier(auth, submitButton as HTMLElement, {
-      'size': 'invisible'
-    });
     
-    window.recaptchaVerifier = appVerifier;
-
+    let appVerifier: RecaptchaVerifier;
     try {
+      appVerifier = new RecaptchaVerifier(auth, submitButton as HTMLElement, {
+        'size': 'invisible'
+      });
+      window.recaptchaVerifier = appVerifier;
+
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
@@ -94,7 +87,9 @@ export default function LoginPage() {
         title: "Error",
         description: "Failed to send OTP. Please check the number and try again.",
       });
-      appVerifier.clear();
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+      }
     } finally {
       setLoading(false);
     }
@@ -168,10 +163,8 @@ export default function LoginPage() {
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="12345 67890"
+                  placeholder="9876543210"
                   required
-                  pattern="\\d{10}"
-                  title="Please enter a valid 10-digit phone number"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={loading}
