@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +20,8 @@ import { Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
-    recaptchaVerifier: RecaptchaVerifier;
-    confirmationResult: ConfirmationResult;
+    recaptchaVerifier?: RecaptchaVerifier;
+    confirmationResult?: ConfirmationResult;
   }
 }
 
@@ -35,23 +35,24 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response: any) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        }
-      });
+  const generateRecaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
     }
-  }, []);
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response: any) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+  };
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    generateRecaptcha();
     const phoneNumber = "+91" + phone;
-    const appVerifier = window.recaptchaVerifier;
+    const appVerifier = window.recaptchaVerifier!;
 
     try {
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
@@ -78,7 +79,7 @@ export default function SignupPage() {
     setVerifyingOtp(true);
     
     try {
-      await window.confirmationResult.confirm(otp);
+      await window.confirmationResult!.confirm(otp);
       // Here you would typically create the user account in your database
       toast({
         title: "Account Created!",

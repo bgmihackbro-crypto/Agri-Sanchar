@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +20,8 @@ import { Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
-    recaptchaVerifier: RecaptchaVerifier;
-    confirmationResult: ConfirmationResult;
+    recaptchaVerifier?: RecaptchaVerifier;
+    confirmationResult?: ConfirmationResult;
   }
 }
 
@@ -34,22 +34,24 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response: any) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        }
-      });
+  const generateRecaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
     }
-  }, []);
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response: any) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+  };
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    generateRecaptcha();
     const phoneNumber = "+91" + phone;
-    const appVerifier = window.recaptchaVerifier;
+    const appVerifier = window.recaptchaVerifier!;
 
     try {
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
@@ -64,7 +66,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send OTP. Please try again.",
+        description: "Failed to send OTP. Please check your phone number and try again.",
       });
     } finally {
       setLoading(false);
@@ -76,7 +78,7 @@ export default function LoginPage() {
     setVerifyingOtp(true);
     
     try {
-      await window.confirmationResult.confirm(otp)
+      await window.confirmationResult!.confirm(otp);
       toast({
         title: "Login Successful",
         description: "Welcome back!",
