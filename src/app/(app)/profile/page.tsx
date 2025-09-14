@@ -116,8 +116,8 @@ export default function ProfilePage() {
               <Input
                 id="phone"
                 value={profile.phone}
-                readOnly={true}
-                className="text-muted-foreground"
+                readOnly
+                className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none"
               />
             </div>
             <div className="space-y-2">
