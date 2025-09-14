@@ -199,6 +199,7 @@ export default function ProfilePage() {
                   readOnly={!isEditing}
                   onChange={handleInputChange}
                   placeholder="e.g., 5,00,000"
+                  className="rounded-l-none"
                 />
               </div>
             </div>
