@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { indianStates } from "@/lib/indian-states";
+import { indianCities } from "@/lib/indian-cities";
 
 
 export default function ProfilePage() {
@@ -39,10 +40,16 @@ export default function ProfilePage() {
     annualIncome: "",
   });
   
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
+      const parsedProfile = JSON.parse(savedProfile);
+      setProfile(parsedProfile);
+      if (parsedProfile.state) {
+        setAvailableCities(indianCities[parsedProfile.state] || []);
+      }
     }
   }, []);
 
@@ -53,7 +60,12 @@ export default function ProfilePage() {
   };
   
   const handleStateChange = (value: string) => {
-    setProfile((prev) => ({...prev, state: value}));
+    setProfile((prev) => ({...prev, state: value, city: ""})); // Reset city when state changes
+    setAvailableCities(indianCities[value] || []);
+  }
+
+  const handleCityChange = (value: string) => {
+    setProfile((prev) => ({...prev, city: value}));
   }
 
   const handleSave = () => {
@@ -154,13 +166,26 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                value={profile.city}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
-                placeholder="e.g., Ludhiana"
-              />
+              {isEditing ? (
+                  <Select onValueChange={handleCityChange} value={profile.city} disabled={!profile.state}>
+                    <SelectTrigger id="city">
+                      <SelectValue placeholder="Select your city" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableCities.map(city => (
+                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+              ) : (
+                <Input
+                  id="city"
+                  value={profile.city}
+                  readOnly={!isEditing}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Ludhiana"
+                />
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="annualIncome">Annual Income</Label>
