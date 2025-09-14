@@ -139,7 +139,7 @@ export default function ProfilePage() {
                 value={profile.farmSize}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
-                placeholder="e.g., 10 Acres"
+                placeholder="e.g., 10"
               />
             </div>
              <div className="space-y-2">
@@ -188,20 +188,14 @@ export default function ProfilePage() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="annualIncome">Annual Income</Label>
-              <div className="flex items-center gap-2">
-                <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
-                  ₹
-                </span>
-                <Input
-                  id="annualIncome"
-                  value={profile.annualIncome}
-                  readOnly={!isEditing}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 5,00,000"
-                  className="rounded-l-none"
-                />
-              </div>
+              <Label htmlFor="annualIncome">Annual Income (₹)</Label>
+              <Input
+                id="annualIncome"
+                value={profile.annualIncome}
+                readOnly={!isEditing}
+                onChange={handleInputChange}
+                placeholder="e.g., 5,00,000"
+              />
             </div>
           </div>
         </CardContent>
