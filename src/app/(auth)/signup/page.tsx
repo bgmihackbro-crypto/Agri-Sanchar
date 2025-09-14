@@ -93,14 +93,30 @@ export default function SignupPage() {
     if (verifyingOtp) return;
     setVerifyingOtp(true);
     
+    const performSignup = () => {
+      // Save user details to localStorage
+      const userProfile = {
+        name: name,
+        phone: "+91 " + phone,
+        avatar: `https://picsum.photos/seed/${phone}/40/40`,
+        farmSize: "Not set",
+        city: "Not set",
+        state: "Not set",
+        annualIncome: "Not set",
+      };
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      toast({
+        title: "Account Created!",
+        description: "Welcome to Agri-Sanchar.",
+      });
+      router.push("/dashboard");
+    }
+
     // Test mode check
     if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       if (otp.length === 6 && /^\d+$/.test(otp)) {
-        toast({
-          title: "Account Created! (Test Mode)",
-          description: "Welcome to Agri-Sanchar.",
-        });
-        router.push("/dashboard");
+        performSignup();
       } else {
          toast({
           variant: "destructive",
@@ -117,12 +133,7 @@ export default function SignupPage() {
         throw new Error("Confirmation result not found.");
       }
       await window.confirmationResult.confirm(otp);
-      // Here you would typically create the user account in your database
-      toast({
-        title: "Account Created!",
-        description: "Welcome to Agri-Sanchar.",
-      });
-      router.push("/dashboard");
+      performSignup();
     } catch (error) {
       console.error("Error verifying OTP:", error);
       toast({

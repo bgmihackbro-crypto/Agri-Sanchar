@@ -20,13 +20,29 @@ import {
 import { Languages, LogOut, User } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
+import { useState, useEffect } from "react";
+
+type UserProfile = {
+  name: string;
+  phone: string;
+  avatar: string;
+}
 
 export function UserNav() {
   const router = useRouter();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("userProfile");
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      localStorage.removeItem("userProfile");
       router.push("/login");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -40,20 +56,20 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage
-              src="https://picsum.photos/seed/farmer/40/40"
+              src={userProfile?.avatar || "https://picsum.photos/seed/farmer/40/40"}
               alt="@farmer"
               data-ai-hint="farmer portrait"
             />
-            <AvatarFallback>FS</AvatarFallback>
+            <AvatarFallback>{userProfile ? userProfile.name.substring(0, 2) : "U"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Farmer Singh</p>
+            <p className="text-sm font-medium leading-none">{userProfile?.name || "Farmer"}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              +91 98765 43210
+              {userProfile?.phone || ""}
             </p>
           </div>
         </DropdownMenuLabel>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,13 +22,22 @@ export default function ProfilePage() {
   const { toast } = useToast();
 
   const [profile, setProfile] = useState({
-    name: "Farmer Singh",
-    phone: "+91 98765 43210",
+    name: "Farmer",
+    phone: "",
+    avatar: "https://picsum.photos/seed/farmer/100/100",
     farmSize: "10 Acres",
     city: "Ludhiana",
     state: "Punjab",
     annualIncome: "₹5,00,000",
   });
+  
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("userProfile");
+    if (savedProfile) {
+      setProfile(JSON.parse(savedProfile));
+    }
+  }, []);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -37,6 +46,7 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     setIsEditing(false);
+    localStorage.setItem("userProfile", JSON.stringify(profile));
     toast({
         title: "Profile Updated",
         description: "Your details have been saved successfully.",
@@ -52,11 +62,11 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage
-                  src="https://picsum.photos/seed/farmer/100/100"
+                  src={profile.avatar}
                   alt="@farmer"
                   data-ai-hint="farmer portrait"
                 />
-                <AvatarFallback>FS</AvatarFallback>
+                <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
               </Avatar>
               <div>
                 <CardTitle className="text-2xl font-headline">
@@ -93,8 +103,7 @@ export default function ProfilePage() {
               <Input
                 id="phone"
                 value={profile.phone}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
+                readOnly={true}
               />
             </div>
             <div className="space-y-2">
