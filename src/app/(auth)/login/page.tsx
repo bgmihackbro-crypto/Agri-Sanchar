@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +36,17 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  
+  useEffect(() => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible'
+    });
+
+    return () => {
+      window.recaptchaVerifier?.clear();
+    };
+  }, []);
+
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,16 +66,8 @@ export default function LoginPage() {
 
     const phoneNumber = "+91" + phone;
     
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
-    }
-
     try {
-      const appVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        'size': 'invisible'
-      });
-      window.recaptchaVerifier = appVerifier;
-
+      const appVerifier = window.recaptchaVerifier!;
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
@@ -141,9 +144,9 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div id="recaptcha-container"></div>
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
-            <div id="recaptcha-container"></div>
             <div className="grid gap-2">
               <Label htmlFor="phone">Phone Number</Label>
               <div className="flex items-center gap-2">
