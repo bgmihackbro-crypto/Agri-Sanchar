@@ -25,10 +25,10 @@ export default function ProfilePage() {
     name: "Farmer",
     phone: "",
     avatar: "https://picsum.photos/seed/farmer/100/100",
-    farmSize: "10 Acres",
-    city: "Ludhiana",
-    state: "Punjab",
-    annualIncome: "₹5,00,000",
+    farmSize: "",
+    city: "",
+    state: "",
+    annualIncome: "",
   });
   
   useEffect(() => {
@@ -77,14 +77,14 @@ export default function ProfilePage() {
                 </CardDescription>
               </div>
             </div>
-            <Button
+            {!isEditing && <Button
               variant="outline"
               size="icon"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => setIsEditing(true)}
             >
-              {isEditing ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
-              <span className="sr-only">{isEditing ? "Save" : "Edit"}</span>
-            </Button>
+              <Edit className="h-4 w-4" />
+              <span className="sr-only">Edit</span>
+            </Button>}
           </div>
         </CardHeader>
         <CardContent>
@@ -96,6 +96,7 @@ export default function ProfilePage() {
                 value={profile.name}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
+                placeholder="e.g., Ram Singh"
               />
             </div>
             <div className="space-y-2">
@@ -104,15 +105,17 @@ export default function ProfilePage() {
                 id="phone"
                 value={profile.phone}
                 readOnly={true}
+                className="text-muted-foreground"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="farmSize">Farm Size</Label>
+              <Label htmlFor="farmSize">Farm Size (in Acres)</Label>
               <Input
                 id="farmSize"
                 value={profile.farmSize}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
+                placeholder="e.g., 10 Acres"
               />
             </div>
             <div className="space-y-2">
@@ -122,6 +125,7 @@ export default function ProfilePage() {
                 value={profile.city}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
+                placeholder="e.g., Ludhiana"
               />
             </div>
             <div className="space-y-2">
@@ -131,6 +135,7 @@ export default function ProfilePage() {
                 value={profile.state}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
+                placeholder="e.g., Punjab"
               />
             </div>
             <div className="space-y-2">
@@ -140,6 +145,7 @@ export default function ProfilePage() {
                 value={profile.annualIncome}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
+                placeholder="e.g., ₹5,00,000"
               />
             </div>
           </div>

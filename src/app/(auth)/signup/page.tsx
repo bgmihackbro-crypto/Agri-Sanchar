@@ -97,12 +97,12 @@ export default function SignupPage() {
       // Save user details to localStorage
       const userProfile = {
         name: name,
-        phone: "+91 " + phone,
-        avatar: `https://picsum.photos/seed/${phone}/40/40`,
-        farmSize: "Not set",
-        city: "Not set",
-        state: "Not set",
-        annualIncome: "Not set",
+        phone: "+91" + phone,
+        avatar: `https://picsum.photos/seed/${phone}/100/100`,
+        farmSize: "",
+        city: "",
+        state: "",
+        annualIncome: "",
       };
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
