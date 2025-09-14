@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Bot, CloudSun, Users } from "lucide-react";
+import { ArrowRight, Bot, CloudSun, Users, Info } from "lucide-react";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const quickLinks = [
   {
@@ -57,6 +58,19 @@ export default function DashboardPage() {
           </p>
         </div>
       </div>
+
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertTitle className="font-headline">Welcome aboard! Complete your profile.</AlertTitle>
+        <AlertDescription>
+          To give you the best crop advice, we need to know a little more about your farm. Please complete your profile by adding details like your land size, crops you grow, soil type, and location. This will help us provide accurate and personalized recommendations for you.
+          <Button asChild variant="link" className="p-0 h-auto mt-2 text-primary font-semibold">
+            <Link href="/profile">
+              Complete Profile <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </AlertDescription>
+      </Alert>
 
       <div>
         <h2 className="text-2xl font-bold font-headline mb-4">Quick Actions</h2>
