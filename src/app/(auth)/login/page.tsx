@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
@@ -31,6 +32,7 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   useEffect(() => {
     if (!window.recaptchaVerifier) {
@@ -53,25 +55,25 @@ export default function LoginPage() {
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
-      setLoading(false);
       toast({
         title: "OTP Sent",
         description: "An OTP has been sent to your phone number.",
       });
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setLoading(false);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to send OTP. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setVerifyingOtp(true);
     
     try {
       await window.confirmationResult.confirm(otp)
@@ -87,7 +89,8 @@ export default function LoginPage() {
         title: "Invalid OTP",
         description: "The OTP you entered is incorrect. Please try again.",
       });
-      setLoading(false);
+    } finally {
+        setVerifyingOtp(false);
     }
   };
 
@@ -125,6 +128,7 @@ export default function LoginPage() {
               </div>
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Login with OTP"}
             </Button>
           </form>
@@ -139,13 +143,14 @@ export default function LoginPage() {
                 required
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                disabled={loading}
+                disabled={verifyingOtp}
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
-             {loading ? "Verifying..." : "Verify OTP & Login"}
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp}>
+             {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+             {verifyingOtp ? "Verifying..." : "Verify OTP & Login"}
             </Button>
-             <Button variant="link" onClick={() => setOtpSent(false)} className="text-primary">
+             <Button variant="link" onClick={() => setOtpSent(false)} className="text-primary" disabled={verifyingOtp}>
               Back to phone number
             </Button>
           </form>
