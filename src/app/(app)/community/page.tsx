@@ -21,8 +21,8 @@ const initialPosts = [
   {
     id: 1,
     author: "Balwinder Singh",
-    avatar: "https://picsum.photos/seed/user1/40/40",
-    avatarHint: "farmer portrait",
+    avatar: "https://picsum.photos/seed/wheat-field/40/40",
+    avatarHint: "wheat field",
     city: "Amritsar",
     crop: "Wheat",
     time: "2 hours ago",
@@ -39,8 +39,8 @@ const initialPosts = [
   {
     id: 2,
     author: "Rani Devi",
-    avatar: "https://picsum.photos/seed/user2/40/40",
-    avatarHint: "woman farmer",
+    avatar: "https://picsum.photos/seed/rice-field/40/40",
+    avatarHint: "rice field",
     city: "Ludhiana",
     crop: "Rice",
     time: "5 hours ago",
@@ -168,6 +168,7 @@ export default function CommunityPage() {
                 {post.comments.map((comment, index) => (
                     <div key={index} className="flex items-start gap-3">
                         <Avatar className="h-8 w-8">
+                             <AvatarImage src={comment.isAi ? '' : 'https://picsum.photos/seed/farm-avatar/40/40'} data-ai-hint="farm icon" />
                             <AvatarFallback>{comment.author.substring(0,2)}</AvatarFallback>
                         </Avatar>
                         <div className={`flex-1 p-2 rounded-md ${comment.isAi ? 'bg-primary/10' : 'bg-muted/70'}`}>

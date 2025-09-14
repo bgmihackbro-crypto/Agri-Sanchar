@@ -3,8 +3,8 @@
     {
       "id": "farmer-avatar-small",
       "description": "Small avatar for a farmer user in the navigation",
-      "imageUrl": "https://picsum.photos/seed/farmer/40/40",
-      "imageHint": "farmer portrait"
+      "imageUrl": "https://picsum.photos/seed/farm-icon/40/40",
+      "imageHint": "farm icon"
     },
     {
       "id": "dashboard-hero",
@@ -15,14 +15,14 @@
     {
       "id": "farmer-avatar-large",
       "description": "Large avatar for a farmer user on the profile page",
-      "imageUrl": "https://picsum.photos/seed/farmer/100/100",
-      "imageHint": "farmer portrait"
+      "imageUrl": "https://picsum.photos/seed/farm-icon/100/100",
+      "imageHint": "farm icon"
     },
     {
       "id": "community-user-1",
       "description": "Avatar for a user in the community section",
-      "imageUrl": "https://picsum.photos/seed/user1/40/40",
-      "imageHint": "farmer portrait"
+      "imageUrl": "https://picsum.photos/seed/wheat-field/40/40",
+      "imageHint": "wheat field"
     },
     {
       "id": "community-post-1",
@@ -33,8 +33,8 @@
     {
       "id": "community-user-2",
       "description": "Avatar for another user in the community section",
-      "imageUrl": "https://picsum.photos/seed/user2/40/40",
-      "imageHint": "woman farmer"
+      "imageUrl": "https://picsum.photos/seed/rice-field/40/40",
+      "imageHint": "rice field"
     },
     {
       "id": "community-post-2",

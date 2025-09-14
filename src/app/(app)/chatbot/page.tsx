@@ -141,7 +141,7 @@ export default function ChatbotPage() {
                 </div>
                 {message.role === "user" && (
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://picsum.photos/seed/farmer/40/40" data-ai-hint="farmer portrait" />
+                    <AvatarImage src="https://picsum.photos/seed/wheat-icon/40/40" data-ai-hint="wheat icon" />
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                 )}

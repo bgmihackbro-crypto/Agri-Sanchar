@@ -25,7 +25,6 @@ import {
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
 
-
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
@@ -33,13 +32,13 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState({
     name: "Farmer",
     phone: "",
-    avatar: "https://picsum.photos/seed/farmer/100/100",
+    avatar: "https://picsum.photos/seed/farm-icon/100/100",
     farmSize: "",
     city: "",
     state: "",
     annualIncome: "",
   });
-  
+
   const [availableCities, setAvailableCities] = useState<string[]>([]);
 
   useEffect(() => {
@@ -53,30 +52,29 @@ export default function ProfilePage() {
     }
   }, []);
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setProfile((prev) => ({ ...prev, [id]: value }));
   };
-  
+
   const handleStateChange = (value: string) => {
-    setProfile((prev) => ({...prev, state: value, city: ""})); // Reset city when state changes
+    setProfile((prev) => ({ ...prev, state: value, city: "" })); // Reset city when state changes
     setAvailableCities(indianCities[value] || []);
-  }
+  };
 
   const handleCityChange = (value: string) => {
-    setProfile((prev) => ({...prev, city: value}));
-  }
+    setProfile((prev) => ({ ...prev, city: value }));
+  };
 
   const handleSave = () => {
     setIsEditing(false);
     localStorage.setItem("userProfile", JSON.stringify(profile));
     toast({
-        title: "Profile Updated",
-        description: "Your details have been saved successfully.",
-        action: <Check className="h-5 w-5 text-green-500" />,
-    })
-  }
+      title: "Profile Updated",
+      description: "Your details have been saved successfully.",
+      action: <Check className="h-5 w-5 text-green-500" />,
+    });
+  };
 
   return (
     <div className="flex justify-center items-start py-8">
@@ -88,7 +86,7 @@ export default function ProfilePage() {
                 <AvatarImage
                   src={profile.avatar}
                   alt="@farmer"
-                  data-ai-hint="farmer portrait"
+                  data-ai-hint="farm icon"
                 />
                 <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
               </Avatar>
@@ -101,14 +99,16 @@ export default function ProfilePage() {
                 </CardDescription>
               </div>
             </div>
-            {!isEditing && <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsEditing(true)}
-            >
-              <Edit className="h-4 w-4" />
-              <span className="sr-only">Edit</span>
-            </Button>}
+            {!isEditing && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsEditing(true)}
+              >
+                <Edit className="h-4 w-4" />
+                <span className="sr-only">Edit</span>
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -142,41 +142,49 @@ export default function ProfilePage() {
                 placeholder="e.g., 10"
               />
             </div>
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label htmlFor="state">State</Label>
-               {isEditing ? (
+              {isEditing ? (
                 <Select onValueChange={handleStateChange} value={profile.state}>
                   <SelectTrigger id="state">
                     <SelectValue placeholder="Select your state" />
                   </SelectTrigger>
                   <SelectContent>
-                    {indianStates.map(state => (
-                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                    {indianStates.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-               ) : (
+              ) : (
                 <Input
                   id="state"
                   value={profile.state}
                   readOnly={true}
                   placeholder="e.g., Punjab"
                 />
-               )}
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
               {isEditing ? (
-                  <Select onValueChange={handleCityChange} value={profile.city} disabled={!profile.state}>
-                    <SelectTrigger id="city">
-                      <SelectValue placeholder="Select your city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableCities.map(city => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Select
+                  onValueChange={handleCityChange}
+                  value={profile.city}
+                  disabled={!profile.state}
+                >
+                  <SelectTrigger id="city">
+                    <SelectValue placeholder="Select your city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCities.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : (
                 <Input
                   id="city"
@@ -201,7 +209,10 @@ export default function ProfilePage() {
         </CardContent>
         {isEditing && (
           <CardFooter>
-            <Button onClick={handleSave} className="w-full bg-primary hover:bg-primary/90">
+            <Button
+              onClick={handleSave}
+              className="w-full bg-primary hover:bg-primary/90"
+            >
               <Save className="mr-2 h-4 w-4" />
               Save Changes
             </Button>

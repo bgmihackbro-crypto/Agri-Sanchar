@@ -56,9 +56,9 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage
-              src={userProfile?.avatar || "https://picsum.photos/seed/farmer/40/40"}
+              src={userProfile?.avatar || "https://picsum.photos/seed/farm-icon/40/40"}
               alt="@farmer"
-              data-ai-hint="farmer portrait"
+              data-ai-hint="farm icon"
             />
             <AvatarFallback>{userProfile ? userProfile.name.substring(0, 2) : "U"}</AvatarFallback>
           </Avatar>
