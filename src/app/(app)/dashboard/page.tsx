@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Bot, CloudSun, Users } from "lucide-react";
 import Image from "next/image";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const quickLinks = [
   {
@@ -33,18 +34,20 @@ const quickLinks = [
 ];
 
 export default function DashboardPage() {
+  const dashboardHeroImage = PlaceHolderImages.find(p => p.id === 'dashboard-hero');
+
   return (
     <div className="space-y-8">
       <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
-        <Image
-          src="https://picsum.photos/seed/farm/1200/400"
+        {dashboardHeroImage && <Image
+          src={dashboardHeroImage.imageUrl}
           alt="Lush green farm"
           fill
           style={{ objectFit: "cover" }}
           className="rounded-lg"
-          data-ai-hint="farm landscape"
+          data-ai-hint={dashboardHeroImage.imageHint}
           priority
-        />
+        />}
         <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-start p-8 md:p-12">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 font-headline">
             Welcome back, Farmer!
