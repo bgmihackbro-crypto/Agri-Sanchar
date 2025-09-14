@@ -3,98 +3,89 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { ArrowRight, Bot, CloudSun, Users, Info } from "lucide-react";
-import Image from "next/image";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug } from "lucide-react";
+import React from 'react';
 
-const quickLinks = [
+const serviceLinks = [
   {
-    title: "Ask the AI Expert",
-    description: "Get instant advice on crop diseases, pests, and more.",
+    title: "AI Advisory Chatbot",
+    description: "AI-powered advice for crop, soil and pest problems. Communicate with voice support.",
     href: "/chatbot",
     icon: Bot,
+    badge: null,
+    badgeColor: null
+  },
+  {
+    title: "Pest/Disease Detection",
+    description: "Upload crop photos and get instant AI-powered pest or disease identification.",
+    href: "#",
+    icon: Search,
+    badge: null,
+    badgeColor: null
   },
   {
     title: "Weather Forecast",
-    description: "Check the latest weather updates for your location.",
+    description: "7-day weather forecast, rainfall warnings, and farming-suitable weather conditions.",
     href: "/weather",
     icon: CloudSun,
+    badge: null,
+    badgeColor: null
   },
   {
-    title: "Community Forum",
-    description: "Connect with fellow farmers and share knowledge.",
-    href: "/community",
-    icon: Users,
+    title: "Market Prices",
+    description: "Fresh daily market rates, price trends, and better selling suggestions.",
+    href: "#",
+    icon: TrendingUp,
+    badge: null,
+    badgeColor: null
+  },
+  {
+    title: "Soil Testing",
+    description: "Upload soil reports and get recommendations for proper fertilizer quantities.",
+    href: "#",
+    icon: FlaskConical,
+    badge: "नया",
+    badgeColor: "bg-green-500"
+  },
+  {
+    title: "Pesticide Guide",
+    description: "Accurate information and usage methods for organic and chemical pesticides.",
+    href: "#",
+    icon: Bug,
+    badge: "जल्द ही आ रहा",
+    badgeColor: "bg-orange-400"
   },
 ];
 
 export default function DashboardPage() {
-  const dashboardHeroImage = PlaceHolderImages.find(p => p.id === 'dashboard-hero');
-
   return (
     <div className="space-y-8">
-      <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-lg">
-        {dashboardHeroImage && <Image
-          src={dashboardHeroImage.imageUrl}
-          alt="Lush green farm"
-          fill
-          style={{ objectFit: "cover" }}
-          className="rounded-lg"
-          data-ai-hint={dashboardHeroImage.imageHint}
-          priority
-        />}
-        <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-start p-8 md:p-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 font-headline">
-            Welcome back, Farmer!
-          </h1>
-          <p className="text-lg md:text-xl text-white/90">
-            Your digital companion for smart farming.
-          </p>
+        <div className="text-center">
+            <h1 className="text-3xl font-bold font-headline">Agricultural Services</h1>
+            <p className="text-muted-foreground mt-2">All essential tools in one place to improve traditional farming with modern technology.</p>
         </div>
-      </div>
-
-      <Alert>
-        <Info className="h-4 w-4" />
-        <AlertTitle className="font-headline">Welcome aboard! Complete your profile.</AlertTitle>
-        <AlertDescription>
-          To give you the best crop advice, we need to know a little more about your farm. Please complete your profile by adding details like your land size, crops you grow, soil type, and location. This will help us provide accurate and personalized recommendations for you.
-          <Button asChild variant="link" className="p-0 h-auto mt-2 text-primary font-semibold">
-            <Link href="/profile">
-              Complete Profile <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </AlertDescription>
-      </Alert>
 
       <div>
-        <h2 className="text-2xl font-bold font-headline mb-4">Quick Actions</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {quickLinks.map((link) => (
-            <Card key={link.title} className="flex flex-col hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-accent/20 rounded-full">
-                    <link.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <CardTitle className="font-headline">{link.title}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <CardDescription>{link.description}</CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button asChild variant="link" className="p-0 h-auto text-primary font-semibold">
-                  <Link href={link.href}>
-                    Check it out <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
+          {serviceLinks.map((link) => (
+            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-shadow rounded-2xl">
+                <Link href={link.href} className="flex flex-col flex-grow">
+                    <CardHeader className="relative">
+                        <div className="flex items-start justify-between">
+                            <div className="p-3 bg-primary/10 rounded-xl">
+                                <link.icon className="w-6 h-6 text-primary" />
+                            </div>
+                            {link.badge && <Badge className={`text-white ${link.badgeColor}`}>{link.badge}</Badge>}
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow flex flex-col">
+                        <CardTitle className="font-headline text-lg mb-2">{link.title}</CardTitle>
+                        <p className="text-muted-foreground text-sm">{link.description}</p>
+                    </CardContent>
+              </Link>
             </Card>
           ))}
         </div>

@@ -6,13 +6,15 @@ import {
   Bot,
   CloudSun,
   LayoutDashboard,
-  Sprout,
   Users,
   User,
+  Search,
+  TrendingUp,
+  FlaskConical,
+  Bug
 } from "lucide-react";
 import {
   SidebarContent,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -21,8 +23,12 @@ import {
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/chatbot", label: "AI Chatbot", icon: Bot },
+  { href: "#", label: "Detection", icon: Search },
   { href: "/weather", label: "Weather", icon: CloudSun },
   { href: "/community", label: "Community", icon: Users },
+  { href: "#", label: "Market Prices", icon: TrendingUp },
+  { href: "#", label: "Soil Testing", icon: FlaskConical },
+  { href: "#", label: "Pesticide Guide", icon: Bug },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -31,23 +37,13 @@ export function AppSidebar() {
 
   return (
     <>
-      <SidebarHeader>
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Sprout className="h-6 w-6" />
-          </div>
-          <span className="truncate text-lg font-semibold text-sidebar-foreground font-headline">
-            Agri-Sanchar
-          </span>
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="pt-8">
         <SidebarMenu>
           {links.map((link) => (
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith(link.href)}
+                isActive={pathname.startsWith(link.href) && link.href !== '#'}
                 tooltip={link.label}
                 className="justify-start"
               >
