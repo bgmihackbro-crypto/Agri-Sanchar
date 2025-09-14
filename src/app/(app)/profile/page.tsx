@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Save, Check } from "lucide-react";
+import { Edit, Save, Check, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -28,6 +29,7 @@ import { indianCities } from "@/lib/indian-cities";
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState({
     name: "Farmer",
@@ -65,6 +67,17 @@ export default function ProfilePage() {
   const handleCityChange = (value: string) => {
     setProfile((prev) => ({ ...prev, city: value }));
   };
+  
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfile((prev) => ({ ...prev, avatar: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = () => {
     setIsEditing(false);
@@ -74,6 +87,8 @@ export default function ProfilePage() {
       description: "Your details have been saved successfully.",
       action: <Check className="h-5 w-5 text-green-500" />,
     });
+    // Force a re-render in other components using the avatar
+    window.dispatchEvent(new Event("storage"));
   };
 
   return (
@@ -82,14 +97,31 @@ export default function ProfilePage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage
-                  src={profile.avatar}
-                  alt="@farmer"
-                  data-ai-hint="farm icon"
-                />
-                <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
+              <div className="relative group">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage
+                    src={profile.avatar}
+                    alt="@farmer"
+                    data-ai-hint="farm icon"
+                  />
+                  <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+                {isEditing && (
+                  <div
+                    className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="h-6 w-6 text-white" />
+                  </div>
+                )}
+                 <Input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
+              </div>
               <div>
                 <CardTitle className="text-2xl font-headline">
                   {isEditing ? "Edit Profile" : profile.name}
@@ -125,12 +157,17 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={profile.phone}
-                readOnly
-                className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none"
-              />
+               <div className="flex items-center gap-2">
+                <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
+                  +91
+                </span>
+                <Input
+                  id="phone"
+                  value={profile.phone.replace('+91','')}
+                  readOnly
+                  className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none bg-muted"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="farmSize">Farm Size (in Acres)</Label>
@@ -197,13 +234,18 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="annualIncome">Annual Income (₹)</Label>
-              <Input
-                id="annualIncome"
-                value={profile.annualIncome}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
-                placeholder="e.g., 5,00,000"
-              />
+               <div className="flex items-center gap-2">
+                <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+                  ₹
+                </span>
+                <Input
+                  id="annualIncome"
+                  value={profile.annualIncome}
+                  readOnly={!isEditing}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 5,00,000"
+                />
+              </div>
             </div>
           </div>
         </CardContent>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -32,10 +33,21 @@ export function UserNav() {
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
-  useEffect(() => {
+  const updateUserProfile = () => {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
       setUserProfile(JSON.parse(savedProfile));
+    }
+  }
+
+  useEffect(() => {
+    updateUserProfile();
+
+    // Listen for the custom event to update the profile
+    window.addEventListener("storage", updateUserProfile);
+
+    return () => {
+        window.removeEventListener("storage", updateUserProfile);
     }
   }, []);
 
