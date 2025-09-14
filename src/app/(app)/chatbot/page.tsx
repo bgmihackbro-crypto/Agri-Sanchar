@@ -23,13 +23,28 @@ type Message = {
   image?: string;
 };
 
+type UserProfile = {
+  name: string;
+  phone: string;
+  avatar: string;
+  city?: string;
+}
+
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("userProfile");
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -76,6 +91,7 @@ export default function ChatbotPage() {
       const response = await answerFarmerQuestion({
         question: input,
         photoDataUri: photoDataUri,
+        city: userProfile?.city,
       });
       aiResponse = response.answer;
     } catch (error) {
@@ -141,8 +157,8 @@ export default function ChatbotPage() {
                 </div>
                 {message.role === "user" && (
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://picsum.photos/seed/wheat-icon/40/40" data-ai-hint="wheat icon" />
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={userProfile?.avatar || "https://picsum.photos/seed/farm-icon/40/40"} data-ai-hint="farm icon" />
+                    <AvatarFallback>{userProfile?.name?.substring(0, 2) || 'U'}</AvatarFallback>
                   </Avatar>
                 )}
               </div>
@@ -187,7 +203,7 @@ export default function ChatbotPage() {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about crops, weather, or upload a photo..."
+            placeholder="Ask about crops, prices, or upload a photo..."
             disabled={isLoading}
           />
           <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)} className="bg-primary hover:bg-primary/90">

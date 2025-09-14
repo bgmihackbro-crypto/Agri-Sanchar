@@ -21,6 +21,7 @@ const AnswerFarmerQuestionInputSchema = z.object({
     .describe(
       "A photo related to the question, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  city: z.string().optional().describe("The farmer's city, which can be used to provide location-specific information like local market prices."),
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
@@ -48,12 +49,42 @@ const analyzeCropIssue = ai.defineTool(
   }
 );
 
+const getMandiPrices = ai.defineTool(
+  {
+    name: 'getMandiPrices',
+    description: 'Provides a list of nearby Mandi (market) prices for various crops for a given city.',
+    inputSchema: z.object({
+      city: z.string().describe("The farmer's city to find nearby mandi prices for."),
+    }),
+    outputSchema: z.string().describe('A formatted string containing a table of nearby mandis and the prices for various crops.'),
+  },
+  async ({city}) => {
+    // In a real application, you would fetch this data from an API.
+    // For now, we'll return mock data.
+    if (city.toLowerCase() === 'ludhiana') {
+      return `
+      Mandi Prices near Ludhiana:
+      - Sahnewal Mandi:
+        - Wheat: ₹2200/quintal
+        - Rice: ₹3500/quintal
+        - Cotton: ₹6000/quintal
+      - Khanna Mandi (Asia's largest grain market):
+        - Wheat: ₹2250/quintal
+        - Rice: ₹3600/quintal
+        - Maize: ₹1800/quintal
+      `;
+    }
+    return `Sorry, I could not find mandi prices for ${city}. I currently have data for Ludhiana.`;
+  }
+);
+
+
 const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: {schema: AnswerFarmerQuestionInputSchema},
   output: {schema: AnswerFarmerQuestionOutputSchema},
-  tools: [analyzeCropIssue],
-  prompt: `You are a powerful, helpful, and friendly AI assistant for farmers, like a farming-focused Gemini. Your name is Agri-Sanchar. You have access to a wealth of agricultural knowledge.
+  tools: [analyzeCropIssue, getMandiPrices],
+  prompt: `You are a powerful, helpful, and friendly AI assistant for farmers, like a farming-focused Gemini. Your name is Agri-Sanchar. You have access to a wealth of agricultural knowledge and tools to help with specific queries.
 
 Your goal is to provide comprehensive, expert-level answers to questions from farmers. Do not give simple or superficial answers. Always provide detailed explanations, actionable advice, and if relevant, discuss potential causes, solutions, and preventive measures.
 
@@ -62,6 +93,10 @@ The farmer has asked the following question:
 
 {{#if photoDataUri}}
 The farmer has also provided a photo. Use the 'analyzeCropIssue' tool to analyze the image if the question is about a potential crop disease, pest, or other visual problem. Interpret the tool's output and integrate it into your comprehensive answer.
+{{/if}}
+
+{{#if city}}
+The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information.
 {{/if}}
 
 Provide a thorough and well-structured answer.
