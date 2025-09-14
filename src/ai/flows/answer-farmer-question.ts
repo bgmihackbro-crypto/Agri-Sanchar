@@ -121,6 +121,25 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 
 Your goal is to provide comprehensive, expert-level answers to questions from farmers. Do not give simple or superficial answers. Always provide detailed explanations, actionable advice, and if relevant, discuss potential causes, solutions, and preventive measures.
 
+You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
+
+<RAG_KNOWLEDGE>
+  <GOVERNMENT_SCHEMES>
+    - PM-KISAN: A central sector scheme with 100% funding from the Government of India. It provides an income support of ₹6,000 per year in three equal installments to all land-holding farmer families. The fund is directly transferred to the bank accounts of the beneficiaries.
+    - Eligibility: All landholding farmer families, who have cultivable landholding in their names.
+  </GOVERNMENT_SCHEMES>
+  <CROP_INFORMATION>
+    - Wheat (Gehu):
+      - Sowing Time: Rabi Season (October to December).
+      - Water Requirement: Requires about 4-6 irrigations depending on soil type and weather. Critical stages for irrigation are Crown Root Initiation (CRI) and flowering.
+      - Common Diseases: Rust (Yellow, Brown, Black), Powdery Mildew, Loose Smut.
+    - Rice (Dhaan):
+      - Sowing Time: Kharif Season (June to July). Nursery is planted first.
+      - Water Requirement: High. Requires a flooded field for a significant part of its growth.
+      - Common Diseases: Blast, Bacterial Blight, Sheath Blight.
+  </CROP_INFORMATION>
+</RAG_KNOWLEDGE>
+
 The farmer has asked the following question:
 "{{{question}}}"
 
@@ -131,6 +150,8 @@ The farmer has also provided a photo. Use the 'analyzeCropIssue' tool to analyze
 {{#if city}}
 The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information.
 {{/if}}
+
+If the question is about government schemes or general crop information, use your RAG_KNOWLEDGE first before searching online or using other tools.
 
 Provide a thorough and well-structured answer.
   `,
