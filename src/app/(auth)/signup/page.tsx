@@ -18,6 +18,9 @@ import { auth } from "@/lib/firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 import { Loader2 } from "lucide-react";
 
+// Add a test phone number to bypass Firebase OTP for development
+const TEST_PHONE_NUMBER = "9999999999";
+
 declare global {
   interface Window {
     recaptchaVerifier?: RecaptchaVerifier;
@@ -46,20 +49,38 @@ export default function SignupPage() {
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
-
     setLoading(true);
+
+    // Test mode check
+    if (phone === TEST_PHONE_NUMBER) {
+      setOtpSent(true);
+      toast({
+        title: "Test OTP Sent",
+        description: "You are in test mode. Enter any 6 digits to proceed.",
+      });
+      setLoading(false);
+      return;
+    }
     
     const phoneNumber = "+91" + phone;
-    // Use the form's submit button as the reCAPTCHA container
-    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget.querySelector('button[type="submit"]')!, {
+    const submitButton = e.currentTarget.querySelector('button[type="submit"]');
+
+     if (!submitButton) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not find submit button for reCAPTCHA.",
+      });
+      return;
+    }
+
+    const appVerifier = new RecaptchaVerifier(auth, submitButton as HTMLElement, {
       'size': 'invisible'
     });
     window.recaptchaVerifier = appVerifier;
 
-
     try {
-      // We render the verifier first, then sign in
-      await appVerifier.render();
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
@@ -74,7 +95,6 @@ export default function SignupPage() {
         title: "Error",
         description: "Failed to send OTP. Please try again.",
       });
-      // Clear the verifier on error
       appVerifier.clear();
     } finally {
         setLoading(false);
@@ -84,11 +104,32 @@ export default function SignupPage() {
   const handleVerifyOtpAndSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (verifyingOtp) return;
-    
     setVerifyingOtp(true);
     
+    // Test mode check
+    if (phone === TEST_PHONE_NUMBER) {
+      if (otp.length === 6 && /^\d+$/.test(otp)) {
+        toast({
+          title: "Account Created! (Test Mode)",
+          description: "Welcome to Agri-Sanchar.",
+        });
+        router.push("/dashboard");
+      } else {
+         toast({
+          variant: "destructive",
+          title: "Invalid OTP",
+          description: "Please enter any 6-digit OTP to continue in test mode.",
+        });
+        setVerifyingOtp(false);
+      }
+      return;
+    }
+
     try {
-      await window.confirmationResult!.confirm(otp);
+       if (!window.confirmationResult) {
+        throw new Error("Confirmation result not found.");
+      }
+      await window.confirmationResult.confirm(otp);
       // Here you would typically create the user account in your database
       toast({
         title: "Account Created!",
@@ -140,7 +181,7 @@ export default function SignupPage() {
                   type="tel"
                   placeholder="12345 67890"
                   required
-                  pattern="\d{10}"
+                  pattern="\\d{10}"
                   title="Please enter a valid 10-digit phone number"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
