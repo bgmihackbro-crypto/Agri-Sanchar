@@ -59,8 +59,34 @@ const getMandiPrices = ai.defineTool(
     outputSchema: z.string().describe('A formatted string containing a table of nearby mandis and the prices for various crops.'),
   },
   async ({city}) => {
-    // In a real application, you would fetch this data from an API.
-    // For now, we'll return mock data for major Indian cities.
+    // This is where you would fetch real-time data from an external API.
+    // The following is an example of how you might do it.
+    /*
+    try {
+      const response = await fetch(`https://api.example.com/mandi-prices?city=${city}&apiKey=YOUR_API_KEY`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+      // Once you have the data, you need to format it into a string for the AI.
+      // The format will depend on the structure of the API response.
+      let formattedPrices = `Mandi Prices for ${city}:\n`;
+      data.markets.forEach(market => {
+        formattedPrices += `- ${market.name}:\n`;
+        market.crops.forEach(crop => {
+          formattedPrices += `  - ${crop.name}: ₹${crop.price}/${crop.unit}\n`;
+        });
+      });
+      return formattedPrices;
+
+    } catch (error) {
+      console.error("Failed to fetch mandi prices:", error);
+      return `Sorry, I was unable to fetch real-time mandi prices for ${city} at the moment.`;
+    }
+    */
+
+    // For now, we'll return mock data.
     const lowerCity = city.toLowerCase();
     const prices: {[key: string]: string} = {
       ludhiana: `
