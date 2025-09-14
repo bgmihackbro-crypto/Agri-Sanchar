@@ -133,7 +133,7 @@ export default function ProfilePage() {
              <div className="space-y-2">
               <Label htmlFor="state">State</Label>
                {isEditing ? (
-                <Select onValueChange={handleStateChange} defaultValue={profile.state}>
+                <Select onValueChange={handleStateChange} value={profile.state}>
                   <SelectTrigger id="state">
                     <SelectValue placeholder="Select your state" />
                   </SelectTrigger>
