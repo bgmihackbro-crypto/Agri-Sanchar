@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "farmer-avatar-small",
+      "description": "Small avatar for a farmer user in the navigation",
+      "imageUrl": "https://picsum.photos/seed/farmer/40/40",
+      "imageHint": "farmer portrait"
+    },
+    {
+      "id": "dashboard-hero",
+      "description": "Hero image for the dashboard showing a lush farm landscape",
+      "imageUrl": "https://picsum.photos/seed/farm/1200/400",
+      "imageHint": "farm landscape"
+    },
+    {
+      "id": "farmer-avatar-large",
+      "description": "Large avatar for a farmer user on the profile page",
+      "imageUrl": "https://picsum.photos/seed/farmer/100/100",
+      "imageHint": "farmer portrait"
+    },
+    {
+      "id": "community-user-1",
+      "description": "Avatar for a user in the community section",
+      "imageUrl": "https://picsum.photos/seed/user1/40/40",
+      "imageHint": "farmer portrait"
+    },
+    {
+      "id": "community-post-1",
+      "description": "Image for a community post about a wheat crop issue",
+      "imageUrl": "https://picsum.photos/seed/wheat-issue/600/400",
+      "imageHint": "wheat disease"
+    },
+    {
+      "id": "community-user-2",
+      "description": "Avatar for another user in the community section",
+      "imageUrl": "https://picsum.photos/seed/user2/40/40",
+      "imageHint": "woman farmer"
+    },
+    {
+      "id": "community-post-2",
+      "description": "Image for a community post about healthy rice paddies",
+      "imageUrl": "https://picsum.photos/seed/rice-paddy/600/400",
+      "imageHint": "rice paddy"
+    }
+  ]
 }
