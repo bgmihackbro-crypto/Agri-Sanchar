@@ -35,25 +35,26 @@ export default function LoginPage() {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   useEffect(() => {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response: any) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-      }
-    });
-
+    // Clear any previous verifiers
     return () => {
       window.recaptchaVerifier?.clear();
     };
   }, []);
 
-  const handleSendOtp = async (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const phoneNumber = "+91" + phone;
-    const appVerifier = window.recaptchaVerifier!;
+    
+    // Use the button that triggered the form submission as the container
+    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget, {
+      'size': 'invisible'
+    });
+    window.recaptchaVerifier = appVerifier;
 
     try {
+      // We render the verifier first, then sign in
+      await appVerifier.render();
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
@@ -68,6 +69,8 @@ export default function LoginPage() {
         title: "Error",
         description: "Failed to send OTP. Please check your phone number and try again.",
       });
+      // Clear the verifier on error
+      appVerifier.clear();
     } finally {
       setLoading(false);
     }
@@ -98,7 +101,6 @@ export default function LoginPage() {
 
   return (
     <Card className="w-full max-w-sm">
-      <div id="recaptcha-container"></div>
       <CardHeader>
         <CardTitle className="text-2xl font-headline">Login</CardTitle>
         <CardDescription>
