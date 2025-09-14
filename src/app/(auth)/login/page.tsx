@@ -35,7 +35,7 @@ export default function LoginPage() {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   useEffect(() => {
-    // Clear any previous verifiers
+    // Clear any previous verifiers on component unmount
     return () => {
       window.recaptchaVerifier?.clear();
     };
@@ -43,11 +43,13 @@ export default function LoginPage() {
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
+
     setLoading(true);
     const phoneNumber = "+91" + phone;
     
-    // Use the button that triggered the form submission as the container
-    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget, {
+    // Use the form's submit button as the reCAPTCHA container
+    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget.querySelector('button[type="submit"]')!, {
       'size': 'invisible'
     });
     window.recaptchaVerifier = appVerifier;
@@ -67,7 +69,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send OTP. Please check your phone number and try again.",
+        description: "Failed to send OTP. Please check the number and try again.",
       });
       // Clear the verifier on error
       appVerifier.clear();
@@ -78,6 +80,8 @@ export default function LoginPage() {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (verifyingOtp) return;
+    
     setVerifyingOtp(true);
     
     try {

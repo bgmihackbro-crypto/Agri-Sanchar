@@ -36,20 +36,22 @@ export default function SignupPage() {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   useEffect(() => {
-    // Clear any previous verifiers
+    // Clear any previous verifiers on component unmount
     return () => {
       window.recaptchaVerifier?.clear();
     };
   }, []);
 
 
-  const handleSendOtp = async (e: React.FormEvent<HTMLFormEElement>) => {
+  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
+
     setLoading(true);
     
     const phoneNumber = "+91" + phone;
-    // Use the button that triggered the form submission as the container
-    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget, {
+    // Use the form's submit button as the reCAPTCHA container
+    const appVerifier = new RecaptchaVerifier(auth, e.currentTarget.querySelector('button[type="submit"]')!, {
       'size': 'invisible'
     });
     window.recaptchaVerifier = appVerifier;
@@ -81,6 +83,8 @@ export default function SignupPage() {
 
   const handleVerifyOtpAndSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (verifyingOtp) return;
+    
     setVerifyingOtp(true);
     
     try {
