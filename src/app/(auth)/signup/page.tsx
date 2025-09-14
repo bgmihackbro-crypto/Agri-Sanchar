@@ -55,21 +55,13 @@ export default function SignupPage() {
     }
     
     const phoneNumber = "+91" + phone;
-    const submitButton = e.currentTarget.querySelector('button[type="submit"]');
 
-     if (!submitButton) {
-      setLoading(false);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not find submit button for reCAPTCHA.",
-      });
-      return;
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
     }
 
-    let appVerifier: RecaptchaVerifier;
     try {
-      appVerifier = new RecaptchaVerifier(auth, submitButton as HTMLElement, {
+      const appVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
         'size': 'invisible'
       });
       window.recaptchaVerifier = appVerifier;
@@ -88,9 +80,6 @@ export default function SignupPage() {
         title: "Error",
         description: "Failed to send OTP. Please try again.",
       });
-       if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-      }
     } finally {
         setLoading(false);
     }
@@ -154,6 +143,7 @@ export default function SignupPage() {
       <CardContent>
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
+            <div id="recaptcha-container"></div>
             <div className="grid gap-2">
               <Label htmlFor="name">Full Name</Label>
               <Input 
@@ -177,7 +167,7 @@ export default function SignupPage() {
                   placeholder="9876543210"
                   required
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
                 />
               </div>
