@@ -54,7 +54,7 @@ export default function LoginPage() {
     setLoading(true);
 
     // Test mode check
-    if (phone === TEST_PHONE_NUMBER) {
+    if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       setOtpSent(true);
       toast({
         title: "Test OTP Sent",
@@ -93,7 +93,7 @@ export default function LoginPage() {
     setVerifyingOtp(true);
 
     // Test mode check
-    if (phone === TEST_PHONE_NUMBER) {
+    if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       if (otp.length === 6 && /^\d+$/.test(otp)) {
         toast({
           title: "Login Successful (Test Mode)",
@@ -164,7 +164,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading || phone.length < 10}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Login with OTP"}
             </Button>
@@ -176,14 +176,15 @@ export default function LoginPage() {
               <Input
                 id="otp"
                 type="text"
+                inputMode="numeric"
                 placeholder="123456"
                 required
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={verifyingOtp}
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>
              {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
              {verifyingOtp ? "Verifying..." : "Verify OTP & Login"}
             </Button>
