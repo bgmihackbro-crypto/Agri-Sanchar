@@ -60,21 +60,54 @@ const getMandiPrices = ai.defineTool(
   },
   async ({city}) => {
     // In a real application, you would fetch this data from an API.
-    // For now, we'll return mock data.
-    if (city.toLowerCase() === 'ludhiana') {
-      return `
-      Mandi Prices near Ludhiana:
-      - Sahnewal Mandi:
-        - Wheat: ₹2200/quintal
-        - Rice: ₹3500/quintal
-        - Cotton: ₹6000/quintal
-      - Khanna Mandi (Asia's largest grain market):
-        - Wheat: ₹2250/quintal
-        - Rice: ₹3600/quintal
-        - Maize: ₹1800/quintal
-      `;
+    // For now, we'll return mock data for major Indian cities.
+    const lowerCity = city.toLowerCase();
+    const prices: {[key: string]: string} = {
+      ludhiana: `
+Mandi Prices near Ludhiana:
+- Sahnewal Mandi:
+  - Wheat: ₹2200/quintal
+  - Rice: ₹3500/quintal
+  - Cotton: ₹6000/quintal
+- Khanna Mandi (Asia's largest grain market):
+  - Wheat: ₹2250/quintal
+  - Rice: ₹3600/quintal
+  - Maize: ₹1800/quintal
+`,
+      delhi: `
+Mandi Prices in Delhi:
+- Narela Mandi:
+  - Wheat: ₹2300/quintal
+  - Rice (Basmati): ₹4000/quintal
+- Azadpur Mandi:
+  - Wheat: ₹2280/quintal
+  - Rice (Basmati): ₹4100/quintal
+`,
+      mumbai: `
+Mandi Prices in Mumbai:
+- Vashi (APMC) Mandi:
+  - Wheat: ₹2400/quintal
+  - Rice (Kolam): ₹3800/quintal
+`,
+      kolkata: `
+Mandi Prices in Kolkata:
+- Posta Bazar:
+  - Wheat: ₹2350/quintal
+  - Rice (Sona Masuri): ₹3400/quintal
+`,
+      chennai: `
+Mandi Prices in Chennai:
+- Koyambedu Market:
+  - Wheat: ₹2500/quintal
+  - Rice (Ponni): ₹3600/quintal
+`,
+    };
+
+    if (prices[lowerCity]) {
+      return prices[lowerCity];
     }
-    return `Sorry, I could not find mandi prices for ${city}. I currently have data for Ludhiana.`;
+    
+    return `Sorry, I could not find mandi prices for ${city}. I currently have data for Delhi, Mumbai, Kolkata, Chennai, and Ludhiana.`;
   }
 );
 
