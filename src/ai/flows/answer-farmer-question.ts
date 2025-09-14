@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {analyzeCropIssueFromPhoto, AnalyzeCropIssueFromPhotoInput} from './analyze-crop-issue-from-photo';
 
 const AnswerFarmerQuestionInputSchema = z.object({
   question: z.string().describe('The question the farmer is asking.'),
@@ -42,10 +43,8 @@ const analyzeCropIssue = ai.defineTool(
     outputSchema: z.string().describe('A diagnosis of the crop issue and potential solutions.'),
   },
   async input => {
-    // TODO: Implement the crop issue analysis logic here using an image analysis service or model.
-    // This is a placeholder implementation.
-    console.log('Analyzing crop issue from image:', input.photoDataUri);
-    return 'Crop issue analysis and solutions based on the image.';
+    const {analysisResult} = await analyzeCropIssueFromPhoto(input);
+    return analysisResult;
   }
 );
 
@@ -54,15 +53,18 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   input: {schema: AnswerFarmerQuestionInputSchema},
   output: {schema: AnswerFarmerQuestionOutputSchema},
   tools: [analyzeCropIssue],
-  prompt: `You are an AI chatbot designed to help farmers with their questions.
+  prompt: `You are a powerful, helpful, and friendly AI assistant for farmers, like a farming-focused Gemini. Your name is Agri-Sanchar. You have access to a wealth of agricultural knowledge.
 
-  The farmer has asked the following question: {{{question}}}
+Your goal is to provide comprehensive, expert-level answers to questions from farmers. Do not give simple or superficial answers. Always provide detailed explanations, actionable advice, and if relevant, discuss potential causes, solutions, and preventive measures.
 
-  {{#if photoDataUri}}
-  The farmer has also provided a photo.  You can use the analyzeCropIssue tool to analyze it.
-  {{/if}}
+The farmer has asked the following question:
+"{{{question}}}"
 
-  Answer the question to the best of your ability, using the provided tool if necessary.
+{{#if photoDataUri}}
+The farmer has also provided a photo. Use the 'analyzeCropIssue' tool to analyze the image if the question is about a potential crop disease, pest, or other visual problem. Interpret the tool's output and integrate it into your comprehensive answer.
+{{/if}}
+
+Provide a thorough and well-structured answer.
   `,
 });
 
