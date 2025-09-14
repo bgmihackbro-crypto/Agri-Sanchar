@@ -118,6 +118,16 @@ export default function ProfilePage() {
                 placeholder="e.g., 10 Acres"
               />
             </div>
+             <div className="space-y-2">
+              <Label htmlFor="state">State</Label>
+              <Input
+                id="state"
+                value={profile.state}
+                readOnly={!isEditing}
+                onChange={handleInputChange}
+                placeholder="e.g., Punjab"
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
               <Input
@@ -126,16 +136,6 @@ export default function ProfilePage() {
                 readOnly={!isEditing}
                 onChange={handleInputChange}
                 placeholder="e.g., Ludhiana"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="state">State</Label>
-              <Input
-                id="state"
-                value={profile.state}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
-                placeholder="e.g., Punjab"
               />
             </div>
             <div className="space-y-2">
