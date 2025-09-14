@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,22 +35,24 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  const generateRecaptcha = () => {
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
-    }
+  useEffect(() => {
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       'size': 'invisible',
       'callback': (response: any) => {
         // reCAPTCHA solved, allow signInWithPhoneNumber.
       }
     });
-  };
+
+    return () => {
+      window.recaptchaVerifier?.clear();
+    };
+  }, []);
+
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    generateRecaptcha();
+    
     const phoneNumber = "+91" + phone;
     const appVerifier = window.recaptchaVerifier!;
 
