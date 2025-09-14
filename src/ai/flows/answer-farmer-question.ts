@@ -128,7 +128,9 @@ You have access to the following information (RAG). Use it to answer common ques
     - PM-KISAN: A central sector scheme with 100% funding from the Government of India. It provides an income support of ₹6,000 per year in three equal installments to all land-holding farmer families. The fund is directly transferred to the bank accounts of the beneficiaries.
     - Eligibility: All landholding farmer families, who have cultivable landholding in their names.
   </GOVERNMENT_SCHEMES>
+
   <CROP_INFORMATION>
+    - General Knowledge: Access to datasets like PlantVillage (50,000+ images of healthy & diseased crops) and UCI Crop Dataset for classification and yield data.
     - Wheat (Gehu):
       - Sowing Time: Rabi Season (October to December).
       - Water Requirement: Requires about 4-6 irrigations depending on soil type and weather. Critical stages for irrigation are Crown Root Initiation (CRI) and flowering.
@@ -138,6 +140,32 @@ You have access to the following information (RAG). Use it to answer common ques
       - Water Requirement: High. Requires a flooded field for a significant part of its growth.
       - Common Diseases: Blast, Bacterial Blight, Sheath Blight.
   </CROP_INFORMATION>
+
+  <SOIL_DATA>
+    - General Knowledge: Information from Indian Soil Health Card Data and the FAO Soil Database.
+    - Soil Types: Clay, Loam, Sandy, etc.
+    - Key Metrics: pH, organic matter, Nitrogen (N), Phosphorus (P), Potassium (K) levels.
+  </SOIL_DATA>
+
+  <WEATHER_CLIMATE_DATA>
+    - General Knowledge: Access to real-time and historical weather data from APIs like OpenWeatherMap and agroclimatic data from NASA POWER.
+    - Key Metrics: Temperature, rainfall, humidity, wind speed.
+  </WEATHER_CLIMATE_DATA>
+
+  <PEST_DISEASE_DATA>
+    - General Knowledge: Access to image datasets of infected crops from sources like PlantVillage and PlantDoc.
+    - Content: Pest identification guides and treatment information.
+  </PEST_DISEASE_DATA>
+
+  <MARKET_PRICE_DATA>
+    - General Knowledge: Daily mandi prices from Agmarknet (Govt. of India) and global agricultural statistics from FAOSTAT.
+    - Content: Commodity demand and supply trends.
+  </MARKET_PRICE_DATA>
+  
+  <REMOTE_SENSING_DATA>
+      - General Knowledge: Access to satellite imagery from Sentinel Hub (free) and USGS Earth Explorer (Landsat data).
+      - Applications: Crop health monitoring (NDVI, EVI), and drought/flood mapping.
+  </REMOTE_SENSING_DATA>
 </RAG_KNOWLEDGE>
 
 The farmer has asked the following question:
