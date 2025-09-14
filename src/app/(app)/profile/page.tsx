@@ -15,6 +15,14 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit, Save, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { indianStates } from "@/lib/indian-states";
 
 
 export default function ProfilePage() {
@@ -43,6 +51,10 @@ export default function ProfilePage() {
     const { id, value } = e.target;
     setProfile((prev) => ({ ...prev, [id]: value }));
   };
+  
+  const handleStateChange = (value: string) => {
+    setProfile((prev) => ({...prev, state: value}));
+  }
 
   const handleSave = () => {
     setIsEditing(false);
@@ -120,13 +132,25 @@ export default function ProfilePage() {
             </div>
              <div className="space-y-2">
               <Label htmlFor="state">State</Label>
-              <Input
-                id="state"
-                value={profile.state}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
-                placeholder="e.g., Punjab"
-              />
+               {isEditing ? (
+                <Select onValueChange={handleStateChange} defaultValue={profile.state}>
+                  <SelectTrigger id="state">
+                    <SelectValue placeholder="Select your state" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {indianStates.map(state => (
+                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+               ) : (
+                <Input
+                  id="state"
+                  value={profile.state}
+                  readOnly={true}
+                  placeholder="e.g., Punjab"
+                />
+               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
