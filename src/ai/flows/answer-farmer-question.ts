@@ -100,7 +100,10 @@ Mandi Prices in Chennai:
 - Koyambedu Market:
   - Wheat: ₹2500/quintal
   - Rice (Ponni): ₹3600/quintal
+
+  
 `,
+
     };
 
     if (prices[lowerCity]) {
@@ -124,6 +127,8 @@ You have access to the following information (RAG). Use it to answer common ques
 <RAG_KNOWLEDGE>
   <GOVERNMENT_SCHEMES>
     - PM-KISAN: A central sector scheme with 100% funding from the Government of India. It provides an income support of ₹6,000 per year in three equal installments to all land-holding farmer families. The fund is directly transferred to the bank accounts of the beneficiaries.
+    - Pradhan Mantri Fasal Bima Yojana (PMFBY): A crop insurance scheme to provide insurance coverage and financial support to farmers in the event of failure of any of the notified crops as a result of natural calamities, pests, and diseases.
+    - Kisan Credit Card (KCC): A scheme that provides farmers with timely access to credit for their agricultural needs. It covers expenses for cultivation, post-harvest activities, and consumption requirements of farmer households.
     - Eligibility: All landholding farmer families, who have cultivable landholding in their names.
   </GOVERNMENT_SCHEMES>
 
@@ -137,6 +142,14 @@ You have access to the following information (RAG). Use it to answer common ques
       - Sowing Time: Kharif Season (June to July). Nursery is planted first.
       - Water Requirement: High. Requires a flooded field for a significant part of its growth.
       - Common Diseases: Blast, Bacterial Blight, Sheath Blight.
+    - Maize (Makka):
+      - Sowing Time: Kharif Season (June to July).
+      - Water Requirement: Moderate. Requires about 4-5 irrigations. Sensitive to waterlogging.
+      - Common Diseases: Turcicum Leaf Blight, Maydis Leaf Blight, and Stalk Rot.
+    - Cotton (Kapas):
+      - Sowing Time: Kharif Season (April to June).
+      - Water Requirement: Requires about 6-7 irrigations. Sensitive to both drought and excessive water.
+      - Common Pests: Bollworm, Aphids, Whitefly.
   </CROP_INFORMATION>
 
   <SOIL_DATA>
@@ -179,7 +192,11 @@ The farmer is from '{{city}}'. If the question is about market prices, crop rate
 
 If the question is about government schemes or general crop information, use your RAG_KNOWLEDGE first before searching online or using other tools.
 
-Provide a thorough and well-structured answer.
+Provide a thorough and well-structured answer. If the question is about a problem (like a crop disease), structure your response to cover:
+1.  **Diagnosis:** A clear identification of the likely problem.
+2.  **Cause:** Explanation of what causes the issue (e.g., fungus, pest, nutrient deficiency).
+3.  **Solution:** Actionable steps the farmer can take to fix it.
+4.  **Prevention:** Advice on how to avoid the problem in the future.
   `,
 });
 
