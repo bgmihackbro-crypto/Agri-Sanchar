@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -67,11 +68,11 @@ const getMandiPrices = ai.defineTool(
 Mandi Prices near Ludhiana:
 - Sahnewal Mandi:
   - Wheat: ₹2200/quintal
-  - Rice: ₹3500/quintal
+  - Rice (Basmati): ₹3500/quintal
   - Cotton: ₹6000/quintal
 - Khanna Mandi (Asia's largest grain market):
   - Wheat: ₹2250/quintal
-  - Rice: ₹3600/quintal
+  - Rice (Basmati): ₹3600/quintal
   - Maize: ₹1800/quintal
 `,
       delhi: `
@@ -79,6 +80,7 @@ Mandi Prices in Delhi:
 - Narela Mandi:
   - Wheat: ₹2300/quintal
   - Rice (Basmati): ₹4000/quintal
+  - Masoor Dal: ₹6400/quintal
 - Azadpur Mandi:
   - Wheat: ₹2280/quintal
   - Rice (Basmati): ₹4100/quintal
@@ -87,7 +89,8 @@ Mandi Prices in Delhi:
 Mandi Prices in Mumbai:
 - Vashi (APMC) Mandi:
   - Wheat: ₹2400/quintal
-  - Rice (Kolam): ₹3800/quintal
+  - Rice (Kolam): ₹3850/quintal
+  - Tur (Arhar): ₹9300/quintal
   - Onions: ₹1500/quintal
 `,
       kolkata: `
@@ -96,6 +99,7 @@ Mandi Prices in Kolkata:
   - Wheat: ₹2350/quintal
   - Rice (Sona Masuri): ₹3400/quintal
   - Jute: ₹5000/quintal
+  - Masoor Dal: ₹6500/quintal
 `,
       chennai: `
 Mandi Prices in Chennai:
@@ -103,6 +107,7 @@ Mandi Prices in Chennai:
   - Wheat: ₹2500/quintal
   - Rice (Ponni): ₹3600/quintal
   - Turmeric: ₹7000/quintal
+  - Urad Dal: ₹8900/quintal
 `,
       indore: `
 Mandi Prices in Indore:
@@ -110,6 +115,7 @@ Mandi Prices in Indore:
   - Soyabean: ₹4500/quintal
   - Wheat: ₹2100/quintal
   - Chana (Gram): ₹5000/quintal
+  - Tur (Arhar): ₹9100/quintal
 `,
       jaipur: `
 Mandi Prices in Jaipur:
@@ -122,7 +128,8 @@ Mandi Prices in Jaipur:
 Mandi Prices in Bengaluru:
 - Yeshwanthpur (APMC) Mandi:
   - Ragi: ₹3300/quintal
-  - Rice: ₹3700/quintal
+  - Rice (Sona Masuri): ₹3700/quintal
+  - Tur Dal: ₹9600/quintal
   - Maize: ₹1900/quintal
 `,
       kanpur: `
@@ -135,7 +142,7 @@ Mandi Prices in Kanpur:
       patna: `
 Mandi Prices in Patna:
 - Patna (Bazar Samiti):
-  - Rice: ₹3300/quintal
+  - Rice (Sona Masuri): ₹3300/quintal
   - Maize: ₹1850/quintal
   - Lentils (Masur): ₹6200/quintal
 `,
@@ -320,3 +327,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
