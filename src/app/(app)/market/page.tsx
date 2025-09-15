@@ -26,8 +26,10 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { Loader2, TrendingUp } from "lucide-react";
+import { Loader2, TrendingUp, Sparkles } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
+import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
+import { Badge } from "@/components/ui/badge";
 
 
 type PriceRecord = {
@@ -35,12 +37,21 @@ type PriceRecord = {
   modal_price: string;
 };
 
+type PricePrediction = {
+  commodity: string;
+  nextTwoWeeksPrice: number;
+  suggestion: 'Sell' | 'Hold/Buy' | 'Hold';
+}
+
+type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
+
 export default function MarketPricesPage() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [prices, setPrices] = useState<PriceRecord[] | null>(null);
+  const [prices, setPrices] = useState<CombinedPriceData[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -64,30 +75,58 @@ export default function MarketPricesPage() {
   const fetchPrices = async (city: string) => {
     if (!city) return;
     setIsLoading(true);
+    setIsPredicting(false);
     setPrices(null);
     setError(null);
+
     try {
+      // 1. Fetch current prices
       const response = await answerFarmerQuestion({
-        question: `Get prices for ${city}`, // Question is not strictly needed but good for logging
+        question: `Get prices for ${city}`,
         city: city,
-        returnJson: true, // Request structured JSON output
+        returnJson: true,
       });
       
+      let currentPrices: PriceRecord[] = [];
       if (response.priceData) {
-        setPrices(response.priceData);
+        currentPrices = response.priceData;
+        setPrices(currentPrices); // Show current prices immediately
       } else if (response.answer) {
-        // If there's an answer, it's likely an error message from the flow
         setError(response.answer);
         setPrices([]);
+        setIsLoading(false);
+        return;
       } else {
         setError(`No market data could be found for ${city}.`);
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+
+      // 2. Fetch AI predictions
+      if(currentPrices.length > 0) {
+        setIsPredicting(true);
+        const predictionResponse = await predictCropPrices({
+          city,
+          prices: currentPrices,
+        });
+
+        if (predictionResponse.predictions) {
+          // Merge predictions with current prices
+          const combinedData = currentPrices.map(p => {
+            const prediction = predictionResponse.predictions.find(pred => pred.commodity === p.commodity);
+            return { ...p, ...prediction };
+          });
+          setPrices(combinedData);
+        }
+        setIsPredicting(false);
       }
       
     } catch (e) {
       console.error(e);
       setError(`Failed to fetch market data for ${city}.`);
-    } finally {
       setIsLoading(false);
+      setIsPredicting(false);
     }
   };
 
@@ -104,13 +143,28 @@ export default function MarketPricesPage() {
     setSelectedCity(value);
     fetchPrices(value);
   };
+  
+  const getSuggestionBadge = (suggestion?: string) => {
+    if (!suggestion) return null;
+    switch (suggestion) {
+      case 'Sell':
+        return <Badge variant="destructive">Sell</Badge>;
+      case 'Hold/Buy':
+        return <Badge className="bg-green-600 text-white">Hold/Buy</Badge>;
+      case 'Hold':
+        return <Badge variant="secondary">Hold</Badge>;
+      default:
+        return null;
+    }
+  };
+
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold font-headline">Live Market Prices</h1>
         <p className="text-muted-foreground">
-          Track real-time crop prices in your area.
+          Track real-time crop prices with AI-powered suggestions.
         </p>
       </div>
 
@@ -160,7 +214,7 @@ export default function MarketPricesPage() {
               <TrendingUp className="h-6 w-6 text-primary" /> Prices for {selectedCity}
             </CardTitle>
             <CardDescription>
-              Live prices from local mandis (All prices per quintal).
+              Live prices from local mandis (All prices per quintal). AI suggestions may take a moment to load.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -181,6 +235,8 @@ export default function MarketPricesPage() {
                   <TableRow>
                     <TableHead>Crop</TableHead>
                     <TableHead className="text-right">Current Price (₹)</TableHead>
+                    <TableHead className="text-right">Next 2 Weeks (AI Est.)</TableHead>
+                    <TableHead className="text-right">AI Suggestion</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -189,6 +245,17 @@ export default function MarketPricesPage() {
                       <TableCell className="font-medium">{crop.commodity}</TableCell>
                       <TableCell className="text-right font-bold">
                         {parseInt(crop.modal_price).toLocaleString("en-IN")}
+                      </TableCell>
+                       <TableCell className="text-right">
+                        {crop.nextTwoWeeksPrice ? (
+                           <div className="flex items-center justify-end gap-2">
+                             <Sparkles className="h-4 w-4 text-primary/70" />
+                            {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
+                           </div>
+                        ) : isPredicting && <Loader2 className="h-4 w-4 animate-spin ml-auto" />}
+                      </TableCell>
+                       <TableCell className="text-right">
+                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting && <Loader2 className="h-4 w-4 animate-spin ml-auto" /> }
                       </TableCell>
                     </TableRow>
                   ))}
