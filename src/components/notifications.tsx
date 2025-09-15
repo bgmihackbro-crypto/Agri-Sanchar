@@ -4,8 +4,9 @@
 import {
   Bell,
   MessageCircle,
-  Heart,
-  UserPlus,
+  CloudRain,
+  TrendingUp,
+  Landmark,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,49 +18,43 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 const notifications = [
     {
         id: 1,
-        type: 'comment',
-        icon: MessageCircle,
-        text: 'Sukhdev Singh commented on your post.',
-        time: '5m ago',
-        avatar: 'https://picsum.photos/seed/sukhdev/40/40',
-        avatarHint: 'farmer avatar'
+        type: 'weather',
+        icon: CloudRain,
+        text: 'Heavy rainfall expected in Ludhiana tomorrow. Plan accordingly.',
+        time: '15m ago',
+        iconColor: 'text-blue-500',
     },
     {
         id: 2,
-        type: 'like',
-        icon: Heart,
-        text: 'Rani Devi liked your post.',
-        time: '12m ago',
-        avatar: 'https://picsum.photos/seed/rice-field/40/40',
-        avatarHint: 'rice field'
+        type: 'mandi',
+        icon: TrendingUp,
+        text: 'Wheat prices in Khanna Mandi have increased by 5%.',
+        time: '1h ago',
+        iconColor: 'text-green-500',
     },
     {
         id: 3,
-        type: 'follow',
-        icon: UserPlus,
-        text: 'Gurpreet Kaur started following you.',
-        time: '1h ago',
-        avatar: 'https://picsum.photos/seed/gurpreet/40/40',
-        avatarHint: 'woman farmer'
+        type: 'community',
+        icon: MessageCircle,
+        text: 'New question about pest control for cotton.',
+        time: '3h ago',
+        iconColor: 'text-purple-500',
+    },
+    {
+        id: 4,
+        type: 'scheme',
+        icon: Landmark,
+        text: 'PM-KISAN: Next installment scheduled for release next week.',
+        time: '1d ago',
+        iconColor: 'text-yellow-500',
     }
 ];
 
 export function Notifications() {
-
-  const getIcon = (type: string) => {
-    switch(type) {
-        case 'comment': return <MessageCircle className="h-4 w-4 text-blue-500" />;
-        case 'like': return <Heart className="h-4 w-4 text-red-500" />;
-        case 'follow': return <UserPlus className="h-4 w-4 text-green-500" />;
-        default: return <Bell className="h-4 w-4" />;
-    }
-  }
-
 
   return (
     <DropdownMenu>
@@ -82,14 +77,10 @@ export function Notifications() {
         <DropdownMenuGroup>
             {notifications.length > 0 ? (
                 notifications.map(notification => (
-                    <DropdownMenuItem key={notification.id} className="gap-3 cursor-pointer">
-                         <Avatar className="h-9 w-9">
-                            <AvatarImage src={notification.avatar} data-ai-hint={notification.avatarHint} />
-                            <AvatarFallback>{notification.text.substring(0, 1)}</AvatarFallback>
-                            <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-background bg-primary-foreground p-0.5">
-                                {getIcon(notification.type)}
-                            </span>
-                        </Avatar>
+                    <DropdownMenuItem key={notification.id} className="gap-3 cursor-pointer items-start">
+                         <div className={`mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 ${notification.iconColor}`}>
+                            <notification.icon className="h-5 w-5" />
+                        </div>
                         <div className="flex flex-col">
                             <p className="text-sm text-foreground/90 whitespace-normal">{notification.text}</p>
                             <p className="text-xs text-muted-foreground">{notification.time}</p>
