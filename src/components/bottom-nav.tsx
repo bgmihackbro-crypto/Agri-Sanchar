@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Bot, User, Search, TrendingUp } from "lucide-react";
+import { Home, User, Search, TrendingUp, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/chatbot", label: "Advice", icon: Bot },
+  { href: "/community", label: "Community", icon: Users },
   { href: "#", label: "Scan", icon: Search },
   { href: "#", label: "Market", icon: TrendingUp },
   { href: "/profile", label: "Profile", icon: User },
