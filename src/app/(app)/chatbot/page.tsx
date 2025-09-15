@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -127,7 +128,7 @@ export default function ChatbotPage() {
               <div
                 key={message.id}
                 className={cn(
-                  "flex items-start gap-3",
+                  "flex items-start gap-3 animate-fade-in",
                   message.role === "user" ? "justify-end" : "justify-start"
                 )}
               >
@@ -164,7 +165,7 @@ export default function ChatbotPage() {
               </div>
             ))}
             {isLoading && (
-              <div className="flex items-start gap-3 justify-start">
+              <div className="flex items-start gap-3 justify-start animate-fade-in">
                 <Avatar className="h-8 w-8 border">
                   <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <Bot size={20} />

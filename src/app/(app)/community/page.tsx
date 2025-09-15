@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -68,7 +69,7 @@ export default function CommunityPage() {
 
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/4">
-          <Card className="sticky top-20">
+          <Card className="sticky top-20 animate-fade-in-up">
             <CardHeader>
               <h3 className="font-semibold flex items-center gap-2">
                 <Filter className="h-4 w-4 text-primary" /> Filters
@@ -106,7 +107,7 @@ export default function CommunityPage() {
         </div>
 
         <div className="w-full md:w-3/4 space-y-4">
-          <Card>
+          <Card className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <CardHeader>
               <h3 className="font-semibold">Create a new post</h3>
             </CardHeader>
@@ -124,8 +125,8 @@ export default function CommunityPage() {
             </CardFooter>
           </Card>
 
-          {posts.map((post) => (
-            <Card key={post.id}>
+          {posts.map((post, i) => (
+            <Card key={post.id} className="animate-fade-in-up" style={{ animationDelay: `${0.2 + i * 0.1}s` }}>
               <CardHeader className="flex flex-row items-start gap-4 space-y-0">
                 <Avatar>
                   <AvatarImage src={post.avatar} data-ai-hint={post.avatarHint} />

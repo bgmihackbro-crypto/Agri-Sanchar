@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -63,15 +64,15 @@ const serviceLinks = [
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
-        <div className="text-center">
+        <div className="text-center animate-fade-in-up">
             <h1 className="text-3xl font-bold font-headline">Agricultural Services</h1>
             <p className="text-muted-foreground mt-2">All essential tools in one place to improve traditional farming with modern technology.</p>
         </div>
 
       <div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {serviceLinks.map((link) => (
-            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-shadow rounded-2xl">
+          {serviceLinks.map((link, i) => (
+            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.1 + i * 0.1}s` }}>
                 <Link href={link.href} className="flex flex-col flex-grow">
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
