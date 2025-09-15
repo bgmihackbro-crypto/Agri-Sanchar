@@ -27,7 +27,7 @@ const links = [
   { href: "/detection", label: "Detection", icon: Search },
   { href: "/weather", label: "Weather", icon: CloudSun },
   { href: "/community", label: "Community", icon: Users },
-  { href: "#", label: "Market Prices", icon: TrendingUp },
+  { href: "/market", label: "Market Prices", icon: TrendingUp },
   { href: "#", label: "Soil Testing", icon: FlaskConical },
   { href: "#", label: "Pesticide Guide", icon: Bug },
   { href: "/profile", label: "Profile", icon: User },

@@ -40,7 +40,7 @@ const serviceLinks = [
   {
     title: "Market Prices",
     description: "Fresh daily market rates, price trends, and better selling suggestions.",
-    href: "#",
+    href: "/market",
     icon: TrendingUp,
     badge: null,
     badgeColor: null

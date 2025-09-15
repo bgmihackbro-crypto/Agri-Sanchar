@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/community", label: "Community", icon: Users },
   { href: "/detection", label: "Scan", icon: Search },
-  { href: "#", label: "Market", icon: TrendingUp },
+  { href: "/market", label: "Market", icon: TrendingUp },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
