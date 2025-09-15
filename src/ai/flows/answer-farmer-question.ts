@@ -88,21 +88,44 @@ Mandi Prices in Mumbai:
 - Vashi (APMC) Mandi:
   - Wheat: ₹2400/quintal
   - Rice (Kolam): ₹3800/quintal
+  - Onions: ₹1500/quintal
 `,
       kolkata: `
 Mandi Prices in Kolkata:
 - Posta Bazar:
   - Wheat: ₹2350/quintal
   - Rice (Sona Masuri): ₹3400/quintal
+  - Jute: ₹5000/quintal
 `,
       chennai: `
 Mandi Prices in Chennai:
 - Koyambedu Market:
   - Wheat: ₹2500/quintal
   - Rice (Ponni): ₹3600/quintal
-
-  
+  - Turmeric: ₹7000/quintal
 `,
+      indore: `
+Mandi Prices in Indore:
+- Indore Mandi:
+  - Soyabean: ₹4500/quintal
+  - Wheat: ₹2100/quintal
+  - Chana (Gram): ₹5000/quintal
+`,
+      jaipur: `
+Mandi Prices in Jaipur:
+- Jaipur (Fruits & Vegetables) Mandi:
+  - Mustard: ₹5500/quintal
+  - Wheat: ₹2150/quintal
+  - Guar Seed: ₹5200/quintal
+`,
+       bengaluru: `
+Mandi Prices in Bengaluru:
+- Yeshwanthpur (APMC) Mandi:
+  - Ragi: ₹3300/quintal
+  - Rice: ₹3700/quintal
+  - Maize: ₹1900/quintal
+`,
+
 
     };
 
@@ -110,7 +133,7 @@ Mandi Prices in Chennai:
       return prices[lowerCity];
     }
     
-    return `Sorry, I could not find mandi prices for ${city}. I currently have data for Delhi, Mumbai, Kolkata, Chennai, and Ludhiana.`;
+    return `Sorry, I could not find mandi prices for ${city}. I currently have data for major cities like Delhi, Mumbai, Kolkata, Chennai, Ludhiana, Indore, Jaipur, and Bengaluru.`;
   }
 );
 

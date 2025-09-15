@@ -49,7 +49,31 @@ const marketData: { [city: string]: CropPrice[] } = {
   mumbai: [
      { name: "Wheat", lastTwoWeeks: 2380, current: 2400, nextTwoWeeks: 2450 },
      { name: "Rice (Kolam)", lastTwoWeeks: 3800, current: 3850, nextTwoWeeks: 3880 },
+     { name: "Onions", lastTwoWeeks: 1450, current: 1500, nextTwoWeeks: 1550 },
   ],
+  indore: [
+    { name: "Soyabean", lastTwoWeeks: 4400, current: 4500, nextTwoWeeks: 4550 },
+    { name: "Wheat", lastTwoWeeks: 2080, current: 2100, nextTwoWeeks: 2120 },
+    { name: "Chana (Gram)", lastTwoWeeks: 4950, current: 5000, nextTwoWeeks: 5050 },
+  ],
+  jaipur: [
+    { name: "Mustard", lastTwoWeeks: 5400, current: 5500, nextTwoWeeks: 5550 },
+    { name: "Wheat", lastTwoWeeks: 2120, current: 2150, nextTwoWeeks: 2170 },
+    { name: "Guar Seed", lastTwoWeeks: 5100, current: 5200, nextTwoWeeks: 5250 },
+  ],
+  bengaluru: [
+    { name: "Ragi", lastTwoWeeks: 3250, current: 3300, nextTwoWeeks: 3320 },
+    { name: "Rice", lastTwoWeeks: 3650, current: 3700, nextTwoWeeks: 3750 },
+    { name: "Maize", lastTwoWeeks: 1880, current: 1900, nextTwoWeeks: 1920 },
+  ],
+  chennai: [
+    { name: "Rice (Ponni)", lastTwoWeeks: 3550, current: 3600, nextTwoWeeks: 3620 },
+    { name: "Turmeric", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7100 },
+  ],
+  kolkata: [
+    { name: "Jute", lastTwoWeeks: 4900, current: 5000, nextTwoWeeks: 5050 },
+    { name: "Rice", lastTwoWeeks: 3350, current: 3400, nextTwoWeeks: 3420 },
+  ]
 };
 
 const PriceChangeIndicator = ({ change }: { change: number }) => {
@@ -184,7 +208,7 @@ export default function MarketPricesPage() {
             ) : (
                <div className="text-center py-8 text-muted-foreground">
                 <p>Sorry, no market data available for {selectedCity}.</p>
-                 <p className="text-sm">We currently have data for Ludhiana, Delhi, and Mumbai.</p>
+                 <p className="text-sm">We are actively working on expanding our coverage.</p>
               </div>
             )}
           </CardContent>
