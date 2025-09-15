@@ -36,44 +36,108 @@ type CropPrice = {
 };
 
 const marketData: { [city: string]: CropPrice[] } = {
+  // Punjab
   ludhiana: [
     { name: "Wheat", lastTwoWeeks: 2150, current: 2200, nextTwoWeeks: 2250 },
     { name: "Rice", lastTwoWeeks: 3550, current: 3500, nextTwoWeeks: 3450 },
     { name: "Cotton", lastTwoWeeks: 6000, current: 6100, nextTwoWeeks: 6150 },
     { name: "Maize", lastTwoWeeks: 1800, current: 1820, nextTwoWeeks: 1850 },
   ],
+  amritsar: [
+    { name: "Wheat", lastTwoWeeks: 2130, current: 2180, nextTwoWeeks: 2230 },
+    { name: "Rice (Basmati)", lastTwoWeeks: 3800, current: 3850, nextTwoWeeks: 3900 },
+  ],
+  // Delhi
   delhi: [
     { name: "Wheat", lastTwoWeeks: 2250, current: 2300, nextTwoWeeks: 2320 },
     { name: "Rice (Basmati)", lastTwoWeeks: 4000, current: 4100, nextTwoWeeks: 4150 },
   ],
+  // Maharashtra
   mumbai: [
      { name: "Wheat", lastTwoWeeks: 2380, current: 2400, nextTwoWeeks: 2450 },
      { name: "Rice (Kolam)", lastTwoWeeks: 3800, current: 3850, nextTwoWeeks: 3880 },
      { name: "Onions", lastTwoWeeks: 1450, current: 1500, nextTwoWeeks: 1550 },
   ],
+  pune: [
+     { name: "Sugarcane", lastTwoWeeks: 3000, current: 3050, nextTwoWeeks: 3100 },
+     { name: "Onion", lastTwoWeeks: 1400, current: 1450, nextTwoWeeks: 1500 },
+  ],
+  // Madhya Pradesh
   indore: [
     { name: "Soyabean", lastTwoWeeks: 4400, current: 4500, nextTwoWeeks: 4550 },
     { name: "Wheat", lastTwoWeeks: 2080, current: 2100, nextTwoWeeks: 2120 },
     { name: "Chana (Gram)", lastTwoWeeks: 4950, current: 5000, nextTwoWeeks: 5050 },
   ],
+  bhopal: [
+    { name: "Soyabean", lastTwoWeeks: 4350, current: 4450, nextTwoWeeks: 4500 },
+    { name: "Wheat", lastTwoWeeks: 2050, current: 2080, nextTwoWeeks: 2100 },
+  ],
+  // Rajasthan
   jaipur: [
     { name: "Mustard", lastTwoWeeks: 5400, current: 5500, nextTwoWeeks: 5550 },
     { name: "Wheat", lastTwoWeeks: 2120, current: 2150, nextTwoWeeks: 2170 },
     { name: "Guar Seed", lastTwoWeeks: 5100, current: 5200, nextTwoWeeks: 5250 },
   ],
+  jodhpur: [
+     { name: "Mustard", lastTwoWeeks: 5350, current: 5450, nextTwoWeeks: 5500 },
+     { name: "Cumin", lastTwoWeeks: 27000, current: 27500, nextTwoWeeks: 28000 },
+  ],
+  // Karnataka
   bengaluru: [
     { name: "Ragi", lastTwoWeeks: 3250, current: 3300, nextTwoWeeks: 3320 },
     { name: "Rice", lastTwoWeeks: 3650, current: 3700, nextTwoWeeks: 3750 },
     { name: "Maize", lastTwoWeeks: 1880, current: 1900, nextTwoWeeks: 1920 },
   ],
+  mysuru: [
+      { name: "Ragi", lastTwoWeeks: 3200, current: 3250, nextTwoWeeks: 3300 },
+      { name: "Silk Cocoon", lastTwoWeeks: 600, current: 620, nextTwoWeeks: 630 },
+  ],
+  // Tamil Nadu
   chennai: [
     { name: "Rice (Ponni)", lastTwoWeeks: 3550, current: 3600, nextTwoWeeks: 3620 },
     { name: "Turmeric", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7100 },
   ],
+  coimbatore: [
+     { name: "Cotton", lastTwoWeeks: 6300, current: 6350, nextTwoWeeks: 6400 },
+     { name: "Turmeric", lastTwoWeeks: 6800, current: 6900, nextTwoWeeks: 7000 },
+  ],
+  // West Bengal
   kolkata: [
     { name: "Jute", lastTwoWeeks: 4900, current: 5000, nextTwoWeeks: 5050 },
     { name: "Rice", lastTwoWeeks: 3350, current: 3400, nextTwoWeeks: 3420 },
-  ]
+  ],
+  // Uttar Pradesh
+  lucknow: [
+    { name: "Wheat", lastTwoWeeks: 2150, current: 2180, nextTwoWeeks: 2200 },
+    { name: "Sugarcane", lastTwoWeeks: 340, current: 350, nextTwoWeeks: 355 },
+  ],
+  kanpur: [
+    { name: "Wheat", lastTwoWeeks: 2160, current: 2180, nextTwoWeeks: 2210 },
+    { name: "Potato", lastTwoWeeks: 1180, current: 1200, nextTwoWeeks: 1250 },
+    { name: "Mustard", lastTwoWeeks: 5350, current: 5400, nextTwoWeeks: 5450 },
+  ],
+  // Gujarat
+  ahmedabad: [
+    { name: "Cotton", lastTwoWeeks: 6150, current: 6200, nextTwoWeeks: 6250 },
+    { name: "Groundnut", lastTwoWeeks: 5700, current: 5800, nextTwoWeeks: 5850 },
+    { name: "Cumin", lastTwoWeeks: 24500, current: 25000, nextTwoWeeks: 25200 },
+  ],
+  surat: [
+    { name: "Sugarcane", lastTwoWeeks: 2900, current: 2950, nextTwoWeeks: 3000 },
+    { name: "Banana", lastTwoWeeks: 1200, current: 1250, nextTwoWeeks: 1300 },
+  ],
+  // Bihar
+  patna: [
+    { name: "Rice", lastTwoWeeks: 3250, current: 3300, nextTwoWeeks: 3350 },
+    { name: "Maize", lastTwoWeeks: 1820, current: 1850, nextTwoWeeks: 1870 },
+    { name: "Lentils (Masur)", lastTwoWeeks: 6100, current: 6200, nextTwoWeeks: 6250 },
+  ],
+  // Telangana
+  hyderabad: [
+    { name: "Cotton", lastTwoWeeks: 6200, current: 6250, nextTwoWeeks: 6300 },
+    { name: "Maize", lastTwoWeeks: 1920, current: 1950, nextTwoWeeks: 1980 },
+    { name: "Turmeric", lastTwoWeeks: 7100, current: 7200, nextTwoWeeks: 7250 },
+  ],
 };
 
 const PriceChangeIndicator = ({ change }: { change: number }) => {
@@ -94,8 +158,9 @@ export default function MarketPricesPage() {
       const parsedProfile = JSON.parse(savedProfile);
       if (parsedProfile.state) {
         setSelectedState(parsedProfile.state);
-        setAvailableCities(indianCities[parsedProfile.state] || []);
-        if (parsedProfile.city) {
+        const cities = indianCities[parsedProfile.state] || [];
+        setAvailableCities(cities);
+        if (parsedProfile.city && cities.includes(parsedProfile.city)) {
           setSelectedCity(parsedProfile.city);
           setPrices(marketData[parsedProfile.city.toLowerCase()] || null);
         }
@@ -106,7 +171,8 @@ export default function MarketPricesPage() {
   const handleStateChange = (value: string) => {
     setSelectedState(value);
     setSelectedCity("");
-    setAvailableCities(indianCities[value] || []);
+    const cities = indianCities[value] || [];
+    setAvailableCities(cities);
     setPrices(null);
   };
 

@@ -125,6 +125,34 @@ Mandi Prices in Bengaluru:
   - Rice: ₹3700/quintal
   - Maize: ₹1900/quintal
 `,
+      kanpur: `
+Mandi Prices in Kanpur:
+- Kanpur (Anaj Mandi):
+  - Wheat: ₹2180/quintal
+  - Potato: ₹1200/quintal
+  - Mustard: ₹5400/quintal
+`,
+      patna: `
+Mandi Prices in Patna:
+- Patna (Bazar Samiti):
+  - Rice: ₹3300/quintal
+  - Maize: ₹1850/quintal
+  - Lentils (Masur): ₹6200/quintal
+`,
+      ahmedabad: `
+Mandi Prices in Ahmedabad:
+- Jamalpur (APMC):
+  - Cotton: ₹6200/quintal
+  - Groundnut: ₹5800/quintal
+  - Cumin: ₹25000/quintal
+`,
+      hyderabad: `
+Mandi Prices in Hyderabad:
+- Bowenpally Market:
+  - Turmeric: ₹7200/quintal
+  - Maize: ₹1950/quintal
+  - Red Chilli: ₹15000/quintal
+`,
 
 
     };
@@ -133,7 +161,7 @@ Mandi Prices in Bengaluru:
       return prices[lowerCity];
     }
     
-    return `Sorry, I could not find mandi prices for ${city}. I currently have data for major cities like Delhi, Mumbai, Kolkata, Chennai, Ludhiana, Indore, Jaipur, and Bengaluru.`;
+    return `Sorry, I could not find mandi prices for ${city}. I am constantly expanding my data coverage.`;
   }
 );
 
