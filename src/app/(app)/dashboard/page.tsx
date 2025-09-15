@@ -68,11 +68,11 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div className="relative rounded-xl overflow-hidden w-full h-64 md:h-80 animate-fade-in-up">
         <Image
-          src="https://picsum.photos/seed/farm/1200/400"
-          alt="Lush farm landscape"
+          src="https://picsum.photos/seed/indian-farmers/1200/400"
+          alt="Two farmers in a lush green paddy field"
           fill
           className="object-cover"
-          data-ai-hint="farm landscape"
+          data-ai-hint="indian farmers"
         />
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
           <h1 className="text-4xl md:text-6xl font-bold text-white font-headline">Agri-Sanchar</h1>
