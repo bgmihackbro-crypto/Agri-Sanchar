@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -23,7 +24,7 @@ import {
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/chatbot", label: "AI Chatbot", icon: Bot },
-  { href: "#", label: "Detection", icon: Search },
+  { href: "/detection", label: "Detection", icon: Search },
   { href: "/weather", label: "Weather", icon: CloudSun },
   { href: "/community", label: "Community", icon: Users },
   { href: "#", label: "Market Prices", icon: TrendingUp },

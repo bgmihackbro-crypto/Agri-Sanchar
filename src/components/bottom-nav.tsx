@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,7 +9,7 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/community", label: "Community", icon: Users },
-  { href: "#", label: "Scan", icon: Search },
+  { href: "/detection", label: "Scan", icon: Search },
   { href: "#", label: "Market", icon: TrendingUp },
   { href: "/profile", label: "Profile", icon: User },
 ];

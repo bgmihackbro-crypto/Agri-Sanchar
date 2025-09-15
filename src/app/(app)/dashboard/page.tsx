@@ -24,7 +24,7 @@ const serviceLinks = [
   {
     title: "Pest/Disease Detection",
     description: "Upload crop photos and get instant AI-powered pest or disease identification.",
-    href: "#",
+    href: "/detection",
     icon: Search,
     badge: null,
     badgeColor: null
