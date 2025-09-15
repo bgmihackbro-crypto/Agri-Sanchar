@@ -23,11 +23,18 @@ const AnswerFarmerQuestionInputSchema = z.object({
       "A photo related to the question, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
   city: z.string().optional().describe("The farmer's city, which can be used to provide location-specific information like local market prices."),
+  returnJson: z.boolean().optional().describe("Set to true to get a direct JSON output from tools if applicable.")
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
+const PriceRecordSchema = z.object({
+  commodity: z.string(),
+  modal_price: z.string(),
+});
+
 const AnswerFarmerQuestionOutputSchema = z.object({
-  answer: z.string().describe('The answer to the farmer question.'),
+  answer: z.string().optional().describe('The text answer to the farmer question.'),
+  priceData: z.array(PriceRecordSchema).optional().describe("Structured JSON data for market prices if requested."),
 });
 export type AnswerFarmerQuestionOutput = z.infer<typeof AnswerFarmerQuestionOutputSchema>;
 
@@ -50,6 +57,12 @@ const analyzeCropIssue = ai.defineTool(
   }
 );
 
+
+const MandiPriceOutputSchema = z.object({
+    records: z.array(PriceRecordSchema).optional(),
+    error: z.string().optional(),
+});
+
 const getMandiPrices = ai.defineTool(
   {
     name: 'getMandiPrices',
@@ -57,15 +70,15 @@ const getMandiPrices = ai.defineTool(
     inputSchema: z.object({
       city: z.string().describe("The farmer's city to find nearby mandi prices for."),
     }),
-    outputSchema: z.string().describe('A formatted string containing a table of nearby mandis and the prices for various crops.'),
+    outputSchema: MandiPriceOutputSchema,
   },
   async ({city}) => {
     const apiKey = process.env.GOV_DATA_API_KEY;
     if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
-      return `Sorry, the real-time market data API is not configured. Please add the API key to the .env file.`;
+      return { error: `Sorry, the real-time market data API is not configured. Please add the API key to the .env file.` };
     }
 
-    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&filters[market]=${city}`;
+    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&filters[market]=${city}&limit=20`;
 
     try {
       const response = await fetch(url);
@@ -75,24 +88,19 @@ const getMandiPrices = ai.defineTool(
       const data = await response.json();
       
       if (!data.records || data.records.length === 0) {
-        return `Sorry, I could not find real-time mandi prices for ${city} at the moment. Please try another nearby city.`;
+        return { error: `Sorry, I could not find real-time mandi prices for ${city} at the moment. Please try another nearby city.` };
       }
 
-      let pricesString = `Mandi Prices for ${city}:\n`;
-      const uniqueMandis = [...new Set(data.records.map((rec: any) => rec.market))];
+      const priceRecords = data.records.map((rec: any) => ({
+          commodity: rec.commodity,
+          modal_price: rec.modal_price
+      }));
 
-      uniqueMandis.forEach(mandi => {
-        pricesString += `- ${mandi}:\n`;
-        const mandiRecords = data.records.filter((rec: any) => rec.market === mandi);
-        mandiRecords.slice(0, 5).forEach((record: any) => { // Limit to 5 crops per mandi for brevity
-           pricesString += `  - ${record.commodity}: ₹${record.modal_price}/quintal\n`;
-        });
-      });
-      
-      return pricesString;
+      return { records: priceRecords };
+
     } catch (error) {
       console.error("Error fetching mandi prices:", error);
-      return `Sorry, I was unable to fetch real-time market data for ${city}. There might be a connection issue.`;
+      return { error: `Sorry, I was unable to fetch real-time market data for ${city}. There might be a connection issue.` };
     }
   }
 );
@@ -155,9 +163,11 @@ Weather forecast for Delhi:
 const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: {schema: AnswerFarmerQuestionInputSchema},
-  output: {schema: AnswerFarmerQuestionOutputSchema},
+  output: {schema: z.object({ answer: z.string() }) },
   tools: [analyzeCropIssue, getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
+
+When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
 
@@ -247,8 +257,18 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     inputSchema: AnswerFarmerQuestionInputSchema,
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
-  async input => {
-    const {output} = await answerFarmerQuestionPrompt(input);
-    return output!;
+  async (input) => {
+    // If the request is for JSON price data, call the tool directly and return.
+    if (input.returnJson && input.city) {
+        const priceData = await getMandiPrices({ city: input.city });
+        if (priceData.error) {
+            return { answer: priceData.error };
+        }
+        return { priceData: priceData.records };
+    }
+
+    // Otherwise, proceed with the normal conversational flow.
+    const llmResponse = await answerFarmerQuestionPrompt(input);
+    return llmResponse.output!;
   }
 );

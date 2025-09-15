@@ -35,10 +35,6 @@ type PriceRecord = {
   modal_price: string;
 };
 
-// The PriceChangeIndicator and getSuggestion components are no longer needed
-// as we are fetching live data that doesn't include trend/forecast info.
-// They can be removed or adapted if a new data source provides this.
-
 export default function MarketPricesPage() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -71,36 +67,20 @@ export default function MarketPricesPage() {
     setPrices(null);
     setError(null);
     try {
-       // We use the chatbot's flow to get the prices, ensuring a single source of truth.
       const response = await answerFarmerQuestion({
-        question: `What are the current mandi prices in ${city}?`,
+        question: `Get prices for ${city}`, // Question is not strictly needed but good for logging
         city: city,
+        returnJson: true, // Request structured JSON output
       });
       
-      // Check for common error messages from the flow first.
-      if(response.answer.toLowerCase().includes('sorry') || response.answer.toLowerCase().includes('not find') || response.answer.toLowerCase().includes('unable to fetch')){
-         setError(response.answer);
-         setPrices([]);
-         return;
-      }
-
-      // This is a simple parser. A real implementation might need a more robust one
-      // depending on the exact format from the LLM.
-      const parsedPrices: PriceRecord[] = response.answer
-        .split('\n')
-        .filter(line => line.trim().startsWith('  -'))
-        .map(line => {
-            // e.g., "  - Wheat: ₹2200/quintal"
-            const parts = line.split(':');
-            const commodity = parts[0]?.replace('-', '').trim();
-            const price = parts[1]?.split('/')[0]?.replace('₹', '').trim();
-            return { commodity, modal_price: price };
-        }).filter(p => p.commodity && p.modal_price);
-
-      if (parsedPrices.length === 0) {
-        setError(`No market data could be parsed for ${city}. The format might be different than expected.`);
+      if (response.priceData) {
+        setPrices(response.priceData);
+      } else if (response.answer) {
+        // If there's an answer, it's likely an error message from the flow
+        setError(response.answer);
+        setPrices([]);
       } else {
-        setPrices(parsedPrices);
+        setError(`No market data could be found for ${city}.`);
       }
       
     } catch (e) {
@@ -215,7 +195,12 @@ export default function MarketPricesPage() {
                 </TableBody>
               </Table>
             )}
-             {!isLoading && !error && (!prices || prices.length === 0) && !isLoading && (
+             {!isLoading && !error && prices?.length === 0 && (
+               <div className="text-center py-8 text-muted-foreground">
+                <p>No price data found for {selectedCity}. It may not be a major market or data is temporarily unavailable.</p>
+              </div>
+            )}
+             {!isLoading && !error && !prices && !isLoading && (
                <div className="text-center py-8 text-muted-foreground">
                 <p>Select a city to see prices.</p>
               </div>
