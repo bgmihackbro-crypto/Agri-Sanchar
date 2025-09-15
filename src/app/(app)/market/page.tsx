@@ -30,18 +30,7 @@ import { Loader2, TrendingUp, Sparkles } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
-
-
-type PriceRecord = {
-  commodity: string;
-  modal_price: string;
-};
-
-type PricePrediction = {
-  commodity: string;
-  nextTwoWeeksPrice: number;
-  suggestion: 'Sell' | 'Hold/Buy' | 'Hold';
-}
+import type { PriceRecord, PricePrediction } from "@/ai/types";
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
 
@@ -278,3 +267,5 @@ export default function MarketPricesPage() {
     </div>
   );
 }
+
+    

@@ -12,7 +12,8 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {analyzeCropIssueFromPhoto, AnalyzeCropIssueFromPhotoInput} from './analyze-crop-issue-from-photo';
+import {analyzeCropIssueFromPhoto} from './analyze-crop-issue-from-photo';
+import { PriceRecordSchema } from '@/ai/types';
 
 const AnswerFarmerQuestionInputSchema = z.object({
   question: z.string().describe('The question the farmer is asking.'),
@@ -26,11 +27,6 @@ const AnswerFarmerQuestionInputSchema = z.object({
   returnJson: z.boolean().optional().describe("Set to true to get a direct JSON output from tools if applicable.")
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
-
-const PriceRecordSchema = z.object({
-  commodity: z.string(),
-  modal_price: z.string(),
-});
 
 const AnswerFarmerQuestionOutputSchema = z.object({
   answer: z.string().optional().describe('The text answer to the farmer question.'),
@@ -208,7 +204,7 @@ You have access to the following information (RAG). Use it to answer common ques
   <WEATHER_CLIMATE_DATA>
     - General Knowledge: Access to real-time and historical weather data from APIs like OpenWeatherMap and agroclimatic data from NASA POWER.
     - Key Metrics: Temperature, rainfall, humidity, wind speed.
-  </WEATHER_CLIMATE_DATA>
+  </PEST_DISEASE_DATA>
 
   <PEST_DISEASE_DATA>
     - General Knowledge: Access to image datasets of infected crops from sources like PlantVillage and PlantDoc.
@@ -272,3 +268,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return llmResponse.output!;
   }
 );
+
+    

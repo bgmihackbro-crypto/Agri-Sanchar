@@ -1,39 +1,15 @@
+
 'use server';
 /**
  * @fileOverview Predicts future crop prices and provides buy/sell/hold suggestions.
  *
  * - predictCropPrices - A function that takes current crop prices and returns predictions.
- * - PredictCropPricesInput - The input type for the predictCropPrices function.
- * - PredictCropPricesOutput - The return type for the predictCropPrices function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { PredictCropPricesInputSchema, PredictCropPricesOutputSchema, type PredictCropPricesInput } from '@/ai/types';
 
-const PriceRecordSchema = z.object({
-    commodity: z.string(),
-    modal_price: z.string(),
-});
-
-export const PredictCropPricesInputSchema = z.object({
-  city: z.string().describe('The city for which to predict prices.'),
-  prices: z.array(PriceRecordSchema).describe('An array of current crop prices.'),
-});
-export type PredictCropPricesInput = z.infer<typeof PredictCropPricesInputSchema>;
-
-const PricePredictionSchema = z.object({
-    commodity: z.string().describe('The name of the crop.'),
-    nextTwoWeeksPrice: z.number().describe('The predicted price for the next two weeks (per quintal).'),
-    suggestion: z.enum(['Sell', 'Hold/Buy', 'Hold']).describe('The suggestion for the farmer.'),
-});
-
-export const PredictCropPricesOutputSchema = z.object({
-    predictions: z.array(PricePredictionSchema),
-});
-export type PredictCropPricesOutput = z.infer<typeof PredictCropPricesOutputSchema>;
-
-
-export async function predictCropPrices(input: PredictCropPricesInput): Promise<PredictCropPricesOutput> {
+export async function predictCropPrices(input: PredictCropPricesInput) {
     return predictCropPricesFlow(input);
 }
 
@@ -78,3 +54,5 @@ const predictCropPricesFlow = ai.defineFlow(
         return output!;
     }
 );
+
+    
