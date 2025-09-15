@@ -125,7 +125,7 @@ const marketData: { [city: string]: CropPrice[] } = {
   gwalior: [
     { name: "Mustard", lastTwoWeeks: 5300, current: 5400, nextTwoWeeks: 5450 },
     { name: "Wheat", lastTwoWeeks: 2070, current: 2100, nextTwoWeeks: 2130 },
-    { name: "Paddy (Dhaan)", lastTwoWeeks: 3000, current: 3100, nextTwoWeeks: 3120 },
+    { name: "Paddy", lastTwoWeeks: 3000, current: 3100, nextTwoWeeks: 3120 },
   ],
   ujjain: [
     { name: "Soyabean", lastTwoWeeks: 4420, current: 4520, nextTwoWeeks: 4570 },
@@ -341,6 +341,349 @@ const marketData: { [city: string]: CropPrice[] } = {
     { name: "Paddy (BPT 5204)", lastTwoWeeks: 1900, current: 1920, nextTwoWeeks: 1940 },
     { name: "Maize", lastTwoWeeks: 1940, current: 1970, nextTwoWeeks: 2000 },
     { name: "Cotton", lastTwoWeeks: 6220, current: 6280, nextTwoWeeks: 6310 },
+  ],
+  // Andaman and Nicobar Islands
+  "port blair": [
+    { name: "Coconut", lastTwoWeeks: 2750, current: 2800, nextTwoWeeks: 2820 },
+    { name: "Areca nut", lastTwoWeeks: 47500, current: 48000, nextTwoWeeks: 48100 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1900, current: 2000, nextTwoWeeks: 2050 },
+  ],
+  // Andhra Pradesh
+  visakhapatnam: [
+    { name: "Rice", lastTwoWeeks: 3350, current: 3400, nextTwoWeeks: 3450 },
+    { name: "Groundnut", lastTwoWeeks: 5800, current: 5900, nextTwoWeeks: 5950 },
+    { name: "Chilli", lastTwoWeeks: 13800, current: 14000, nextTwoWeeks: 14100 },
+  ],
+  vijayawada: [
+    { name: "Turmeric", lastTwoWeeks: 7000, current: 7100, nextTwoWeeks: 7150 },
+    { name: "Cotton", lastTwoWeeks: 6100, current: 6200, nextTwoWeeks: 6250 },
+    { name: "Rice", lastTwoWeeks: 3450, current: 3500, nextTwoWeeks: 3520 },
+  ],
+  guntur: [
+    { name: "Chilli", lastTwoWeeks: 15000, current: 15500, nextTwoWeeks: 15700 },
+    { name: "Cotton", lastTwoWeeks: 6200, current: 6300, nextTwoWeeks: 6350 },
+    { name: "Turmeric", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7050 },
+  ],
+  nellore: [
+    { name: "Paddy", lastTwoWeeks: 1850, current: 1900, nextTwoWeeks: 1920 },
+    { name: "Groundnut", lastTwoWeeks: 5750, current: 5800, nextTwoWeeks: 5820 },
+    { name: "Lemons", lastTwoWeeks: 2900, current: 3000, nextTwoWeeks: 3100 },
+  ],
+  kurnool: [
+    { name: "Onion", lastTwoWeeks: 1250, current: 1300, nextTwoWeeks: 1350 },
+    { name: "Cotton", lastTwoWeeks: 6200, current: 6250, nextTwoWeeks: 6280 },
+    { name: "Groundnut", lastTwoWeeks: 5600, current: 5700, nextTwoWeeks: 5750 },
+  ],
+  rajahmundry: [
+    { name: "Sugarcane", lastTwoWeeks: 2750, current: 2800, nextTwoWeeks: 2830 },
+    { name: "Paddy", lastTwoWeeks: 1800, current: 1850, nextTwoWeeks: 1870 },
+    { name: "Coconut", lastTwoWeeks: 2550, current: 2600, nextTwoWeeks: 2630 },
+  ],
+  tirupati: [
+    { name: "Groundnut", lastTwoWeeks: 5900, current: 5950, nextTwoWeeks: 6000 },
+    { name: "Tomato", lastTwoWeeks: 850, current: 900, nextTwoWeeks: 950 },
+    { name: "Mango", lastTwoWeeks: 40, current: 45, nextTwoWeeks: 50 }, // per kg
+  ],
+  // Arunachal Pradesh
+  itanagar: [
+    { name: "Ginger", lastTwoWeeks: 7000, current: 7200, nextTwoWeeks: 7300 },
+    { name: "Large Cardamom", lastTwoWeeks: 64000, current: 65000, nextTwoWeeks: 65500 },
+    { name: "Chilli", lastTwoWeeks: 12800, current: 13000, nextTwoWeeks: 13200 },
+  ],
+  tawang: [
+    { name: "Potato", lastTwoWeeks: 1450, current: 1500, nextTwoWeeks: 1550 },
+    { name: "Cabbage", lastTwoWeeks: 950, current: 1000, nextTwoWeeks: 1050 },
+    { name: "Apples", lastTwoWeeks: 110, current: 120, nextTwoWeeks: 125 }, // per kg
+  ],
+  // Assam
+  guwahati: [
+    { name: "Tea", lastTwoWeeks: 210, current: 220, nextTwoWeeks: 225 }, // per kg
+    { name: "Rice", lastTwoWeeks: 3250, current: 3300, nextTwoWeeks: 3320 },
+    { name: "Potato", lastTwoWeeks: 1150, current: 1200, nextTwoWeeks: 1250 },
+  ],
+  silchar: [
+    { name: "Rice", lastTwoWeeks: 3150, current: 3200, nextTwoWeeks: 3230 },
+    { name: "Jute", lastTwoWeeks: 4700, current: 4800, nextTwoWeeks: 4850 },
+    { name: "Pineapple", lastTwoWeeks: 28, current: 30, nextTwoWeeks: 32 }, // per piece
+  ],
+  dibrugarh: [
+    { name: "Tea", lastTwoWeeks: 220, current: 230, nextTwoWeeks: 235 }, // per kg
+    { name: "Rice", lastTwoWeeks: 3200, current: 3250, nextTwoWeeks: 3280 },
+    { name: "Ginger", lastTwoWeeks: 6700, current: 6800, nextTwoWeeks: 6850 },
+  ],
+  jorhat: [
+    { name: "Tea", lastTwoWeeks: 215, current: 225, nextTwoWeeks: 230 }, // per kg
+    { name: "Rice", lastTwoWeeks: 3300, current: 3350, nextTwoWeeks: 3380 },
+    { name: "Mustard", lastTwoWeeks: 5200, current: 5300, nextTwoWeeks: 5350 },
+  ],
+  // Chandigarh
+  chandigarh: [
+    { name: "Wheat", lastTwoWeeks: 2200, current: 2250, nextTwoWeeks: 2280 },
+    { name: "Rice (Basmati)", lastTwoWeeks: 3800, current: 3900, nextTwoWeeks: 3950 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1550, current: 1600, nextTwoWeeks: 1620 },
+  ],
+  // Chhattisgarh
+  raipur: [
+    { name: "Paddy", lastTwoWeeks: 1950, current: 1980, nextTwoWeeks: 2000 },
+    { name: "Soyabean", lastTwoWeeks: 4350, current: 4400, nextTwoWeeks: 4420 },
+    { name: "Chana (Gram)", lastTwoWeeks: 4800, current: 4900, nextTwoWeeks: 4950 },
+  ],
+  bhilai: [
+    { name: "Paddy", lastTwoWeeks: 1940, current: 1970, nextTwoWeeks: 1990 },
+    { name: "Wheat", lastTwoWeeks: 2080, current: 2100, nextTwoWeeks: 2110 },
+    { name: "Soyabean", lastTwoWeeks: 4300, current: 4350, nextTwoWeeks: 4380 },
+  ],
+  bilaspur: [
+    { name: "Paddy", lastTwoWeeks: 1930, current: 1960, nextTwoWeeks: 1980 },
+    { name: "Maize", lastTwoWeeks: 1780, current: 1800, nextTwoWeeks: 1810 },
+    { name: "Tur (Arhar)", lastTwoWeeks: 8900, current: 9000, nextTwoWeeks: 9050 },
+  ],
+  korba: [
+    { name: "Paddy", lastTwoWeeks: 1920, current: 1950, nextTwoWeeks: 1970 },
+    { name: "Maize", lastTwoWeeks: 1760, current: 1780, nextTwoWeeks: 1790 },
+    { name: "Mahua", lastTwoWeeks: 3400, current: 3500, nextTwoWeeks: 3550 },
+  ],
+  // Dadra and Nagar Haveli and Daman and Diu
+  daman: [
+    { name: "Fish (Mixed)", lastTwoWeeks: 240, current: 250, nextTwoWeeks: 260 }, // per kg
+    { name: "Paddy", lastTwoWeeks: 1780, current: 1800, nextTwoWeeks: 1810 },
+    { name: "Coconut", lastTwoWeeks: 2600, current: 2700, nextTwoWeeks: 2720 },
+  ],
+  silvassa: [
+    { name: "Paddy", lastTwoWeeks: 1800, current: 1820, nextTwoWeeks: 1830 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1350, current: 1400, nextTwoWeeks: 1420 },
+    { name: "Mango", lastTwoWeeks: 45, current: 50, nextTwoWeeks: 52 }, // per kg
+  ],
+  // Goa
+  panaji: [
+    { name: "Cashew", lastTwoWeeks: 770, current: 780, nextTwoWeeks: 790 }, // per kg
+    { name: "Coconut", lastTwoWeeks: 2600, current: 2650, nextTwoWeeks: 2680 },
+    { name: "Fish (Mixed)", lastTwoWeeks: 290, current: 300, nextTwoWeeks: 310 }, // per kg
+  ],
+  margao: [
+    { name: "Cashew", lastTwoWeeks: 790, current: 800, nextTwoWeeks: 810 }, // per kg
+    { name: "Coconut", lastTwoWeeks: 2650, current: 2700, nextTwoWeeks: 2730 },
+    { name: "Rice", lastTwoWeeks: 3550, current: 3600, nextTwoWeeks: 3620 },
+  ],
+  "vasco da gama": [
+    { name: "Fish (Mixed)", lastTwoWeeks: 270, current: 280, nextTwoWeeks: 290 }, // per kg
+    { name: "Coconut", lastTwoWeeks: 2630, current: 2680, nextTwoWeeks: 2700 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1650, current: 1700, nextTwoWeeks: 1720 },
+  ],
+  // Haryana
+  faridabad: [
+    { name: "Wheat", lastTwoWeeks: 2200, current: 2220, nextTwoWeeks: 2240 },
+    { name: "Mustard", lastTwoWeeks: 5400, current: 5450, nextTwoWeeks: 5480 },
+    { name: "Paddy", lastTwoWeeks: 3150, current: 3200, nextTwoWeeks: 3220 },
+  ],
+  gurugram: [
+    { name: "Wheat", lastTwoWeeks: 2210, current: 2230, nextTwoWeeks: 2250 },
+    { name: "Mustard", lastTwoWeeks: 5430, current: 5480, nextTwoWeeks: 5500 },
+    { name: "Bajra", lastTwoWeeks: 2300, current: 2350, nextTwoWeeks: 2370 },
+  ],
+  panipat: [
+    { name: "Wheat", lastTwoWeeks: 2190, current: 2210, nextTwoWeeks: 2230 },
+    { name: "Rice (Basmati)", lastTwoWeeks: 4100, current: 4200, nextTwoWeeks: 4250 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1450, current: 1500, nextTwoWeeks: 1520 },
+  ],
+  ambala: [
+    { name: "Wheat", lastTwoWeeks: 2220, current: 2240, nextTwoWeeks: 2260 },
+    { name: "Paddy (Basmati)", lastTwoWeeks: 4100, current: 4150, nextTwoWeeks: 4180 },
+    { name: "Maize", lastTwoWeeks: 1810, current: 1830, nextTwoWeeks: 1840 },
+  ],
+  karnal: [
+    { name: "Rice (Basmati)", lastTwoWeeks: 4200, current: 4250, nextTwoWeeks: 4300 },
+    { name: "Wheat", lastTwoWeeks: 2210, current: 2230, nextTwoWeeks: 2250 },
+    { name: "Sugarcane", lastTwoWeeks: 370, current: 375, nextTwoWeeks: 380 },
+  ],
+  // Himachal Pradesh
+  shimla: [
+    { name: "Apples", lastTwoWeeks: 120, current: 130, nextTwoWeeks: 135 }, // per kg
+    { name: "Potato", lastTwoWeeks: 1350, current: 1400, nextTwoWeeks: 1420 },
+    { name: "Ginger", lastTwoWeeks: 7400, current: 7500, nextTwoWeeks: 7550 },
+  ],
+  dharamshala: [
+    { name: "Tea", lastTwoWeeks: 240, current: 250, nextTwoWeeks: 255 }, // per kg
+    { name: "Potato", lastTwoWeeks: 1300, current: 1350, nextTwoWeeks: 1370 },
+    { name: "Maize", lastTwoWeeks: 1730, current: 1750, nextTwoWeeks: 1760 },
+  ],
+  solan: [
+    { name: "Tomato", lastTwoWeeks: 1050, current: 1100, nextTwoWeeks: 1150 },
+    { name: "Ginger", lastTwoWeeks: 7200, current: 7300, nextTwoWeeks: 7350 },
+    { name: "Peas", lastTwoWeeks: 2700, current: 2800, nextTwoWeeks: 2850 },
+  ],
+  mandi: [
+    { name: "Maize", lastTwoWeeks: 1760, current: 1780, nextTwoWeeks: 1800 },
+    { name: "Wheat", lastTwoWeeks: 2130, current: 2150, nextTwoWeeks: 2160 },
+    { name: "Potato", lastTwoWeeks: 1280, current: 1300, nextTwoWeeks: 1320 },
+  ],
+  // Jammu and Kashmir
+  srinagar: [
+    { name: "Apples", lastTwoWeeks: 100, current: 110, nextTwoWeeks: 115 }, // per kg
+    { name: "Saffron", lastTwoWeeks: 240000, current: 250000, nextTwoWeeks: 255000 }, // per kg
+    { name: "Walnut", lastTwoWeeks: 880, current: 900, nextTwoWeeks: 910 }, // per kg
+  ],
+  jammu: [
+    { name: "Rice (Basmati)", lastTwoWeeks: 3900, current: 4000, nextTwoWeeks: 4050 },
+    { name: "Wheat", lastTwoWeeks: 2180, current: 2200, nextTwoWeeks: 2220 },
+    { name: "Maize", lastTwoWeeks: 1780, current: 1800, nextTwoWeeks: 1810 },
+  ],
+  anantnag: [
+    { name: "Apples", lastTwoWeeks: 90, current: 100, nextTwoWeeks: 105 }, // per kg
+    { name: "Rice", lastTwoWeeks: 3050, current: 3100, nextTwoWeeks: 3120 },
+    { name: "Walnut", lastTwoWeeks: 830, current: 850, nextTwoWeeks: 860 }, // per kg
+  ],
+  // Jharkhand
+  ranchi: [
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1550, current: 1600, nextTwoWeeks: 1620 },
+    { name: "Rice", lastTwoWeeks: 3150, current: 3200, nextTwoWeeks: 3230 },
+    { name: "Maize", lastTwoWeeks: 1730, current: 1750, nextTwoWeeks: 1760 },
+  ],
+  jamshedpur: [
+    { name: "Rice", lastTwoWeeks: 3200, current: 3250, nextTwoWeeks: 3280 },
+    { name: "Wheat", lastTwoWeeks: 2130, current: 2150, nextTwoWeeks: 2160 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1500, current: 1550, nextTwoWeeks: 1570 },
+  ],
+  dhanbad: [
+    { name: "Rice", lastTwoWeeks: 3180, current: 3220, nextTwoWeeks: 3250 },
+    { name: "Wheat", lastTwoWeeks: 2110, current: 2130, nextTwoWeeks: 2140 },
+    { name: "Potato", lastTwoWeeks: 1130, current: 1150, nextTwoWeeks: 1170 },
+  ],
+  "bokaro steel city": [
+    { name: "Rice", lastTwoWeeks: 3200, current: 3230, nextTwoWeeks: 3260 },
+    { name: "Wheat", lastTwoWeeks: 2120, current: 2140, nextTwoWeeks: 2150 },
+    { name: "Maize", lastTwoWeeks: 1740, current: 1760, nextTwoWeeks: 1770 },
+  ],
+  // Kerala
+  thiruvananthapuram: [
+    { name: "Coconut", lastTwoWeeks: 2700, current: 2750, nextTwoWeeks: 2780 },
+    { name: "Rubber", lastTwoWeeks: 168, current: 170, nextTwoWeeks: 171 }, // per kg
+    { name: "Tapioca", lastTwoWeeks: 2080, current: 2100, nextTwoWeeks: 2120 },
+  ],
+  kochi: [
+    { name: "Coconut", lastTwoWeeks: 2750, current: 2800, nextTwoWeeks: 2830 },
+    { name: "Spices (Mixed)", lastTwoWeeks: 780, current: 800, nextTwoWeeks: 810 }, // per kg
+    { name: "Rubber", lastTwoWeeks: 170, current: 172, nextTwoWeeks: 173 }, // per kg
+  ],
+  kozhikode: [
+    { name: "Coconut", lastTwoWeeks: 2730, current: 2780, nextTwoWeeks: 2800 },
+    { name: "Spices (Black Pepper)", lastTwoWeeks: 590, current: 600, nextTwoWeeks: 605 }, // per kg
+    { name: "Areca nut", lastTwoWeeks: 49500, current: 50000, nextTwoWeeks: 50200 },
+  ],
+  kollam: [
+    { name: "Cashew", lastTwoWeeks: 780, current: 790, nextTwoWeeks: 795 }, // per kg
+    { name: "Coconut", lastTwoWeeks: 2710, current: 2760, nextTwoWeeks: 2790 },
+    { name: "Tapioca", lastTwoWeeks: 2030, current: 2050, nextTwoWeeks: 2070 },
+  ],
+  thrissur: [
+    { name: "Rice", lastTwoWeeks: 3650, current: 3700, nextTwoWeeks: 3720 },
+    { name: "Coconut", lastTwoWeeks: 2720, current: 2770, nextTwoWeeks: 2800 },
+    { name: "Banana", lastTwoWeeks: 1350, current: 1400, nextTwoWeeks: 1420 },
+  ],
+  // Ladakh
+  leh: [
+    { name: "Apricot", lastTwoWeeks: 240, current: 250, nextTwoWeeks: 255 }, // per kg
+    { name: "Barley", lastTwoWeeks: 1950, current: 2000, nextTwoWeeks: 2020 },
+    { name: "Potato", lastTwoWeeks: 1750, current: 1800, nextTwoWeeks: 1820 },
+  ],
+  kargil: [
+    { name: "Apricot", lastTwoWeeks: 230, current: 240, nextTwoWeeks: 245 }, // per kg
+    { name: "Wheat", lastTwoWeeks: 2250, current: 2300, nextTwoWeeks: 2320 },
+    { name: "Potato", lastTwoWeeks: 1700, current: 1750, nextTwoWeeks: 1770 },
+  ],
+  // Lakshadweep
+  kavaratti: [
+    { name: "Coconut", lastTwoWeeks: 2950, current: 3000, nextTwoWeeks: 3020 },
+    { name: "Fish (Tuna)", lastTwoWeeks: 390, current: 400, nextTwoWeeks: 410 }, // per kg
+  ],
+  // Manipur
+  imphal: [
+    { name: "Rice (Black)", lastTwoWeeks: 110, current: 120, nextTwoWeeks: 125 }, // per kg
+    { name: "Ginger", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7050 },
+    { name: "Turmeric", lastTwoWeeks: 7400, current: 7500, nextTwoWeeks: 7550 },
+  ],
+  // Meghalaya
+  shillong: [
+    { name: "Potato", lastTwoWeeks: 1400, current: 1450, nextTwoWeeks: 1480 },
+    { name: "Ginger", lastTwoWeeks: 7100, current: 7200, nextTwoWeeks: 7250 },
+    { name: "Turmeric", lastTwoWeeks: 7700, current: 7800, nextTwoWeeks: 7850 },
+  ],
+  // Mizoram
+  aizawl: [
+    { name: "Ginger", lastTwoWeeks: 7000, current: 7100, nextTwoWeeks: 7150 },
+    { name: "Chilli", lastTwoWeeks: 14800, current: 15000, nextTwoWeeks: 15100 },
+    { name: "Passion Fruit", lastTwoWeeks: 75, current: 80, nextTwoWeeks: 82 }, // per kg
+  ],
+  // Nagaland
+  kohima: [
+    { name: "Naga King Chilli", lastTwoWeeks: 950, current: 1000, nextTwoWeeks: 1020 }, // per kg
+    { name: "Ginger", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7050 },
+    { name: "Maize", lastTwoWeeks: 1880, current: 1900, nextTwoWeeks: 1910 },
+  ],
+  dimapur: [
+    { name: "Rice", lastTwoWeeks: 3350, current: 3400, nextTwoWeeks: 3420 },
+    { name: "Pineapple", lastTwoWeeks: 33, current: 35, nextTwoWeeks: 36 }, // per piece
+    { name: "Ginger", lastTwoWeeks: 6800, current: 6900, nextTwoWeeks: 6950 },
+  ],
+  // Odisha
+  bhubaneswar: [
+    { name: "Paddy", lastTwoWeeks: 1900, current: 1920, nextTwoWeeks: 1940 },
+    { name: "Turmeric", lastTwoWeeks: 6700, current: 6800, nextTwoWeeks: 6850 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1480, current: 1500, nextTwoWeeks: 1510 },
+  ],
+  cuttack: [
+    { name: "Paddy", lastTwoWeeks: 1910, current: 1930, nextTwoWeeks: 1950 },
+    { name: "Jute", lastTwoWeeks: 4800, current: 4900, nextTwoWeeks: 4950 },
+    { name: "Pulses (Mixed)", lastTwoWeeks: 6900, current: 7000, nextTwoWeeks: 7050 },
+  ],
+  rourkela: [
+    { name: "Paddy", lastTwoWeeks: 1890, current: 1910, nextTwoWeeks: 1930 },
+    { name: "Maize", lastTwoWeeks: 1750, current: 1770, nextTwoWeeks: 1780 },
+    { name: "Vegetables (Mixed)", lastTwoWeeks: 1430, current: 1450, nextTwoWeeks: 1460 },
+  ],
+  puri: [
+    { name: "Coconut", lastTwoWeeks: 2550, current: 2600, nextTwoWeeks: 2620 },
+    { name: "Paddy", lastTwoWeeks: 1880, current: 1900, nextTwoWeeks: 1910 },
+    { name: "Fish (Mixed)", lastTwoWeeks: 190, current: 200, nextTwoWeeks: 205 }, // per kg
+  ],
+  // Puducherry
+  puducherry: [
+    { name: "Paddy", lastTwoWeeks: 1860, current: 1880, nextTwoWeeks: 1890 },
+    { name: "Groundnut", lastTwoWeeks: 5800, current: 5850, nextTwoWeeks: 5880 },
+    { name: "Coconut", lastTwoWeeks: 2550, current: 2580, nextTwoWeeks: 2600 },
+  ],
+  // Sikkim
+  gangtok: [
+    { name: "Large Cardamom", lastTwoWeeks: 65000, current: 66000, nextTwoWeeks: 66500 },
+    { name: "Ginger", lastTwoWeeks: 7300, current: 7400, nextTwoWeeks: 7450 },
+    { name: "Turmeric", lastTwoWeeks: 7500, current: 7600, nextTwoWeeks: 7650 },
+  ],
+  // Tripura
+  agartala: [
+    { name: "Rubber", lastTwoWeeks: 158, current: 160, nextTwoWeeks: 161 }, // per kg
+    { name: "Pineapple", lastTwoWeeks: 27, current: 28, nextTwoWeeks: 30 }, // per piece
+    { name: "Rice", lastTwoWeeks: 3250, current: 3300, nextTwoWeeks: 3320 },
+  ],
+  // Uttarakhand
+  dehradun: [
+    { name: "Rice (Basmati)", lastTwoWeeks: 4400, current: 4500, nextTwoWeeks: 4550 },
+    { name: "Wheat", lastTwoWeeks: 2160, current: 2180, nextTwoWeeks: 2200 },
+    { name: "Maize", lastTwoWeeks: 1800, current: 1820, nextTwoWeeks: 1830 },
+  ],
+  haridwar: [
+    { name: "Sugarcane", lastTwoWeeks: 355, current: 360, nextTwoWeeks: 362 },
+    { name: "Wheat", lastTwoWeeks: 2150, current: 2170, nextTwoWeeks: 2190 },
+    { name: "Paddy", lastTwoWeeks: 3150, current: 3200, nextTwoWeeks: 3220 },
+  ],
+  roorkee: [
+    { name: "Sugarcane", lastTwoWeeks: 360, current: 365, nextTwoWeeks: 368 },
+    { name: "Wheat", lastTwoWeeks: 2170, current: 2190, nextTwoWeeks: 2210 },
+    { name: "Mentha", lastTwoWeeks: 940, current: 950, nextTwoWeeks: 955 }, // per kg
+  ],
+  haldwani: [
+    { name: "Soyabean", lastTwoWeeks: 4250, current: 4300, nextTwoWeeks: 4320 },
+    { name: "Wheat", lastTwoWeeks: 2130, current: 2150, nextTwoWeeks: 2170 },
+    { name: "Paddy", lastTwoWeeks: 3050, current: 3100, nextTwoWeeks: 3120 },
   ]
 };
 
@@ -502,7 +845,5 @@ export default function MarketPricesPage() {
     </div>
   );
 }
-
-    
 
     

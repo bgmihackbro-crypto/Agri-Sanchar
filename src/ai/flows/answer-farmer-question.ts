@@ -79,6 +79,13 @@ Mandi Prices in Delhi:
   - Rice (Basmati): ₹4100/quintal
   - Masoor Dal: ₹6400/quintal
 `,
+      "new delhi": `
+Mandi Prices in New Delhi:
+- Narela Mandi:
+  - Wheat: ₹2300/quintal
+  - Rice (Basmati): ₹4100/quintal
+  - Masoor Dal: ₹6400/quintal
+`,
       mumbai: `
 Mandi Prices in Mumbai:
 - Vashi (APMC) Mandi:
@@ -464,6 +471,453 @@ Mandi Prices in Karimnagar:
     - Paddy (BPT 5204): ₹1920/quintal
     - Maize: ₹1970/quintal
     - Cotton: ₹6280/quintal
+`,
+    "port blair": `
+Mandi Prices in Port Blair:
+- Port Blair Mandi:
+  - Coconut: ₹2800/quintal
+  - Areca nut: ₹48000/quintal
+  - Vegetables (Mixed): ₹2000/quintal
+`,
+    visakhapatnam: `
+Mandi Prices in Visakhapatnam:
+- Visakhapatnam Mandi:
+  - Rice: ₹3400/quintal
+  - Groundnut: ₹5900/quintal
+  - Chilli: ₹14000/quintal
+`,
+    vijayawada: `
+Mandi Prices in Vijayawada:
+- Vijayawada Mandi:
+  - Turmeric: ₹7100/quintal
+  - Cotton: ₹6200/quintal
+  - Rice: ₹3500/quintal
+`,
+    guntur: `
+Mandi Prices in Guntur:
+- Guntur Mandi:
+  - Chilli: ₹15500/quintal
+  - Cotton: ₹6300/quintal
+  - Turmeric: ₹7000/quintal
+`,
+    nellore: `
+Mandi Prices in Nellore:
+- Nellore Mandi:
+  - Paddy: ₹1900/quintal
+  - Groundnut: ₹5800/quintal
+  - Lemons: ₹3000/quintal
+`,
+    kurnool: `
+Mandi Prices in Kurnool:
+- Kurnool Mandi:
+  - Onion: ₹1300/quintal
+  - Cotton: ₹6250/quintal
+  - Groundnut: ₹5700/quintal
+`,
+    rajahmundry: `
+Mandi Prices in Rajahmundry:
+- Rajahmundry Mandi:
+  - Sugarcane: ₹2800/quintal
+  - Paddy: ₹1850/quintal
+  - Coconut: ₹2600/quintal
+`,
+    tirupati: `
+Mandi Prices in Tirupati:
+- Tirupati Mandi:
+  - Groundnut: ₹5950/quintal
+  - Tomato: ₹900/quintal
+  - Mango: ₹45/kg
+`,
+    itanagar: `
+Mandi Prices in Itanagar:
+- Itanagar Mandi:
+  - Ginger: ₹7200/quintal
+  - Large Cardamom: ₹65000/quintal
+  - Chilli: ₹13000/quintal
+`,
+    tawang: `
+Mandi Prices in Tawang:
+- Tawang Mandi:
+  - Potato: ₹1500/quintal
+  - Cabbage: ₹1000/quintal
+  - Apples: ₹120/kg
+`,
+    guwahati: `
+Mandi Prices in Guwahati:
+- Guwahati Mandi:
+  - Tea: ₹220/kg
+  - Rice: ₹3300/quintal
+  - Potato: ₹1200/quintal
+`,
+    silchar: `
+Mandi Prices in Silchar:
+- Silchar Mandi:
+  - Rice: ₹3200/quintal
+  - Jute: ₹4800/quintal
+  - Pineapple: ₹30/piece
+`,
+    dibrugarh: `
+Mandi Prices in Dibrugarh:
+- Dibrugarh Mandi:
+  - Tea: ₹230/kg
+  - Rice: ₹3250/quintal
+  - Ginger: ₹6800/quintal
+`,
+    jorhat: `
+Mandi Prices in Jorhat:
+- Jorhat Mandi:
+  - Tea: ₹225/kg
+  - Rice: ₹3350/quintal
+  - Mustard: ₹5300/quintal
+`,
+    chandigarh: `
+Mandi Prices in Chandigarh:
+- Chandigarh Mandi:
+  - Wheat: ₹2250/quintal
+  - Rice (Basmati): ₹3900/quintal
+  - Vegetables (Mixed): ₹1600/quintal
+`,
+    raipur: `
+Mandi Prices in Raipur:
+- Raipur Mandi:
+  - Paddy: ₹1980/quintal
+  - Soyabean: ₹4400/quintal
+  - Chana (Gram): ₹4900/quintal
+`,
+    bhilai: `
+Mandi Prices in Bhilai:
+- Bhilai Mandi:
+  - Paddy: ₹1970/quintal
+  - Wheat: ₹2100/quintal
+  - Soyabean: ₹4350/quintal
+`,
+    bilaspur: `
+Mandi Prices in Bilaspur:
+- Bilaspur Mandi:
+  - Paddy: ₹1960/quintal
+  - Maize: ₹1800/quintal
+  - Tur (Arhar): ₹9000/quintal
+`,
+    korba: `
+Mandi Prices in Korba:
+- Korba Mandi:
+  - Paddy: ₹1950/quintal
+  - Maize: ₹1780/quintal
+  - Mahua: ₹3500/quintal
+`,
+    daman: `
+Mandi Prices in Daman:
+- Daman Mandi:
+  - Fish (Mixed): ₹250/kg
+  - Paddy: ₹1800/quintal
+  - Coconut: ₹2700/quintal
+`,
+    silvassa: `
+Mandi Prices in Silvassa:
+- Silvassa Mandi:
+  - Paddy: ₹1820/quintal
+  - Vegetables (Mixed): ₹1400/quintal
+  - Mango: ₹50/kg
+`,
+    panaji: `
+Mandi Prices in Panaji:
+- Panaji Mandi:
+  - Cashew: ₹780/kg
+  - Coconut: ₹2650/quintal
+  - Fish (Mixed): ₹300/kg
+`,
+    margao: `
+Mandi Prices in Margao:
+- Margao Mandi:
+  - Cashew: ₹800/kg
+  - Coconut: ₹2700/quintal
+  - Rice: ₹3600/quintal
+`,
+    "vasco da gama": `
+Mandi Prices in Vasco da Gama:
+- Vasco da Gama Mandi:
+  - Fish (Mixed): ₹280/kg
+  - Coconut: ₹2680/quintal
+  - Vegetables (Mixed): ₹1700/quintal
+`,
+    faridabad: `
+Mandi Prices in Faridabad:
+- Faridabad Mandi:
+  - Wheat: ₹2220/quintal
+  - Mustard: ₹5450/quintal
+  - Paddy: ₹3200/quintal
+`,
+    gurugram: `
+Mandi Prices in Gurugram:
+- Gurugram Mandi:
+  - Wheat: ₹2230/quintal
+  - Mustard: ₹5480/quintal
+  - Bajra: ₹2350/quintal
+`,
+    panipat: `
+Mandi Prices in Panipat:
+- Panipat Mandi:
+  - Wheat: ₹2210/quintal
+  - Rice (Basmati): ₹4200/quintal
+  - Vegetables (Mixed): ₹1500/quintal
+`,
+    ambala: `
+Mandi Prices in Ambala:
+- Ambala Mandi:
+  - Wheat: ₹2240/quintal
+  - Paddy (Basmati): ₹4150/quintal
+  - Maize: ₹1830/quintal
+`,
+    karnal: `
+Mandi Prices in Karnal:
+- Karnal Mandi:
+  - Rice (Basmati): ₹4250/quintal
+  - Wheat: ₹2230/quintal
+  - Sugarcane: ₹375/quintal
+`,
+    shimla: `
+Mandi Prices in Shimla:
+- Shimla Mandi:
+  - Apples: ₹130/kg
+  - Potato: ₹1400/quintal
+  - Ginger: ₹7500/quintal
+`,
+    dharamshala: `
+Mandi Prices in Dharamshala:
+- Dharamshala Mandi:
+  - Tea: ₹250/kg
+  - Potato: ₹1350/quintal
+  - Maize: ₹1750/quintal
+`,
+    solan: `
+Mandi Prices in Solan:
+- Solan Mandi:
+  - Tomato: ₹1100/quintal
+  - Ginger: ₹7300/quintal
+  - Peas: ₹2800/quintal
+`,
+    mandi: `
+Mandi Prices in Mandi:
+- Mandi:
+  - Maize: ₹1780/quintal
+  - Wheat: ₹2150/quintal
+  - Potato: ₹1300/quintal
+`,
+    srinagar: `
+Mandi Prices in Srinagar:
+- Srinagar Mandi:
+  - Apples: ₹110/kg
+  - Saffron: ₹250000/kg
+  - Walnut: ₹900/kg
+`,
+    jammu: `
+Mandi Prices in Jammu:
+- Jammu Mandi:
+  - Rice (Basmati): ₹4000/quintal
+  - Wheat: ₹2200/quintal
+  - Maize: ₹1800/quintal
+`,
+    anantnag: `
+Mandi Prices in Anantnag:
+- Anantnag Mandi:
+  - Apples: ₹100/kg
+  - Rice: ₹3100/quintal
+  - Walnut: ₹850/kg
+`,
+    ranchi: `
+Mandi Prices in Ranchi:
+- Ranchi Mandi:
+  - Vegetables (Mixed): ₹1600/quintal
+  - Rice: ₹3200/quintal
+  - Maize: ₹1750/quintal
+`,
+    jamshedpur: `
+Mandi Prices in Jamshedpur:
+- Jamshedpur Mandi:
+  - Rice: ₹3250/quintal
+  - Wheat: ₹2150/quintal
+  - Vegetables (Mixed): ₹1550/quintal
+`,
+    dhanbad: `
+Mandi Prices in Dhanbad:
+- Dhanbad Mandi:
+  - Rice: ₹3220/quintal
+  - Wheat: ₹2130/quintal
+  - Potato: ₹1150/quintal
+`,
+    "bokaro steel city": `
+Mandi Prices in Bokaro Steel City:
+- Bokaro Steel City Mandi:
+  - Rice: ₹3230/quintal
+  - Wheat: ₹2140/quintal
+  - Maize: ₹1760/quintal
+`,
+    thiruvananthapuram: `
+Mandi Prices in Thiruvananthapuram:
+- Thiruvananthapuram Mandi:
+  - Coconut: ₹2750/quintal
+  - Rubber: ₹170/kg
+  - Tapioca: ₹2100/quintal
+`,
+    kochi: `
+Mandi Prices in Kochi:
+- Kochi Mandi:
+  - Coconut: ₹2800/quintal
+  - Spices (Mixed): ₹800/kg
+  - Rubber: ₹172/kg
+`,
+    kozhikode: `
+Mandi Prices in Kozhikode:
+- Kozhikode Mandi:
+  - Coconut: ₹2780/quintal
+  - Spices (Black Pepper): ₹600/kg
+  - Areca nut: ₹50000/quintal
+`,
+    kollam: `
+Mandi Prices in Kollam:
+- Kollam Mandi:
+  - Cashew: ₹790/kg
+  - Coconut: ₹2760/quintal
+  - Tapioca: ₹2050/quintal
+`,
+    thrissur: `
+Mandi Prices in Thrissur:
+- Thrissur Mandi:
+  - Rice: ₹3700/quintal
+  - Coconut: ₹2770/quintal
+  - Banana: ₹1400/quintal
+`,
+    leh: `
+Mandi Prices in Leh:
+- Leh Mandi:
+  - Apricot: ₹250/kg
+  - Barley: ₹2000/quintal
+  - Potato: ₹1800/quintal
+`,
+    kargil: `
+Mandi Prices in Kargil:
+- Kargil Mandi:
+  - Apricot: ₹240/kg
+  - Wheat: ₹2300/quintal
+  - Potato: ₹1750/quintal
+`,
+    kavaratti: `
+Mandi Prices in Kavaratti:
+- Kavaratti Mandi:
+  - Coconut: ₹3000/quintal
+  - Fish (Tuna): ₹400/kg
+`,
+    imphal: `
+Mandi Prices in Imphal:
+- Imphal Mandi:
+  - Rice (Black): ₹120/kg
+  - Ginger: ₹7000/quintal
+  - Turmeric: ₹7500/quintal
+`,
+    shillong: `
+Mandi Prices in Shillong:
+- Shillong Mandi:
+  - Potato: ₹1450/quintal
+  - Ginger: ₹7200/quintal
+  - Turmeric: ₹7800/quintal
+`,
+    aizawl: `
+Mandi Prices in Aizawl:
+- Aizawl Mandi:
+  - Ginger: ₹7100/quintal
+  - Chilli: ₹15000/quintal
+  - Passion Fruit: ₹80/kg
+`,
+    kohima: `
+Mandi Prices in Kohima:
+- Kohima Mandi:
+  - Naga King Chilli: ₹1000/kg
+  - Ginger: ₹7000/quintal
+  - Maize: ₹1900/quintal
+`,
+    dimapur: `
+Mandi Prices in Dimapur:
+- Dimapur Mandi:
+  - Rice: ₹3400/quintal
+  - Pineapple: ₹35/piece
+  - Ginger: ₹6900/quintal
+`,
+    bhubaneswar: `
+Mandi Prices in Bhubaneswar:
+- Bhubaneswar Mandi:
+  - Paddy: ₹1920/quintal
+  - Turmeric: ₹6800/quintal
+  - Vegetables (Mixed): ₹1500/quintal
+`,
+    cuttack: `
+Mandi Prices in Cuttack:
+- Cuttack Mandi:
+  - Paddy: ₹1930/quintal
+  - Jute: ₹4900/quintal
+  - Pulses (Mixed): ₹7000/quintal
+`,
+    rourkela: `
+Mandi Prices in Rourkela:
+- Rourkela Mandi:
+  - Paddy: ₹1910/quintal
+  - Maize: ₹1770/quintal
+  - Vegetables (Mixed): ₹1450/quintal
+`,
+    puri: `
+Mandi Prices in Puri:
+- Puri Mandi:
+  - Coconut: ₹2600/quintal
+  - Paddy: ₹1900/quintal
+  - Fish (Mixed): ₹200/kg
+`,
+    puducherry: `
+Mandi Prices in Puducherry:
+- Puducherry Mandi:
+  - Paddy: ₹1880/quintal
+  - Groundnut: ₹5850/quintal
+  - Coconut: ₹2580/quintal
+`,
+    gangtok: `
+Mandi Prices in Gangtok:
+- Gangtok Mandi:
+  - Large Cardamom: ₹66000/quintal
+  - Ginger: ₹7400/quintal
+  - Turmeric: ₹7600/quintal
+`,
+    agartala: `
+Mandi Prices in Agartala:
+- Agartala Mandi:
+  - Rubber: ₹160/kg
+  - Pineapple: ₹28/piece
+  - Rice: ₹3300/quintal
+`,
+    dehradun: `
+Mandi Prices in Dehradun:
+- Dehradun Mandi:
+  - Rice (Basmati): ₹4500/quintal
+  - Wheat: ₹2180/quintal
+  - Maize: ₹1820/quintal
+`,
+    haridwar: `
+Mandi Prices in Haridwar:
+- Haridwar Mandi:
+  - Sugarcane: ₹360/quintal
+  - Wheat: ₹2170/quintal
+  - Paddy: ₹3200/quintal
+`,
+    roorkee: `
+Mandi Prices in Roorkee:
+- Roorkee Mandi:
+  - Sugarcane: ₹365/quintal
+  - Wheat: ₹2190/quintal
+  - Mentha: ₹950/kg
+`,
+    haldwani: `
+Mandi Prices in Haldwani:
+- Haldwani Mandi:
+  - Soyabean: ₹4300/quintal
+  - Wheat: ₹2150/quintal
+  - Paddy: ₹3100/quintal
 `
     };
 
@@ -630,5 +1084,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    
 
     
