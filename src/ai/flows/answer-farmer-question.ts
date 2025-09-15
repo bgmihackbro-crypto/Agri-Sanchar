@@ -252,8 +252,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
-
-    
-

@@ -76,6 +76,13 @@ export default function MarketPricesPage() {
         question: `What are the current mandi prices in ${city}?`,
         city: city,
       });
+      
+      // Check for common error messages from the flow first.
+      if(response.answer.toLowerCase().includes('sorry') || response.answer.toLowerCase().includes('not find') || response.answer.toLowerCase().includes('unable to fetch')){
+         setError(response.answer);
+         setPrices([]);
+         return;
+      }
 
       // This is a simple parser. A real implementation might need a more robust one
       // depending on the exact format from the LLM.
@@ -91,12 +98,7 @@ export default function MarketPricesPage() {
         }).filter(p => p.commodity && p.modal_price);
 
       if (parsedPrices.length === 0) {
-        // Check for common error messages from the flow
-        if(response.answer.toLowerCase().includes('sorry') || response.answer.toLowerCase().includes('not find')){
-           setError(response.answer);
-        } else {
-           setError(`No market data could be parsed for ${city}. The format might have changed.`);
-        }
+        setError(`No market data could be parsed for ${city}. The format might be different than expected.`);
       } else {
         setPrices(parsedPrices);
       }
