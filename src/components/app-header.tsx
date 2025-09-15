@@ -1,7 +1,8 @@
 
+
 import { UserNav } from "@/components/user-nav";
-import { Bell, Leaf } from "lucide-react";
-import { Button } from "./ui/button";
+import { Leaf } from "lucide-react";
+import { Notifications } from "./notifications";
 
 export function AppHeader() {
   return (
@@ -15,10 +16,7 @@ export function AppHeader() {
         </span>
        </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">3</span>
-        </Button>
+        <Notifications />
         <UserNav />
       </div>
     </header>
