@@ -114,12 +114,66 @@ Mandi Prices in Chennai:
   }
 );
 
+const getWeather = ai.defineTool(
+  {
+    name: 'getWeather',
+    description: "Provides the 7-day weather forecast for a given city.",
+    inputSchema: z.object({
+      city: z.string().describe("The city for which to get the weather forecast."),
+    }),
+    outputSchema: z.string().describe("The weather forecast formatted as a string."),
+  },
+  async ({ city }) => {
+    // In a real application, you would fetch this data from a weather API.
+    // For now, we'll return mock data for a few cities.
+    const lowerCity = city.toLowerCase();
+    const weatherData: { [key: string]: string } = {
+      indore: `
+Weather forecast for Indore:
+- Today: 28°C, Partly Cloudy
+- Tomorrow: 29°C, Sunny
+- Day 3: 27°C, Light Showers
+- Day 4: 30°C, Sunny
+- Day 5: 28°C, Cloudy
+- Day 6: 26°C, Rain
+- Day 7: 29°C, Partly Cloudy
+`,
+      ludhiana: `
+Weather forecast for Ludhiana:
+- Today: 25°C, Partly Cloudy
+- Tomorrow: 26°C, Sunny
+- Day 3: 24°C, Showers
+- Day 4: 27°C, Sunny
+- Day 5: 23°C, Cloudy
+- Day 6: 22°C, Rain
+- Day 7: 25°C, Partly Cloudy
+`,
+      delhi: `
+Weather forecast for Delhi:
+- Today: 30°C, Hazy Sunshine
+- Tomorrow: 31°C, Sunny
+- Day 3: 29°C, Hazy
+- Day 4: 32°C, Sunny
+- Day 5: 28°C, Cloudy
+- Day 6: 27°C, Light Rain
+- Day 7: 30°C, Sunny
+`,
+    };
+
+    if (weatherData[lowerCity]) {
+      return weatherData[lowerCity];
+    }
+    
+    return `Sorry, I don't have weather information for ${city} right now. I currently have forecasts for Indore, Ludhiana, and Delhi.`;
+  }
+);
+
 
 const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: {schema: AnswerFarmerQuestionInputSchema},
   output: {schema: AnswerFarmerQuestionOutputSchema},
-  tools: [analyzeCropIssue, getMandiPrices],
+  tools: [analyzeCropIssue, getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
@@ -187,7 +241,7 @@ The farmer has also provided a photo. Use the 'analyzeCropIssue' tool to analyze
 {{/if}}
 
 {{#if city}}
-The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information.
+The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information. If the question is about weather, use the 'getWeather' tool.
 {{/if}}
 
 If the question is about government schemes or general crop information, use your RAG_KNOWLEDGE first before searching online or using other tools.
