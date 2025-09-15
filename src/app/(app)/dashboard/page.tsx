@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug } from "lucide-react";
 import React from 'react';
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const serviceLinks = [
   {
@@ -64,15 +66,32 @@ const serviceLinks = [
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
-        <div className="text-center animate-fade-in-up">
-            <h1 className="text-3xl font-bold font-headline">Agricultural Services</h1>
-            <p className="text-muted-foreground mt-2">All essential tools in one place to improve traditional farming with modern technology.</p>
+      <div className="relative rounded-xl overflow-hidden w-full h-64 md:h-80 animate-fade-in-up">
+        <Image
+          src="https://picsum.photos/seed/farm/1200/400"
+          alt="Lush farm landscape"
+          fill
+          className="object-cover"
+          data-ai-hint="farm landscape"
+        />
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-white font-headline">Agri-Sanchar</h1>
+          <p className="mt-2 text-lg md:text-xl text-white/90">Your Digital Partner for Smart Farming</p>
+          <p className="mt-4 max-w-2xl text-sm text-white/80">
+            AI-powered crop advisory, pest detection, weather alerts, and market prices - all in your language to help small farmers grow better.
+          </p>
         </div>
+      </div>
+
+      <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <h2 className="text-3xl font-bold font-headline">Agricultural Services</h2>
+          <p className="text-muted-foreground mt-2">All essential tools in one place to improve traditional farming with modern technology.</p>
+      </div>
 
       <div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceLinks.map((link, i) => (
-            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.1 + i * 0.1}s` }}>
+            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
                 <Link href={link.href} className="flex flex-col flex-grow">
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
