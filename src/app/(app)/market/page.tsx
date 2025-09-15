@@ -81,9 +81,9 @@ export default function MarketPricesPage() {
       // depending on the exact format from the LLM.
       const parsedPrices: PriceRecord[] = response.answer
         .split('\n')
-        .filter(line => line.trim().startsWith('-'))
+        .filter(line => line.trim().startsWith('  -'))
         .map(line => {
-            // e.g., "- Wheat: ₹2200/quintal"
+            // e.g., "  - Wheat: ₹2200/quintal"
             const parts = line.split(':');
             const commodity = parts[0]?.replace('-', '').trim();
             const price = parts[1]?.split('/')[0]?.replace('₹', '').trim();
@@ -213,7 +213,7 @@ export default function MarketPricesPage() {
                 </TableBody>
               </Table>
             )}
-             {!isLoading && !error && (!prices || prices.length === 0) && (
+             {!isLoading && !error && (!prices || prices.length === 0) && !isLoading && (
                <div className="text-center py-8 text-muted-foreground">
                 <p>Select a city to see prices.</p>
               </div>
