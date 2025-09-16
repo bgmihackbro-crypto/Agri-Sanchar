@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
 
 // Add a test phone number to bypass Firebase OTP for development
@@ -24,7 +25,6 @@ const TEST_PHONE_NUMBER = "9999999999";
 
 declare global {
   interface Window {
-    recaptchaVerifier?: RecaptchaVerifier;
     confirmationResult?: ConfirmationResult;
   }
 }
@@ -37,17 +37,6 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
-
-  const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': () => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        }
-      });
-    }
-  }
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,12 +54,10 @@ export default function LoginPage() {
       return;
     }
     
-    setupRecaptcha();
     const phoneNumber = "+91" + phone;
-    const appVerifier = window.recaptchaVerifier!;
     
     try {
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, undefined as any);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
       toast({
@@ -94,14 +81,41 @@ export default function LoginPage() {
     if (verifyingOtp) return;
     setVerifyingOtp(true);
 
+    const performLogin = async (uid: string) => {
+        try {
+            const userDocRef = doc(db, "users", uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                localStorage.setItem("userProfile", JSON.stringify(userDoc.data()));
+                toast({
+                    title: "Login Successful",
+                    description: "Welcome back to Agri-Sanchar!",
+                });
+                router.push("/dashboard");
+            } else {
+                 toast({
+                    variant: "destructive",
+                    title: "Login Failed",
+                    description: "Your profile was not found. Please sign up first.",
+                });
+                router.push("/signup");
+            }
+        } catch (dbError) {
+             console.error("Error fetching user profile:", dbError);
+             toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: "Could not retrieve your profile. Please try again.",
+            });
+        }
+    }
+
+
     // Test mode check
     if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       if (otp.length === 6 && /^\d+$/.test(otp)) {
-        toast({
-          title: "Login Successful",
-          description: "Welcome to Agri-Sanchar!",
-        });
-        router.push("/dashboard");
+        await performLogin(phone);
       } else {
         toast({
           variant: "destructive",
@@ -117,12 +131,9 @@ export default function LoginPage() {
       if (!window.confirmationResult) {
         throw new Error("Confirmation result not found.");
       }
-      await window.confirmationResult.confirm(otp);
-      toast({
-        title: "Login Successful",
-        description: "Welcome to Agri-Sanchar!",
-      });
-      router.push("/dashboard");
+      const userCredential = await window.confirmationResult.confirm(otp);
+      await performLogin(userCredential.user.uid);
+
     } catch (error) {
       console.error("Error verifying OTP:", error);
       toast({

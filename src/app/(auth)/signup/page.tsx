@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
 
 // Add a test phone number to bypass Firebase OTP for development
@@ -24,7 +25,6 @@ const TEST_PHONE_NUMBER = "9999999999";
 
 declare global {
   interface Window {
-    recaptchaVerifier?: RecaptchaVerifier;
     confirmationResult?: ConfirmationResult;
   }
 }
@@ -38,17 +38,6 @@ export default function SignupPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
-
-  const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': () => {
-          // reCAPTCHA solved - allow sign-in.
-        }
-      });
-    }
-  }
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,12 +55,10 @@ export default function SignupPage() {
       return;
     }
     
-    setupRecaptcha();
     const phoneNumber = "+91" + phone;
-    const appVerifier = window.recaptchaVerifier!;
-
+    
     try {
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, undefined as any);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
       toast({
@@ -95,30 +82,44 @@ export default function SignupPage() {
     if (verifyingOtp) return;
     setVerifyingOtp(true);
     
-    const performSignup = () => {
-      // Save user details to localStorage
-      const userProfile = {
-        name: name,
-        phone: "+91" + phone,
-        avatar: `https://picsum.photos/seed/${phone}/100/100`,
-        farmSize: "",
-        city: "",
-        state: "",
-        annualIncome: "",
-      };
-      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    const performSignup = async (userCredential?: any) => {
+      try {
+        const uid = userCredential ? userCredential.user.uid : phone;
+        // Save user details to Firestore
+        const userProfile = {
+          name: name,
+          phone: "+91" + phone,
+          avatar: `https://picsum.photos/seed/${phone}/100/100`,
+          farmSize: "",
+          city: "",
+          state: "",
+          annualIncome: "",
+        };
 
-      toast({
-        title: "Welcome to Agri-Sanchar!",
-        description: "Your account has been created successfully.",
-      });
-      router.push("/dashboard");
+        await setDoc(doc(db, "users", uid), userProfile);
+        
+        // Save to localStorage for immediate use
+        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+        toast({
+          title: "Welcome to Agri-Sanchar!",
+          description: "Your account has been created successfully.",
+        });
+        router.push("/dashboard");
+      } catch (dbError) {
+        console.error("Error creating user profile in database:", dbError);
+         toast({
+            variant: "destructive",
+            title: "Signup Failed",
+            description: "There was a problem creating your profile. Please try again.",
+        });
+      }
     }
 
     // Test mode check
     if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       if (otp.length === 6 && /^\d+$/.test(otp)) {
-        performSignup();
+        await performSignup();
       } else {
          toast({
           variant: "destructive",
@@ -134,8 +135,8 @@ export default function SignupPage() {
        if (!window.confirmationResult) {
         throw new Error("Confirmation result not found.");
       }
-      await window.confirmationResult.confirm(otp);
-      performSignup();
+      const userCredential = await window.confirmationResult.confirm(otp);
+      await performSignup(userCredential);
     } catch (error) {
       console.error("Error verifying OTP:", error);
       toast({
