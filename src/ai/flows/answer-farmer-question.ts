@@ -226,7 +226,7 @@ The farmer has asked the following question:
 "{{{question}}}"
 
 {{#if photoDataUri}}
-The farmer has also provided a photo. Use the 'analyzeCropIssue' tool to analyze the image if the question is about a potential crop disease, pest, or other visual problem. Interpret the tool's output and integrate it into your comprehensive answer.
+The farmer has also provided a photo. If the question is about a potential crop disease, pest, or other visual problem, use the 'analyzeCropIssue' tool with the provided 'photoDataUri' to analyze the image. Interpret the tool's output and integrate it into your comprehensive answer.
 {{/if}}
 
 {{#if city}}

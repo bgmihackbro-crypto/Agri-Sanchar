@@ -97,7 +97,7 @@ export default function ChatbotPage() {
         photoDataUri: photoDataUri,
         city: userProfile?.city,
       });
-      aiResponse = response.answer;
+      aiResponse = response.answer ?? 'Sorry, I could not generate a response.';
     } catch (error) {
       console.error("AI Error:", error);
       aiResponse =
