@@ -138,7 +138,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm animate-fade-in-up bg-background/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader>
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
-        <CardDescription className="text-muted-foreground font-semibold">
+        <CardDescription className="text-foreground">
           {otpSent
             ? "Enter the OTP sent to your phone."
             : "Enter your phone number to login."}
