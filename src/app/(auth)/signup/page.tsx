@@ -210,7 +210,7 @@ export default function SignupPage() {
                 className="border-gray-400"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={verifyingOtp || otp.length < 6}>
              {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
              {verifyingOtp ? "Verifying..." : "Create Account"}
             </Button>
