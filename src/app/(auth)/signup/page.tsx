@@ -148,10 +148,10 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm animate-fade-in-up bg-background/90 backdrop-blur-sm border-gray-200/50">
+    <Card className="w-full max-w-sm animate-fade-in-up bg-green-100/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader>
         <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-foreground">
           {otpSent ? "Verify your number to create an account." : "Create your account to get started."}
         </CardDescription>
       </CardHeader>
@@ -160,7 +160,7 @@ export default function SignupPage() {
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-foreground">Full Name</Label>
               <Input 
                 id="name"
                 placeholder="Ram Singh" 
@@ -171,7 +171,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone" className="text-foreground">Phone Number</Label>
               <div className="flex items-center gap-2">
                  <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   +91
@@ -195,7 +195,7 @@ export default function SignupPage() {
         ) : (
            <form onSubmit={handleVerifyOtpAndSignup} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp">Enter OTP</Label>
+              <Label htmlFor="otp" className="text-foreground">Enter OTP</Label>
               <Input
                 id="otp"
                 type="text"
@@ -216,7 +216,7 @@ export default function SignupPage() {
             </Button>
           </form>
         )}
-        <div className="mt-4 text-center text-sm">
+        <div className="mt-4 text-center text-sm text-foreground">
           Already have an account?{" "}
           <Link href="/login" className="underline text-primary font-semibold">
             Login

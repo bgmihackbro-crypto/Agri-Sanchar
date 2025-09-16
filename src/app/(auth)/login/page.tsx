@@ -135,7 +135,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm animate-fade-in-up bg-background/90 backdrop-blur-sm border-gray-200/50">
+    <Card className="w-full max-w-sm animate-fade-in-up bg-green-100/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader>
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
         <CardDescription className="text-foreground">
