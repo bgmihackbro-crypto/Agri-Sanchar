@@ -50,11 +50,8 @@ const analyzeCropIssue = ai.defineTool(
     outputSchema: AnalyzeCropIssueFromPhotoOutputSchema,
   },
   async (input) => {
-    // The helper analyzeCropIssueFromPhoto is expected to accept the same input
-    // shape or the photo data URI directly. Adjust if your helper has a
-    // different signature.
-    const analysis = await analyzeCropIssueFromPhoto(input.photoDataUri);
-    return { analysisResult: analysis } as z.infer<typeof AnalyzeCropIssueFromPhotoOutputSchema>;
+    const analysis = await analyzeCropIssueFromPhoto(input);
+    return analysis as z.infer<typeof AnalyzeCropIssueFromPhotoOutputSchema>;
   }
 );
 
@@ -224,48 +221,30 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     // If the request is for JSON price data, call the tool directly and return.
     if (input.returnJson && input.city) {
       const priceData = await getMandiPrices({ city: input.city });
-      if ('error' in priceData && priceData.error) {
-        return { answer: priceData.error } as AnswerFarmerQuestionOutput;
+      if (priceData.error) {
+        return { answer: priceData.error };
       }
-      return { answer: '', priceData: priceData.records } as AnswerFarmerQuestionOutput;
+      return { answer: '', priceData: priceData.records };
     }
 
-    // Otherwise, proceed with the normal conversational flow.
     const llmResponse = await answerFarmerQuestionPrompt(input);
+    const toolCall = llmResponse.toolCalls?.[0];
 
-    // If prompt suggested calling a tool, find that call and process the tool output.
-    const analysisToolCall = llmResponse.toolCalls?.find((call: any) => call.tool === 'analyzeCropIssue');
-
-    if (analysisToolCall) {
-      // Extract the tool output using the helper. Different SDK versions expose tool results differently;
-      // this code tries a few common patterns in a safe way.
-      let toolOutput: any = undefined;
-      try {
-        if (typeof llmResponse.toolOutput === 'function') {
-          toolOutput = llmResponse.toolOutput(analysisToolCall);
-        } else if (analysisToolCall.output) {
-          toolOutput = analysisToolCall.output;
-        }
-      } catch (e) {
-        console.warn('Could not extract tool output using helper, attempting to read call.output', e);
-        toolOutput = analysisToolCall.output;
-      }
-
-      if (toolOutput && toolOutput.analysisResult) {
-        return { answer: toolOutput.analysisResult } as AnswerFarmerQuestionOutput;
+    if (toolCall?.tool === 'analyzeCropIssue') {
+      const toolOutput = llmResponse.toolOutput(toolCall);
+      if (toolOutput?.analysisResult) {
+        return { answer: toolOutput.analysisResult };
       }
     }
 
-    // Fallback: try to return the direct LLM output mapped to our schema
-    const possibleAnswer =
-      (llmResponse.output && (llmResponse.output.answer || llmResponse.outputText?.() || (llmResponse.output as any).text)) ||
-      (typeof llmResponse === 'string' ? llmResponse : undefined);
+    const output = llmResponse.output;
 
-    if (possibleAnswer) {
-      return { answer: String(possibleAnswer) } as AnswerFarmerQuestionOutput;
+    if (output) {
+      return { answer: output.answer };
     }
 
-    // If nothing matched, return a safe default message
-    return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." } as AnswerFarmerQuestionOutput;
+    return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
+
+    

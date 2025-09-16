@@ -1,5 +1,5 @@
 
-import {z} from 'genkit';
+import {z} from 'zod';
 
 export const PriceRecordSchema = z.object({
     commodity: z.string(),
@@ -24,5 +24,7 @@ export const PredictCropPricesOutputSchema = z.object({
     predictions: z.array(PricePredictionSchema),
 });
 export type PredictCropPricesOutput = z.infer<typeof PredictCropPricesOutputSchema>;
+
+    
 
     
