@@ -149,7 +149,7 @@ export default function SignupPage() {
 
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-gray-200/50">
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
         <CardDescription className="text-foreground">
           {otpSent ? "Verify your number to create an account." : "Create your account to get started."}
@@ -160,7 +160,7 @@ export default function SignupPage() {
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name" className="text-foreground">Full Name</Label>
+              <Label htmlFor="name" className="text-foreground text-left">Full Name</Label>
               <Input 
                 id="name"
                 placeholder="Ram Singh" 
@@ -172,7 +172,7 @@ export default function SignupPage() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground">Phone Number</Label>
+              <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
               <div className="flex items-center gap-2">
                  <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   +91
@@ -189,7 +189,7 @@ export default function SignupPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading || phone.length < 10 || name.length === 0}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
@@ -197,7 +197,7 @@ export default function SignupPage() {
         ) : (
            <form onSubmit={handleVerifyOtpAndSignup} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground">Enter OTP</Label>
+              <Label htmlFor="otp" className="text-foreground text-left">Enter OTP</Label>
               <Input
                 id="otp"
                 type="text"
