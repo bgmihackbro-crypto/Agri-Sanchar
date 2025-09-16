@@ -12,7 +12,10 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {analyzeCropIssueFromPhoto} from './analyze-crop-issue-from-photo';
+import {
+  analyzeCropIssueFromPhoto,
+  AnalyzeCropIssueFromPhotoOutputSchema,
+} from './analyze-crop-issue-from-photo';
 import { PriceRecordSchema } from '@/ai/types';
 
 const AnswerFarmerQuestionInputSchema = z.object({
@@ -45,11 +48,11 @@ const analyzeCropIssue = ai.defineTool(
           "A photo of a crop issue, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
         ),
     }),
-    outputSchema: z.string().describe('A diagnosis of the crop issue and potential solutions.'),
+    outputSchema: AnalyzeCropIssueFromPhotoOutputSchema,
   },
   async input => {
-    const {analysisResult} = await analyzeCropIssueFromPhoto(input);
-    return analysisResult;
+    const analysis = await analyzeCropIssueFromPhoto(input);
+    return analysis;
   }
 );
 
@@ -165,7 +168,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
 
-When you use the 'analyzeCropIssue' tool, you will receive a structured Markdown response. You must present this information clearly to the farmer, perhaps summarizing the key points and then providing the full, structured analysis.
+IMPORTANT: You should ONLY use the 'analyzeCropIssue' tool if the user provides an image and asks a question about identifying a problem with it (e.g., "what's wrong with my plant?"). If the user simply asks for something else while providing an image, you do not need to use the tool. The 'analyzeCropIssue' tool's output is handled by the system and you do not need to process it.
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
 
@@ -206,7 +209,7 @@ You have access to the following information (RAG). Use it to answer common ques
   <WEATHER_CLIMATE_DATA>
     - General Knowledge: Access to real-time and historical weather data from APIs like OpenWeatherMap and agroclimatic data from NASA POWER.
     - Key Metrics: Temperature, rainfall, humidity, wind speed.
-  </PEST_DISEASE_DATA>
+  </WEATHER_CLIMATE_DATA>
 
   <PEST_DISEASE_DATA>
     - General Knowledge: Access to image datasets of infected crops from sources like PlantVillage and PlantDoc.
@@ -228,7 +231,7 @@ The farmer has asked the following question:
 "{{{question}}}"
 
 {{#if photoDataUri}}
-IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool and you MUST pass the 'photoDataUri' to it. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer. If the farmer's question is simple, like "what is this?", the full analysis from the tool is the answer.
+A photo has been provided. If the question is about identifying an issue in the photo, use the 'analyzeCropIssue' tool. The system will handle the output.
 {{/if}}
 
 {{#if city}}
@@ -261,6 +264,23 @@ const answerFarmerQuestionFlow = ai.defineFlow(
 
     // Otherwise, proceed with the normal conversational flow.
     const llmResponse = await answerFarmerQuestionPrompt(input);
+    const analysisToolCall = llmResponse.toolCalls?.find(
+      (call) => call.tool === 'analyzeCropIssue'
+    );
+    
+    if (analysisToolCall) {
+      const toolOutput = llmResponse.toolOutput(analysisToolCall);
+      if (toolOutput) {
+        // If the analysis tool was called, format its output directly.
+        const analysisResult = toolOutput.analysisResult;
+        return {
+          answer: analysisResult,
+        };
+      }
+    }
+    
     return llmResponse.output!;
   }
 );
+
+    
