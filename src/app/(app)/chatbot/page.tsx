@@ -122,8 +122,16 @@ export default function ChatbotPage() {
             <Bot className="h-6 w-6 text-primary" /> AI Expert Chat
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
+        <CardContent 
+          className="flex-1 overflow-hidden relative"
+          style={{
+            backgroundImage: "url('https://th.bing.com/th/id/OIP.0oZf-fVtBVqN6jFxoqw6JQHaN2?w=202&h=335&c=7&r=0&o=5&dpr=1.5&pid=1.7')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="absolute inset-0 bg-white/80 dark:bg-black/80" />
+          <ScrollArea className="h-full pr-4 relative" ref={scrollAreaRef}>
             <div className="space-y-4">
               {messages.map((message) => (
                 <div
