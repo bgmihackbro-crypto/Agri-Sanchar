@@ -115,8 +115,8 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="relative h-full" style={{backgroundImage: "url('https://th.bing.com/th/id/OIP.0oZf-fVtBVqN6jFxoqw6JQHaN2?w=202&h=335&c=7&r=0&o=5&dpr=1.5&pid=1.7')"}}>
-      <Card className="h-[calc(100vh-10rem)] flex flex-col bg-card/80 backdrop-blur-sm">
+    <div className="h-full">
+      <Card className="h-[calc(100vh-10rem)] flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-headline">
             <Bot className="h-6 w-6 text-primary" /> AI Expert Chat
