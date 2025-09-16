@@ -115,103 +115,107 @@ export default function ChatbotPage() {
   };
 
   return (
-    <Card className="h-[calc(100vh-10rem)] flex flex-col">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-headline">
-          <Bot className="h-6 w-6 text-primary" /> AI Expert Chat
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex items-start gap-3 animate-fade-in",
-                  message.role === "user" ? "justify-end" : "justify-start"
-                )}
-              >
-                {message.role === "assistant" && (
+    <div className="relative h-full" style={{backgroundImage: "url('/circuit-board.svg')"}}>
+      <Card className="h-[calc(100vh-10rem)] flex flex-col bg-card/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-headline">
+            <Bot className="h-6 w-6 text-primary" /> AI Expert Chat
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "flex items-start gap-3 animate-fade-in",
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  )}
+                >
+                  {message.role === "assistant" && (
+                    <Avatar className="h-8 w-8 border">
+                      <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        <Bot size={20} />
+                      </div>
+                    </Avatar>
+                  )}
+                  <div
+                    className={cn(
+                      "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm",
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    )}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    {message.image && (
+                      <img
+                        src={message.image}
+                        alt="user upload"
+                        className="mt-2 rounded-lg max-w-full h-auto"
+                      />
+                    )}
+                  </div>
+                  {message.role === "user" && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={userProfile?.avatar || "https://picsum.photos/seed/farm-icon/40/40"} data-ai-hint="farm icon" />
+                      <AvatarFallback>{userProfile?.name?.substring(0, 2) || 'U'}</AvatarFallback>
+                    </Avatar>
+                  )}
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex items-start gap-3 justify-start animate-fade-in">
                   <Avatar className="h-8 w-8 border">
                     <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Bot size={20} />
                     </div>
                   </Avatar>
-                )}
-                <div
-                  className={cn(
-                    "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm",
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  )}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  {message.image && (
-                    <img
-                      src={message.image}
-                      alt="user upload"
-                      className="mt-2 rounded-lg max-w-full h-auto"
-                    />
-                  )}
-                </div>
-                {message.role === "user" && (
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={userProfile?.avatar || "https://picsum.photos/seed/farm-icon/40/40"} data-ai-hint="farm icon" />
-                    <AvatarFallback>{userProfile?.name?.substring(0, 2) || 'U'}</AvatarFallback>
-                  </Avatar>
-                )}
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex items-start gap-3 justify-start animate-fade-in">
-                <Avatar className="h-8 w-8 border">
-                  <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Bot size={20} />
+                  <div className="max-w-xs p-3 rounded-lg bg-muted flex items-center gap-2 shadow-sm">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">Thinking...</span>
                   </div>
-                </Avatar>
-                <div className="max-w-xs p-3 rounded-lg bg-muted flex items-center gap-2 shadow-sm">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm text-muted-foreground">Thinking...</span>
                 </div>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </CardContent>
-      <CardFooter className="border-t pt-4">
-        <form
-          onSubmit={handleSubmit}
-          className="flex w-full items-center space-x-2"
-        >
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => fileInputRef.current?.click()}
+              )}
+            </div>
+          </ScrollArea>
+        </CardContent>
+        <CardFooter className="border-t pt-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full items-center space-x-2"
           >
-            <ImageIcon className="h-4 w-4" />
-            <span className="sr-only">Upload Image</span>
-          </Button>
-          <Input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            className="hidden"
-            accept="image/*"
-          />
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about crops, prices, or upload a photo..."
-            disabled={isLoading}
-          />
-          <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)} className="bg-primary hover:bg-primary/90">
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
-      </CardFooter>
-    </Card>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <ImageIcon className="h-4 w-4" />
+              <span className="sr-only">Upload Image</span>
+            </Button>
+            <Input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+              accept="image/*"
+            />
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about crops, prices, or upload a photo..."
+              disabled={isLoading}
+            />
+            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)} className="bg-primary hover:bg-primary/90">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
+
+    
