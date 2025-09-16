@@ -162,6 +162,7 @@ export default function LoginPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
+                  className="border-gray-400"
                 />
               </div>
             </div>
@@ -183,6 +184,7 @@ export default function LoginPage() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={verifyingOtp}
+                className="border-gray-400"
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>

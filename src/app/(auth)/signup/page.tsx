@@ -168,6 +168,7 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
+                className="border-gray-400"
               />
             </div>
             <div className="grid gap-2">
@@ -184,6 +185,7 @@ export default function SignupPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
+                  className="border-gray-400"
                 />
               </div>
             </div>
@@ -205,6 +207,7 @@ export default function SignupPage() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={verifyingOtp}
+                className="border-gray-400"
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>
