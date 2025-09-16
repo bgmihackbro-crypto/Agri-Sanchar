@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Send, User, Loader2 } from "lucide-react";
+import { Bot, Image as ImageIcon, Send, User, Loader2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import Image from "next/image";
 
 type Message = {
   id: number;
@@ -118,6 +119,11 @@ export default function ChatbotPage() {
     setIsLoading(false);
   };
 
+  const removeImage = () => {
+    setImageFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   return (
     <div className="h-full">
       <Card className="h-[calc(100vh-10rem)] flex flex-col">
@@ -194,7 +200,26 @@ export default function ChatbotPage() {
             </div>
           </ScrollArea>
         </CardContent>
-        <CardFooter className="border-t pt-4">
+        <CardFooter className="border-t pt-4 flex flex-col items-start gap-2">
+           {imageFile && (
+            <div className="relative p-2 border rounded-md">
+              <Image
+                src={URL.createObjectURL(imageFile)}
+                alt="Selected image"
+                width={80}
+                height={80}
+                className="rounded-md object-cover"
+              />
+              <Button
+                variant="destructive"
+                size="icon"
+                className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                onClick={removeImage}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={handleSubmit}
             className="flex w-full items-center space-x-2"
