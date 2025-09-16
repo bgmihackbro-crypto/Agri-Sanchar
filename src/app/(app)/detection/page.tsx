@@ -157,9 +157,13 @@ export default function DetectionPage() {
               <canvas ref={canvasRef} className="hidden" />
 
               {!capturedImage ? (
-                <Button onClick={handleCapture} disabled={hasCameraPermission !== true}>
+                <Button 
+                  onClick={handleCapture} 
+                  disabled={hasCameraPermission !== true}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full"
+                  >
                   <Camera className="mr-2 h-4 w-4" />
-                  Capture Photo
+                  Take a Photo
                 </Button>
               ) : (
                 <Button onClick={reset} variant="outline">
