@@ -41,7 +41,7 @@ export function AppSidebar() {
       <SidebarContent className="pt-8">
         <SidebarMenu>
           {links.map((link) => (
-            <SidebarMenuItem key={link.href}>
+            <SidebarMenuItem key={link.label}>
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith(link.href) && link.href !== '#'}
