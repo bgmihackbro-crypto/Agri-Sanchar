@@ -101,8 +101,7 @@ export default function ChatbotPage() {
       aiResponse = response.answer ?? 'Sorry, I could not generate a response.';
     } catch (error) {
       console.error("AI Error:", error);
-      aiResponse =
-        "An error occurred while communicating with the AI. Please try again.";
+      aiResponse = "I can’t provide that information at the moment.. ";
     }
 
     const assistantMessage: Message = {
