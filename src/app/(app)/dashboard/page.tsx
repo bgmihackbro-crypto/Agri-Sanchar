@@ -77,7 +77,7 @@ export default function DashboardPage() {
         <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-4">
           <h1 className="text-4xl md:text-6xl font-bold text-white font-headline">Agri-Sanchar</h1>
           <p className="mt-2 text-lg md:text-xl text-white/90">Your Digital Partner for Smart Farming</p>
-          <p className="mt-4 max-w-2xl text-lg text-white/80 font-bold">
+          <p className="mt-4 max-w-2xl text-lg text-white font-bold">
             AI-powered crop advisory, pest detection, weather alerts, and market prices - all in your language to help small farmers grow better.
           </p>
         </div>
