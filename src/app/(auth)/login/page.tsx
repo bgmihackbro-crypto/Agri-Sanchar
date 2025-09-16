@@ -136,7 +136,7 @@ export default function LoginPage() {
 
   return (
     <Card className="w-full max-w-sm animate-fade-in-up bg-green-100/90 backdrop-blur-sm border-gray-200/50">
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
         <CardDescription className="text-foreground">
           {otpSent
@@ -149,7 +149,7 @@ export default function LoginPage() {
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground">Phone Number</Label>
+              <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
               <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   +91
@@ -166,7 +166,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading || phone.length < 10}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 font-bold" disabled={loading || phone.length < 10}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Login with OTP"}
             </Button>
@@ -174,7 +174,7 @@ export default function LoginPage() {
         ) : (
           <form onSubmit={handleVerifyOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground">Enter OTP</Label>
+              <Label htmlFor="otp" className="text-foreground text-left">Enter OTP</Label>
               <Input
                 id="otp"
                 type="text"
@@ -187,7 +187,7 @@ export default function LoginPage() {
                 className="border-gray-400"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 font-bold" disabled={verifyingOtp || otp.length < 6}>
              {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
              {verifyingOtp ? "Verifying..." : "Verify OTP & Login"}
             </Button>
