@@ -6,11 +6,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden">
         <Image
-          src="https://picsum.photos/seed/sunny-farm/1920/1080"
+          src="https://picsum.photos/seed/agriculture-field/1920/1080"
           alt="Lush farm background"
           fill
           className="object-cover -z-20"
-          data-ai-hint="sunny farm"
+          data-ai-hint="agriculture field"
         />
         <div className="absolute inset-0 bg-black/50 -z-10" />
 
