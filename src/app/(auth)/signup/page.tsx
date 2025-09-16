@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,135 +15,51 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { auth, db } from "@/lib/firebase";
-import { signInWithPhoneNumber, ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
-
-declare global {
-  interface Window {
-    confirmationResult?: ConfirmationResult;
-    recaptchaVerifier?: RecaptchaVerifier;
-  }
-}
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  const setupRecaptcha = () => {
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
-    }
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response: any) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-      }
-    });
-  };
-
-  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSimulatedSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-    const phoneNumber = "+91" + phone;
-    setupRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
+    try {
+      // Simulate creating and storing a new user profile
+      const userProfile = {
+        name: name,
+        phone: "+91" + phone,
+        avatar: `https://picsum.photos/seed/${phone}/100/100`,
+        farmSize: "",
+        city: "",
+        state: "",
+        annualIncome: "",
+      };
 
-    if (!appVerifier) {
+      // Save to localStorage for immediate use
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      toast({
+        title: "Welcome to Agri-Sanchar! (Simulated)",
+        description: "Your account has been created successfully.",
+      });
+
+      router.push("/dashboard");
+
+    } catch (error) {
+      console.error("Simulated signup error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "reCAPTCHA verifier not initialized. Please refresh the page.",
+        title: "Signup Failed",
+        description: "There was a problem creating your profile.",
       });
+    } finally {
       setLoading(false);
-      return;
-    }
-    
-    try {
-      // render the invisible reCAPTCHA
-      const recaptchaWidgetId = await appVerifier.render();
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      window.confirmationResult = confirmationResult;
-      setOtpSent(true);
-      toast({
-        title: "OTP Sent",
-        description: "An OTP has been sent to your phone number for verification.",
-      });
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to send OTP. Please try again.",
-      });
-    } finally {
-        setLoading(false);
-    }
-  };
-
-  const handleVerifyOtpAndSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (verifyingOtp) return;
-    setVerifyingOtp(true);
-    
-    const performSignup = async (userCredential?: any) => {
-      try {
-        const uid = userCredential ? userCredential.user.uid : phone;
-        // Save user details to Firestore
-        const userProfile = {
-          name: name,
-          phone: "+91" + phone,
-          avatar: `https://picsum.photos/seed/${phone}/100/100`,
-          farmSize: "",
-          city: "",
-          state: "",
-          annualIncome: "",
-        };
-
-        await setDoc(doc(db, "users", uid), userProfile);
-        
-        // Save to localStorage for immediate use
-        localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-        toast({
-          title: "Welcome to Agri-Sanchar!",
-          description: "Your account has been created successfully.",
-        });
-        router.push("/dashboard");
-      } catch (dbError) {
-        console.error("Error creating user profile in database:", dbError);
-         toast({
-            variant: "destructive",
-            title: "Signup Failed",
-            description: "There was a problem creating your profile. Please try again.",
-        });
-      }
-    }
-
-    try {
-       if (!window.confirmationResult) {
-        throw new Error("Confirmation result not found.");
-      }
-      const userCredential = await window.confirmationResult.confirm(otp);
-      await performSignup(userCredential);
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      toast({
-        variant: "destructive",
-        title: "Invalid OTP",
-        description: "The OTP you entered is incorrect. Please try again.",
-      });
-    } finally {
-        setVerifyingOtp(false);
     }
   };
 
@@ -152,73 +68,46 @@ export default function SignupPage() {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
         <CardDescription className="text-foreground">
-          {otpSent ? "Verify your number to create an account." : "Create your account to get started."}
+          Create your account to get started (Simulated).
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div id="recaptcha-container"></div>
-        {!otpSent ? (
-          <form onSubmit={handleSendOtp} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name" className="text-foreground text-left">Full Name</Label>
-              <Input 
-                id="name"
-                placeholder="Ram Singh" 
+        <form onSubmit={handleSimulatedSignup} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name" className="text-foreground text-left">Full Name</Label>
+            <Input 
+              id="name"
+              placeholder="Ram Singh" 
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={loading}
+              className="border-gray-400"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
+            <div className="flex items-center gap-2">
+               <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
+                +91
+              </span>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="9876543210"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                 disabled={loading}
                 className="border-gray-400"
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
-              <div className="flex items-center gap-2">
-                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
-                  +91
-                </span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="9876543210"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
-                  disabled={loading}
-                  className="border-gray-400"
-                />
-              </div>
-            </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? "Sending OTP..." : "Send OTP"}
-            </Button>
-          </form>
-        ) : (
-           <form onSubmit={handleVerifyOtpAndSignup} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground text-left">Enter OTP</Label>
-              <Input
-                id="otp"
-                type="text"
-                inputMode="numeric"
-                placeholder="123456"
-                required
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
-                disabled={verifyingOtp}
-                className="border-gray-400"
-              />
-            </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={verifyingOtp || otp.length < 6}>
-             {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-             {verifyingOtp ? "Verifying..." : "Create Account"}
-            </Button>
-             <Button variant="link" onClick={() => setOtpSent(false)} className="text-foreground" disabled={verifyingOtp}>
-              Back to details
-            </Button>
-          </form>
-        )}
+          </div>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Creating Account..." : "Create Account (Simulated)"}
+          </Button>
+        </form>
         <div className="mt-4 text-center text-sm text-foreground">
           Already have an account?{" "}
           <Link href="/login" className="underline text-primary font-semibold">

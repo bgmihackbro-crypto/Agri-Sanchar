@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,196 +15,87 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { auth, db } from "@/lib/firebase";
-import { signInWithPhoneNumber, ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
-
-declare global {
-  interface Window {
-    confirmationResult?: ConfirmationResult;
-    recaptchaVerifier?: RecaptchaVerifier;
-  }
-}
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
   
-  const setupRecaptcha = () => {
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
-    }
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response: any) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-      }
-    });
-  };
-
-  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSimulatedLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-    const phoneNumber = "+91" + phone;
-    setupRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
-    
-    if (!appVerifier) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "reCAPTCHA verifier not initialized. Please refresh the page.",
-      });
-      setLoading(false);
-      return;
-    }
-    
     try {
-      // render the invisible reCAPTCHA
-      const recaptchaWidgetId = await appVerifier.render();
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      window.confirmationResult = confirmationResult;
-      setOtpSent(true);
+      // Simulate fetching a user profile
+      const userProfile = {
+        name: "Simulated User",
+        phone: "+91" + phone,
+        avatar: `https://picsum.photos/seed/${phone}/100/100`,
+        farmSize: "10",
+        city: "Ludhiana",
+        state: "Punjab",
+        annualIncome: "500000",
+      };
+
+      // Save to localStorage to mimic session
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
       toast({
-        title: "OTP Sent",
-        description: "An OTP has been sent to your phone number.",
+        title: "Login Successful (Simulated)",
+        description: "Welcome back to Agri-Sanchar!",
       });
+
+      router.push("/dashboard");
+
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      console.error("Simulated login error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to send OTP. Please check the number and try again.",
+        description: "Simulated login failed.",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (verifyingOtp) return;
-    setVerifyingOtp(true);
-
-    const performLogin = async (uid: string) => {
-        try {
-            const userDocRef = doc(db, "users", uid);
-            const userDoc = await getDoc(userDocRef);
-
-            if (userDoc.exists()) {
-                localStorage.setItem("userProfile", JSON.stringify(userDoc.data()));
-                toast({
-                    title: "Login Successful",
-                    description: "Welcome back to Agri-Sanchar!",
-                });
-                router.push("/dashboard");
-            } else {
-                 toast({
-                    variant: "destructive",
-                    title: "Login Failed",
-                    description: "Your profile was not found. Please sign up first.",
-                });
-                router.push("/signup");
-            }
-        } catch (dbError) {
-             console.error("Error fetching user profile:", dbError);
-             toast({
-                variant: "destructive",
-                title: "Login Failed",
-                description: "Could not retrieve your profile. Please try again.",
-            });
-        }
-    }
-    
-    try {
-      if (!window.confirmationResult) {
-        throw new Error("Confirmation result not found.");
-      }
-      const userCredential = await window.confirmationResult.confirm(otp);
-      await performLogin(userCredential.user.uid);
-
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      toast({
-        variant: "destructive",
-        title: "Invalid OTP",
-        description: "The OTP you entered is incorrect. Please try again.",
-      });
-    } finally {
-        setVerifyingOtp(false);
-    }
-  };
 
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
         <CardDescription className="text-foreground">
-          {otpSent
-            ? "Enter the OTP sent to your phone."
-            : "Enter your phone number to login."}
+          Enter your phone number to login (Simulated).
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div id="recaptcha-container"></div>
-        {!otpSent ? (
-          <form onSubmit={handleSendOtp} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
-              <div className="flex items-center gap-2">
-                <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
-                  +91
-                </span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="9876543210"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
-                  disabled={loading}
-                  className="border-gray-400"
-                />
-              </div>
-            </div>
-            <Button type="submit" className="w-full hover:bg-primary/90 font-bold text-foreground text-base" disabled={loading || phone.length < 10}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? "Sending OTP..." : "Login with OTP"}
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground text-left">Enter OTP</Label>
+        <form onSubmit={handleSimulatedLogin} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
+            <div className="flex items-center gap-2">
+              <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
+                +91
+              </span>
               <Input
-                id="otp"
-                type="text"
-                inputMode="numeric"
-                placeholder="123456"
+                id="phone"
+                type="tel"
+                placeholder="9876543210"
                 required
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
-                disabled={verifyingOtp}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
+                disabled={loading}
                 className="border-gray-400"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 font-bold" disabled={verifyingOtp || otp.length < 6}>
-             {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-             {verifyingOtp ? "Verifying..." : "Verify OTP & Login"}
-            </Button>
-             <Button variant="link" onClick={() => setOtpSent(false)} className="text-primary" disabled={verifyingOtp}>
-              Back to phone number
-            </Button>
-          </form>
-        )}
+          </div>
+          <Button type="submit" className="w-full hover:bg-primary/90 font-bold text-foreground text-base" disabled={loading || phone.length < 10}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Logging in..." : "Login (Simulated)"}
+          </Button>
+        </form>
         <div className="mt-4 text-center text-sm text-foreground">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="underline text-primary font-semibold">
