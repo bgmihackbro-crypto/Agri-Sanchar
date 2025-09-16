@@ -16,12 +16,14 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 type Message = {
   id: number;
   role: "user" | "assistant";
   content: string;
   image?: string;
+  timestamp: Date;
 };
 
 type UserProfile = {
@@ -79,6 +81,7 @@ export default function ChatbotPage() {
       role: "user",
       content: input,
       ...(imageFile && { image: URL.createObjectURL(imageFile) }),
+      timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMessage]);
 
@@ -105,6 +108,7 @@ export default function ChatbotPage() {
       id: Date.now() + 1,
       role: "assistant",
       content: aiResponse,
+      timestamp: new Date(),
     };
     setMessages((prev) => [...prev, assistantMessage]);
 
@@ -143,7 +147,7 @@ export default function ChatbotPage() {
                 >
                   {message.role === "assistant" && (
                     <Avatar className="h-8 w-8 border">
-                      <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <div className="h-full w-full flex items-center justify-center rounded-full bg-blue-500 text-primary-foreground">
                         <Bot size={20} />
                       </div>
                     </Avatar>
@@ -152,10 +156,11 @@ export default function ChatbotPage() {
                     className={cn(
                       "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm",
                       message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                        ? "bg-gray-700 text-white"
+                        : "bg-blue-500 text-white"
                     )}
                   >
+                    <div className="text-xs opacity-75 mb-1">{format(message.timestamp, "p")}</div>
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     {message.image && (
                       <img
@@ -176,7 +181,7 @@ export default function ChatbotPage() {
               {isLoading && (
                 <div className="flex items-start gap-3 justify-start animate-fade-in">
                   <Avatar className="h-8 w-8 border">
-                    <div className="h-full w-full flex items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <div className="h-full w-full flex items-center justify-center rounded-full bg-blue-500 text-primary-foreground">
                       <Bot size={20} />
                     </div>
                   </Avatar>
