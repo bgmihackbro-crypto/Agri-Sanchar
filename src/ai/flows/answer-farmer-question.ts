@@ -29,7 +29,7 @@ const AnswerFarmerQuestionInputSchema = z.object({
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
 const AnswerFarmerQuestionOutputSchema = z.object({
-  answer: z.string().optional().describe('The text answer to the farmer question.'),
+  answer: z.string().describe('The text answer to the farmer question.'),
   priceData: z.array(PriceRecordSchema).optional().describe("Structured JSON data for market prices if requested."),
 });
 export type AnswerFarmerQuestionOutput = z.infer<typeof AnswerFarmerQuestionOutputSchema>;
@@ -256,7 +256,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
         if (priceData.error) {
             return { answer: priceData.error };
         }
-        return { priceData: priceData.records };
+        return { answer: '', priceData: priceData.records };
     }
 
     // Otherwise, proceed with the normal conversational flow.
@@ -264,3 +264,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return llmResponse.output!;
   }
 );
+
+    
