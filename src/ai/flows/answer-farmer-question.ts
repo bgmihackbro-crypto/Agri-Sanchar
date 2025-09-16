@@ -165,6 +165,8 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
 
+When you use the 'analyzeCropIssue' tool, you will receive a structured Markdown response. You must present this information clearly to the farmer, perhaps summarizing the key points and then providing the full, structured analysis.
+
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
 
 <RAG_KNOWLEDGE>
@@ -226,7 +228,7 @@ The farmer has asked the following question:
 "{{{question}}}"
 
 {{#if photoDataUri}}
-IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool and you MUST pass the 'photoDataUri' to it. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer.
+IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool and you MUST pass the 'photoDataUri' to it. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer. If the farmer's question is simple, like "what is this?", the full analysis from the tool is the answer.
 {{/if}}
 
 {{#if city}}
@@ -234,12 +236,6 @@ The farmer is from '{{city}}'. If the question is about market prices, crop rate
 {{/if}}
 
 If the question is about government schemes or general crop information, use your RAG_KNOWLEDGE first before searching online or using other tools.
-
-Provide a thorough and well-structured answer. If the question is about a problem (like a crop disease), structure your response to cover:
-1.  **Diagnosis:** A clear identification of the likely problem.
-2.  **Cause:** Explanation of what causes the issue (e.g., fungus, pest, nutrient deficiency).
-3.  **Solution:** Actionable steps the farmer can take to fix it.
-4.  **Prevention:** Advice on how to avoid the problem in the future.
   `,
 });
 
