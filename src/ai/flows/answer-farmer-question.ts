@@ -226,7 +226,7 @@ The farmer has asked the following question:
 "{{{question}}}"
 
 {{#if photoDataUri}}
-The farmer has also provided a photo. If the question is about a potential crop disease, pest, or other visual problem, use the 'analyzeCropIssue' tool with the provided 'photoDataUri' to analyze the image. Interpret the tool's output and integrate it into your comprehensive answer.
+IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool with the 'photoDataUri' to analyze the image. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer.
 {{/if}}
 
 {{#if city}}
@@ -268,5 +268,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return llmResponse.output!;
   }
 );
-
-    
