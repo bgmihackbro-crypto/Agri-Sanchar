@@ -214,7 +214,7 @@ export default function SignupPage() {
              {verifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
              {verifyingOtp ? "Verifying..." : "Create Account"}
             </Button>
-             <Button variant="link" onClick={() => setOtpSent(false)} className="text-primary" disabled={verifyingOtp}>
+             <Button variant="link" onClick={() => setOtpSent(false)} className="text-foreground" disabled={verifyingOtp}>
               Back to details
             </Button>
           </form>
