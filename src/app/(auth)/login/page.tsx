@@ -166,7 +166,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 font-bold" disabled={loading || phone.length < 10}>
+            <Button type="submit" className="w-full hover:bg-primary/90 font-bold text-foreground" disabled={loading || phone.length < 10}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Login with OTP"}
             </Button>
