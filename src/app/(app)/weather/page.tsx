@@ -150,12 +150,12 @@ export default function WeatherPage() {
                   key={forecast.day}
                   className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
                 >
-                  <p className="font-semibold w-1/4">{forecast.day}</p>
-                  <div className="flex items-center gap-2 w-1/2">
+                  <p className="font-semibold basis-1/4">{forecast.day}</p>
+                  <div className="flex items-center gap-2 basis-1/2">
                     <forecast.icon className="w-6 h-6 text-primary" />
                     <p className="text-muted-foreground">{forecast.condition}</p>
                   </div>
-                  <p className="font-bold text-lg w-1/4 text-right">
+                  <p className="font-bold text-lg basis-1/4 text-right">
                     {forecast.temp}
                   </p>
                 </div>
