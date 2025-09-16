@@ -26,11 +26,12 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { Loader2, TrendingUp, Sparkles } from "lucide-react";
+import { TrendingUp, Sparkles } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
 import type { PriceRecord, PricePrediction } from "@/ai/types";
+import { Spinner } from "@/components/ui/spinner";
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
 
@@ -209,7 +210,7 @@ export default function MarketPricesPage() {
           <CardContent>
             {isLoading && (
               <div className="flex justify-center items-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <Spinner className="h-8 w-8 animate-spin text-primary" />
                 <p className="ml-2 text-muted-foreground">Fetching live data...</p>
               </div>
             )}
@@ -241,10 +242,10 @@ export default function MarketPricesPage() {
                              <Sparkles className="h-4 w-4 text-primary/70" />
                             {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
                            </div>
-                        ) : isPredicting && <Loader2 className="h-4 w-4 animate-spin ml-auto" />}
+                        ) : isPredicting && <Spinner className="h-4 w-4 animate-spin ml-auto" />}
                       </TableCell>
                        <TableCell className="text-right">
-                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting && <Loader2 className="h-4 w-4 animate-spin ml-auto" /> }
+                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting && <Spinner className="h-4 w-4 animate-spin ml-auto" /> }
                       </TableCell>
                     </TableRow>
                   ))}
@@ -267,5 +268,3 @@ export default function MarketPricesPage() {
     </div>
   );
 }
-
-    

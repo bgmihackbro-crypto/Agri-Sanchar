@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const SIMULATED_OTP = "123456";
 
@@ -122,7 +122,7 @@ export default function LoginPage() {
               </div>
             </div>
             <Button type="submit" className="w-full hover:bg-primary/90 font-bold text-foreground text-base" disabled={loading || phone.length < 10}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
           </form>
@@ -142,7 +142,7 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-foreground font-bold" disabled={loading || otp.length < 6}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Verifying..." : "Verify OTP & Login"}
             </Button>
           </form>

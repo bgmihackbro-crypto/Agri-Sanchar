@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Send, User, Loader2, X } from "lucide-react";
+import { Bot, Image as ImageIcon, Send, User, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import Image from "next/image";
+import { Spinner } from "@/components/ui/spinner";
 
 type Message = {
   id: number;
@@ -191,7 +192,7 @@ export default function ChatbotPage() {
                     </div>
                   </Avatar>
                   <div className="max-w-xs p-3 rounded-lg bg-muted flex items-center gap-2 shadow-sm">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Spinner className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">Thinking...</span>
                   </div>
                 </div>

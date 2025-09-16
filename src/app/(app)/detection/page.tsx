@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Camera, Send, Loader2, RefreshCw, X, Bot, User } from "lucide-react";
+import { Camera, Send, RefreshCw, X, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function DetectionPage() {
   const [question, setQuestion] = useState("");
@@ -194,7 +195,7 @@ export default function DetectionPage() {
                 
                 <Button type="submit" className="w-full" disabled={isLoading || !capturedImage}>
                   {isLoading ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
+                    <><Spinner className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
                   ) : (
                     <><Send className="mr-2 h-4 w-4" /> Get AI Analysis</>
                   )}
@@ -213,7 +214,7 @@ export default function DetectionPage() {
                         <p className="font-semibold text-primary">AI Expert Analysis</p>
                         {isLoading && !analysis ? (
                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <Spinner className="h-4 w-4 animate-spin" />
                                 <span>Thinking...</span>
                             </div>
                         ) : (
