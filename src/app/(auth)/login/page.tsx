@@ -97,8 +97,8 @@ export default function LoginPage() {
     if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
       if (otp.length === 6 && /^\d+$/.test(otp)) {
         toast({
-          title: "Login Successful (Test Mode)",
-          description: "Welcome back!",
+          title: "Login Successful",
+          description: "Welcome to Agri-Sanchar!",
         });
         router.push("/dashboard");
       } else {
@@ -119,7 +119,7 @@ export default function LoginPage() {
       await window.confirmationResult.confirm(otp);
       toast({
         title: "Login Successful",
-        description: "Welcome back!",
+        description: "Welcome to Agri-Sanchar!",
       });
       router.push("/dashboard");
     } catch (error) {

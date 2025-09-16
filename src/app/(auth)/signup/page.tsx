@@ -108,8 +108,8 @@ export default function SignupPage() {
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
       toast({
-        title: "Account Created!",
-        description: "Welcome to Agri-Sanchar.",
+        title: "Welcome to Agri-Sanchar!",
+        description: "Your account has been created successfully.",
       });
       router.push("/dashboard");
     }
