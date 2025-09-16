@@ -14,7 +14,6 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {
   analyzeCropIssueFromPhoto,
-  AnalyzeCropIssueFromPhotoOutputSchema,
 } from './analyze-crop-issue-from-photo';
 import { PriceRecordSchema } from '@/ai/types';
 
@@ -36,6 +35,10 @@ const AnswerFarmerQuestionOutputSchema = z.object({
   priceData: z.array(PriceRecordSchema).optional().describe("Structured JSON data for market prices if requested."),
 });
 export type AnswerFarmerQuestionOutput = z.infer<typeof AnswerFarmerQuestionOutputSchema>;
+
+const AnalyzeCropIssueFromPhotoOutputSchema = z.object({
+  analysisResult: z.string().describe('The analysis result of the crop issue from the photo.'),
+});
 
 const analyzeCropIssue = ai.defineTool(
   {
