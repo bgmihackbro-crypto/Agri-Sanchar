@@ -242,10 +242,10 @@ export default function MarketPricesPage() {
                              <Sparkles className="h-4 w-4 text-primary/70" />
                             {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
                            </div>
-                        ) : isPredicting && <Spinner className="h-4 w-4 animate-spin ml-auto" />}
+                        ) : isPredicting ? <Spinner className="h-4 w-4 animate-spin ml-auto" /> : null}
                       </TableCell>
                        <TableCell className="text-right">
-                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting && <Spinner className="h-4 w-4 animate-spin ml-auto" /> }
+                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting ? <Spinner className="h-4 w-4 animate-spin ml-auto" /> : null }
                       </TableCell>
                     </TableRow>
                   ))}
@@ -268,3 +268,5 @@ export default function MarketPricesPage() {
     </div>
   );
 }
+
+    
