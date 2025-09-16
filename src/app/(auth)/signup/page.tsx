@@ -39,18 +39,20 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  const generateRecaptcha = () => {
-    try {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': () => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        }
-      });
-    } catch(e) {
-      console.error("Error generating reCAPTCHA", e);
+  useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          'size': 'invisible',
+          'callback': () => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+          }
+        });
+      } catch(e) {
+        console.error("Error generating reCAPTCHA", e);
+      }
     }
-  }
+  }, []);
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +70,6 @@ export default function SignupPage() {
       return;
     }
     
-    generateRecaptcha();
     const phoneNumber = "+91" + phone;
 
     try {
