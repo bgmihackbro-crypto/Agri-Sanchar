@@ -147,10 +147,10 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm animate-fade-in-up bg-background/80 backdrop-blur-sm border-white/20 text-white">
       <CardHeader>
-        <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-headline text-white">Sign Up</CardTitle>
+        <CardDescription className="text-white/80">
           {otpSent ? "Verify your number to create an account." : "Create your account to get started."}
         </CardDescription>
       </CardHeader>
@@ -159,7 +159,7 @@ export default function SignupPage() {
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-white/90">Full Name</Label>
               <Input 
                 id="name"
                 placeholder="Ram Singh" 
@@ -167,12 +167,13 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
+                className="bg-transparent border-input placeholder:text-white/50"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone" className="text-white/90">Phone Number</Label>
               <div className="flex items-center gap-2">
-                 <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+                 <span className="flex h-10 items-center rounded-md border border-input bg-transparent px-3 text-sm text-white/80">
                   +91
                 </span>
                 <Input
@@ -183,6 +184,7 @@ export default function SignupPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
+                  className="bg-transparent border-input placeholder:text-white/50"
                 />
               </div>
             </div>
@@ -194,7 +196,7 @@ export default function SignupPage() {
         ) : (
            <form onSubmit={handleVerifyOtpAndSignup} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp">Enter OTP</Label>
+              <Label htmlFor="otp" className="text-white/90">Enter OTP</Label>
               <Input
                 id="otp"
                 type="text"
@@ -204,6 +206,7 @@ export default function SignupPage() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={verifyingOtp}
+                className="bg-transparent border-input placeholder:text-white/50"
               />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={verifyingOtp || otp.length < 6}>
@@ -215,9 +218,9 @@ export default function SignupPage() {
             </Button>
           </form>
         )}
-        <div className="mt-4 text-center text-sm">
+        <div className="mt-4 text-center text-sm text-white/80">
           Already have an account?{" "}
-          <Link href="/login" className="underline text-primary">
+          <Link href="/login" className="underline text-primary font-semibold">
             Login
           </Link>
         </div>
