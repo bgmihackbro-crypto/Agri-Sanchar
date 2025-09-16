@@ -226,7 +226,7 @@ The farmer has asked the following question:
 "{{{question}}}"
 
 {{#if photoDataUri}}
-IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool with the 'photoDataUri' to analyze the image. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer.
+IMPORTANT: A photo has been provided. You MUST use the 'analyzeCropIssue' tool and you MUST pass the 'photoDataUri' to it. Your primary goal is to provide a diagnosis based on this photo. Interpret the tool's output and integrate it into your comprehensive answer.
 {{/if}}
 
 {{#if city}}
