@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,21 +37,21 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
-  
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          'size': 'invisible',
-          'callback': () => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
-          }
-        });
-      } catch (e) {
-        console.error("Error generating reCAPTCHA", e);
-      }
+
+  const setupRecaptcha = () => {
+    // Cleanup previous verifier if it exists
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
     }
-  }, []);
+    const recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': () => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+    window.recaptchaVerifier = recaptchaVerifier;
+    return recaptchaVerifier;
+  }
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,7 +72,7 @@ export default function LoginPage() {
     const phoneNumber = "+91" + phone;
     
     try {
-      const appVerifier = window.recaptchaVerifier!;
+      const appVerifier = setupRecaptcha();
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
