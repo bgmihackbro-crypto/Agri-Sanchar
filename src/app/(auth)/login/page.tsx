@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,16 +16,14 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { auth, db } from "@/lib/firebase";
-import { signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
+import { signInWithPhoneNumber, ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { Loader2 } from "lucide-react";
-
-// Add a test phone number to bypass Firebase OTP for development
-const TEST_PHONE_NUMBER = "9999999999";
 
 declare global {
   interface Window {
     confirmationResult?: ConfirmationResult;
+    recaptchaVerifier?: RecaptchaVerifier;
   }
 }
 
@@ -37,27 +35,40 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
+  
+  useEffect(() => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response: any) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+      }
+    });
+
+    return () => {
+      window.recaptchaVerifier?.clear();
+    };
+  }, []);
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-    // Test mode check
-    if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
-      setOtpSent(true);
+    const phoneNumber = "+91" + phone;
+    const appVerifier = window.recaptchaVerifier;
+    
+    if (!appVerifier) {
       toast({
-        title: "Test OTP Sent",
-        description: "You are in test mode. Enter any 6 digits to proceed.",
+        variant: "destructive",
+        title: "Error",
+        description: "reCAPTCHA verifier not initialized. Please refresh the page.",
       });
       setLoading(false);
       return;
     }
     
-    const phoneNumber = "+91" + phone;
-    
     try {
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, undefined as any);
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
       toast({
@@ -109,22 +120,6 @@ export default function LoginPage() {
                 description: "Could not retrieve your profile. Please try again.",
             });
         }
-    }
-
-
-    // Test mode check
-    if (phone.replace(/\D/g, '').substring(0, 10) === TEST_PHONE_NUMBER) {
-      if (otp.length === 6 && /^\d+$/.test(otp)) {
-        await performLogin(phone);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Invalid OTP",
-          description: "Please enter any 6-digit OTP to continue in test mode.",
-        });
-        setVerifyingOtp(false);
-      }
-      return;
     }
     
     try {
