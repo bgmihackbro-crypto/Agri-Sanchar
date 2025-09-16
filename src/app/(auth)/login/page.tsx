@@ -38,26 +38,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
 
-  useEffect(() => {
-    // This effect runs once to set up the reCAPTCHA verifier.
+  const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         'size': 'invisible',
         'callback': () => {
-          // reCAPTCHA solved.
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
         }
       });
     }
-  
-    // Cleanup function to clear the verifier when the component unmounts.
-    return () => {
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = undefined;
-      }
-    };
-  }, []);
-  
+  }
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,10 +65,11 @@ export default function LoginPage() {
       return;
     }
     
+    setupRecaptcha();
     const phoneNumber = "+91" + phone;
+    const appVerifier = window.recaptchaVerifier!;
     
     try {
-      const appVerifier = window.recaptchaVerifier!;
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
       window.confirmationResult = confirmationResult;
       setOtpSent(true);
@@ -93,14 +84,6 @@ export default function LoginPage() {
         title: "Error",
         description: "Failed to send OTP. Please check the number and try again.",
       });
-       // Reset reCAPTCHA in case of error
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-             'size': 'invisible',
-             'callback': () => {}
-         });
-      }
     } finally {
       setLoading(false);
     }
