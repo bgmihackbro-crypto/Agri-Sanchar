@@ -264,5 +264,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return llmResponse.output!;
   }
 );
-
-    
