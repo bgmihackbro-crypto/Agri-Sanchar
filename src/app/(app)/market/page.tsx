@@ -32,6 +32,7 @@ import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
 import type { PriceRecord, PricePrediction } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
+import { useNotifications } from "@/context/NotificationContext";
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
 
@@ -43,6 +44,7 @@ export default function MarketPricesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -81,6 +83,16 @@ export default function MarketPricesPage() {
       if (response.priceData) {
         currentPrices = response.priceData;
         setPrices(currentPrices); // Show current prices immediately
+        if (addNotification) {
+            addNotification({
+                id: Date.now(),
+                type: 'mandi',
+                icon: TrendingUp,
+                text: `Live market prices for ${city} have been updated.`,
+                time: new Date().toISOString(),
+                iconColor: 'text-yellow-500',
+            });
+        }
       } else if (response.answer) {
         setError(response.answer);
         setPrices([]);
@@ -210,7 +222,7 @@ export default function MarketPricesPage() {
           <CardContent>
             {isLoading && (
               <div className="flex justify-center items-center py-8">
-                <Spinner className="h-8 w-8 animate-spin text-primary" />
+                <Spinner className="h-8 w-8 text-primary" />
                 <p className="ml-2 text-muted-foreground">Fetching live data...</p>
               </div>
             )}
@@ -242,10 +254,10 @@ export default function MarketPricesPage() {
                              <Sparkles className="h-4 w-4 text-primary/70" />
                             {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
                            </div>
-                        ) : isPredicting ? <Spinner className="h-4 w-4 animate-spin ml-auto" /> : null}
+                        ) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : null}
                       </TableCell>
                        <TableCell className="text-right">
-                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting ? <Spinner className="h-4 w-4 animate-spin ml-auto" /> : null }
+                        {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : null }
                       </TableCell>
                     </TableRow>
                   ))}
@@ -268,5 +280,3 @@ export default function MarketPricesPage() {
     </div>
   );
 }
-
-    

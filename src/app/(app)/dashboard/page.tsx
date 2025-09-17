@@ -1,4 +1,6 @@
 
+"use client";
+
 import {
   Card,
   CardContent,
@@ -7,19 +9,38 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { useNotifications } from "@/context/NotificationContext";
 
-const serviceLinks = [
+export default function DashboardPage() {
+    const { addNotification } = useNotifications();
+
+    const handleSchemeClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (addNotification) {
+            addNotification({
+                id: Date.now(),
+                type: 'scheme',
+                icon: Landmark,
+                text: 'New update for PM-KISAN scheme. Check the chatbot for details.',
+                time: new Date().toISOString(),
+                iconColor: 'text-blue-500',
+            });
+        }
+    };
+
+
+  const serviceLinks = [
   {
     title: "AI Advisory Chatbot",
     description: "AI-powered advice for crop, soil and pest problems. Communicate with voice support.",
     href: "/chatbot",
     icon: Bot,
     badge: null,
-    badgeColor: null
+    badgeColor: null,
+    onClick: undefined,
   },
   {
     title: "Pest/Disease Detection",
@@ -27,7 +48,8 @@ const serviceLinks = [
     href: "/detection",
     icon: Search,
     badge: null,
-    badgeColor: null
+    badgeColor: null,
+    onClick: undefined,
   },
   {
     title: "Weather Forecast",
@@ -35,7 +57,8 @@ const serviceLinks = [
     href: "/weather",
     icon: CloudSun,
     badge: null,
-    badgeColor: null
+    badgeColor: null,
+    onClick: undefined,
   },
   {
     title: "Market Prices",
@@ -43,15 +66,17 @@ const serviceLinks = [
     href: "/market",
     icon: TrendingUp,
     badge: null,
-    badgeColor: null
+    badgeColor: null,
+    onClick: undefined,
   },
   {
-    title: "Soil Testing",
-    description: "Upload soil reports and get recommendations for proper fertilizer quantities.",
+    title: "Government Schemes",
+    description: "Click to get updates on schemes like PM-KISAN.",
     href: "#",
-    icon: FlaskConical,
+    icon: Landmark,
     badge: "नया",
-    badgeColor: "bg-green-500"
+    badgeColor: "bg-green-500",
+    onClick: handleSchemeClick,
   },
   {
     title: "Pesticide Guide",
@@ -59,11 +84,12 @@ const serviceLinks = [
     href: "#",
     icon: Bug,
     badge: "जल्द ही आ रहा",
-    badgeColor: "bg-orange-400"
+    badgeColor: "bg-orange-400",
+    onClick: undefined,
   },
 ];
 
-export default function DashboardPage() {
+
   return (
     <div className="space-y-8">
       <div className="relative rounded-xl overflow-hidden w-full h-64 md:h-80 animate-fade-in-up">
@@ -92,7 +118,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceLinks.map((link, i) => (
             <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                <Link href={link.href} className="flex flex-col flex-grow">
+                <Link href={link.href} onClick={link.onClick} className="flex flex-col flex-grow">
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
                             <div className="p-3 bg-primary/10 rounded-xl">
