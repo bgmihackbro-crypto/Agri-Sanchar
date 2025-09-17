@@ -32,7 +32,6 @@ import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
 import type { PriceRecord, PricePrediction } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
-import { useNotifications } from "@/context/NotificationContext";
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
 
@@ -44,7 +43,6 @@ export default function MarketPricesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { addNotification } = useNotifications();
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -83,16 +81,6 @@ export default function MarketPricesPage() {
       if (response.priceData) {
         currentPrices = response.priceData;
         setPrices(currentPrices); // Show current prices immediately
-        if (addNotification) {
-            addNotification({
-                id: Date.now(),
-                type: 'mandi',
-                icon: TrendingUp,
-                text: `Live market prices for ${city} have been updated.`,
-                time: new Date().toISOString(),
-                iconColor: 'text-yellow-500',
-            });
-        }
       } else if (response.answer) {
         setError(response.answer);
         setPrices([]);

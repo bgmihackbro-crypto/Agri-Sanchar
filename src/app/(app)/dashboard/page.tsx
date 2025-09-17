@@ -12,26 +12,8 @@ import Link from "next/link";
 import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
-import { useNotifications } from "@/context/NotificationContext";
 
 export default function DashboardPage() {
-    const { addNotification } = useNotifications();
-
-    const handleSchemeClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        if (addNotification) {
-            addNotification({
-                id: Date.now(),
-                type: 'scheme',
-                icon: Landmark,
-                text: 'New update for PM-KISAN scheme. Check the chatbot for details.',
-                time: new Date().toISOString(),
-                iconColor: 'text-blue-500',
-            });
-        }
-    };
-
-
   const serviceLinks = [
   {
     title: "AI Advisory Chatbot",
@@ -40,7 +22,6 @@ export default function DashboardPage() {
     icon: Bot,
     badge: null,
     badgeColor: null,
-    onClick: undefined,
   },
   {
     title: "Pest/Disease Detection",
@@ -49,7 +30,6 @@ export default function DashboardPage() {
     icon: Search,
     badge: null,
     badgeColor: null,
-    onClick: undefined,
   },
   {
     title: "Weather Forecast",
@@ -58,7 +38,6 @@ export default function DashboardPage() {
     icon: CloudSun,
     badge: null,
     badgeColor: null,
-    onClick: undefined,
   },
   {
     title: "Market Prices",
@@ -67,16 +46,14 @@ export default function DashboardPage() {
     icon: TrendingUp,
     badge: null,
     badgeColor: null,
-    onClick: undefined,
   },
   {
     title: "Government Schemes",
-    description: "Click to get updates on schemes like PM-KISAN.",
+    description: "Get information and updates on schemes like PM-KISAN.",
     href: "#",
     icon: Landmark,
     badge: "नया",
     badgeColor: "bg-green-500",
-    onClick: handleSchemeClick,
   },
   {
     title: "Pesticide Guide",
@@ -85,7 +62,6 @@ export default function DashboardPage() {
     icon: Bug,
     badge: "जल्द ही आ रहा",
     badgeColor: "bg-orange-400",
-    onClick: undefined,
   },
 ];
 
@@ -118,7 +94,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceLinks.map((link, i) => (
             <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                <Link href={link.href} onClick={link.onClick} className="flex flex-col flex-grow">
+                <Link href={link.href} className="flex flex-col flex-grow">
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
                             <div className="p-3 bg-primary/10 rounded-xl">
