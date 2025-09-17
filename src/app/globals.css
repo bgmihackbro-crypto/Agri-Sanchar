@@ -106,7 +106,7 @@ body {
   -webkit-transform-origin: center -0.2222em;
   -ms-transform-origin: center -0.2222em;
   transform-origin: center -0.2222em;
-  animation: spinner-fade9234 1s infinite linear;
+  animation: spinner-fade9234 0.75s infinite linear;
 }
 
 .spinner .spinner-blade:nth-child(1) {
