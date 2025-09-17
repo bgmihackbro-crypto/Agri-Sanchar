@@ -207,7 +207,7 @@ body {
 
 @keyframes spinner-fade9234 {
   0% {
-    background-color: hsl(var(--primary));
+    background-color: hsl(var(--muted-foreground));
   }
 
   100% {
