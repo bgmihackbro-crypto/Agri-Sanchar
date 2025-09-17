@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets } from "lucide-react";
+import { useNotifications } from "@/context/NotificationContext";
 
 type DailyForecast = {
   time: string;
@@ -84,14 +85,17 @@ export default function WeatherPage() {
     const [city, setCity] = useState("Ludhiana");
     const [state, setState] = useState("Punjab");
     const [weatherData, setWeatherData] = useState<WeatherData>(weatherDatabase.ludhiana);
+    const { addNotification } = useNotifications();
+
 
     useEffect(() => {
         const savedProfile = localStorage.getItem("userProfile");
+        let finalCity = "Ludhiana";
         if (savedProfile) {
             const parsedProfile = JSON.parse(savedProfile);
             const userCity = parsedProfile.city?.toLowerCase() || 'ludhiana';
             const userState = parsedProfile.state || 'Punjab';
-            const finalCity = parsedProfile.city || 'Ludhiana';
+            finalCity = parsedProfile.city || 'Ludhiana';
 
             setCity(finalCity);
             setState(userState);
@@ -103,7 +107,18 @@ export default function WeatherPage() {
                 setWeatherData(weatherDatabase.ludhiana);
             }
         }
-    }, []);
+        
+        if (addNotification) {
+            addNotification({
+                id: Date.now(),
+                type: 'weather',
+                icon: CloudSun,
+                text: `Weather forecast loaded for ${finalCity}.`,
+                time: new Date().toISOString(),
+                iconColor: 'text-sky-500'
+            });
+        }
+    }, [addNotification]);
 
 
   return (
