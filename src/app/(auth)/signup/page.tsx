@@ -16,12 +16,15 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { useNotifications } from "@/context/NotificationContext";
+import { UserPlus } from "lucide-react";
 
 const SIMULATED_OTP = "123456";
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -73,6 +76,17 @@ export default function SignupPage() {
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+        if (addNotification) {
+          addNotification({
+            id: Date.now(),
+            type: 'signup',
+            icon: UserPlus,
+            text: 'Welcome to Agri-Sanchar! Your account is ready.',
+            time: new Date().toISOString(),
+            iconColor: 'text-purple-500',
+          });
+        }
 
         toast({
           title: "Welcome to Agri-Sanchar! (Simulated)",

@@ -6,20 +6,23 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon">
-        <AppSidebar />
-      </Sidebar>
-      <div className="md:hidden">
-        <BottomNav />
-      </div>
-      <SidebarInset>
-        <AppHeader />
-        <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <NotificationProvider>
+      <SidebarProvider>
+        <Sidebar collapsible="icon">
+          <AppSidebar />
+        </Sidebar>
+        <div className="md:hidden">
+          <BottomNav />
+        </div>
+        <SidebarInset>
+          <AppHeader />
+          <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+        </SidebarInset>
+      </SidebarProvider>
+    </NotificationProvider>
   );
 }
