@@ -56,7 +56,7 @@ export function Notifications() {
                         </div>
                         <p className="text-xs text-muted-foreground">{notification.description}</p>
                         <p className="text-xs text-muted-foreground/70 self-end">
-                            {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true })}
+                            {notification.timestamp ? formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true }) : ''}
                         </p>
                     </DropdownMenuItem>
                  ))
