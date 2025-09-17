@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,27 @@ import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 
 const SIMULATED_OTP = "123456";
+
+// A helper function to add notification to localStorage directly
+// This is used because the NotificationContext is not available on the auth pages
+const addWelcomeNotification = (name: string) => {
+    const newNotification = {
+        id: Date.now().toString(),
+        title: `Welcome back, ${name}!`,
+        description: "You have successfully logged in to Agri-Sanchar.",
+        read: false,
+        timestamp: Date.now(),
+    };
+
+    try {
+        const storedNotifications = localStorage.getItem("notifications");
+        const notifications = storedNotifications ? JSON.parse(storedNotifications) : [];
+        localStorage.setItem("notifications", JSON.stringify([newNotification, ...notifications]));
+    } catch (error) {
+        console.error("Failed to add notification to localStorage", error);
+    }
+};
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -73,6 +94,7 @@ export default function LoginPage() {
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        addWelcomeNotification(userProfile.name);
 
         toast({
           title: "Login Successful (Simulated)",

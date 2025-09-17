@@ -12,60 +12,75 @@ import Link from "next/link";
 import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
+import { useNotifications } from "@/context/notification-context";
 
 export default function DashboardPage() {
   
-  const serviceLinks = [
-  {
-    title: "AI Advisory Chatbot",
-    description: "AI-powered advice for crop, soil and pest problems. Communicate with voice support.",
-    href: "/chatbot",
-    icon: Bot,
-    badge: null,
-    badgeColor: null,
-  },
-  {
-    title: "Pest/Disease Detection",
-    description: "Upload crop photos and get instant AI-powered pest or disease identification.",
-    href: "/detection",
-    icon: Search,
-    badge: null,
-    badgeColor: null,
-  },
-  {
-    title: "Weather Forecast",
-    description: "7-day weather forecast, rainfall warnings, and farming-suitable weather conditions.",
-    href: "/weather",
-    icon: CloudSun,
-    badge: null,
-    badgeColor: null,
-  },
-  {
-    title: "Market Prices",
-    description: "Fresh daily market rates, price trends, and better selling suggestions.",
-    href: "/market",
-    icon: TrendingUp,
-    badge: null,
-    badgeColor: null,
-  },
-  {
-    title: "Government Schemes",
-    description: "Get information and updates on schemes like PM-KISAN.",
-    href: "#",
-    icon: Landmark,
-    badge: "नया",
-    badgeColor: "bg-green-500",
-  },
-  {
-    title: "Pesticide Guide",
-    description: "Accurate information and usage methods for organic and chemical pesticides.",
-    href: "#",
-    icon: Bug,
-    badge: "जल्द ही आ रहा",
-    badgeColor: "bg-orange-400",
-  },
-];
+  const { addNotification } = useNotifications();
 
+  const handleSchemeClick = (e: React.MouseEvent, title: string) => {
+      addNotification({
+          title: `New Update: ${title}`,
+          description: "Check the latest details about this government scheme and its benefits.",
+      });
+  };
+
+  const serviceLinks = [
+    {
+      title: "AI Advisory Chatbot",
+      description: "AI-powered advice for crop, soil and pest problems. Communicate with voice support.",
+      href: "/chatbot",
+      icon: Bot,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: "Pest/Disease Detection",
+      description: "Upload crop photos and get instant AI-powered pest or disease identification.",
+      href: "/detection",
+      icon: Search,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: "Weather Forecast",
+      description: "7-day weather forecast, rainfall warnings, and farming-suitable weather conditions.",
+      href: "/weather",
+      icon: CloudSun,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: "Market Prices",
+      description: "Fresh daily market rates, price trends, and better selling suggestions.",
+      href: "/market",
+      icon: TrendingUp,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: "Government Schemes",
+      description: "Get information and updates on schemes like PM-KISAN.",
+      href: "#",
+      icon: Landmark,
+      badge: "नया",
+      badgeColor: "bg-green-500",
+      onClick: (e: React.MouseEvent) => handleSchemeClick(e, "Government Schemes")
+    },
+    {
+      title: "Pesticide Guide",
+      description: "Accurate information and usage methods for organic and chemical pesticides.",
+      href: "#",
+      icon: Bug,
+      badge: "जल्द ही आ रहा",
+      badgeColor: "bg-orange-400",
+      onClick: undefined
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -95,7 +110,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceLinks.map((link, i) => (
             <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                <Link href={link.href} className="flex flex-col flex-grow">
+                <Link href={link.href} className="flex flex-col flex-grow" onClick={link.onClick}>
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
                             <div className="p-3 bg-primary/10 rounded-xl">

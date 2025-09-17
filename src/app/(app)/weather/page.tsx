@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets } from "lucide-react";
+import { useNotifications } from "@/context/notification-context";
+
 
 type DailyForecast = {
   time: string;
@@ -84,26 +86,38 @@ export default function WeatherPage() {
     const [city, setCity] = useState("Ludhiana");
     const [state, setState] = useState("Punjab");
     const [weatherData, setWeatherData] = useState<WeatherData>(weatherDatabase.ludhiana);
+    const { addNotification } = useNotifications();
 
 
     useEffect(() => {
         const savedProfile = localStorage.getItem("userProfile");
+        let userCity = 'ludhiana';
+        let userState = 'Punjab';
+        let parsedCity = 'Ludhiana';
+
         if (savedProfile) {
             const parsedProfile = JSON.parse(savedProfile);
-            const userCity = parsedProfile.city?.toLowerCase() || 'ludhiana';
-            const userState = parsedProfile.state || 'Punjab';
-            
-            setCity(parsedProfile.city || 'Ludhiana');
-            setState(userState);
-
-            if (weatherDatabase[userCity]) {
-                setWeatherData(weatherDatabase[userCity]);
-            } else {
-                // Default to Ludhiana if city not in our mock DB
-                setWeatherData(weatherDatabase.ludhiana);
-            }
+            userCity = parsedProfile.city?.toLowerCase() || 'ludhiana';
+            userState = parsedProfile.state || 'Punjab';
+            parsedCity = parsedProfile.city || 'Ludhiana';
         }
-    }, []);
+        
+        setCity(parsedCity);
+        setState(userState);
+
+        if (weatherDatabase[userCity]) {
+            setWeatherData(weatherDatabase[userCity]);
+        } else {
+            // Default to Ludhiana if city not in our mock DB
+            setWeatherData(weatherDatabase.ludhiana);
+        }
+
+        addNotification({
+            title: "Weather Alert",
+            description: `Forecast loaded for ${parsedCity}. Current condition: ${weatherDatabase[userCity]?.weekly[0]?.condition || "N/A"}.`
+        });
+
+    }, [addNotification]);
 
 
   return (

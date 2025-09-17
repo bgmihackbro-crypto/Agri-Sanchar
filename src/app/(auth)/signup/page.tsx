@@ -19,6 +19,23 @@ import { Spinner } from "@/components/ui/spinner";
 
 const SIMULATED_OTP = "123456";
 
+const addWelcomeNotification = (name: string) => {
+    const newNotification = {
+        id: Date.now().toString(),
+        title: `Welcome, ${name}!`,
+        description: "Your Agri-Sanchar account has been created successfully.",
+        read: false,
+        timestamp: Date.now(),
+    };
+    try {
+        const storedNotifications = localStorage.getItem("notifications");
+        const notifications = storedNotifications ? JSON.parse(storedNotifications) : [];
+        localStorage.setItem("notifications", JSON.stringify([newNotification, ...notifications]));
+    } catch (error) {
+        console.error("Failed to add notification to localStorage", error);
+    }
+};
+
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -73,6 +90,7 @@ export default function SignupPage() {
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        addWelcomeNotification(userProfile.name);
 
         toast({
           title: "Welcome to Agri-Sanchar! (Simulated)",

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Card,
   CardContent,
@@ -32,6 +32,8 @@ import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
 import type { PriceRecord, PricePrediction } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
+import { useNotifications } from "@/context/notification-context";
+
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
 
@@ -43,6 +45,7 @@ export default function MarketPricesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -81,6 +84,10 @@ export default function MarketPricesPage() {
       if (response.priceData && response.priceData.length > 0) {
         currentPrices = response.priceData;
         setPrices(currentPrices); // Show current prices immediately
+         addNotification({
+          title: "Market Prices Updated",
+          description: `Live mandi prices have been successfully loaded for ${city}.`,
+        });
       } else if (response.answer) {
         setError(response.answer);
         setPrices([]);

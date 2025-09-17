@@ -3,6 +3,7 @@
 import { UserNav } from "@/components/user-nav";
 import { Leaf } from "lucide-react";
 import { Button } from "./ui/button";
+import { Notifications } from "./notifications";
 
 export function AppHeader() {
   return (
@@ -16,6 +17,7 @@ export function AppHeader() {
         </span>
        </div>
       <div className="flex items-center gap-2">
+        <Notifications />
         <UserNav />
       </div>
     </header>
