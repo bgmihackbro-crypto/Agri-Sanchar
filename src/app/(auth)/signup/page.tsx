@@ -16,8 +16,6 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
-import { useNotifications } from "@/context/NotificationContext";
-import { UserPlus } from "lucide-react";
 
 const SIMULATED_OTP = "123456";
 
@@ -29,7 +27,6 @@ export default function SignupPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const { addNotification } = useNotifications();
 
   const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,17 +73,6 @@ export default function SignupPage() {
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-        if (addNotification) {
-            addNotification({
-              id: Date.now(),
-              type: 'signup',
-              icon: UserPlus,
-              text: `Welcome to Agri-Sanchar, ${name}! Your account is ready.`,
-              time: new Date().toISOString(),
-              iconColor: "text-blue-500",
-            });
-        }
 
         toast({
           title: "Welcome to Agri-Sanchar! (Simulated)",

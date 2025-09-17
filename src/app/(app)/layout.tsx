@@ -7,7 +7,6 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { NotificationProvider } from "@/context/NotificationContext";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,10 +18,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <BottomNav />
       </div>
       <SidebarInset>
-        <NotificationProvider>
-          <AppHeader />
-          <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
-        </NotificationProvider>
+        <AppHeader />
+        <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

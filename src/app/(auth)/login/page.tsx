@@ -16,8 +16,6 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
-import { useNotifications } from "@/context/NotificationContext";
-import { UserCheck } from "lucide-react";
 
 const SIMULATED_OTP = "123456";
 
@@ -28,7 +26,6 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const { addNotification } = useNotifications();
 
 
   const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
@@ -76,17 +73,6 @@ export default function LoginPage() {
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-        if (addNotification) {
-          addNotification({
-            id: Date.now(),
-            type: 'welcome',
-            icon: UserCheck,
-            text: "Welcome back! You have successfully logged in.",
-            time: new Date().toISOString(),
-            iconColor: "text-green-500",
-          });
-        }
 
         toast({
           title: "Login Successful (Simulated)",
