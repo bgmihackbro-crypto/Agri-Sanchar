@@ -27,7 +27,7 @@ import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Timestamp } from "firebase/firestore";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { sendMessage } from "@/lib/firebase/chat";
 
 const initialPostsData = [
@@ -572,3 +572,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
