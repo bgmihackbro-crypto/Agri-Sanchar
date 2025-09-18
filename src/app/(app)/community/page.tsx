@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -192,10 +192,10 @@ type Comment = {
     avatar: string;
 };
 
-type Post = (typeof initialPostsData)[0];
+type Post = (typeof initialPostsData)[0] & { originalAuthor?: string };
 
 
-const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[], userProfile: UserProfile | null }) => {
+const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post, groups: Group[], userProfile: UserProfile | null, onPostCreated: (post: Post) => void }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [isSharing, setIsSharing] = useState(false);
@@ -241,14 +241,35 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
         if (platform === 'whatsapp') {
             url = `https://wa.me/?text=${encodedText}`;
         } else if (platform === 'facebook') {
-            // Facebook sharer works best with a URL, but we can use a quote.
-            const appUrl = "https://play.google.com/store/apps/details?id=com.firebase.studio"; // Example URL
+            const appUrl = "https://play.google.com/store/apps/details?id=com.firebase.studio"; 
             url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodedText}`;
         }
         
         window.open(url, '_blank', 'noopener,noreferrer');
         setIsOpen(false);
     }
+    
+    const handleShareToFeed = () => {
+        if (!userProfile) return;
+
+        const repost: Post = {
+            ...post, // Copy original post properties
+            id: Date.now(), // New ID
+            author: userProfile.name, // Repost is by the current user
+            avatar: userProfile.avatar,
+            location: userProfile.city,
+            time: "Just now",
+            likes: 0,
+            comments: [],
+            originalAuthor: post.author, // Add reference to original author
+            title: post.title, // Keep original title for repost context
+            content: post.content // Keep original content
+        };
+
+        onPostCreated(repost);
+        toast({ title: "Post Shared!", description: "You have shared this post to your feed." });
+        setIsOpen(false);
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -262,12 +283,22 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
                     <DialogTitle>Share Post</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
-                    <Card className="bg-muted/50">
+                     <Card className="bg-muted/50">
                         <CardHeader className="p-4">
                             <p className="font-semibold">{post.title}</p>
                             <p className="text-xs text-muted-foreground">by {post.author}</p>
                         </CardHeader>
                     </Card>
+
+                    <Button onClick={handleShareToFeed} className="w-full">
+                        <Repeat className="mr-2 h-4 w-4" /> Share to Feed
+                    </Button>
+
+                    <div className="relative">
+                        <Separator />
+                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">OR</span>
+                    </div>
+
                      <div>
                         <Label>Share to a local group</Label>
                         <div className="flex gap-2 mt-2">
@@ -313,7 +344,7 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
 };
 
 
-const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[] }) => {
+const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[]; onPostCreated: (post: Post) => void; }) => {
     const [commentText, setCommentText] = useState("");
     
     const handleCommentSubmit = (e: React.FormEvent) => {
@@ -327,24 +358,24 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post
         setCommentText("");
     };
     
-    const renderMedia = () => {
-      if (!post.image) return null;
+    const renderMedia = (p: Post) => {
+      if (!p.image) return null;
       
-      const mediaType = post.mediaType || 'image';
+      const mediaType = p.mediaType || 'image';
 
       return (
          <div className="mt-4 rounded-lg overflow-hidden border">
            {mediaType.startsWith('image') ? (
               <Image
-                src={post.image}
-                alt={post.title || 'Post image'}
+                src={p.image}
+                alt={p.title || 'Post image'}
                 width={600}
                 height={400}
                 className="w-full h-auto"
-                data-ai-hint={post.imageHint}
+                data-ai-hint={p.imageHint}
               />
            ) : (
-             <video src={post.image} className="w-full h-auto" controls />
+             <video src={p.image} className="w-full h-auto" controls />
            )}
          </div>
       );
@@ -365,14 +396,34 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post
                 {post.time} • {post.location}
               </p>
             </div>
-             <Badge className={`${post.categoryColor} text-white`}>{post.category}</Badge>
+             {post.originalAuthor ? (
+                 <Badge variant="secondary">
+                    <Repeat className="h-3 w-3 mr-1.5"/>
+                    Shared
+                </Badge>
+             ) : (
+                <Badge className={`${post.categoryColor} text-white`}>{post.category}</Badge>
+             )}
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <h4 className="font-semibold mb-2">{post.title}</h4>
-        <p className="text-sm text-muted-foreground">{post.content}</p>
-        {renderMedia()}
+         {post.originalAuthor ? (
+            <>
+                <p className="text-sm text-muted-foreground mb-2">Shared from <span className="font-semibold text-foreground">{post.originalAuthor}</span></p>
+                <Card className="p-4 bg-muted/50">
+                    <h4 className="font-semibold mb-2">{post.title}</h4>
+                    <p className="text-sm text-muted-foreground">{post.content}</p>
+                    {renderMedia(post)}
+                </Card>
+            </>
+         ) : (
+            <>
+                <h4 className="font-semibold mb-2">{post.title}</h4>
+                <p className="text-sm text-muted-foreground">{post.content}</p>
+                {renderMedia(post)}
+            </>
+         )}
       </CardContent>
       <CardFooter className="flex items-center justify-between border-t pt-4">
          <div className="flex gap-2">
@@ -382,7 +433,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post
             <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
                 <MessageCircle className="h-4 w-4" /> {post.comments.length}
             </Button>
-            <ShareDialog post={post} groups={groups} userProfile={userProfile}/>
+            <ShareDialog post={post} groups={groups} userProfile={userProfile} onPostCreated={onPostCreated} />
          </div>
       </CardFooter>
       <div className="px-6 pb-4 space-y-4">
@@ -637,7 +688,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
 
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState(initialPostsData);
+  const [posts, setPosts] = useState<(Post)[]>(initialPostsData);
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoadingGroups, setIsLoadingGroups] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -731,13 +782,13 @@ export default function CommunityPage() {
             </TabsList>
             <TabsContent value="home" className="space-y-4 pt-4">
                 {posts.map((post) => (
-                    <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} />
+                    <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
                 ))}
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
                     myPosts.map((post) => (
-                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} />
+                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
                     ))
                 ) : (
                     <p className="text-center text-muted-foreground pt-8">You haven't created any posts yet.</p>
