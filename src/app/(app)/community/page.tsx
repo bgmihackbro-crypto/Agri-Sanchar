@@ -150,20 +150,28 @@ const PostCard = ({ post }: { post: (typeof initialPosts)[0] }) => (
     </Card>
 );
 
-const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (newGroup: Group) => void, userProfile: UserProfile | null }) => {
+const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: (newGroup: Group) => void }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const { toast } = useToast();
     const router = useRouter();
+
+    useEffect(() => {
+        const profile = localStorage.getItem('userProfile');
+        if (profile) {
+            setUserProfile(JSON.parse(profile));
+        }
+    }, []);
 
     const handleSubmit = () => {
         if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
             toast({
                 variant: "destructive",
-                title: "Incomplete Profile",
-                description: "There was an issue with your profile. Please ensure your city is set.",
+                title: "Incomplete Information",
+                description: "Cannot create group without required user details.",
             });
             return;
         }
@@ -177,9 +185,10 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 ownerId: userProfile.farmerId,
                 members: [userProfile.farmerId],
                 createdBy: userProfile.name,
+                avatarUrl: `https://picsum.photos/seed/${name.replace(/\s/g, '-')}/100/100`
             };
             const newGroup = createGroup(newGroupData);
-            onGroupCreated(newGroup);
+            onGroupCreated(newGroup); // This still helps to trigger a re-render if needed, but the source of truth is the effect hook
             toast({
                 title: "Group Created!",
                 description: `The "${newGroup.name}" group is now active.`,
@@ -274,7 +283,8 @@ export default function CommunityPage() {
   }, []);
   
   const handleGroupCreated = (newGroup: Group) => {
-      setGroups(prev => [newGroup, ...prev].sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
+      // The useEffect with the storage event listener will handle updating the state.
+      // This function can be kept for optimistic updates or other side effects if needed in the future.
   }
   
   const isProfileComplete = !!(userProfile?.state && userProfile.city);
@@ -321,7 +331,7 @@ export default function CommunityPage() {
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
                     {isProfileComplete ? (
-                        <CreateGroupDialog onGroupCreated={handleGroupCreated} userProfile={userProfile} />
+                        <CreateGroupDialog onGroupCreated={handleGroupCreated} />
                     ) : (
                          <TooltipProvider>
                             <Tooltip>
@@ -385,3 +395,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
