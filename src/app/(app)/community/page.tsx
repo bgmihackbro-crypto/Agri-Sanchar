@@ -154,11 +154,11 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!name.trim() || !userProfile || !userProfile.farmerId || !userProfile.city) {
+        if (!name.trim() || !userProfile?.farmerId || !userProfile?.city) {
              toast({
                 variant: 'destructive',
                 title: "Cannot Create Group",
-                description: "You must be logged in, have a complete profile with a Farmer ID and City, and provide a group name.",
+                description: "Your profile must have a Farmer ID and City. Please also provide a group name.",
             });
             return;
         }
@@ -169,7 +169,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             description,
             city: userProfile.city,
             ownerId: userProfile.farmerId,
-            members: [userProfile.farmerId], // Creator is the first member
+            members: [userProfile.farmerId],
             createdBy: userProfile.name,
         };
 
@@ -179,7 +179,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 title: "Group Created!",
                 description: `The "${newGroupData.name}" group is now active.`,
             });
-            onGroupCreated(newGroup); // Update UI with the actual group from DB
+            onGroupCreated(newGroup);
             setIsOpen(false);
             setName('');
             setDescription('');
@@ -262,7 +262,7 @@ export default function CommunityPage() {
   }, []);
   
   const handleGroupCreated = (newGroup: Group) => {
-      setGroups(prev => [newGroup, ...prev]);
+      setGroups(prev => [newGroup, ...prev].sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
   }
 
   const renderGroupButton = (group: Group) => {
@@ -367,5 +367,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
 
     
