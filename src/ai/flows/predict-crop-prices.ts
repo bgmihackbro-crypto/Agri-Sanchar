@@ -50,9 +50,14 @@ const predictCropPricesFlow = ai.defineFlow(
         if (input.prices.length === 0) {
             return { predictions: [] };
         }
-        const {output} = await prompt(input);
-        return output!;
+        try {
+            const {output} = await prompt(input);
+            return output!;
+        } catch (error) {
+            console.error('Error in predictCropPricesFlow:', error);
+            // Return an empty list of predictions if the AI call fails
+            // This prevents the entire page from crashing on a model error
+            return { predictions: [] };
+        }
     }
 );
-
-    

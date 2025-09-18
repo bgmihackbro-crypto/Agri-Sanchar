@@ -103,20 +103,26 @@ export default function MarketPricesPage() {
       // 2. Fetch AI predictions
       if(currentPrices.length > 0) {
         setIsPredicting(true);
-        const predictionResponse = await predictCropPrices({
-          city,
-          prices: currentPrices,
-        });
-
-        if (predictionResponse.predictions) {
-          // Merge predictions with current prices
-          const combinedData = currentPrices.map(p => {
-            const prediction = predictionResponse.predictions.find(pred => pred.commodity === p.commodity);
-            return { ...p, ...prediction };
+        try {
+          const predictionResponse = await predictCropPrices({
+            city,
+            prices: currentPrices,
           });
-          setPrices(combinedData);
+
+          if (predictionResponse && predictionResponse.predictions) {
+            // Merge predictions with current prices
+            const combinedData = currentPrices.map(p => {
+              const prediction = predictionResponse.predictions.find(pred => pred.commodity === p.commodity);
+              return { ...p, ...prediction };
+            });
+            setPrices(combinedData);
+          }
+        } catch (predError) {
+          console.error("AI Prediction Error:", predError);
+          // Don't set a page-level error, just log it. The user will still see the live prices.
+        } finally {
+            setIsPredicting(false);
         }
-        setIsPredicting(false);
       }
       
     } catch (e) {
