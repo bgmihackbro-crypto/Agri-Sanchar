@@ -155,31 +155,30 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!name.trim() || !userProfile?.farmerId || !userProfile?.city) {
+        if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
              toast({
                 variant: "destructive",
-                title: "Incomplete Profile",
-                description: "Your profile must have a Farmer ID and City to create a group. Please also provide a group name.",
+                title: "Incomplete Information",
+                description: "Please fill out your Name, State, and City before saving.",
             });
             return;
         }
         setIsLoading(true);
 
-        const newGroupData = {
-            name,
-            description,
-            city: userProfile.city,
-            ownerId: userProfile.farmerId,
-            members: [userProfile.farmerId],
-            createdBy: userProfile.name,
-        };
-
         try {
+            const newGroupData = {
+                name,
+                description,
+                city: userProfile.city,
+                ownerId: userProfile.farmerId,
+                members: [userProfile.farmerId],
+                createdBy: userProfile.name,
+            };
             const newGroup = await createGroup(newGroupData);
-            onGroupCreated(newGroup); // Optimistically update UI
+            onGroupCreated(newGroup);
             toast({
                 title: "Group Created!",
-                description: `The "${newGroupData.name}" group is now active.`,
+                description: `The "${newGroup.name}" group is now active.`,
             });
             setIsOpen(false);
             setName('');
@@ -266,27 +265,6 @@ export default function CommunityPage() {
       setGroups(prev => [newGroup, ...prev]);
   }
 
-  const renderGroupButton = (group: Group) => {
-    if (!userProfile || !userProfile.farmerId) return null;
-
-    const isOwner = group.ownerId === userProfile.farmerId;
-    
-    let buttonText = "Open Chat";
-    let buttonVariant: "default" | "secondary" | "outline" = "default";
-
-    if (isOwner) {
-        buttonText = "Manage & Chat";
-        buttonVariant = "secondary";
-    }
-
-    return (
-        <Button asChild className="w-full" variant={buttonVariant}>
-            <Link href={`/community/${group.id}`}>{buttonText}</Link>
-        </Button>
-    )
-  }
-
-
   return (
     <div className="space-y-6">
        <div>
@@ -361,7 +339,9 @@ export default function CommunityPage() {
                                 <p className="text-sm text-muted-foreground line-clamp-2">{group.description || "No description available."}</p>
                             </CardContent>
                             <CardFooter>
-                                {renderGroupButton(group)}
+                                <Button asChild className="w-full">
+                                    <Link href={`/community/${group.id}`}>Open Chat</Link>
+                                </Button>
                             </CardFooter>
                         </Card>
                     ))}
@@ -373,3 +353,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
