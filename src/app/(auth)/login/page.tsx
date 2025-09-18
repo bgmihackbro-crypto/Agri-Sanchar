@@ -83,23 +83,24 @@ export default function LoginPage() {
     // Simulate successful verification and login
     setTimeout(() => {
       try {
-        // In a real app, we would fetch the user profile from a database here.
-        // For now, we retrieve it from localStorage if it exists from a previous signup.
         const existingProfile = localStorage.getItem("userProfile");
+        
+        let profileFound = false;
         let userProfile;
 
         if (existingProfile) {
             userProfile = JSON.parse(existingProfile);
-             // Ensure the phone number matches, simple validation
-            if (userProfile.phone !== `+91${phone}`) {
-                 toast({ variant: "destructive", title: "Login Error", description: "No account found for this phone number. Please sign up." });
-                 setLoading(false);
-                 router.push('/signup');
-                 return;
+            if (userProfile.phone === `+91${phone}`) {
+                profileFound = true;
             }
-        } else {
-            // This case handles a user trying to log in without ever signing up.
-            toast({ variant: "destructive", title: "Login Error", description: "No account found. Please sign up first." });
+        }
+
+        if (!profileFound || !userProfile) {
+            toast({ 
+                variant: "destructive", 
+                title: "Login Failed", 
+                description: "This phone number is not registered. Please sign up." 
+            });
             setLoading(false);
             router.push('/signup');
             return;
