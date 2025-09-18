@@ -2,8 +2,8 @@
 
 /**
  * Genkit flow for answering farmer questions related to farming practices,
- * crop management, and government schemes. It includes tools for analyzing
- * crop issues from images, fetching mandi prices, and returning weather info.
+ * crop management, and government schemes. It includes tools for fetching 
+ * mandi prices and returning weather info. It can also analyze images.
  *
  * This file is written in TypeScript and expects the following packages to be
  * installed in your project: genkit (or your local ai wrapper), @genkit-ai/googleai,
@@ -12,7 +12,6 @@
 
 import { z } from 'zod';
 import { ai } from '@/ai/genkit'; // your ai wrapper (make sure this exports a genkit instance)
-import { analyzeCropIssueFromPhoto } from './analyze-crop-issue-from-photo';
 import { PriceRecordSchema } from '@/ai/types';
 
 // ---------- Input / Output Schemas ----------
@@ -35,26 +34,7 @@ const AnswerFarmerQuestionOutputSchema = z.object({
 });
 export type AnswerFarmerQuestionOutput = z.infer<typeof AnswerFarmerQuestionOutputSchema>;
 
-const AnalyzeCropIssueFromPhotoOutputSchema = z.object({
-  analysisResult: z.string().describe('The analysis result of the crop issue from the photo.'),
-});
-
 // ---------- Tools ----------
-const analyzeCropIssue = ai.defineTool(
-  {
-    name: 'analyzeCropIssue',
-    description: 'Analyzes a crop issue from an image and provides a diagnosis and solution.',
-    inputSchema: z.object({
-      photoDataUri: z.string().describe("A photo of a crop issue as a data URI: 'data:<mimetype>;base64,<encoded_data>'."),
-    }),
-    outputSchema: AnalyzeCropIssueFromPhotoOutputSchema,
-  },
-  async (input) => {
-    const analysis = await analyzeCropIssueFromPhoto(input);
-    return analysis as z.infer<typeof AnalyzeCropIssueFromPhotoOutputSchema>;
-  }
-);
-
 const MandiPriceOutputSchema = z.object({
   records: z.array(PriceRecordSchema).optional(),
   error: z.string().optional(),
@@ -128,12 +108,21 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: { schema: AnswerFarmerQuestionInputSchema },
   output: { schema: z.object({ answer: z.string() }) },
-  tools: [analyzeCropIssue, getMandiPrices, getWeather],
+  tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
 
-IMPORTANT: You should ONLY use the 'analyzeCropIssue' tool if the user provides an image and asks a question about identifying a problem with it (e.g., "what's wrong with my plant?"). If the user simply asks for something else while providing an image, you do not need to use the tool. The 'analyzeCropIssue' tool's output is handled by the system and you do not need to process it.
+{{#if photoDataUri}}
+A photo has been provided. You MUST analyze this photo in the context of the user's question. If the user is asking to identify a problem (like a disease or pest), perform a step-by-step diagnosis.
+
+1.  **Observation**: Describe what you see in the image (crop type, symptoms).
+2.  **Diagnosis**: Provide the most likely diagnosis.
+3.  **Recommended Action**: Give clear, actionable steps.
+4.  **Prevention**: Give advice on how to prevent this issue in the future.
+
+Format your diagnosis using Markdown. If the question is not about a problem, use the image as context to answer the question. Here is the photo: {{media url=photoDataUri}}
+{{/if}}
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
 
@@ -195,10 +184,6 @@ You have access to the following information (RAG). Use it to answer common ques
 The farmer has asked the following question:
 "{{{question}}}"
 
-{{#if photoDataUri}}
-A photo has been provided. If the question is about identifying an issue in the photo, use the 'analyzeCropIssue' tool. The system will handle the output.
-{{/if}}
-
 {{#if city}}
 The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information. If the question is about weather, use the 'getWeather' tool.
 {{/if}}
@@ -228,15 +213,6 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     }
 
     const llmResponse = await answerFarmerQuestionPrompt(input);
-    const toolCall = llmResponse.toolCalls?.[0];
-
-    if (toolCall?.tool === 'analyzeCropIssue') {
-      const toolOutput = llmResponse.toolOutput(toolCall);
-      if (toolOutput?.analysisResult) {
-        return { answer: toolOutput.analysisResult };
-      }
-    }
-
     const output = llmResponse.output;
 
     if (output) {
@@ -246,5 +222,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
-
-    
