@@ -166,7 +166,7 @@ export const getGroupMembers = (groupId: string): GroupMember[] => {
  * @param userId The ID of the user to add.
  * @returns An object indicating success or failure.
  */
-export const addUserToGroup = (groupId: string, userId: string): {success: boolean; error?: string; userName?: string; userId?: string; userAvatar?: string} => {
+export const addUserToGroup = (groupId: string, userId: string): {success: boolean; error?: string; userName?: string;} => {
     let groups = getStoredGroups();
     const groupIndex = groups.findIndex(g => g.id === groupId);
 
@@ -177,18 +177,19 @@ export const addUserToGroup = (groupId: string, userId: string): {success: boole
     const groupData = groups[groupIndex];
 
     if (groupData.members.includes(userId)) {
-        return { success: false, error: 'User is already in this group.' };
+        // Don't return an error, just confirm success as they are in the group.
+        return { success: true };
     }
     
-    if (!userId.startsWith('AS-')) {
+    // Validate format for non-bot users
+    if (userId !== BOT_USER.id && !userId.startsWith('AS-')) {
         return { success: false, error: 'Invalid Farmer ID format.' };
     }
     
     const userName = `Farmer ${userId.substring(3, 7)}`;
-    const userAvatar = `https://picsum.photos/seed/${userId}/40/40`;
     
     groups[groupIndex].members.push(userId);
     setStoredGroups(groups);
     
-    return { success: true, userName, userId, userAvatar };
+    return { success: true, userName };
 };

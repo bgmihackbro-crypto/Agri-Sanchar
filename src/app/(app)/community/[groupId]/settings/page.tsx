@@ -134,7 +134,7 @@ export default function GroupSettingsPage() {
       setIsAddingMember(true);
       try {
           const result = addUserToGroup(groupId, newMemberId.trim());
-          if (result.success) {
+          if (result.success && result.userName) {
               toast({ title: "Member Added", description: `${result.userName} has been added to the group.` });
               // The component will re-render via the storage event listener
               setNewMemberId("");

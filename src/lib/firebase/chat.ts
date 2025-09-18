@@ -38,7 +38,6 @@ const setStoredMessages = (groupId: string, messages: Message[]) => {
     localStorage.setItem(`chat_${groupId}`, JSON.stringify(messages));
     // Dispatch a storage event to notify other tabs/components of the change
     window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
-    window.dispatchEvent(new Event('storage'));
 };
 
 const fileToDataUri = (file: File): Promise<string> => {
@@ -90,6 +89,8 @@ const maybeTriggerBotReply = (groupId: string, messageAuthorId: string) => {
             const updatedMessages = [...messages, botMessage];
             // Use setStoredMessages which handles dispatching the event
             setStoredMessages(groupId, updatedMessages);
+            // This was the missing piece to make the bot's reply show up
+            window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
 
         }, delay);
     }

@@ -58,6 +58,12 @@ function JoinGroupContent() {
     const handleJoinGroup = () => {
         if (!groupId || !userProfile) return;
 
+        // If user is already a member, just go to the chat
+        if (group?.members.includes(userProfile.farmerId)) {
+             router.push(`/community/${groupId}`);
+             return;
+        }
+
         setIsJoining(true);
         try {
             const result = addUserToGroup(groupId, userProfile.farmerId);
@@ -68,15 +74,8 @@ function JoinGroupContent() {
                 });
                 router.push(`/community/${groupId}`);
             } else {
-                if (result.error?.includes('already in this group')) {
-                     toast({
-                        title: "Already a Member",
-                        description: `You are already a member of "${group?.name}".`,
-                    });
-                     router.push(`/community/${groupId}`);
-                } else {
-                    toast({ variant: 'destructive', title: "Failed to Join", description: result.error });
-                }
+                // This case handles errors like group not found, which should be rare here.
+                toast({ variant: 'destructive', title: "Failed to Join", description: result.error });
             }
         } catch (err) {
             toast({ variant: 'destructive', title: "Error", description: "An unexpected error occurred while trying to join." });
