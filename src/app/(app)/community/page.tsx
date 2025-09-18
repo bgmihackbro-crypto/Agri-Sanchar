@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Filter, Image as ImageIcon, Search, Share, Award } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Filter, Image as ImageIcon, Search, Share, Award, PlusCircle, Users } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -19,6 +19,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
+import { useToast } from "@/hooks/use-toast";
+import { Spinner } from "@/components/ui/spinner";
 
 const initialPosts = [
   {
@@ -132,8 +137,117 @@ const PostCard = ({ post }: { post: (typeof initialPosts)[0] }) => (
     </Card>
 );
 
+const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: (newGroup: Group) => void }) => {
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const { toast } = useToast();
+    const [userProfile, setUserProfile] = useState<{ name: string; city: string; } | null>(null);
+
+    useEffect(() => {
+        const profile = localStorage.getItem('userProfile');
+        if (profile) {
+            setUserProfile(JSON.parse(profile));
+        }
+    }, []);
+
+    const handleSubmit = async () => {
+        if (!name.trim() || !userProfile) return;
+        setIsLoading(true);
+
+        try {
+            const newGroupData = {
+                name,
+                description,
+                city: userProfile.city,
+                memberCount: 1, // Start with the creator
+                createdBy: userProfile.name,
+            };
+            const newGroup = await createGroup(newGroupData);
+            toast({
+                title: "Group Created!",
+                description: `The "${newGroup.name}" group is now active.`,
+            });
+            onGroupCreated(newGroup);
+            setIsOpen(false); // Close dialog on success
+            setName('');
+            setDescription('');
+        } catch (error) {
+            console.error("Error creating group:", error);
+            toast({
+                variant: 'destructive',
+                title: "Failed to Create Group",
+                description: "There was a problem creating the group. Please try again.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create New Group
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Create a Local Group</DialogTitle>
+                    <DialogDescription>
+                        Start a new community group for farmers in your area.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                            Group Name
+                        </Label>
+                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" placeholder="e.g., Ludhiana Wheat Growers" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description" className="text-right">
+                            Description
+                        </Label>
+                        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3" placeholder="A short description of your group's purpose." />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button type="submit" onClick={handleSubmit} disabled={isLoading || !name.trim()}>
+                        {isLoading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
+                        Create Group
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 export default function CommunityPage() {
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts] = useState(initialPosts);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [isLoadingGroups, setIsLoadingGroups] = useState(true);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+        setIsLoadingGroups(true);
+        try {
+            const fetchedGroups = await getGroups();
+            setGroups(fetchedGroups);
+        } catch (error) {
+            console.error("Error fetching groups:", error);
+        } finally {
+            setIsLoadingGroups(false);
+        }
+    };
+    fetchGroups();
+  }, []);
+  
+  const handleGroupCreated = (newGroup: Group) => {
+      setGroups(prev => [newGroup, ...prev]);
+  }
 
   return (
     <div className="space-y-6">
@@ -174,13 +288,43 @@ export default function CommunityPage() {
              <TabsContent value="myposts" className="pt-4">
                 <p className="text-center text-muted-foreground">Posts you have created will appear here.</p>
             </TabsContent>
-             <TabsContent value="local" className="pt-4">
-                <p className="text-center text-muted-foreground">Local, city-based groups will be shown here.</p>
-            </TabsContent>
+             <TabsContent value="local" className="pt-4 space-y-4">
+                <div className="flex justify-end">
+                    <CreateGroupDialog onGroupCreated={handleGroupCreated} />
+                </div>
+                {isLoadingGroups ? (
+                    <div className="flex justify-center"><Spinner /></div>
+                ) : groups.length === 0 ? (
+                    <p className="text-center text-muted-foreground pt-8">No local groups yet. Why not create one?</p>
+                ) : (
+                    <div className="grid gap-4 md:grid-cols-2">
+                    {groups.map(group => (
+                        <Card key={group.id}>
+                            <CardHeader>
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <CardTitle className="text-lg">{group.name}</CardTitle>
+                                        <p className="text-sm text-muted-foreground">{group.city}</p>
+                                    </div>
+                                    <Badge variant="secondary" className="flex items-center gap-1">
+                                        <Users className="h-3 w-3"/>
+                                        {group.memberCount}
+                                    </Badge>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground line-clamp-2">{group.description || "No description available."}</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button className="w-full">Join Group</Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                    </div>
+                )}
+             </TabsContent>
         </Tabs>
 
     </div>
   );
 }
-
-    
