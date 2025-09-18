@@ -84,6 +84,7 @@ export default function LoginPage() {
     setTimeout(() => {
       try {
         const userProfile = {
+          farmerId: `AS-${phone.slice(-4)}${Date.now().toString().slice(-3)}`,
           name: "Simulated User",
           phone: "+91" + phone,
           avatar: `https://picsum.photos/seed/${phone}/100/100`,

@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ThumbsUp, MessageCircle, Send, Filter, Image as ImageIcon, Search, Share, Award, PlusCircle, Users, Crown } from "lucide-react";
@@ -24,7 +24,6 @@ import { Label } from "@/components/ui/label";
 import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
-import { CardTitle } from "@/components/ui/card";
 
 const initialPosts = [
   {
@@ -153,11 +152,11 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!name.trim() || !userProfile) {
+        if (!name.trim() || !userProfile || !userProfile.farmerId) {
              toast({
                 variant: 'destructive',
                 title: "Cannot Create Group",
-                description: "You must be logged in and provide a group name.",
+                description: "You must be logged in, have a complete profile with a Farmer ID, and provide a group name.",
             });
             return;
         }
@@ -365,5 +364,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
