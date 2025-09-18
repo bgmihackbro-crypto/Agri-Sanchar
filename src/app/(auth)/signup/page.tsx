@@ -41,7 +41,7 @@ export default function SignupPage() {
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp]_useState("");
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
@@ -150,7 +150,7 @@ export default function SignupPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
