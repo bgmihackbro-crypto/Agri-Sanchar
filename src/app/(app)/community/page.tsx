@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -46,6 +46,7 @@ const initialPostsData = [
       "My wheat crop is showing yellow spots on the leaves. What could be the issue? I've attached a photo.",
     image: "https://images.unsplash.com/photo-1529159942819-334f07de4fe5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3aGVhdHxlbnwwfHx8fDE3NTgyMjMyMTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "wheat disease",
+    mediaType: 'image',
     likes: 12,
     comments: [
       { author: "AI Expert", content: "This looks like a nitrogen deficiency. Try applying a urea-based fertilizer.", isAi: true, isExpert: true, avatar: '' },
@@ -65,6 +66,7 @@ const initialPostsData = [
     content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
     image: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyaWNlfGVufDB8fHx8MTc1ODIyMjg1MHww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "rice paddy",
+    mediaType: 'image',
     likes: 28,
     comments: [
         { author: "Sukhdev Singh", content: "Looks great, Rani ji! My crop is also doing well.", avatar: 'https://picsum.photos/seed/farm-avatar-3/40/40' },
@@ -82,6 +84,7 @@ const initialPostsData = [
     title: "Advice on buying a new tractor?",
     content: "I'm planning to buy a new tractor for my 15-acre farm. Any recommendations on brands or models? My budget is around \u20B96 lakh.",
     image: null,
+    mediaType: null,
     likes: 18,
     comments: [],
   },
@@ -98,6 +101,7 @@ const initialPostsData = [
     content: "Just sold my tomato harvest at the Jalandhar mandi for a very good price. Demand is high right now. If you have ready produce, now is a good time to sell.",
     image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0b21hdG98ZW58MHx8fHwxNzU4MjIyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "tomatoes market",
+    mediaType: 'image',
     likes: 45,
     comments: [],
   },
@@ -114,6 +118,7 @@ const initialPostsData = [
     content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
     image: "https://images.unsplash.com/photo-1708769659493-f28e3aaadb48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgyMjMyOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "solar water pump",
+    mediaType: 'image',
     likes: 31,
     comments: [],
   },
@@ -130,6 +135,7 @@ const initialPostsData = [
     content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
     image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "potato harvest",
+    mediaType: 'image',
     likes: 52,
     comments: [],
   },
@@ -145,6 +151,7 @@ const initialPostsData = [
     title: "How to make organic fertilizer at home?",
     content: "I want to move to organic farming. Can anyone share some simple methods to prepare jeevamrut or other organic fertilizers at home? Looking for low-cost methods.",
     image: null,
+    mediaType: null,
     likes: 25,
     comments: [
         { author: "AI Expert", content: "You can create Jeevamrut using cow dung, cow urine, jaggery, gram flour, and water. Mix them in a drum and let it ferment for 2-7 days.", isAi: true, isExpert: true, avatar: '' }
@@ -163,6 +170,7 @@ const initialPostsData = [
     content: "With the low rainfall this year, the drip irrigation system I installed was a lifesaver for my cotton crop. It used much less water and the yield was not affected. Highly recommend it.",
     image: "https://images.unsplash.com/photo-1712471010183-8c30c4511467?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3R0b24lMjBjcm9wfGVufDB8fHx8MTc1ODIyMzQ0NXww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "cotton crop",
+    mediaType: 'image',
     likes: 68,
     comments: [],
   },
@@ -318,6 +326,29 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post
         });
         setCommentText("");
     };
+    
+    const renderMedia = () => {
+      if (!post.image) return null;
+      
+      const mediaType = post.mediaType || 'image';
+
+      return (
+         <div className="mt-4 rounded-lg overflow-hidden border">
+           {mediaType.startsWith('image') ? (
+              <Image
+                src={post.image}
+                alt={post.title || 'Post image'}
+                width={600}
+                height={400}
+                className="w-full h-auto"
+                data-ai-hint={post.imageHint}
+              />
+           ) : (
+             <video src={post.image} className="w-full h-auto" controls />
+           )}
+         </div>
+      );
+    }
 
     return (
     <Card className="animate-fade-in-up">
@@ -341,18 +372,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups }: { post: Post
       <CardContent>
         <h4 className="font-semibold mb-2">{post.title}</h4>
         <p className="text-sm text-muted-foreground">{post.content}</p>
-        {post.image && (
-          <div className="mt-4 rounded-lg overflow-hidden border">
-            <Image
-              src={post.image}
-              alt="Crop issue"
-              width={600}
-              height={400}
-              className="w-full h-auto"
-              data-ai-hint={post.imageHint}
-            />
-          </div>
-        )}
+        {renderMedia()}
       </CardContent>
       <CardFooter className="flex items-center justify-between border-t pt-4">
          <div className="flex gap-2">
@@ -507,6 +527,115 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
     )
 }
 
+const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfile | null, onPostCreated: (post: Post) => void }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isPosting, setIsPosting] = useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [mediaFile, setMediaFile] = useState<File | null>(null);
+    const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { toast } = useToast();
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setMediaFile(file);
+            setMediaPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const resetForm = () => {
+        setTitle('');
+        setContent('');
+        setMediaFile(null);
+        setMediaPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+
+    const handlePostSubmit = () => {
+        if (!title.trim() || !content.trim() || !userProfile) {
+            toast({ variant: 'destructive', title: 'Missing Information', description: 'Please provide a title and content for your post.' });
+            return;
+        }
+
+        setIsPosting(true);
+        // Simulate posting delay and file processing
+        setTimeout(() => {
+            const newPost: Post = {
+                id: Date.now(),
+                author: userProfile.name,
+                avatar: userProfile.avatar,
+                location: userProfile.city,
+                category: "General", // Default category
+                categoryColor: "bg-gray-500",
+                time: "Just now",
+                title,
+                content,
+                image: mediaPreview, // The URL.createObjectURL result
+                mediaType: mediaFile?.type ?? null,
+                imageHint: 'user post',
+                likes: 0,
+                comments: [],
+            };
+
+            onPostCreated(newPost);
+            toast({ title: "Post Created!", description: "Your post is now live in the community feed." });
+            
+            setIsPosting(false);
+            setIsOpen(false);
+            resetForm();
+
+        }, 1500);
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetForm(); }}>
+            <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    New Post
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Create a New Post</DialogTitle>
+                    <DialogDescription>Share your thoughts, questions, or success with the community.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-2">
+                    <Input placeholder="Post Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={isPosting}/>
+                    <Textarea placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} rows={5} disabled={isPosting} />
+
+                    {mediaPreview && (
+                        <div className="relative border rounded-lg overflow-hidden">
+                             {mediaFile?.type.startsWith('image/') ? (
+                                <Image src={mediaPreview} alt="Media preview" width={500} height={300} className="w-full h-auto object-cover"/>
+                             ) : (
+                                <video src={mediaPreview} controls className="w-full h-auto"/>
+                             )}
+                            <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7 rounded-full" onClick={() => { setMediaFile(null); setMediaPreview(null); }}>
+                                <X className="h-4 w-4"/>
+                            </Button>
+                        </div>
+                    )}
+                </div>
+                <DialogFooter className="justify-between sm:justify-between">
+                    <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isPosting}>
+                        <ImageIcon className="mr-2 h-4 w-4"/>
+                        Photo/Video
+                    </Button>
+                     <Input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,video/*"/>
+                    <Button onClick={handlePostSubmit} disabled={isPosting || !title.trim() || !content.trim()}>
+                        {isPosting && <Spinner className="mr-2 h-4 w-4"/>}
+                        {isPosting ? 'Posting...' : 'Post'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+
 export default function CommunityPage() {
   const [posts, setPosts] = useState(initialPostsData);
   const [groups, setGroups] = useState<Group[]>([]);
@@ -550,6 +679,10 @@ export default function CommunityPage() {
   const handleGroupCreated = () => {
       fetchGroups();
   }
+
+  const handleNewPost = (newPost: Post) => {
+    setPosts(prevPosts => [newPost, ...prevPosts]);
+  };
   
   const handleLike = (postId: number) => {
         setPosts(prevPosts =>
@@ -585,10 +718,7 @@ export default function CommunityPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input placeholder="Search community..." className="pl-9" />
             </div>
-            <Button className="bg-primary hover:bg-primary/90">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New Post
-            </Button>
+            <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} />
         </div>
 
 
@@ -614,7 +744,11 @@ export default function CommunityPage() {
                 )}
             </TabsContent>
             <TabsContent value="categories" className="pt-4">
-                <p className="text-center text-muted-foreground">Category filters will be available here.</p>
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {['Crops', 'Pests', 'Equipment', 'Market', 'Schemes', 'Fertilizers', 'Irrigation', 'General'].map(cat => (
+                        <Button key={cat} variant="outline" className="h-20 text-base">{cat}</Button>
+                    ))}
+                 </div>
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
