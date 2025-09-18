@@ -143,7 +143,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white font-bold" disabled={loading || phone.length < 10}>
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || phone.length < 10}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
