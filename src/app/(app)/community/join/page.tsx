@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -18,8 +18,8 @@ type UserProfile = {
     avatar: string;
 };
 
-export default function JoinPage() {
-    const searchParams = useSearchParams();
+// The page now accepts searchParams as a prop, which is the standard way in the App Router.
+export default function JoinPage({ searchParams }: { searchParams: { group: string } }) {
     const router = useRouter();
     const { toast } = useToast();
 
@@ -29,7 +29,7 @@ export default function JoinPage() {
     const [isJoining, setIsJoining] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const groupId = searchParams.get('group');
+    const groupId = searchParams.group;
 
     useEffect(() => {
         const profile = localStorage.getItem("userProfile");
