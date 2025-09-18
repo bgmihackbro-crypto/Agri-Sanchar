@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow that fetches real-time weather data.
@@ -49,7 +50,7 @@ const getWeatherForecastFlow = ai.defineFlow(
       }
       const { lat, lon } = geoData[0];
 
-      // 2. Get 7-day forecast using coordinates
+      // 2. Get 5 day / 3 hour forecast data using coordinates
       const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
       const forecastResponse = await fetch(forecastUrl);
       if (!forecastResponse.ok) throw new Error('Failed to fetch forecast.');
@@ -80,10 +81,13 @@ const getWeatherForecastFlow = ai.defineFlow(
       });
       
       const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      let today = new Date().getDay();
+      const today = new Date();
       
       for(let i=0; i<7; i++){
-          const dayOfWeek = weekdays[(today + i) % 7];
+          const currentDay = new Date(today);
+          currentDay.setDate(today.getDate() + i);
+          const dayOfWeek = weekdays[currentDay.getDay()];
+          
           const item = Object.values(dailyData).find((d: any) => new Date(d.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }) === dayOfWeek);
 
           if (item) {
@@ -95,9 +99,31 @@ const getWeatherForecastFlow = ai.defineFlow(
           }
       }
 
+      // Ensure we have a 7-day forecast, even if API returns less for some reason.
+      // This part might not be strictly necessary if the above loop works correctly, but it's a good fallback.
+      if (weeklyForecasts.length < 7) {
+          const existingDays = new Set(weeklyForecasts.map(f => f.day));
+          const lastAvailableForecast = weeklyForecasts[weeklyForecasts.length - 1];
+
+          for (let i = weeklyForecasts.length; i < 7; i++) {
+              const nextDay = new Date(today);
+              nextDay.setDate(today.getDate() + i);
+              const dayOfWeek = weekdays[nextDay.getDay()];
+              
+              if (!existingDays.has(dayOfWeek) && !existingDays.has('Today') && i > 0) {
+                 weeklyForecasts.push({
+                    day: dayOfWeek,
+                    temp: lastAvailableForecast ? lastAvailableForecast.temp : "N/A",
+                    condition: lastAvailableForecast ? lastAvailableForecast.condition : "N/A",
+                });
+              }
+          }
+      }
+
+
       return {
           daily: dailyForecasts,
-          weekly: weeklyForecasts,
+          weekly: weeklyForecasts.slice(0, 7), // Ensure exactly 7 days
       };
 
     } catch (err: any) {

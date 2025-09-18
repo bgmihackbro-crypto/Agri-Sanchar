@@ -16,7 +16,7 @@ const ICONS: { [key: string]: React.ElementType } = {
     "sun": Sun,
     "rain": CloudRain,
     "clouds": Cloudy,
-    "clear": Moon, // Assume clear at night is Moon
+    "clear": Sun, 
     "haze": Haze,
     "smoke": Wind,
     "mist": Droplets,
@@ -119,8 +119,8 @@ export default function WeatherPage() {
       {!isLoading && !error && weatherData && (
         <Tabs defaultValue="weekly" className="w-full">
             <TabsList className="grid w-full grid-cols-2 max-w-sm">
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
+            <TabsTrigger value="daily">Today</TabsTrigger>
+            <TabsTrigger value="weekly">7-Day</TabsTrigger>
             </TabsList>
             <TabsContent value="daily">
             <Card>
