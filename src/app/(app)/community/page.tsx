@@ -111,7 +111,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Has anyone used the PM-KUSUM scheme for solar pumps?",
     content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
-    image: "https://images.unsplash.com/photo-1650530224334-476083f65bdd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgyMjMyOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1708769659493-f28e3aaadb48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgyMjMyOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "solar water pump",
     likes: 31,
     comments: [],
@@ -127,7 +127,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "New potato variety showing good results.",
     content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
-    image: "https://images.unsplash.com/photo-1698505949250-51f8b2c9c8c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "potato harvest",
     likes: 52,
     comments: [],
@@ -160,8 +160,8 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Drip irrigation saved my cotton crop",
     content: "With the low rainfall this year, the drip irrigation system I installed was a lifesaver for my cotton crop. It used much less water and the yield was not affected. Highly recommend it.",
-    image: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkcmlwJTIwaXJyaWdhdGlvbnxlbnwwfHx8fDE3NTgzMTE2MjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "drip irrigation",
+    image: "https://images.unsplash.com/photo-1712471010183-8c30c4511467?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3R0b24lMjBjcm9wfGVufDB8fHx8MTc1ODIyMzQ0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageHint: "cotton crop",
     likes: 68,
     comments: [],
   },
@@ -675,5 +675,4 @@ export default function CommunityPage() {
   );
 }
 
-    
     
