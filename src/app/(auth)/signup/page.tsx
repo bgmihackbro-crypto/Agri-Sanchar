@@ -80,7 +80,7 @@ export default function SignupPage() {
     setTimeout(() => {
       try {
         // Generate a unique farmer ID
-        const farmerId = `AS-${Date.now().toString().slice(-6)}-${phone.slice(-4)}`;
+        const farmerId = `AS-${Date.now().toString().slice(-7)}`;
 
         const userProfile = {
           farmerId: farmerId,
