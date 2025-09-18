@@ -43,7 +43,7 @@ const initialPostsData = [
     title: "What is this on my wheat crop?",
     content:
       "My wheat crop is showing yellow spots on the leaves. What could be the issue? I've attached a photo.",
-    image: "https://picsum.photos/seed/wheat-issue/600/400",
+    image: "https://images.unsplash.com/photo-1596649015023-5a434b41a523?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGVhdCUyMGRpc2Vhc2V8ZW58MHx8fHwxNzU4MjIyODUwfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "wheat disease",
     likes: 12,
     comments: [
@@ -62,7 +62,7 @@ const initialPostsData = [
     time: "5 hours ago",
     title: "Healthy rice paddy this season!",
     content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
-    image: "https://picsum.photos/seed/rice-paddy/600/400",
+    image: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyaWNlfGVufDB8fHx8MTc1ODIyMjg1MHww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "rice paddy",
     likes: 28,
     comments: [
@@ -95,7 +95,7 @@ const initialPostsData = [
     time: "2 days ago",
     title: "Great prices for tomatoes at Jalandhar mandi!",
     content: "Just sold my tomato harvest at the Jalandhar mandi for a very good price. Demand is high right now. If you have ready produce, now is a good time to sell.",
-    image: "https://picsum.photos/seed/tomatoes-market/600/400",
+    image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0b21hdG98ZW58MHx8fHwxNzU4MjIyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "tomatoes market",
     likes: 45,
     comments: [],
