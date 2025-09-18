@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
     output: { schema: FarmingTipsOutputSchema },
     prompt: `You are an expert agricultural advisor. Your goal is to provide actionable, concise farming tips based on the provided weather forecast for {{city}}.
 
-The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points.
+The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points. Each point must be on a new line.
 
 Focus on practical advice related to irrigation, harvesting, planting schedules, pest control, and crop protection that is relevant to the given forecast.
 
