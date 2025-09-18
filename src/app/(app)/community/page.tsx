@@ -43,7 +43,7 @@ const initialPostsData = [
     title: "What is this on my wheat crop?",
     content:
       "My wheat crop is showing yellow spots on the leaves. What could be the issue? I've attached a photo.",
-    image: "https://images.unsplash.com/photo-1596649015023-5a434b41a523?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGVhdCUyMGRpc2Vhc2V8ZW58MHx8fHwxNzU4MjIyODUwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1529159942819-334f07de4fe5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3aGVhdHxlbnwwfHx8fDE3NTgyMjMyMTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "wheat disease",
     likes: 12,
     comments: [
@@ -674,7 +674,5 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
 
     
