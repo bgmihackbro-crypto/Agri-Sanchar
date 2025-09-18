@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -155,13 +156,14 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     const handleSubmit = async () => {
         if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
-             toast({
+            toast({
                 variant: "destructive",
                 title: "Incomplete Profile",
-                description: "Please complete your profile (State and City) before creating a group.",
+                description: "There was an issue with your profile. Please ensure your city is set.",
             });
             return;
         }
@@ -185,6 +187,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             setIsOpen(false);
             setName('');
             setDescription('');
+            router.push(`/community/${newGroup.id}`);
         } catch (error) {
             console.error("Error creating group:", error);
             toast({
@@ -375,3 +378,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
