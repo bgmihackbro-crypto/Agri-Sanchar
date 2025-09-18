@@ -116,7 +116,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm animate-card-flip-in bg-background/90 backdrop-blur-sm border-gray-200/50">
+    <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-green-200/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
         <CardDescription>
@@ -143,7 +143,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || phone.length < 10}>
+            <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || phone.length < 10}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
@@ -163,7 +163,7 @@ export default function LoginPage() {
                 className="tracking-widest text-center"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold" disabled={loading || otp.length < 6}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-primary-foreground font-bold" disabled={loading || otp.length < 6}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Verifying..." : "Verify OTP & Login"}
             </Button>
