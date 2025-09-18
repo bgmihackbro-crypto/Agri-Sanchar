@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -156,9 +157,9 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const handleSubmit = async () => {
         if (!name.trim() || !userProfile?.farmerId || !userProfile?.city) {
              toast({
-                variant: 'destructive',
-                title: "Cannot Create Group",
-                description: "Your profile must have a Farmer ID and City. Please also provide a group name.",
+                variant: "destructive",
+                title: "Incomplete Profile",
+                description: "Your profile must have a Farmer ID and City to create a group. Please also provide a group name.",
             });
             return;
         }
@@ -175,11 +176,11 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
 
         try {
             const newGroup = await createGroup(newGroupData);
+            onGroupCreated(newGroup); // Optimistically update UI
             toast({
                 title: "Group Created!",
                 description: `The "${newGroupData.name}" group is now active.`,
             });
-            onGroupCreated(newGroup);
             setIsOpen(false);
             setName('');
             setDescription('');
@@ -262,22 +263,27 @@ export default function CommunityPage() {
   }, []);
   
   const handleGroupCreated = (newGroup: Group) => {
-      setGroups(prev => [newGroup, ...prev].sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
+      setGroups(prev => [newGroup, ...prev]);
   }
 
   const renderGroupButton = (group: Group) => {
     if (!userProfile || !userProfile.farmerId) return null;
 
     const isOwner = group.ownerId === userProfile.farmerId;
-    const isMember = group.members.includes(userProfile.farmerId);
+    
+    let buttonText = "Open Chat";
+    let buttonVariant: "default" | "secondary" | "outline" = "default";
 
     if (isOwner) {
-        return <Button className="w-full" variant="secondary">Manage Group</Button>
+        buttonText = "Manage & Chat";
+        buttonVariant = "secondary";
     }
-    if (isMember) {
-        return <Button className="w-full" variant="outline">Leave Group</Button>
-    }
-    return <Button className="w-full">Join Group</Button>
+
+    return (
+        <Button asChild className="w-full" variant={buttonVariant}>
+            <Link href={`/community/${group.id}`}>{buttonText}</Link>
+        </Button>
+    )
   }
 
 
@@ -367,7 +373,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
-
-    
