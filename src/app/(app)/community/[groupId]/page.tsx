@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Send, Paperclip, Video, X, Settings, Users } from "lucide-react";
+import { ArrowLeft, Send, Paperclip, Video, X, Settings, Users, MoreVertical, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,9 +14,21 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { format } from "date-fns";
 import { getGroup, type Group } from "@/lib/firebase/groups";
-import { listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
+import { listenToMessages, sendMessage, clearChat, type Message } from "@/lib/firebase/chat";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type UserProfile = {
   name: string;
@@ -131,6 +143,13 @@ export default function GroupChatPage() {
         setUploadProgress(0);
     }
   };
+  
+  const handleClearChat = () => {
+      if (groupId) {
+          clearChat(groupId);
+          toast({ title: 'Chat Cleared', description: 'All messages have been removed from this chat.' });
+      }
+  }
 
   const renderMedia = (message: Message) => {
       if (message.mediaUrl) {
@@ -154,7 +173,7 @@ export default function GroupChatPage() {
     <div className="h-full">
         <Card className="h-[calc(100vh-10rem)] flex flex-col">
             <CardHeader className="flex flex-row items-center justify-between gap-4 border-b">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
                     <Button variant="ghost" size="icon" onClick={() => router.push('/community')}>
                         <ArrowLeft />
                     </Button>
@@ -162,21 +181,54 @@ export default function GroupChatPage() {
                         <AvatarImage src={groupDetails?.avatarUrl ?? `https://picsum.photos/seed/${groupId}/40/40`} data-ai-hint="group icon" />
                         <AvatarFallback>{groupDetails?.name?.substring(0,2) ?? 'G'}</AvatarFallback>
                     </Avatar>
-                    <div>
-                        <h2 className="text-lg font-semibold font-headline">{groupDetails?.name ?? 'Loading...'}</h2>
+                    <div className="min-w-0">
+                        <h2 className="text-lg font-semibold font-headline truncate">{groupDetails?.name ?? 'Loading...'}</h2>
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Users className="h-3 w-3" />
                             {groupDetails?.members?.length} members
                         </p>
                     </div>
                 </div>
-                 {isOwner && (
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/community/${groupId}/settings`}>
-                             <Settings />
-                        </Link>
-                    </Button>
-                )}
+                <div className="flex items-center">
+                     {isOwner && (
+                        <Button variant="ghost" size="icon" asChild>
+                            <Link href={`/community/${groupId}/settings`}>
+                                 <Settings />
+                            </Link>
+                        </Button>
+                    )}
+                    <AlertDialog>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <MoreVertical />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Clear Chat
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                         <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will permanently delete all messages in this chat. This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleClearChat} className="bg-destructive hover:bg-destructive/90">
+                                    Clear
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden p-0">
                  <ScrollArea className="h-full p-4" ref={scrollAreaRef}>

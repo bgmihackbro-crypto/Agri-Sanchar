@@ -164,3 +164,16 @@ export const listenToMessages = (groupId: string, callback: (messages: Message[]
         window.removeEventListener('new-message', handleUpdate);
     };
 };
+
+/**
+ * Deletes all messages for a specific group chat from localStorage.
+ */
+export const clearChat = (groupId: string): void => {
+    if (typeof window === 'undefined') return;
+    
+    // Remove the chat messages for the group
+    localStorage.removeItem(`chat_${groupId}`);
+    
+    // Dispatch an event to notify the UI to update
+    window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
+};
