@@ -91,6 +91,25 @@ export const updateGroup = (groupId: string, data: Partial<Omit<Group, 'id'>>) =
 };
 
 /**
+ * Deletes a group and its associated chat messages from localStorage.
+ * @param groupId The ID of the group to delete.
+ */
+export const deleteGroup = (groupId: string): void => {
+    if (typeof window === 'undefined') return;
+    
+    // Remove the group
+    const groups = getStoredGroups();
+    const updatedGroups = groups.filter(g => g.id !== groupId);
+    setStoredGroups(updatedGroups);
+
+    // Remove the associated chat messages
+    localStorage.removeItem(`chat_${groupId}`);
+    
+    // The 'storage' event is already dispatched by setStoredGroups
+};
+
+
+/**
  * Uploads a new avatar for a group. For localStorage, this will be a data URL.
  * @param file The image file to upload.
  * @returns The data URL of the image.

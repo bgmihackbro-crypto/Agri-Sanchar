@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Save, Upload, Camera, Users, UserPlus, Link as LinkIcon, Crown } from "lucide-react";
+import { ArrowLeft, Save, Upload, Camera, Users, UserPlus, Link as LinkIcon, Crown, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,9 +12,21 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
-import { getGroup, updateGroup, uploadGroupAvatar, addUserToGroup, getGroupMembers, type GroupMember } from "@/lib/firebase/groups";
+import { getGroup, updateGroup, uploadGroupAvatar, addUserToGroup, getGroupMembers, type GroupMember, deleteGroup } from "@/lib/firebase/groups";
 import type { Group } from "@/lib/firebase/groups";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 
 type UserProfile = {
   farmerId: string;
@@ -32,6 +44,7 @@ export default function GroupSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddingMember, setIsAddingMember] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const params = useParams();
@@ -142,6 +155,20 @@ export default function GroupSettingsPage() {
     toast({ title: "Link Copied!", description: "The invite link has been copied to your clipboard." });
   };
   
+  const handleDeleteGroup = () => {
+      if (!group) return;
+      setIsDeleting(true);
+      try {
+          deleteGroup(groupId);
+          toast({ title: "Group Deleted", description: `The group "${group.name}" has been permanently deleted.`});
+          router.push('/community');
+      } catch (error) {
+          console.error("Error deleting group:", error);
+          toast({ variant: "destructive", title: "Error", description: "Failed to delete the group." });
+          setIsDeleting(false);
+      }
+  }
+
   if (isLoading) {
     return <div className="flex h-full items-center justify-center"><Spinner className="h-8 w-8" /></div>;
   }
@@ -264,6 +291,43 @@ export default function GroupSettingsPage() {
             </div>
         </CardContent>
       </Card>
+      
+      <Card className="border-destructive">
+          <CardHeader>
+              <CardTitle className="text-destructive">Danger Zone</CardTitle>
+              <CardDescription>These actions cannot be undone.</CardDescription>
+          </CardHeader>
+          <CardContent>
+              <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                      <Button variant="destructive" className="w-full">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete Group
+                      </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the &quot;{group.name}&quot; group and all of its messages.
+                          </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                              onClick={handleDeleteGroup}
+                              disabled={isDeleting}
+                              className="bg-destructive hover:bg-destructive/90"
+                          >
+                               {isDeleting && <Spinner className="mr-2 h-4 w-4" />}
+                              Delete
+                          </AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+              </AlertDialog>
+          </CardContent>
+      </Card>
+
 
     </div>
   );
