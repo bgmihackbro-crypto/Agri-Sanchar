@@ -111,7 +111,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Has anyone used the PM-KUSUM scheme for solar pumps?",
     content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
-    image: "https://images.unsplash.com/photo-1629587243384-3a7895790697?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgzMTE0ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1650530224334-476083f65bdd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgyMjMyOTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "solar water pump",
     likes: 31,
     comments: [],
@@ -127,7 +127,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "New potato variety showing good results.",
     content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
-    image: "https://images.unsplash.com/photo-1590165482361-a0c36410319b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG8lMjBoYXJ2ZXN0fGVufDB8fHx8MTc1ODMxMTUxN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1698505949250-51f8b2c9c8c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "potato harvest",
     likes: 52,
     comments: [],
@@ -675,4 +675,5 @@ export default function CommunityPage() {
   );
 }
 
+    
     
