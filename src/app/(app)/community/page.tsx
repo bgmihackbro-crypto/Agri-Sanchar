@@ -4,10 +4,10 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Filter, Image as ImageIcon, Search, Share, Award, PlusCircle, Users } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Filter, Image as ImageIcon, Search, Share, Award, PlusCircle, Users, Crown } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { CardTitle } from "@/components/ui/card";
 
 const initialPosts = [
   {
@@ -65,6 +66,13 @@ const initialPosts = [
     ],
   },
 ];
+
+type UserProfile = {
+    farmerId: string;
+    name: string;
+    city: string;
+};
+
 
 const PostCard = ({ post }: { post: (typeof initialPosts)[0] }) => (
     <Card className="animate-fade-in-up">
@@ -137,23 +145,22 @@ const PostCard = ({ post }: { post: (typeof initialPosts)[0] }) => (
     </Card>
 );
 
-const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: (newGroup: Group) => void }) => {
+const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (newGroup: Group) => void, userProfile: UserProfile | null }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const { toast } = useToast();
-    const [userProfile, setUserProfile] = useState<{ name: string; city: string; } | null>(null);
-
-    useEffect(() => {
-        const profile = localStorage.getItem('userProfile');
-        if (profile) {
-            setUserProfile(JSON.parse(profile));
-        }
-    }, []);
 
     const handleSubmit = async () => {
-        if (!name.trim() || !userProfile) return;
+        if (!name.trim() || !userProfile) {
+             toast({
+                variant: 'destructive',
+                title: "Cannot Create Group",
+                description: "You must be logged in and provide a group name.",
+            });
+            return;
+        }
         setIsLoading(true);
 
         try {
@@ -161,7 +168,8 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: (newGroup: Grou
                 name,
                 description,
                 city: userProfile.city,
-                memberCount: 1, // Start with the creator
+                ownerId: userProfile.farmerId,
+                members: [userProfile.farmerId], // Creator is the first member
                 createdBy: userProfile.name,
             };
             const newGroup = await createGroup(newGroupData);
@@ -229,8 +237,14 @@ export default function CommunityPage() {
   const [posts] = useState(initialPosts);
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoadingGroups, setIsLoadingGroups] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+        setUserProfile(JSON.parse(profile));
+    }
+
     const fetchGroups = async () => {
         setIsLoadingGroups(true);
         try {
@@ -248,6 +262,22 @@ export default function CommunityPage() {
   const handleGroupCreated = (newGroup: Group) => {
       setGroups(prev => [newGroup, ...prev]);
   }
+
+  const renderGroupButton = (group: Group) => {
+    if (!userProfile) return null;
+
+    const isOwner = group.ownerId === userProfile.farmerId;
+    const isMember = group.members.includes(userProfile.farmerId);
+
+    if (isOwner) {
+        return <Button className="w-full" variant="secondary">Manage Group</Button>
+    }
+    if (isMember) {
+        return <Button className="w-full" variant="outline">Leave Group</Button>
+    }
+    return <Button className="w-full">Join Group</Button>
+  }
+
 
   return (
     <div className="space-y-6">
@@ -290,7 +320,7 @@ export default function CommunityPage() {
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
-                    <CreateGroupDialog onGroupCreated={handleGroupCreated} />
+                    <CreateGroupDialog onGroupCreated={handleGroupCreated} userProfile={userProfile} />
                 </div>
                 {isLoadingGroups ? (
                     <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">Loading groups...</p></div>
@@ -304,11 +334,18 @@ export default function CommunityPage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <CardTitle className="text-lg">{group.name}</CardTitle>
-                                        <p className="text-sm text-muted-foreground">{group.city}</p>
+                                        <div className="text-sm text-muted-foreground">
+                                          <span>{group.city}</span>
+                                          <span className="mx-1">•</span>
+                                          <span className="flex items-center gap-1.5 -ml-1">
+                                             <Crown className="h-4 w-4 text-amber-500"/>
+                                             {group.createdBy}
+                                          </span>
+                                        </div>
                                     </div>
                                     <Badge variant="secondary" className="flex items-center gap-1">
                                         <Users className="h-3 w-3"/>
-                                        {group.memberCount}
+                                        {group.members.length}
                                     </Badge>
                                 </div>
                             </CardHeader>
@@ -316,7 +353,7 @@ export default function CommunityPage() {
                                 <p className="text-sm text-muted-foreground line-clamp-2">{group.description || "No description available."}</p>
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full">Join Group</Button>
+                                {renderGroupButton(group)}
                             </CardFooter>
                         </Card>
                     ))}

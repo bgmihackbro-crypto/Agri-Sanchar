@@ -7,13 +7,17 @@ export interface Group {
     name: string;
     description?: string;
     city: string;
-    memberCount: number;
+    ownerId: string; // ID of the user who created the group
+    members: string[]; // Array of member IDs
     createdBy: string;
     createdAt: Timestamp;
 }
 
 // Type for creating a new group, `id` and `createdAt` will be generated.
-export type NewGroupData = Omit<Group, 'id' | 'createdAt'>;
+export type NewGroupData = Omit<Group, 'id' | 'createdAt' | 'memberCount'> & {
+    memberCount?: number; // Make optional as it can be derived from members.length
+};
+
 
 /**
  * Creates a new group in Firestore.
