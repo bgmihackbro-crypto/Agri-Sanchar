@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
     output: { schema: FarmingTipsOutputSchema },
     prompt: `You are an expert agricultural advisor. Your goal is to provide actionable, concise farming tips based on the provided weather forecast for {{city}}.
 
-The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points. Each point must be on a new line.
+The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points.
 
 Focus on practical advice related to irrigation, harvesting, planting schedules, pest control, and crop protection that is relevant to the given forecast.
 
@@ -46,7 +46,9 @@ Focus on practical advice related to irrigation, harvesting, planting schedules,
 - {{day}}: {{temp}}, {{condition}}
 {{/each}}
 
-Based on this, generate your tips as a numbered list (e.g., 1. Tip one. 2. Tip two.). For example, if you see high heat and no rain, suggest increased irrigation. If you see upcoming rain, suggest holding off on watering.
+Based on this, generate your tips as a numbered list. Each point must be on a new line. For example:
+1) Tip one.
+2) Tip two.
 `,
 });
 

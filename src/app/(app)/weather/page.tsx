@@ -168,7 +168,12 @@ export default function WeatherPage() {
                 <TabsContent value="daily">
                 <Card>
                     <CardHeader>
-                    <CardTitle className="font-headline">Today's Forecast</CardTitle>
+                    <CardTitle className="font-headline flex items-center justify-between">
+                      <span>Today's Forecast</span>
+                      {weatherData.current?.temp && (
+                        <span className="text-2xl font-bold text-primary">{weatherData.current.temp}</span>
+                      )}
+                    </CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {weatherData.daily?.map((forecast) => {
