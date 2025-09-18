@@ -144,22 +144,6 @@ export default function WeatherPage() {
                     <p className="text-lg font-bold">{weatherData.current?.pressure}</p>
                 </div>
             </CardContent>
-             <CardContent className="grid grid-cols-2 gap-4">
-                 <div className="flex items-center justify-center gap-4 p-4 rounded-lg bg-amber-400/10 border border-amber-400/20">
-                     <Sunrise className="w-10 h-10 text-amber-500"/>
-                     <div>
-                         <p className="font-semibold text-amber-600">Sunrise</p>
-                         <p className="text-xl font-bold text-amber-700">{weatherData.current?.sunrise}</p>
-                     </div>
-                 </div>
-                  <div className="flex items-center justify-center gap-4 p-4 rounded-lg bg-indigo-400/10 border border-indigo-400/20">
-                     <Sunset className="w-10 h-10 text-indigo-500"/>
-                     <div>
-                         <p className="font-semibold text-indigo-600">Sunset</p>
-                         <p className="text-xl font-bold text-indigo-700">{weatherData.current?.sunset}</p>
-                     </div>
-                 </div>
-             </CardContent>
           </Card>
 
 

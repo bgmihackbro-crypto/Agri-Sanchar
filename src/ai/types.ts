@@ -45,8 +45,6 @@ const CurrentWeatherSchema = z.object({
     humidity: z.string(),
     windSpeed: z.string(),
     pressure: z.string(),
-    sunrise: z.string(),
-    sunset: z.string(),
 });
 
 export const WeatherForecastInputSchema = z.object({

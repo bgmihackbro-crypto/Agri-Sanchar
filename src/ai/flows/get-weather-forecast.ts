@@ -73,8 +73,6 @@ const getWeatherForecastFlow = ai.defineFlow(
         humidity: `${weatherData.main.humidity}%`,
         windSpeed: `${weatherData.wind.speed} m/s`,
         pressure: `${weatherData.main.pressure} hPa`,
-        sunrise: new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
-        sunset: new Date(weatherData.sys.sunset * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
       };
 
       const dailyForecasts: z.infer<typeof WeatherForecastOutputSchema.shape.daily.element>[] = [];
