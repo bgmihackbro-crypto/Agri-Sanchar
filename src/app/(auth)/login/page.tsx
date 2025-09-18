@@ -83,8 +83,10 @@ export default function LoginPage() {
     // Simulate successful verification and login
     setTimeout(() => {
       try {
+        const farmerId = `AS-${Date.now().toString().slice(-7)}`;
+        
         const userProfile = {
-          farmerId: `AS-${phone.slice(-4)}${Date.now().toString().slice(-3)}`,
+          farmerId: farmerId,
           name: "Simulated User",
           phone: "+91" + phone,
           avatar: `https://picsum.photos/seed/${phone}/100/100`,
