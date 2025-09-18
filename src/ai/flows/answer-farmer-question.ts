@@ -120,11 +120,7 @@ When you use the 'getMandiPrices' tool, you receive JSON data. You must format t
 {{#if history}}
 This is the conversation history. Use it to provide contextual answers.
 {{#each history}}
-{{#if (eq role 'user')}}
-User: {{content}}
-{{else}}
-AI: {{content}}
-{{/if}}
+{{#if (eq this.role 'user')}}User: {{this.content}}{{else}}AI: {{this.content}}{{/if}}
 {{/each}}
 {{/if}}
 
@@ -237,5 +233,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
-
-    
