@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -568,6 +569,8 @@ export default function CommunityPage() {
 
   const userGroups = groups.filter(g => userProfile && g.members.includes(userProfile.farmerId));
 
+  const myPosts = posts.filter(p => userProfile && p.author === userProfile.name);
+
   return (
     <div className="space-y-6">
        <div>
@@ -590,8 +593,9 @@ export default function CommunityPage() {
 
 
        <Tabs defaultValue="home" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
+                <TabsTrigger value="myposts">My Posts</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="local">Local Groups</TabsTrigger>
             </TabsList>
@@ -599,6 +603,15 @@ export default function CommunityPage() {
                 {posts.map((post) => (
                     <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} />
                 ))}
+            </TabsContent>
+            <TabsContent value="myposts" className="space-y-4 pt-4">
+                {myPosts.length > 0 ? (
+                    myPosts.map((post) => (
+                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} />
+                    ))
+                ) : (
+                    <p className="text-center text-muted-foreground pt-8">You haven't created any posts yet.</p>
+                )}
             </TabsContent>
             <TabsContent value="categories" className="pt-4">
                 <p className="text-center text-muted-foreground">Category filters will be available here.</p>
@@ -670,5 +683,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
