@@ -160,7 +160,7 @@ export default function LoginPage() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={loading}
-                className="tracking-widest text-center"
+                className="tracking-widest text-center border-green-400 focus-visible:ring-green-400"
               />
             </div>
             <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || otp.length < 6}>
