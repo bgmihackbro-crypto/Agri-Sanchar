@@ -111,13 +111,12 @@ export const listenToMessages = (groupId: string, callback: (messages: Message[]
 /**
  * Fetches the details of a single group.
  */
-export const getGroupDetails = async (groupId: string): Promise<Omit<Group, 'members'> | null> => {
+export const getGroup = async (groupId: string): Promise<Group | null> => {
     const docRef = doc(db, 'groups', groupId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        const { members, ...rest } = docSnap.data() as Group;
-        return { id: docSnap.id, ...rest };
+        return { id: docSnap.id, ...docSnap.data() } as Group;
     } else {
         return null;
     }

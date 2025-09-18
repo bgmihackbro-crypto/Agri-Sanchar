@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Send, Paperclip, Video, X } from "lucide-react";
+import { ArrowLeft, Send, Paperclip, Video, X, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,9 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { format } from "date-fns";
 import type { Group } from "@/lib/firebase/groups";
-import { getGroupDetails, listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
+import { getGroup, listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
 import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
 
 type UserProfile = {
   name: string;
@@ -32,7 +33,7 @@ export default function GroupChatPage() {
   const [isSending, setIsSending] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [groupDetails, setGroupDetails] = useState<Omit<Group, 'members'> | null>(null);
+  const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   
   const params = useParams();
   const router = useRouter();
@@ -52,8 +53,12 @@ export default function GroupChatPage() {
 
     if (groupId) {
         setIsLoading(true);
-        getGroupDetails(groupId).then(details => {
-            setGroupDetails(details);
+        getGroup(groupId).then(details => {
+            if(details) {
+                setGroupDetails(details);
+            } else {
+                 toast({ variant: 'destructive', title: 'Error', description: 'Group not found.'});
+            }
         }).catch(err => {
             console.error(err);
             toast({ variant: 'destructive', title: 'Error', description: 'Could not load group details.'});
@@ -131,6 +136,8 @@ export default function GroupChatPage() {
       }
       return null;
   }
+  
+  const isOwner = userProfile?.farmerId === groupDetails?.ownerId;
 
   if (isLoading && messages.length === 0) {
       return <div className="h-full flex items-center justify-center"><Spinner className="h-8 w-8" /></div>
@@ -139,18 +146,27 @@ export default function GroupChatPage() {
   return (
     <div className="h-full">
         <Card className="h-[calc(100vh-10rem)] flex flex-col">
-            <CardHeader className="flex flex-row items-center gap-4 border-b">
-                 <Button variant="ghost" size="icon" onClick={() => router.push('/community')}>
-                    <ArrowLeft />
-                 </Button>
-                <Avatar>
-                    <AvatarImage src={`https://picsum.photos/seed/${groupId}/40/40`} data-ai-hint="group icon" />
-                    <AvatarFallback>{groupDetails?.name?.substring(0,2) ?? 'G'}</AvatarFallback>
-                </Avatar>
-                <div>
-                    <h2 className="text-lg font-semibold font-headline">{groupDetails?.name ?? 'Loading...'}</h2>
-                    <p className="text-xs text-muted-foreground">Group Chat</p>
+            <CardHeader className="flex flex-row items-center justify-between gap-4 border-b">
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/community')}>
+                        <ArrowLeft />
+                    </Button>
+                    <Avatar>
+                        <AvatarImage src={groupDetails?.avatarUrl ?? `https://picsum.photos/seed/${groupId}/40/40`} data-ai-hint="group icon" />
+                        <AvatarFallback>{groupDetails?.name?.substring(0,2) ?? 'G'}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <h2 className="text-lg font-semibold font-headline">{groupDetails?.name ?? 'Loading...'}</h2>
+                        <p className="text-xs text-muted-foreground">{groupDetails?.members?.length} members</p>
+                    </div>
                 </div>
+                 {isOwner && (
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href={`/community/${groupId}/settings`}>
+                             <Settings />
+                        </Link>
+                    </Button>
+                )}
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden p-0">
                  <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
@@ -177,7 +193,7 @@ export default function GroupChatPage() {
                             >
                                 <div className="flex justify-between items-center mb-1">
                                     <p className="text-xs font-semibold opacity-80">{message.author.name}</p>
-                                    <p className="text-xs opacity-75">{format(message.timestamp.toDate(), "p")}</p>
+                                    <p className="text-xs opacity-75">{message.timestamp ? format(message.timestamp.toDate(), "p") : ''}</p>
                                 </div>
                                 {message.text && <p className="text-sm whitespace-pre-wrap">{message.text}</p>}
                                 {renderMedia(message)}
