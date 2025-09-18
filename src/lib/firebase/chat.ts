@@ -74,7 +74,7 @@ const maybeTriggerBotReply = (groupId: string, messageAuthorId: string) => {
     }
 
     // Have the bot reply sometimes, not always
-    if (Math.random() > 0.6) { // 60% chance to reply
+    if (Math.random() > 0.4) { // 60% chance to reply
         const delay = Math.random() * 2000 + 1000; // 1-3 second delay
 
         setTimeout(() => {
@@ -88,6 +88,7 @@ const maybeTriggerBotReply = (groupId: string, messageAuthorId: string) => {
             
             const messages = getStoredMessages(groupId);
             const updatedMessages = [...messages, botMessage];
+            // Use setStoredMessages which handles dispatching the event
             setStoredMessages(groupId, updatedMessages);
 
         }, delay);
