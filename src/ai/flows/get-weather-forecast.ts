@@ -16,6 +16,7 @@ import {
   type WeatherForecastOutput,
 } from '@/ai/types';
 import { z } from 'zod';
+import { getFarmingTips } from './get-farming-tips';
 
 // ---------- Flow ----------
 
@@ -64,6 +65,7 @@ const getWeatherForecastFlow = ai.defineFlow(
       
       const weatherData = await weatherResponse.json();
       const forecastData = await forecastResponse.json();
+      const timezoneOffset = forecastData.city.timezone;
       
       // Process data for the UI
       const current = {
@@ -81,9 +83,9 @@ const getWeatherForecastFlow = ai.defineFlow(
       // Create daily forecast (next 4 timestamps)
       for (let i = 0; i < 4 && i < forecastData.list.length; i++) {
          const item = forecastData.list[i];
-         const date = new Date(item.dt * 1000);
+         const date = new Date((item.dt + timezoneOffset) * 1000);
          dailyForecasts.push({
-             time: date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }),
+             time: date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, timeZone: 'UTC' }),
              temp: `${Math.round(item.main.temp)}°C`,
              condition: item.weather[0].main,
          });
@@ -101,23 +103,32 @@ const getWeatherForecastFlow = ai.defineFlow(
 
               const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
               const today = new Date();
-              const isToday = date.getDate() === today.getDate() &&
-                              date.getMonth() === today.getMonth() &&
-                              date.getFullYear() === today.getFullYear();
+              today.setHours(0,0,0,0);
+              const itemDate = new Date(date);
+              itemDate.setHours(0,0,0,0);
+              
+              let dayLabel = dayOfWeek;
+              if (itemDate.getTime() === today.getTime()) {
+                  dayLabel = 'Today';
+              }
+
 
               weeklyForecasts.push({
-                  day: isToday ? 'Today' : dayOfWeek,
+                  day: dayLabel,
                   temp: `${Math.round(item.main.temp_max)}°C`,
                   condition: item.weather[0].main,
               });
           }
       });
 
+      // 3. Get AI farming tips
+      const farmingTips = await getFarmingTips({ city, current, weekly: weeklyForecasts });
 
       return {
           current,
           daily: dailyForecasts,
-          weekly: weeklyForecasts, 
+          weekly: weeklyForecasts,
+          farmingTips: farmingTips.tips,
       };
 
     } catch (err: any) {

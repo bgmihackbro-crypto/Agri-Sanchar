@@ -43,7 +43,7 @@ const CurrentWeatherSchema = z.object({
     condition: z.string(),
     realFeel: z.string(),
     humidity: z.string(),
-    windSpeed: z.string(),
+    windSpeed: zstring(),
     pressure: z.string(),
 });
 
@@ -56,6 +56,7 @@ export const WeatherForecastOutputSchema = z.object({
   current: CurrentWeatherSchema.optional(),
   daily: z.array(DailyForecastSchema).optional(),
   weekly: z.array(WeeklyForecastSchema).optional(),
+  farmingTips: z.string().optional(),
   error: z.string().optional(),
 });
 export type WeatherForecastOutput = z.infer<typeof WeatherForecastOutputSchema>;

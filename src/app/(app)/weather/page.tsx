@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze, Sunrise, Sunset, Gauge } from "lucide-react";
+import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze, Sunrise, Sunset, Gauge, Bot } from "lucide-react";
 import { useNotifications } from "@/context/notification-context";
 import { getWeatherForecast } from "@/ai/flows/get-weather-forecast";
 import { type WeatherForecastOutput } from "@/ai/types";
@@ -145,6 +145,19 @@ export default function WeatherPage() {
                 </div>
             </CardContent>
           </Card>
+          
+          {weatherData.farmingTips && (
+            <Card className="bg-green-50 border-green-200">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-headline text-green-800">
+                        <Bot className="h-6 w-6" /> AI Farming Tips
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="text-green-900 whitespace-pre-wrap">{weatherData.farmingTips}</div>
+                </CardContent>
+            </Card>
+          )}
 
 
             <Tabs defaultValue="weekly" className="w-full">
