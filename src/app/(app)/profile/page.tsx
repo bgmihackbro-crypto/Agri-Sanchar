@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Save, Check, Upload } from "lucide-react";
+import { Edit, Save, Check, Upload, Hash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -32,6 +32,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState({
+    farmerId: "",
     name: "Farmer",
     phone: "",
     avatar: "https://picsum.photos/seed/farm-icon/100/100",
@@ -51,6 +52,9 @@ export default function ProfilePage() {
       if (parsedProfile.state) {
         setAvailableCities(indianCities[parsedProfile.state] || []);
       }
+    } else {
+        // If no profile, enter edit mode by default
+        setIsEditing(true);
     }
   }, []);
 
@@ -145,6 +149,20 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div className="space-y-2">
+              <Label htmlFor="farmerId">Farmer ID</Label>
+               <div className="flex items-center gap-2">
+                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
+                    <Hash className="h-4 w-4" />
+                 </span>
+                <Input
+                  id="farmerId"
+                  value={profile.farmerId}
+                  readOnly
+                  className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none bg-muted font-mono"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input
@@ -232,7 +250,7 @@ export default function ProfilePage() {
                 />
               )}
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="annualIncome">Annual Income (₹)</Label>
                <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">

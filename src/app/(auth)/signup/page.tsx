@@ -79,7 +79,11 @@ export default function SignupPage() {
     // Simulate successful verification and signup
     setTimeout(() => {
       try {
+        // Generate a unique farmer ID
+        const farmerId = `AS-${Date.now().toString().slice(-6)}-${phone.slice(-4)}`;
+
         const userProfile = {
+          farmerId: farmerId,
           name: name,
           phone: "+91" + phone,
           avatar: `https://picsum.photos/seed/${phone}/100/100`,
@@ -94,10 +98,10 @@ export default function SignupPage() {
 
         toast({
           title: "Welcome to Agri-Sanchar! (Simulated)",
-          description: "Your account has been created successfully.",
+          description: "Your account has been created. Please complete your profile.",
         });
 
-        router.push("/dashboard");
+        router.push("/profile");
       } catch (error) {
         console.error("Simulated signup error:", error);
         toast({
@@ -152,7 +156,7 @@ export default function SignupPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Sending OTP..." : "Send OTP"}
             </Button>
@@ -172,7 +176,7 @@ export default function SignupPage() {
                 className="tracking-widest text-center border-green-400 focus-visible:ring-green-400"
               />
             </div>
-            <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || otp.length < 6}>
+            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || otp.length < 6}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Verifying..." : "Verify OTP & Create Account"}
             </Button>
