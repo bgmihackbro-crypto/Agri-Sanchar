@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Send, Paperclip, Video, X, Settings } from "lucide-react";
+import { ArrowLeft, Send, Paperclip, Video, X, Settings, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,8 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { format } from "date-fns";
 import type { Group } from "@/lib/firebase/groups";
-import { getGroup, listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
+import { getGroup } from "@/lib/firebase/groups";
+import { listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 
@@ -157,7 +158,10 @@ export default function GroupChatPage() {
                     </Avatar>
                     <div>
                         <h2 className="text-lg font-semibold font-headline">{groupDetails?.name ?? 'Loading...'}</h2>
-                        <p className="text-xs text-muted-foreground">{groupDetails?.members?.length} members</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Users className="h-3 w-3" />
+                            {groupDetails?.members?.length} members
+                        </p>
                     </div>
                 </div>
                  {isOwner && (

@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Save, Upload, Camera } from "lucide-react";
+import { ArrowLeft, Save, Upload, Camera, Users, UserPlus, Link as LinkIcon, Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { getGroup, updateGroup, uploadGroupAvatar, addUserToGroup, getGroupMembers, type GroupMember } from "@/lib/firebase/groups";
 import type { Group } from "@/lib/firebase/groups";
-import { getGroup, updateGroup, uploadGroupAvatar } from "@/lib/firebase/groups";
+import { Separator } from "@/components/ui/separator";
 
 type UserProfile = {
   farmerId: string;
@@ -25,8 +26,12 @@ export default function GroupSettingsPage() {
   const [description, setDescription] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [members, setMembers] = useState<GroupMember[]>([]);
+  const [newMemberId, setNewMemberId] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAddingMember, setIsAddingMember] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const params = useParams();
@@ -43,33 +48,34 @@ export default function GroupSettingsPage() {
     }
 
     if (groupId) {
-      getGroup(groupId)
-        .then((groupData) => {
+      Promise.all([
+        getGroup(groupId),
+        getGroupMembers(groupId)
+      ]).then(([groupData, memberData]) => {
           if (groupData) {
             setGroup(groupData);
             setName(groupData.name);
             setDescription(groupData.description || "");
             setAvatarPreview(groupData.avatarUrl || null);
+            setMembers(memberData);
           } else {
             toast({ variant: "destructive", title: "Group not found" });
             router.push("/community");
           }
-        })
-        .catch((err) => {
+      }).catch((err) => {
           console.error(err);
           toast({ variant: "destructive", title: "Failed to load group details" });
-        })
-        .finally(() => setIsLoading(false));
+      }).finally(() => setIsLoading(false));
     }
   }, [groupId, router, toast]);
 
   // Authorization check
   useEffect(() => {
-    if (group && userProfile && group.ownerId !== userProfile.farmerId) {
+    if (!isLoading && group && userProfile && group.ownerId !== userProfile.farmerId) {
       toast({ variant: "destructive", title: "Unauthorized", description: "You are not the owner of this group." });
       router.push(`/community/${groupId}`);
     }
-  }, [group, userProfile, groupId, router, toast]);
+  }, [group, userProfile, groupId, router, toast, isLoading]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -98,13 +104,38 @@ export default function GroupSettingsPage() {
       await updateGroup(groupId, updatedData);
 
       toast({ title: "Success", description: "Group details updated successfully." });
-      router.push(`/community/${groupId}`);
     } catch (error) {
       console.error("Error updating group:", error);
       toast({ variant: "destructive", title: "Error", description: "Failed to save changes." });
     } finally {
       setIsSaving(false);
     }
+  };
+  
+  const handleAddMember = async () => {
+      if (!group || !newMemberId.trim()) return;
+      setIsAddingMember(true);
+      try {
+          const result = await addUserToGroup(groupId, newMemberId.trim());
+          if (result.success) {
+              toast({ title: "Member Added", description: `${result.userName} has been added to the group.` });
+              setMembers(prev => [...prev, { id: result.userId!, name: result.userName!, avatar: result.userAvatar! }]);
+              setNewMemberId("");
+          } else {
+              toast({ variant: "destructive", title: "Error", description: result.error });
+          }
+      } catch (error) {
+          console.error("Error adding member:", error);
+          toast({ variant: "destructive", title: "Error", description: "An unexpected error occurred." });
+      } finally {
+          setIsAddingMember(false);
+      }
+  };
+
+  const generateInviteLink = () => {
+    const link = `${window.location.origin}/community/join?group=${groupId}`;
+    navigator.clipboard.writeText(link);
+    toast({ title: "Link Copied!", description: "The invite link has been copied to your clipboard." });
   };
   
   if (isLoading) {
@@ -129,7 +160,10 @@ export default function GroupSettingsPage() {
       </div>
       
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader>
+          <CardTitle>Group Details</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
             <div className="space-y-6">
                 <div className="flex flex-col items-center gap-4">
                      <div className="relative group">
@@ -178,6 +212,56 @@ export default function GroupSettingsPage() {
             </Button>
         </CardFooter>
       </Card>
+
+      <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Users /> Members ({members.length})</CardTitle>
+            <CardDescription>Manage group members and invite new people.</CardDescription>
+        </CardHeader>
+         <CardContent className="space-y-4">
+             <div className="space-y-2">
+                <Label htmlFor="new-member-id">Add Member by Farmer ID</Label>
+                <div className="flex gap-2">
+                    <Input id="new-member-id" placeholder="AS-xxxxxxxx-xxxx..." value={newMemberId} onChange={(e) => setNewMemberId(e.target.value)} disabled={isAddingMember} />
+                    <Button onClick={handleAddMember} disabled={isAddingMember || !newMemberId.trim()}>
+                        {isAddingMember ? <Spinner className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+                    </Button>
+                </div>
+             </div>
+              <div className="space-y-2">
+                <Label>Generate Invite Link</Label>
+                 <div className="flex gap-2">
+                    <Input readOnly value={`${typeof window !== 'undefined' ? window.location.origin : ''}/community/join?group=${groupId}`} className="text-xs text-muted-foreground" />
+                    <Button variant="secondary" onClick={generateInviteLink}>
+                        <LinkIcon className="h-4 w-4" />
+                    </Button>
+                </div>
+             </div>
+            <Separator />
+            <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                {members.map(member => (
+                    <div key={member.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <Avatar className="h-9 w-9">
+                                <AvatarImage src={member.avatar}/>
+                                <AvatarFallback>{member.name.substring(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="font-semibold">{member.name}</p>
+                                <p className="text-xs text-muted-foreground font-mono">{member.id}</p>
+                            </div>
+                        </div>
+                        {member.id === group?.ownerId ? (
+                             <Crown className="h-5 w-5 text-amber-500" />
+                        ): (
+                            <Button variant="ghost" size="sm" className="text-destructive">Remove</Button>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </CardContent>
+      </Card>
+
     </div>
   );
 }
