@@ -50,13 +50,33 @@ const getWeatherForecastFlow = ai.defineFlow(
       }
       const { lat, lon } = geoData[0];
 
-      // 2. Get 5 day / 3 hour forecast data using coordinates
+      // 2. Fetch both current weather and forecast data
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
       const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-      const forecastResponse = await fetch(forecastUrl);
+      
+      const [weatherResponse, forecastResponse] = await Promise.all([
+          fetch(weatherUrl),
+          fetch(forecastUrl),
+      ]);
+
+      if (!weatherResponse.ok) throw new Error('Failed to fetch current weather.');
       if (!forecastResponse.ok) throw new Error('Failed to fetch forecast.');
+      
+      const weatherData = await weatherResponse.json();
       const forecastData = await forecastResponse.json();
       
       // Process data for the UI
+      const current = {
+        temp: `${Math.round(weatherData.main.temp)}°C`,
+        condition: weatherData.weather[0].main,
+        realFeel: `${Math.round(weatherData.main.feels_like)}°C`,
+        humidity: `${weatherData.main.humidity}%`,
+        windSpeed: `${weatherData.wind.speed} m/s`,
+        pressure: `${weatherData.main.pressure} hPa`,
+        sunrise: new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
+        sunset: new Date(weatherData.sys.sunset * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
+      };
+
       const dailyForecasts: z.infer<typeof WeatherForecastOutputSchema.shape.daily.element>[] = [];
       const weeklyForecasts: z.infer<typeof WeatherForecastOutputSchema.shape.weekly.element>[] = [];
 
@@ -78,7 +98,7 @@ const getWeatherForecastFlow = ai.defineFlow(
           const date = new Date(item.dt * 1000);
           const dayString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
 
-          if (!processedDays.has(dayString)) {
+          if (!processedDays.has(dayString) && weeklyForecasts.length < 7) {
               processedDays.add(dayString);
 
               const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -97,8 +117,9 @@ const getWeatherForecastFlow = ai.defineFlow(
 
 
       return {
+          current,
           daily: dailyForecasts,
-          weekly: weeklyForecasts.slice(0, 7), // Ensure exactly 7 days
+          weekly: weeklyForecasts, 
       };
 
     } catch (err: any) {

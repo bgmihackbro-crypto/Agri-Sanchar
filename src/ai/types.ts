@@ -38,12 +38,24 @@ const WeeklyForecastSchema = z.object({
   condition: z.string(),
 });
 
+const CurrentWeatherSchema = z.object({
+    temp: z.string(),
+    condition: z.string(),
+    realFeel: z.string(),
+    humidity: z.string(),
+    windSpeed: z.string(),
+    pressure: z.string(),
+    sunrise: z.string(),
+    sunset: z.string(),
+});
+
 export const WeatherForecastInputSchema = z.object({
   city: z.string().describe('The city for which to fetch the weather forecast.'),
 });
 export type WeatherForecastInput = z.infer<typeof WeatherForecastInputSchema>;
 
 export const WeatherForecastOutputSchema = z.object({
+  current: CurrentWeatherSchema.optional(),
   daily: z.array(DailyForecastSchema).optional(),
   weekly: z.array(WeeklyForecastSchema).optional(),
   error: z.string().optional(),
