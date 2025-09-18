@@ -51,7 +51,7 @@ const fileToDataUri = (file: File): Promise<string> => {
 
 // --- Bot Simulation ---
 
-const BOT_USER = {
+export const BOT_USER = {
     id: 'bot-farmer-1',
     name: 'Gurpreet Singh',
     avatar: 'https://picsum.photos/seed/gurpreet/40/40'

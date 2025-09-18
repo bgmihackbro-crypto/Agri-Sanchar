@@ -1,6 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { Timestamp } from 'firebase/firestore'; // Keep for type consistency
+import { BOT_USER } from './chat';
 
 export interface Group {
     id: string;
@@ -49,6 +50,8 @@ export const createGroup = (groupData: NewGroupData): Group => {
         ...groupData,
         id: uuidv4(),
         createdAt: Timestamp.now(),
+        // Add the bot to the members list on creation
+        members: [...groupData.members, BOT_USER.id], 
     };
     const updatedGroups = [newGroup, ...groups];
     setStoredGroups(updatedGroups);
@@ -117,6 +120,10 @@ export const getGroupMembers = (groupId: string): GroupMember[] => {
     // This is a simulation, as we don't have a central user collection.
     // We generate placeholder data based on the stored user profile if available for the current user.
     const memberProfiles: GroupMember[] = group.members.map(id => {
+       if (id === BOT_USER.id) {
+           return { id: BOT_USER.id, name: BOT_USER.name, avatar: BOT_USER.avatar };
+       }
+       
        if (typeof window !== 'undefined') {
             const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
             if (userProfile.farmerId === id) {
