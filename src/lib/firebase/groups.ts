@@ -1,8 +1,6 @@
 
-import { db, storage } from '@/lib/firebase';
-import { collection, addDoc, getDocs, serverTimestamp, Timestamp, DocumentData, WithFieldValue, query, orderBy, doc, getDoc, updateDoc, arrayUnion, where, limit } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { Timestamp } from 'firebase/firestore'; // Keep for type consistency
 
 export interface Group {
     id: string;
@@ -25,76 +23,84 @@ export interface GroupMember {
 // Type for creating a new group, `id` and `createdAt` will be generated.
 export type NewGroupData = Omit<Group, 'id' | 'createdAt'>;
 
+// Helper to get groups from localStorage
+const getStoredGroups = (): Group[] => {
+    if (typeof window === 'undefined') return [];
+    const stored = localStorage.getItem('groups');
+    return stored ? JSON.parse(stored).map((g: any) => ({...g, createdAt: new Timestamp(g.createdAt.seconds, g.createdAt.nanoseconds)})) : [];
+};
+
+// Helper to save groups to localStorage
+const setStoredGroups = (groups: Group[]) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('groups', JSON.stringify(groups));
+     // Dispatch a storage event to notify other tabs/components
+    window.dispatchEvent(new Event('storage'));
+};
+
 /**
- * Creates a new group in Firestore.
+ * Creates a new group in localStorage.
  * @param groupData The data for the new group.
  * @returns The newly created group object with its ID.
  */
-export const createGroup = async (groupData: NewGroupData): Promise<Group> => {
-    const groupWithTimestamp: WithFieldValue<DocumentData> = {
+export const createGroup = (groupData: NewGroupData): Group => {
+    const groups = getStoredGroups();
+    const newGroup: Group = {
         ...groupData,
-        createdAt: serverTimestamp(),
+        id: uuidv4(),
+        createdAt: Timestamp.now(),
     };
-    const docRef = await addDoc(collection(db, 'groups'), groupWithTimestamp);
-    return {
-        ...groupData,
-        id: docRef.id,
-        createdAt: Timestamp.now(), // Approximate, actual is on server
-    };
+    const updatedGroups = [newGroup, ...groups];
+    setStoredGroups(updatedGroups);
+    return newGroup;
 };
 
 /**
- * Fetches all groups from Firestore, ordered by creation date.
+ * Fetches all groups from localStorage, ordered by creation date.
  * @returns An array of group objects.
  */
-export const getGroups = async (): Promise<Group[]> => {
-    const q = query(collection(db, "groups"), orderBy("createdAt", "desc"));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-    } as Group));
+export const getGroups = (): Group[] => {
+    const groups = getStoredGroups();
+    return groups.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
 };
 
 /**
- * Fetches a single group from Firestore.
+ * Fetches a single group from localStorage.
  */
-export const getGroup = async (groupId: string): Promise<Group | null> => {
-    const docRef = doc(db, 'groups', groupId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as Group;
-    } else {
-        return null;
-    }
+export const getGroup = (groupId: string): Group | null => {
+    const groups = getStoredGroups();
+    return groups.find(g => g.id === groupId) || null;
 }
 
 
 /**
- * Updates a group's details in Firestore.
+ * Updates a group's details in localStorage.
  * @param groupId The ID of the group to update.
  * @param data The data to update.
  */
-export const updateGroup = async (groupId: string, data: Partial<Omit<Group, 'id'>>) => {
-    const groupRef = doc(db, 'groups', groupId);
-    await updateDoc(groupRef, data);
+export const updateGroup = (groupId: string, data: Partial<Omit<Group, 'id'>>) => {
+    let groups = getStoredGroups();
+    const groupIndex = groups.findIndex(g => g.id === groupId);
+    if (groupIndex > -1) {
+        groups[groupIndex] = { ...groups[groupIndex], ...data };
+        setStoredGroups(groups);
+    }
 };
 
 /**
- * Uploads a new avatar for a group to Firebase Storage.
+ * Uploads a new avatar for a group. For localStorage, this will be a data URL.
  * @param file The image file to upload.
- * @param groupId The ID of the group.
- * @returns The download URL of the uploaded image.
+ * @returns The data URL of the image.
  */
-export const uploadGroupAvatar = async (file: File, groupId: string): Promise<string> => {
-    const fileId = uuidv4();
-    const storageRef = ref(storage, `group-avatars/${groupId}/${fileId}-${file.name}`);
-    
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-    
-    return downloadURL;
+export const uploadGroupAvatar = (file: File): Promise<string> => {
+     return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            resolve(reader.result as string);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 };
 
 /**
@@ -102,59 +108,61 @@ export const uploadGroupAvatar = async (file: File, groupId: string): Promise<st
  * @param groupId The ID of the group.
  * @returns An array of member profiles.
  */
-export const getGroupMembers = async (groupId: string): Promise<GroupMember[]> => {
-    const group = await getGroup(groupId);
+export const getGroupMembers = (groupId: string): GroupMember[] => {
+    const group = getGroup(groupId);
     if (!group || !group.members) {
         return [];
     }
-
-    // This is a simulation. In a real app, you would query a 'users' collection
-    // for each ID in group.members. For now, we generate placeholder data.
-    const memberProfiles: GroupMember[] = group.members.map(id => ({
-        id: id,
-        name: `Farmer ${id.substring(3, 7)}`,
-        avatar: `https://picsum.photos/seed/${id}/40/40`,
-    }));
+    
+    // This is a simulation, as we don't have a central user collection.
+    // We generate placeholder data based on the stored user profile if available for the current user.
+    const memberProfiles: GroupMember[] = group.members.map(id => {
+       if (typeof window !== 'undefined') {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            if (userProfile.farmerId === id) {
+                return { id, name: userProfile.name, avatar: userProfile.avatar };
+            }
+       }
+       // Fallback for other members
+       return {
+            id: id,
+            name: `Farmer ${id.substring(3, 7)}`,
+            avatar: `https://picsum.photos/seed/${id}/40/40`,
+        }
+    });
 
     return memberProfiles;
 };
 
 /**
- * Adds a user to a group's member list.
+ * Adds a user to a group's member list in localStorage.
  * @param groupId The ID of the group.
  * @param userId The ID of the user to add.
  * @returns An object indicating success or failure.
  */
-export const addUserToGroup = async (groupId: string, userId: string): Promise<{success: boolean; error?: string; userName?: string; userId?: string; userAvatar?: string}> => {
-    const groupRef = doc(db, 'groups', groupId);
-    const groupSnap = await getDoc(groupRef);
+export const addUserToGroup = (groupId: string, userId: string): {success: boolean; error?: string; userName?: string; userId?: string; userAvatar?: string} => {
+    let groups = getStoredGroups();
+    const groupIndex = groups.findIndex(g => g.id === groupId);
 
-    if (!groupSnap.exists()) {
+    if (groupIndex === -1) {
         return { success: false, error: 'Group not found.' };
     }
     
-    const groupData = groupSnap.data() as Group;
+    const groupData = groups[groupIndex];
 
     if (groupData.members.includes(userId)) {
-        // This is not an error, just means they are already in.
-        // The join page can use this to redirect immediately.
         return { success: false, error: 'User is already in this group.' };
     }
     
-    // In a real app, we'd query a 'users' collection to find the user.
-    // For the demo, let's assume any ID starting with 'AS-' is a valid farmer ID.
     if (!userId.startsWith('AS-')) {
         return { success: false, error: 'Invalid Farmer ID format.' };
     }
-
-    // This is a placeholder. We can't know the user's name or avatar from just their ID
-    // without a central user collection.
+    
     const userName = `Farmer ${userId.substring(3, 7)}`;
     const userAvatar = `https://picsum.photos/seed/${userId}/40/40`;
     
-    await updateDoc(groupRef, {
-        members: arrayUnion(userId)
-    });
+    groups[groupIndex].members.push(userId);
+    setStoredGroups(groups);
     
     return { success: true, userName, userId, userAvatar };
 };

@@ -47,26 +47,30 @@ export default function GroupSettingsPage() {
       setUserProfile(JSON.parse(profile));
     }
 
-    if (groupId) {
-      Promise.all([
-        getGroup(groupId),
-        getGroupMembers(groupId)
-      ]).then(([groupData, memberData]) => {
-          if (groupData) {
-            setGroup(groupData);
-            setName(groupData.name);
-            setDescription(groupData.description || "");
-            setAvatarPreview(groupData.avatarUrl || null);
-            setMembers(memberData);
-          } else {
-            toast({ variant: "destructive", title: "Group not found" });
-            router.push("/community");
-          }
-      }).catch((err) => {
-          console.error(err);
-          toast({ variant: "destructive", title: "Failed to load group details" });
-      }).finally(() => setIsLoading(false));
-    }
+    const loadData = () => {
+        if (groupId) {
+            const groupData = getGroup(groupId);
+            if (groupData) {
+                const memberData = getGroupMembers(groupId);
+                setGroup(groupData);
+                setName(groupData.name);
+                setDescription(groupData.description || "");
+                setAvatarPreview(groupData.avatarUrl || null);
+                setMembers(memberData);
+            } else {
+                toast({ variant: "destructive", title: "Group not found" });
+                router.push("/community");
+            }
+            setIsLoading(false);
+        }
+    };
+    
+    loadData();
+
+    // Listen for storage changes to keep data fresh
+    window.addEventListener('storage', loadData);
+    return () => window.removeEventListener('storage', loadData);
+
   }, [groupId, router, toast]);
 
   // Authorization check
@@ -92,7 +96,7 @@ export default function GroupSettingsPage() {
     try {
       let newAvatarUrl = group.avatarUrl;
       if (avatarFile) {
-        newAvatarUrl = await uploadGroupAvatar(avatarFile, groupId);
+        newAvatarUrl = await uploadGroupAvatar(avatarFile);
       }
 
       const updatedData = {
@@ -101,7 +105,7 @@ export default function GroupSettingsPage() {
         avatarUrl: newAvatarUrl,
       };
 
-      await updateGroup(groupId, updatedData);
+      updateGroup(groupId, updatedData);
 
       toast({ title: "Success", description: "Group details updated successfully." });
     } catch (error) {
@@ -112,14 +116,14 @@ export default function GroupSettingsPage() {
     }
   };
   
-  const handleAddMember = async () => {
+  const handleAddMember = () => {
       if (!group || !newMemberId.trim()) return;
       setIsAddingMember(true);
       try {
-          const result = await addUserToGroup(groupId, newMemberId.trim());
+          const result = addUserToGroup(groupId, newMemberId.trim());
           if (result.success) {
               toast({ title: "Member Added", description: `${result.userName} has been added to the group.` });
-              setMembers(prev => [...prev, { id: result.userId!, name: result.userName!, avatar: result.userAvatar! }]);
+              // The component will re-render via the storage event listener
               setNewMemberId("");
           } else {
               toast({ variant: "destructive", title: "Error", description: result.error });
@@ -142,7 +146,6 @@ export default function GroupSettingsPage() {
     return <div className="flex h-full items-center justify-center"><Spinner className="h-8 w-8" /></div>;
   }
   
-  // Render null or a message if the user is not authorized, to prevent form flashing
   if (!group || !userProfile || group.ownerId !== userProfile.farmerId) {
       return <div className="flex h-full items-center justify-center"><p>Verifying permissions...</p></div>
   }

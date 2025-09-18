@@ -13,8 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { format } from "date-fns";
-import type { Group } from "@/lib/firebase/groups";
-import { getGroup } from "@/lib/firebase/groups";
+import { getGroup, type Group } from "@/lib/firebase/groups";
 import { listenToMessages, sendMessage, type Message } from "@/lib/firebase/chat";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
@@ -52,26 +51,33 @@ export default function GroupChatPage() {
         router.push('/login');
     }
 
-    if (groupId) {
-        setIsLoading(true);
-        getGroup(groupId).then(details => {
-            if(details) {
+    const loadGroupData = () => {
+        if (groupId) {
+            setIsLoading(true);
+            const details = getGroup(groupId);
+            if (details) {
                 setGroupDetails(details);
             } else {
-                 toast({ variant: 'destructive', title: 'Error', description: 'Group not found.'});
+                toast({ variant: 'destructive', title: 'Error', description: 'Group not found.'});
             }
-        }).catch(err => {
-            console.error(err);
-            toast({ variant: 'destructive', title: 'Error', description: 'Could not load group details.'});
-        });
+        }
+    };
+    
+    loadGroupData();
+    
+    if (groupId) {
+      const unsubscribe = listenToMessages(groupId, (newMessages) => {
+          setMessages(newMessages);
+          setIsLoading(false);
+      });
 
-        const unsubscribe = listenToMessages(groupId, (newMessages) => {
-            setMessages(newMessages);
-            setIsLoading(false);
-        });
+      // Also listen for general storage events to update group details
+      window.addEventListener('storage', loadGroupData);
 
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
+      return () => {
+          unsubscribe();
+          window.removeEventListener('storage', loadGroupData);
+      };
     }
   }, [groupId, router, toast]);
 

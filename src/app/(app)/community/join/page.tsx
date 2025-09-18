@@ -36,32 +36,31 @@ function JoinGroupContent() {
         if (profile) {
             setUserProfile(JSON.parse(profile));
         } else {
-            router.push('/login');
+            // Redirect to login but pass the join link so they can come back
+            const joinUrl = `/community/join?group=${groupId}`;
+            router.push(`/login?redirect=${encodeURIComponent(joinUrl)}`);
         }
 
         if (groupId) {
-            getGroup(groupId)
-                .then(groupData => {
-                    if (groupData) {
-                        setGroup(groupData);
-                    } else {
-                        setError("This group does not exist or the link is invalid.");
-                    }
-                })
-                .catch(() => setError("Could not retrieve group information."))
-                .finally(() => setIsLoading(false));
+            const groupData = getGroup(groupId);
+            if (groupData) {
+                setGroup(groupData);
+            } else {
+                setError("This group does not exist or the link is invalid.");
+            }
+            setIsLoading(false);
         } else {
             setError("No group ID provided in the link.");
             setIsLoading(false);
         }
     }, [groupId, router]);
 
-    const handleJoinGroup = async () => {
+    const handleJoinGroup = () => {
         if (!groupId || !userProfile) return;
 
         setIsJoining(true);
         try {
-            const result = await addUserToGroup(groupId, userProfile.farmerId);
+            const result = addUserToGroup(groupId, userProfile.farmerId);
             if (result.success) {
                 toast({
                     title: "Welcome!",
@@ -69,7 +68,6 @@ function JoinGroupContent() {
                 });
                 router.push(`/community/${groupId}`);
             } else {
-                // Handle cases where user is already a member
                 if (result.error?.includes('already in this group')) {
                      toast({
                         title: "Already a Member",
@@ -160,4 +158,3 @@ export default function JoinPage() {
         </div>
     );
 }
-

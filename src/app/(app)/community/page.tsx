@@ -153,12 +153,12 @@ const PostCard = ({ post }: { post: (typeof initialPosts)[0] }) => (
 const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (newGroup: Group) => void, userProfile: UserProfile | null }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
             toast({
                 variant: "destructive",
@@ -167,7 +167,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             });
             return;
         }
-        setIsLoading(true);
+        setIsCreating(true);
 
         try {
             const newGroupData = {
@@ -178,7 +178,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 members: [userProfile.farmerId],
                 createdBy: userProfile.name,
             };
-            const newGroup = await createGroup(newGroupData);
+            const newGroup = createGroup(newGroupData);
             onGroupCreated(newGroup);
             toast({
                 title: "Group Created!",
@@ -196,7 +196,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 description: "There was a problem creating the group. Please try again.",
             });
         } finally {
-            setIsLoading(false);
+            setIsCreating(false);
         }
     };
 
@@ -230,8 +230,8 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleSubmit} disabled={isLoading || !name.trim()}>
-                        {isLoading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
+                    <Button type="submit" onClick={handleSubmit} disabled={isCreating || !name.trim()}>
+                        {isCreating && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
                         Create Group
                     </Button>
                 </DialogFooter>
@@ -252,10 +252,10 @@ export default function CommunityPage() {
         setUserProfile(JSON.parse(profile));
     }
 
-    const fetchGroups = async () => {
+    const fetchGroups = () => {
         setIsLoadingGroups(true);
         try {
-            const fetchedGroups = await getGroups();
+            const fetchedGroups = getGroups();
             setGroups(fetchedGroups);
         } catch (error) {
             console.error("Error fetching groups:", error);
@@ -264,6 +264,13 @@ export default function CommunityPage() {
         }
     };
     fetchGroups();
+
+    // Listen for storage changes to update the group list in real-time
+    window.addEventListener('storage', fetchGroups);
+    return () => {
+        window.removeEventListener('storage', fetchGroups);
+    };
+
   }, []);
   
   const handleGroupCreated = (newGroup: Group) => {
@@ -293,7 +300,7 @@ export default function CommunityPage() {
         </div>
 
 
-       <Tabs defaultValue="home" className="w-full">
+       <Tabs defaultValue="local" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
@@ -378,5 +385,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
