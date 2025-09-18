@@ -4,119 +4,93 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets } from "lucide-react";
+import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze } from "lucide-react";
 import { useNotifications } from "@/context/notification-context";
+import { getWeatherForecast, type WeatherForecastOutput } from "@/ai/flows/get-weather-forecast";
+import { Spinner } from "@/components/ui/spinner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 
-type DailyForecast = {
-  time: string;
-  temp: string;
-  condition: string;
-  icon: React.ElementType;
+const ICONS: { [key: string]: React.ElementType } = {
+    "sun": Sun,
+    "rain": CloudRain,
+    "clouds": Cloudy,
+    "clear": Moon, // Assume clear at night is Moon
+    "haze": Haze,
+    "smoke": Wind,
+    "mist": Droplets,
+    "drizzle": CloudRain,
+    "snow": Thermometer, // Placeholder
+    "thunderstorm": CloudRain, // Placeholder
+    "default": CloudSun,
 };
 
-type WeeklyForecast = {
-  day: string;
-  temp: string;
-  condition: string;
-  icon: React.ElementType;
-};
-
-type WeatherData = {
-  daily: DailyForecast[];
-  weekly: WeeklyForecast[];
-};
-
-const weatherDatabase: { [key: string]: WeatherData } = {
-  ludhiana: {
-    daily: [
-      { time: "Morning", temp: "22°C", condition: "Hazy Sun", icon: CloudSun },
-      { time: "Afternoon", temp: "28°C", condition: "Sunny", icon: Sun },
-      { time: "Evening", temp: "24°C", condition: "Clear", icon: Moon },
-      { time: "Night", temp: "19°C", condition: "Clear", icon: Moon },
-    ],
-    weekly: [
-      { day: "Today", temp: "28°C", condition: "Sunny", icon: Sun },
-      { day: "Mon", temp: "29°C", condition: "Sunny", icon: Sun },
-      { day: "Tue", temp: "27°C", condition: "Showers", icon: CloudRain },
-      { day: "Wed", temp: "30°C", condition: "Sunny", icon: Sun },
-      { day: "Thu", temp: "28°C", condition: "Cloudy", icon: Cloudy },
-      { day: "Fri", temp: "26°C", condition: "Rain", icon: CloudRain },
-      { day: "Sat", temp: "29°C", condition: "Partly Cloudy", icon: CloudSun },
-    ],
-  },
-  delhi: {
-    daily: [
-        { time: "Morning", temp: "25°C", condition: "Hazy", icon: CloudSun },
-        { time: "Afternoon", temp: "32°C", condition: "Hazy Sun", icon: Sun },
-        { time: "Evening", temp: "28°C", condition: "Clear", icon: Moon },
-        { time: "Night", temp: "23°C", condition: "Clear", icon: Moon },
-    ],
-    weekly: [
-      { day: "Today", temp: "32°C", condition: "Hazy Sun", icon: CloudSun },
-      { day: "Mon", temp: "33°C", condition: "Sunny", icon: Sun },
-      { day: "Tue", temp: "31°C", condition: "Hazy", icon: Cloudy },
-      { day: "Wed", temp: "34°C", condition: "Sunny", icon: Sun },
-      { day: "Thu", temp: "30°C", condition: "Cloudy", icon: Cloudy },
-      { day: "Fri", temp: "29°C", condition: "Light Rain", icon: CloudRain },
-      { day: "Sat", temp: "32°C", condition: "Sunny", icon: Sun },
-    ],
-  },
-  indore: {
-    daily: [
-        { time: "Morning", temp: "23°C", condition: "Pleasant", icon: Sun },
-        { time: "Afternoon", temp: "29°C", condition: "Sunny", icon: Sun },
-        { time: "Evening", temp: "25°C", condition: "Clear", icon: Moon },
-        { time: "Night", temp: "21°C", condition: "Clear", icon: Moon },
-    ],
-    weekly: [
-      { day: "Today", temp: "29°C", condition: "Partly Cloudy", icon: CloudSun },
-      { day: "Mon", temp: "30°C", condition: "Sunny", icon: Sun },
-      { day: "Tue", temp: "28°C", condition: "Light Showers", icon: CloudRain },
-      { day: "Wed", temp: "31°C", condition: "Sunny", icon: Sun },
-      { day: "Thu", temp: "29°C", condition: "Cloudy", icon: Cloudy },
-      { day: "Fri", temp: "27°C", condition: "Rain", icon: CloudRain },
-      { day: "Sat", temp: "30°C", condition: "Partly Cloudy", icon: CloudSun },
-    ],
-  },
-};
-
+const getIcon = (condition: string): React.ElementType => {
+    const lowerCaseCondition = condition.toLowerCase();
+    for (const key in ICONS) {
+        if (lowerCaseCondition.includes(key)) {
+            return ICONS[key];
+        }
+    }
+    return ICONS.default;
+}
 
 export default function WeatherPage() {
     const [city, setCity] = useState("Ludhiana");
     const [state, setState] = useState("Punjab");
-    const [weatherData, setWeatherData] = useState<WeatherData>(weatherDatabase.ludhiana);
+    const [weatherData, setWeatherData] = useState<WeatherForecastOutput | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const { addNotification } = useNotifications();
 
 
     useEffect(() => {
-        const savedProfile = localStorage.getItem("userProfile");
-        let userCity = 'ludhiana';
-        let userState = 'Punjab';
-        let parsedCity = 'Ludhiana';
+        const fetchWeatherData = async () => {
+            setIsLoading(true);
+            setError(null);
+            
+            let userCity = 'Ludhiana';
+            let userState = 'Punjab';
 
-        if (savedProfile) {
-            const parsedProfile = JSON.parse(savedProfile);
-            userCity = parsedProfile.city?.toLowerCase() || 'ludhiana';
-            userState = parsedProfile.state || 'Punjab';
-            parsedCity = parsedProfile.city || 'Ludhiana';
-        }
-        
-        setCity(parsedCity);
-        setState(userState);
+            const savedProfile = localStorage.getItem("userProfile");
+            if (savedProfile) {
+                const parsedProfile = JSON.parse(savedProfile);
+                userCity = parsedProfile.city || 'Ludhiana';
+                userState = parsedProfile.state || 'Punjab';
+            }
+            
+            setCity(userCity);
+            setState(userState);
 
-        if (weatherDatabase[userCity]) {
-            setWeatherData(weatherDatabase[userCity]);
-        } else {
-            // Default to Ludhiana if city not in our mock DB
-            setWeatherData(weatherDatabase.ludhiana);
-        }
+            try {
+                const forecast = await getWeatherForecast({ city: userCity });
 
-        addNotification({
-            title: "Weather Alert",
-            description: `Forecast loaded for ${parsedCity}. Current condition: ${weatherDatabase[userCity]?.weekly[0]?.condition || "N/A"}.`
-        });
+                if (forecast.error) {
+                    setError(forecast.error);
+                    addNotification({
+                        title: "Weather Unavailable",
+                        description: forecast.error,
+                    });
+                } else {
+                    setWeatherData(forecast);
+                    addNotification({
+                        title: "Weather Alert",
+                        description: `Forecast loaded for ${userCity}. Current condition: ${forecast.weekly?.[0]?.condition || "N/A"}.`
+                    });
+                }
+            } catch (e) {
+                const errorMessage = "Failed to fetch weather data. Please try again later.";
+                setError(errorMessage);
+                 addNotification({
+                    title: "Weather Error",
+                    description: errorMessage
+                });
+                console.error(e);
+            }
+            setIsLoading(false);
+        };
 
+        fetchWeatherData();
     }, [addNotification]);
 
 
@@ -127,58 +101,81 @@ export default function WeatherPage() {
         <p className="text-muted-foreground">For {city}, {state}</p>
       </div>
 
-      <Tabs defaultValue="weekly" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-sm">
-          <TabsTrigger value="daily">Daily</TabsTrigger>
-          <TabsTrigger value="weekly">Weekly</TabsTrigger>
-        </TabsList>
-        <TabsContent value="daily">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Today's Forecast</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {weatherData.daily.map((forecast) => (
-                <div
-                  key={forecast.time}
-                  className="flex flex-col items-center gap-2 p-4 rounded-lg bg-primary/5 border "
-                >
-                  <p className="font-semibold text-primary/80">{forecast.time}</p>
-                  <forecast.icon className="w-12 h-12 text-primary" />
-                  <p className="text-2xl font-bold">{forecast.temp}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {forecast.condition}
-                  </p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="weekly">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">7-Day Forecast</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {weatherData.weekly.map((forecast) => (
-                <div
-                  key={forecast.day}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <p className="font-semibold basis-1/4">{forecast.day}</p>
-                  <div className="flex items-center gap-2 basis-1/2 justify-center">
-                    <forecast.icon className="w-6 h-6 text-primary" />
-                    <p className="text-muted-foreground">{forecast.condition}</p>
-                  </div>
-                  <p className="font-bold text-lg basis-1/4 text-right">
-                    {forecast.temp}
-                  </p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+       {isLoading && (
+            <div className="flex justify-center items-center py-16">
+                <Spinner className="h-10 w-10 text-primary" />
+                <p className="ml-3 text-muted-foreground">Fetching live weather data...</p>
+            </div>
+        )}
+
+        {error && !isLoading && (
+            <Alert variant="destructive">
+                <AlertTitle>Error Fetching Weather</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
+
+      {!isLoading && !error && weatherData && (
+        <Tabs defaultValue="weekly" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 max-w-sm">
+            <TabsTrigger value="daily">Daily</TabsTrigger>
+            <TabsTrigger value="weekly">Weekly</TabsTrigger>
+            </TabsList>
+            <TabsContent value="daily">
+            <Card>
+                <CardHeader>
+                <CardTitle className="font-headline">Today's Forecast</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {weatherData.daily?.map((forecast) => {
+                    const Icon = getIcon(forecast.condition);
+                    return (
+                        <div
+                        key={forecast.time}
+                        className="flex flex-col items-center gap-2 p-4 rounded-lg bg-primary/5 border "
+                        >
+                        <p className="font-semibold text-primary/80">{forecast.time}</p>
+                        <Icon className="w-12 h-12 text-primary" />
+                        <p className="text-2xl font-bold">{forecast.temp}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {forecast.condition}
+                        </p>
+                        </div>
+                    )
+                })}
+                </CardContent>
+            </Card>
+            </TabsContent>
+            <TabsContent value="weekly">
+            <Card>
+                <CardHeader>
+                <CardTitle className="font-headline">7-Day Forecast</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                {weatherData.weekly?.map((forecast) => {
+                    const Icon = getIcon(forecast.condition);
+                    return (
+                        <div
+                        key={forecast.day}
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                        <p className="font-semibold basis-1/4">{forecast.day}</p>
+                        <div className="flex items-center gap-2 basis-1/2 justify-center">
+                            <Icon className="w-6 h-6 text-primary" />
+                            <p className="text-muted-foreground">{forecast.condition}</p>
+                        </div>
+                        <p className="font-bold text-lg basis-1/4 text-right">
+                            {forecast.temp}
+                        </p>
+                        </div>
+                    )
+                })}
+                </CardContent>
+            </Card>
+            </TabsContent>
+        </Tabs>
+      )}
+
     </div>
   );
 }

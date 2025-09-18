@@ -13,6 +13,8 @@
 import { z } from 'zod';
 import { ai } from '@/ai/genkit'; // your ai wrapper (make sure this exports a genkit instance)
 import { PriceRecordSchema } from '@/ai/types';
+import { getWeatherForecast } from './get-weather-forecast';
+
 
 // ---------- Input / Output Schemas ----------
 const AnswerFarmerQuestionInputSchema = z.object({
@@ -89,17 +91,23 @@ const getWeather = ai.defineTool(
     outputSchema: z.string(),
   },
   async ({ city }) => {
-    // Simple mock/stub implementation — replace with real API calls as needed.
-    const lowerCity = city.toLowerCase();
-    const weatherData: Record<string, string> = {
-      indore: `Weather forecast for Indore:\n- Today: 28°C, Partly Cloudy\n- Tomorrow: 29°C, Sunny\n- Day 3: 27°C, Light Showers\n- Day 4: 30°C, Sunny\n- Day 5: 28°C, Cloudy\n- Day 6: 26°C, Rain\n- Day 7: 29°C, Partly Cloudy`,
-      ludhiana: `Weather forecast for Ludhiana:\n- Today: 25°C, Partly Cloudy\n- Tomorrow: 26°C, Sunny\n- Day 3: 24°C, Showers\n- Day 4: 27°C, Sunny\n- Day 5: 23°C, Cloudy\n- Day 6: 22°C, Rain\n- Day 7: 25°C, Partly Cloudy`,
-      delhi: `Weather forecast for Delhi:\n- Today: 30°C, Hazy Sunshine\n- Tomorrow: 31°C, Sunny\n- Day 3: 29°C, Hazy\n- Day 4: 32°C, Sunny\n- Day 5: 28°C, Cloudy\n- Day 6: 27°C, Light Rain\n- Day 7: 30°C, Sunny`,
-    };
+    try {
+      const forecast = await getWeatherForecast({ city });
+      if (forecast.error) {
+        return forecast.error;
+      }
+      
+      // Format the structured data into a readable string for the chatbot.
+      let weatherString = `Here is the 7-day forecast for ${city}:\n`;
+      forecast.weekly?.forEach(day => {
+        weatherString += `- ${day.day}: ${day.temp}, ${day.condition}\n`;
+      });
+      return weatherString;
 
-    if (weatherData[lowerCity]) return weatherData[lowerCity];
-
-    return `Sorry, I don't have weather information for ${city} right now. I currently have forecasts for Indore, Ludhiana, and Delhi.`;
+    } catch (error) {
+      console.error("Error getting weather for chatbot:", error);
+      return `Sorry, I was unable to fetch the weather forecast for ${city} at this time.`;
+    }
   }
 );
 
