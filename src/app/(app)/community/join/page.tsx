@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ type UserProfile = {
     avatar: string;
 };
 
-function JoinGroupContent() {
+export default function JoinPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { toast } = useToast();
@@ -39,6 +39,7 @@ function JoinGroupContent() {
             // Redirect to login but pass the join link so they can come back
             const joinUrl = `/community/join?group=${groupId}`;
             router.push(`/login?redirect=${encodeURIComponent(joinUrl)}`);
+            return;
         }
 
         if (groupId) {
@@ -48,11 +49,10 @@ function JoinGroupContent() {
             } else {
                 setError("This group does not exist or the link is invalid.");
             }
-            setIsLoading(false);
         } else {
             setError("No group ID provided in the link.");
-            setIsLoading(false);
         }
+        setIsLoading(false);
     }, [groupId, router]);
 
     const handleJoinGroup = () => {
@@ -76,20 +76,20 @@ function JoinGroupContent() {
             } else {
                 // This case handles errors like group not found, which should be rare here.
                 toast({ variant: 'destructive', title: "Failed to Join", description: result.error });
+                setIsJoining(false);
             }
         } catch (err) {
             toast({ variant: 'destructive', title: "Error", description: "An unexpected error occurred while trying to join." });
-        } finally {
             setIsJoining(false);
         }
     };
     
-    if (isLoading) {
-        return <div className="flex flex-col items-center gap-2"><Spinner className="h-8 w-8" /> <p>Loading group info...</p></div>;
-    }
+    let content;
 
-    if (error) {
-        return (
+    if (isLoading) {
+        content = <div className="flex flex-col items-center gap-2"><Spinner className="h-8 w-8" /> <p>Loading group info...</p></div>;
+    } else if (error) {
+        content = (
              <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>Error</CardTitle>
@@ -106,54 +106,44 @@ function JoinGroupContent() {
                 </CardFooter>
             </Card>
         );
+    } else if (group) {
+        const isAlreadyMember = group.members.includes(userProfile?.farmerId ?? '');
+        content = (
+            <Card className="w-full max-w-md animate-fade-in">
+                <CardHeader className="items-center text-center">
+                     <Avatar className="h-20 w-20 mb-2">
+                        <AvatarImage src={group.avatarUrl ?? `https://picsum.photos/seed/${groupId}/80/80`} />
+                        <AvatarFallback>{group.name.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="font-headline">{group.name}</CardTitle>
+                    <CardDescription>You&apos;ve been invited to join this group!</CardDescription>
+                    <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1"><Users className="h-4 w-4"/> {group.members.length} members</div>
+                        <span>•</span>
+                        <div>{group.city}</div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-center text-muted-foreground bg-muted p-3 rounded-md">
+                        {group.description || "No description provided for this group."}
+                    </p>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-2">
+                    <Button onClick={handleJoinGroup} disabled={isJoining} className="w-full">
+                        {isJoining ? <Spinner className="mr-2 h-4 w-4"/> : null}
+                        {isAlreadyMember ? "Open Chat" : "Join Group"}
+                    </Button>
+                     <Button variant="ghost" asChild className="w-full">
+                        <Link href="/community">Cancel</Link>
+                    </Button>
+                </CardFooter>
+            </Card>
+        );
     }
-    
-    if (!group) {
-        return null;
-    }
 
-    const isAlreadyMember = group.members.includes(userProfile?.farmerId ?? '');
-
-    return (
-        <Card className="w-full max-w-md animate-fade-in">
-            <CardHeader className="items-center text-center">
-                 <Avatar className="h-20 w-20 mb-2">
-                    <AvatarImage src={group.avatarUrl ?? `https://picsum.photos/seed/${groupId}/80/80`} />
-                    <AvatarFallback>{group.name.substring(0, 2)}</AvatarFallback>
-                </Avatar>
-                <CardTitle className="font-headline">{group.name}</CardTitle>
-                <CardDescription>You&apos;ve been invited to join this group!</CardDescription>
-                <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1"><Users className="h-4 w-4"/> {group.members.length} members</div>
-                    <span>•</span>
-                    <div>{group.city}</div>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <p className="text-sm text-center text-muted-foreground bg-muted p-3 rounded-md">
-                    {group.description || "No description provided for this group."}
-                </p>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-2">
-                <Button onClick={handleJoinGroup} disabled={isJoining} className="w-full">
-                    {isJoining ? <Spinner className="mr-2 h-4 w-4"/> : null}
-                    {isAlreadyMember ? "Open Chat" : "Join Group"}
-                </Button>
-                 <Button variant="ghost" asChild className="w-full">
-                    <Link href="/community">Cancel</Link>
-                </Button>
-            </CardFooter>
-        </Card>
-    );
-}
-
-
-export default function JoinPage() {
     return (
         <div className="flex justify-center items-center h-full -mt-20">
-            <Suspense fallback={<Spinner className="h-8 w-8" />}>
-                <JoinGroupContent />
-            </Suspense>
+            {content}
         </div>
     );
 }
