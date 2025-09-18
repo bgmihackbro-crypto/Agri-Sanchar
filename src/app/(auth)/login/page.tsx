@@ -163,7 +163,7 @@ export default function LoginPage() {
                 className="tracking-widest text-center"
               />
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-primary-foreground font-bold" disabled={loading || otp.length < 6}>
+            <Button type="submit" className="w-full bg-green-400 hover:bg-green-500 text-black font-bold" disabled={loading || otp.length < 6}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Verifying..." : "Verify OTP & Login"}
             </Button>
