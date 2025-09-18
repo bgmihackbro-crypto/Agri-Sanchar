@@ -37,6 +37,7 @@ const setStoredMessages = (groupId: string, messages: Message[]) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(`chat_${groupId}`, JSON.stringify(messages));
     // Dispatch a storage event to notify other tabs/components of the change
+    window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
     window.dispatchEvent(new Event('storage'));
 };
 
@@ -134,7 +135,7 @@ export const sendMessage = async ({ groupId, author, text, file, onProgress }: S
 
 /**
  * Listens for real-time updates to messages in a group using localStorage.
- * This simulates onSnapshot by listening to 'storage' events.
+ * This simulates onSnapshot by listening to 'storage' and custom 'new-message' events.
  * @returns An unsubscribe function.
  */
 export const listenToMessages = (groupId: string, callback: (messages: Message[]) => void) => {
@@ -142,18 +143,23 @@ export const listenToMessages = (groupId: string, callback: (messages: Message[]
     // Initial call
     callback(getStoredMessages(groupId).sort((a, b) => a.timestamp.toMillis() - b.timestamp.toMillis()));
 
-    const handleStorageChange = (event: StorageEvent | Event) => {
-        // The custom event won't have a key, so we check both
+    const handleUpdate = (event: Event) => {
+        const customEvent = event as CustomEvent;
+        // Check for storage events from other tabs OR custom events from this tab
         const storageEvent = event as StorageEvent;
-        if (storageEvent.key === null || storageEvent.key === `chat_${groupId}` || storageEvent.key === 'groups') {
+        if ( (event.type === 'storage' && (storageEvent.key === null || storageEvent.key === `chat_${groupId}` || storageEvent.key === 'groups')) ||
+             (event.type === 'new-message' && customEvent.detail.groupId === groupId) )
+        {
              callback(getStoredMessages(groupId).sort((a, b) => a.timestamp.toMillis() - b.timestamp.toMillis()));
         }
     };
     
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('new-message', handleUpdate);
 
     // Cleanup subscription on unmount
     return () => {
-        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('storage', handleUpdate);
+        window.removeEventListener('new-message', handleUpdate);
     };
 };
