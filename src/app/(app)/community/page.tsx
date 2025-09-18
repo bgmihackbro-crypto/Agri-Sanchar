@@ -71,6 +71,7 @@ type UserProfile = {
     farmerId: string;
     name: string;
     city: string;
+    avatar: string;
 };
 
 
@@ -162,7 +163,6 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             return;
         }
         setIsLoading(true);
-        setIsOpen(false); // Close dialog immediately for optimistic update
 
         const newGroupData = {
             name,
@@ -173,22 +173,16 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             createdBy: userProfile.name,
         };
 
-        // Optimistic UI update
-        const optimisticGroup: Group = {
-            ...newGroupData,
-            id: `temp-${Date.now()}`, // Temporary ID
-            createdAt: Timestamp.now(),
-        };
-        onGroupCreated(optimisticGroup);
-        setName('');
-        setDescription('');
-
         try {
-            await createGroup(newGroupData);
+            const newGroup = await createGroup(newGroupData);
             toast({
                 title: "Group Created!",
                 description: `The "${newGroupData.name}" group is now active.`,
             });
+            onGroupCreated(newGroup); // Update UI with the actual group from DB
+            setIsOpen(false);
+            setName('');
+            setDescription('');
         } catch (error) {
             console.error("Error creating group:", error);
             toast({
@@ -196,7 +190,6 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 title: "Failed to Create Group",
                 description: "There was a problem creating the group. Please try again.",
             });
-            // Here you might want to remove the optimistically added group from the UI
         } finally {
             setIsLoading(false);
         }
@@ -273,7 +266,7 @@ export default function CommunityPage() {
   }
 
   const renderGroupButton = (group: Group) => {
-    if (!userProfile) return null;
+    if (!userProfile || !userProfile.farmerId) return null;
 
     const isOwner = group.ownerId === userProfile.farmerId;
     const isMember = group.members.includes(userProfile.farmerId);
