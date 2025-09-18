@@ -25,11 +25,13 @@ import {
 } from "@/components/ui/select";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const [profile, setProfile] = useState({
     farmerId: "",
@@ -52,8 +54,12 @@ export default function ProfilePage() {
       if (parsedProfile.state) {
         setAvailableCities(indianCities[parsedProfile.state] || []);
       }
+       // If profile is incomplete, enter edit mode by default
+      if (!parsedProfile.state || !parsedProfile.city) {
+        setIsEditing(true);
+      }
     } else {
-        // If no profile, enter edit mode by default
+        // If no profile at all, enter edit mode and assume it's a new user
         setIsEditing(true);
     }
   }, []);
@@ -84,6 +90,15 @@ export default function ProfilePage() {
   };
 
   const handleSave = () => {
+    if (!profile.state || !profile.city || !profile.name) {
+       toast({
+        variant: "destructive",
+        title: "Incomplete Information",
+        description: "Please fill out your Name, State, and City before saving.",
+      });
+      return;
+    }
+
     setIsEditing(false);
     localStorage.setItem("userProfile", JSON.stringify(profile));
     toast({
@@ -93,6 +108,8 @@ export default function ProfilePage() {
     });
     // Force a re-render in other components using the avatar
     window.dispatchEvent(new Event("storage"));
+    // Redirect to dashboard after saving, ensuring the profile is now complete.
+    router.push('/dashboard');
   };
 
   return (
@@ -131,7 +148,7 @@ export default function ProfilePage() {
                   {isEditing ? "Edit Profile" : profile.name}
                 </CardTitle>
                 <CardDescription>
-                  Manage your personal and farm details.
+                  {isEditing ? "Please complete your details to continue." : "Manage your personal and farm details."}
                 </CardDescription>
               </div>
             </div>
