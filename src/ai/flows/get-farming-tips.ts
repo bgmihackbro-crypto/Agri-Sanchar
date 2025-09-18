@@ -46,7 +46,7 @@ Focus on practical advice related to irrigation, harvesting, planting schedules,
 - {{day}}: {{temp}}, {{condition}}
 {{/each}}
 
-Based on this, generate your tips as a numbered list. Each point must be on a new line. For example:
+Based on this, generate your tips as a numbered list. Each point must be on a new line, like this example:
 1) Tip one.
 2) Tip two.
 `,
