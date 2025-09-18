@@ -14,9 +14,7 @@ export interface Group {
 }
 
 // Type for creating a new group, `id` and `createdAt` will be generated.
-export type NewGroupData = Omit<Group, 'id' | 'createdAt' | 'memberCount'> & {
-    memberCount?: number; // Make optional as it can be derived from members.length
-};
+export type NewGroupData = Omit<Group, 'id' | 'createdAt'>;
 
 
 /**

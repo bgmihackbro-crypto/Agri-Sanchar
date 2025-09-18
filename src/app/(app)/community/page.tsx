@@ -152,11 +152,11 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
     const { toast } = useToast();
 
     const handleSubmit = async () => {
-        if (!name.trim() || !userProfile || !userProfile.farmerId) {
+        if (!name.trim() || !userProfile || !userProfile.farmerId || !userProfile.city) {
              toast({
                 variant: 'destructive',
                 title: "Cannot Create Group",
-                description: "You must be logged in, have a complete profile with a Farmer ID, and provide a group name.",
+                description: "You must be logged in, have a complete profile with a Farmer ID and City, and provide a group name.",
             });
             return;
         }
@@ -248,7 +248,7 @@ export default function CommunityPage() {
         setIsLoadingGroups(true);
         try {
             const fetchedGroups = await getGroups();
-            setGroups(fetchedGroups.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
+            setGroups(fetchedGroups);
         } catch (error) {
             console.error("Error fetching groups:", error);
         } finally {
