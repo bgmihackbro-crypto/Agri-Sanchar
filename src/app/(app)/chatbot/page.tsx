@@ -248,8 +248,9 @@ export default function ChatbotPage() {
               placeholder="Ask about crops, prices, or upload a photo..."
               disabled={isLoading}
             />
-            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
+            <Button type="submit" className="bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center gap-2" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
+              <span>Send</span>
             </Button>
           </form>
         </CardFooter>
