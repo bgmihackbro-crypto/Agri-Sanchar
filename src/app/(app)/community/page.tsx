@@ -586,7 +586,7 @@ export default function CommunityPage() {
                 <Input placeholder="Search community..." className="pl-9" />
             </div>
             <Button className="bg-primary hover:bg-primary/90">
-                <Send className="mr-2 h-4 w-4" />
+                <PlusCircle className="mr-2 h-4 w-4" />
                 New Post
             </Button>
         </div>
@@ -683,3 +683,6 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+
+    
