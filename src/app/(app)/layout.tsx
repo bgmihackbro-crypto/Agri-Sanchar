@@ -19,6 +19,10 @@ function ProfileCompletionGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Exclude join page from profile completion check
+    const isJoinPage = pathname.startsWith('/community/join');
+    if (isJoinPage) return;
+
     // Only run this check on the client side
     if (typeof window !== 'undefined') {
       const savedProfile = localStorage.getItem("userProfile");

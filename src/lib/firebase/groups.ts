@@ -108,16 +108,14 @@ export const getGroupMembers = async (groupId: string): Promise<GroupMember[]> =
         return [];
     }
 
-    // Since we don't have a 'users' collection, we'll simulate fetching member data
-    // based on what's stored in their localStorage profiles on their own clients.
-    // In a real app, you would fetch from a 'users' collection here.
-    // This function will therefore return partial data based on what we can guess.
-    
-    const memberProfiles: GroupMember[] = [];
+    // This is a simulation. In a real app, you would query a 'users' collection
+    // for each ID in group.members. For now, we generate placeholder data.
+    const memberProfiles: GroupMember[] = group.members.map(id => ({
+        id: id,
+        name: `Farmer ${id.substring(3, 7)}`,
+        avatar: `https://picsum.photos/seed/${id}/40/40`,
+    }));
 
-    // Let's create a placeholder for the bot
-    memberProfiles.push({ id: 'agribot-1', name: 'AgriBot', avatar: `https://picsum.photos/seed/bot-icon/40/40` });
-    
     return memberProfiles;
 };
 
@@ -138,12 +136,12 @@ export const addUserToGroup = async (groupId: string, userId: string): Promise<{
     const groupData = groupSnap.data() as Group;
 
     if (groupData.members.includes(userId)) {
+        // This is not an error, just means they are already in.
+        // The join page can use this to redirect immediately.
         return { success: false, error: 'User is already in this group.' };
     }
     
     // In a real app, we'd query a 'users' collection to find the user.
-    // Since we don't have one, we can't truly add an arbitrary user.
-    // We will simulate this by just adding the ID.
     // For the demo, let's assume any ID starting with 'AS-' is a valid farmer ID.
     if (!userId.startsWith('AS-')) {
         return { success: false, error: 'Invalid Farmer ID format.' };
