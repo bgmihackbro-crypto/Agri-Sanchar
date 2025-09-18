@@ -100,6 +100,71 @@ const initialPostsData = [
     likes: 45,
     comments: [],
   },
+  {
+    id: 5,
+    author: "Jaswinder Singh",
+    avatar: "https://picsum.photos/seed/solar-pump/40/40",
+    avatarHint: "solar pump",
+    location: "Moga",
+    category: "Schemes",
+    categoryColor: "bg-purple-500",
+    time: "3 days ago",
+    title: "Has anyone used the PM-KUSUM scheme for solar pumps?",
+    content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
+    image: "https://images.unsplash.com/photo-1629587243384-3a7895790697?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2xhciUyMHdhdGVyJTIwcHVtcHxlbnwwfHx8fDE3NTgzMTE0ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageHint: "solar water pump",
+    likes: 31,
+    comments: [],
+  },
+  {
+    id: 6,
+    author: "Harpreet Gill",
+    avatar: "https://picsum.photos/seed/potato-crop/40/40",
+    avatarHint: "potato crop",
+    location: "Hoshiarpur",
+    category: "Crops",
+    categoryColor: "bg-green-500",
+    time: "4 days ago",
+    title: "New potato variety showing good results.",
+    content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
+    image: "https://images.unsplash.com/photo-1590165482361-a0c36410319b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG8lMjBoYXJ2ZXN0fGVufDB8fHx8MTc1ODMxMTUxN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    imageHint: "potato harvest",
+    likes: 52,
+    comments: [],
+  },
+  {
+    id: 7,
+    author: "Amrita Kaur",
+    avatar: "https://picsum.photos/seed/organic-farm/40/40",
+    avatarHint: "organic farm",
+    location: "Faridkot",
+    category: "Fertilizers",
+    categoryColor: "bg-yellow-500",
+    time: "5 days ago",
+    title: "How to make organic fertilizer at home?",
+    content: "I want to move to organic farming. Can anyone share some simple methods to prepare jeevamrut or other organic fertilizers at home? Looking for low-cost methods.",
+    image: null,
+    likes: 25,
+    comments: [
+        { author: "AI Expert", content: "You can create Jeevamrut using cow dung, cow urine, jaggery, gram flour, and water. Mix them in a drum and let it ferment for 2-7 days.", isAi: true, isExpert: true, avatar: '' }
+    ],
+  },
+  {
+    id: 8,
+    author: "Sandeep Kumar",
+    avatar: "https://picsum.photos/seed/drip-irrigation/40/40",
+    avatarHint: "drip irrigation",
+    location: "Bathinda",
+    category: "Irrigation",
+    categoryColor: "bg-cyan-500",
+    time: "6 days ago",
+    title: "Drip irrigation saved my cotton crop",
+    content: "With the low rainfall this year, the drip irrigation system I installed was a lifesaver for my cotton crop. It used much less water and the yield was not affected. Highly recommend it.",
+    image: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkcmlwJTIwaXJyaWdhdGlvbnxlbnwwfHx8fDE3NTgzMTE2MjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    imageHint: "drip irrigation",
+    likes: 68,
+    comments: [],
+  },
 ];
 
 type UserProfile = {
@@ -127,7 +192,7 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
     const [isSharing, setIsSharing] = useState(false);
     const { toast } = useToast();
 
-    const handleShare = async () => {
+    const handleShareToGroup = async () => {
         if (!selectedGroup || !userProfile) {
             toast({ variant: 'destructive', title: 'Selection required', description: 'Please select a group to share.' });
             return;
@@ -158,6 +223,23 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
             setIsSharing(false);
         }
     };
+    
+    const handleSocialShare = (platform: 'whatsapp' | 'facebook') => {
+        const text = `Check out this post from Agri-Sanchar:\n\n*${post.title}*\n${post.content}`;
+        const encodedText = encodeURIComponent(text);
+        
+        let url = '';
+        if (platform === 'whatsapp') {
+            url = `https://wa.me/?text=${encodedText}`;
+        } else if (platform === 'facebook') {
+            // Facebook sharer works best with a URL, but we can use a quote.
+            const appUrl = "https://play.google.com/store/apps/details?id=com.firebase.studio"; // Example URL
+            url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodedText}`;
+        }
+        
+        window.open(url, '_blank', 'noopener,noreferrer');
+        setIsOpen(false);
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -169,7 +251,6 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Share Post</DialogTitle>
-                    <DialogDescription>Share this post with one of your groups.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     <Card className="bg-muted/50">
@@ -178,23 +259,44 @@ const ShareDialog = ({ post, groups, userProfile }: { post: Post, groups: Group[
                             <p className="text-xs text-muted-foreground">by {post.author}</p>
                         </CardHeader>
                     </Card>
-                    <Select onValueChange={setSelectedGroup} value={selectedGroup}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a group to share with..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {groups.map(group => (
-                                <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                     <div>
+                        <Label>Share to a local group</Label>
+                        <div className="flex gap-2 mt-2">
+                             <Select onValueChange={setSelectedGroup} value={selectedGroup}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a group..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {groups.length > 0 ? groups.map(group => (
+                                        <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
+                                    )) : <p className="p-4 text-sm text-muted-foreground">You are not in any groups.</p>}
+                                </SelectContent>
+                            </Select>
+                             <Button onClick={handleShareToGroup} disabled={isSharing || !selectedGroup}>
+                                {isSharing ? <Spinner className="mr-2 h-4 w-4" /> : <Send className="h-4 w-4" />}
+                            </Button>
+                        </div>
+                    </div>
+                    
+                    <div className="relative">
+                        <Separator />
+                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">OR</span>
+                    </div>
+
+                    <div>
+                        <Label>Share on social media</Label>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                             <Button variant="outline" className="bg-[#25D366] hover:bg-[#25D366]/90 text-white" onClick={() => handleSocialShare('whatsapp')}>
+                                WhatsApp
+                            </Button>
+                            <Button variant="outline" className="bg-[#1877F2] hover:bg-[#1877F2]/90 text-white" onClick={() => handleSocialShare('facebook')}>
+                                Facebook
+                            </Button>
+                        </div>
+                    </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                    <Button onClick={handleShare} disabled={isSharing || !selectedGroup}>
-                        {isSharing && <Spinner className="mr-2 h-4 w-4" />}
-                        Share
-                    </Button>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -572,5 +674,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
 
     
