@@ -876,6 +876,7 @@ export default function CommunityPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
+  const { toast } = useToast();
 
   const fetchGroups = () => {
         setIsLoadingGroups(true);
@@ -947,6 +948,13 @@ export default function CommunityPage() {
 
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
   const allCities = ['all', ...Array.from(new Set(initialPostsData.map(p => p.location)))];
+
+  const handleConnect = (name: string) => {
+    toast({
+        title: "Connection Request Sent",
+        description: `Your request to connect with ${name} has been sent.`,
+    });
+  };
 
 
   return (
@@ -1100,7 +1108,7 @@ export default function CommunityPage() {
                                 <p className="text-sm text-muted-foreground">{expert.location}</p>
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full">Connect</Button>
+                                <Button className="w-full" onClick={() => handleConnect(expert.name)}>Connect</Button>
                             </CardFooter>
                         </Card>
                     ))}
