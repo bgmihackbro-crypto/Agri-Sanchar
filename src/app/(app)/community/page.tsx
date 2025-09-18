@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat, Building, Briefcase } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat, Building, Briefcase, Phone, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -320,6 +321,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/expert-1/80/80",
     specialization: "Agronomy & Soil Science",
     location: "Punjab Agricultural University, Ludhiana",
+    contact: "+91 98765 12345",
     type: "expert",
   },
   {
@@ -328,6 +330,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/ngo-1/80/80",
     specialization: "Community-led Agricultural Videos",
     location: "Across India",
+    contact: "+91 91234 56789",
     type: "ngo",
   },
   {
@@ -336,6 +339,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/expert-2/80/80",
     specialization: "Horticulture & Pest Management",
     location: "IARI, New Delhi",
+    contact: "+91 99887 76655",
     type: "expert",
   },
   {
@@ -344,6 +348,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/ngo-2/80/80",
     specialization: "Promoting Sustainable Farming",
     location: "Pune, Maharashtra",
+    contact: "+91 98765 54321",
     type: "ngo",
   },
    {
@@ -352,6 +357,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/expert-3/80/80",
     specialization: "Organic Farming & Certification",
     location: "Bengaluru, Karnataka",
+    contact: "+91 91122 33445",
     type: "expert",
   },
   {
@@ -360,6 +366,7 @@ const expertData = [
     avatar: "https://picsum.photos/seed/ngo-3/80/80",
     specialization: "Watershed Development & Climate Adaptation",
     location: "Ahmednagar, Maharashtra",
+    contact: "+91 95566 77889",
     type: "ngo",
   },
 ];
@@ -958,7 +965,7 @@ export default function CommunityPage() {
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
   const allCities = ['all', ...Array.from(new Set(initialPostsData.map(p => p.location)))];
 
-  const handleConnect = (expert: (typeof expertData)[0]) => {
+  const handleChat = (expert: (typeof expertData)[0]) => {
       if (!userProfile) {
           toast({ variant: 'destructive', title: "Login required", description: "You need to be logged in to connect with experts." });
           return;
@@ -1121,7 +1128,7 @@ export default function CommunityPage() {
             <TabsContent value="experts" className="pt-4 space-y-4">
                  <div className="grid gap-4 md:grid-cols-2">
                     {expertData.map(expert => (
-                         <Card key={expert.name}>
+                         <Card key={expert.id}>
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <Avatar className="h-16 w-16">
                                     <AvatarImage src={expert.avatar} />
@@ -1138,11 +1145,19 @@ export default function CommunityPage() {
                                     <p className="text-sm text-muted-foreground">{expert.specialization}</p>
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">{expert.location}</p>
+                            <CardContent className="space-y-2 text-sm">
+                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">Location:</span> {expert.location}</p>
+                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">Contact:</span> {expert.contact}</p>
                             </CardContent>
-                            <CardFooter>
-                                <Button className="w-full" onClick={() => handleConnect(expert)}>Connect</Button>
+                            <CardFooter className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" asChild>
+                                    <a href={`tel:${expert.contact.replace(/\s/g, '')}`}>
+                                      <Phone className="mr-2 h-4 w-4" /> Call
+                                    </a>
+                                </Button>
+                                <Button onClick={() => handleChat(expert)}>
+                                    <MessageSquare className="mr-2 h-4 w-4"/> Chat
+                                </Button>
                             </CardFooter>
                         </Card>
                     ))}
@@ -1153,3 +1168,4 @@ export default function CommunityPage() {
     </div>
   );
 }
+
