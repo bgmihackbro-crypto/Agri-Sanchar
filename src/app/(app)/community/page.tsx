@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { Timestamp } from "firebase/firestore";
 
 const initialPosts = [
   {
@@ -161,25 +162,33 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
             return;
         }
         setIsLoading(true);
+        setIsOpen(false); // Close dialog immediately for optimistic update
+
+        const newGroupData = {
+            name,
+            description,
+            city: userProfile.city,
+            ownerId: userProfile.farmerId,
+            members: [userProfile.farmerId], // Creator is the first member
+            createdBy: userProfile.name,
+        };
+
+        // Optimistic UI update
+        const optimisticGroup: Group = {
+            ...newGroupData,
+            id: `temp-${Date.now()}`, // Temporary ID
+            createdAt: Timestamp.now(),
+        };
+        onGroupCreated(optimisticGroup);
+        setName('');
+        setDescription('');
 
         try {
-            const newGroupData = {
-                name,
-                description,
-                city: userProfile.city,
-                ownerId: userProfile.farmerId,
-                members: [userProfile.farmerId], // Creator is the first member
-                createdBy: userProfile.name,
-            };
-            const newGroup = await createGroup(newGroupData);
+            await createGroup(newGroupData);
             toast({
                 title: "Group Created!",
-                description: `The "${newGroup.name}" group is now active.`,
+                description: `The "${newGroupData.name}" group is now active.`,
             });
-            onGroupCreated(newGroup);
-            setIsOpen(false); // Close dialog on success
-            setName('');
-            setDescription('');
         } catch (error) {
             console.error("Error creating group:", error);
             toast({
@@ -187,6 +196,7 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
                 title: "Failed to Create Group",
                 description: "There was a problem creating the group. Please try again.",
             });
+            // Here you might want to remove the optimistically added group from the UI
         } finally {
             setIsLoading(false);
         }
@@ -364,3 +374,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
