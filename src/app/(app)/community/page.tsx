@@ -26,6 +26,7 @@ import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Timestamp } from "firebase/firestore";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const initialPosts = [
   {
@@ -73,6 +74,7 @@ type UserProfile = {
     name: string;
     city: string;
     avatar: string;
+    state: string;
 };
 
 
@@ -158,8 +160,8 @@ const CreateGroupDialog = ({ onGroupCreated, userProfile }: { onGroupCreated: (n
         if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
              toast({
                 variant: "destructive",
-                title: "Incomplete Information",
-                description: "Please fill out your Name, State, and City before saving.",
+                title: "Incomplete Profile",
+                description: "Please complete your profile (State and City) before creating a group.",
             });
             return;
         }
@@ -262,8 +264,10 @@ export default function CommunityPage() {
   }, []);
   
   const handleGroupCreated = (newGroup: Group) => {
-      setGroups(prev => [newGroup, ...prev]);
+      setGroups(prev => [newGroup, ...prev].sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
   }
+  
+  const isProfileComplete = !!(userProfile?.state && userProfile.city);
 
   return (
     <div className="space-y-6">
@@ -306,7 +310,25 @@ export default function CommunityPage() {
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
-                    <CreateGroupDialog onGroupCreated={handleGroupCreated} userProfile={userProfile} />
+                    {isProfileComplete ? (
+                        <CreateGroupDialog onGroupCreated={handleGroupCreated} userProfile={userProfile} />
+                    ) : (
+                         <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="outline" asChild>
+                                        <Link href="/profile">
+                                            <PlusCircle className="mr-2 h-4 w-4" />
+                                            Create New Group
+                                        </Link>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Please complete your profile (State and City) to create a group.</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
                 </div>
                 {isLoadingGroups ? (
                     <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">Loading groups...</p></div>
@@ -353,5 +375,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
