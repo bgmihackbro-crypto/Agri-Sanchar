@@ -43,7 +43,7 @@ const CurrentWeatherSchema = z.object({
     condition: z.string(),
     realFeel: z.string(),
     humidity: z.string(),
-    windSpeed: zstring(),
+    windSpeed: z.string(),
     pressure: z.string(),
 });
 
