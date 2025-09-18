@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { TrendingUp, Sparkles } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
@@ -252,7 +252,6 @@ export default function MarketPricesPage() {
                        <TableCell className="text-right">
                         {crop.nextTwoWeeksPrice ? (
                            <div className="flex items-center justify-end gap-2">
-                             <Sparkles className="h-4 w-4 text-primary/70" />
                             {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
                            </div>
                         ) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : null}
