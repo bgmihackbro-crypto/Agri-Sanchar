@@ -692,6 +692,8 @@ export default function CommunityPage() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoadingGroups, setIsLoadingGroups] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterCity, setFilterCity] = useState('all');
 
   const fetchGroups = () => {
         setIsLoadingGroups(true);
@@ -755,6 +757,16 @@ export default function CommunityPage() {
 
   const myPosts = posts.filter(p => userProfile && p.author === userProfile.name);
 
+  const filteredPosts = posts.filter(post => {
+      const categoryMatch = filterCategory === 'all' || post.category === filterCategory;
+      const cityMatch = filterCity === 'all' || post.location === filterCity;
+      return categoryMatch && cityMatch;
+  });
+
+  const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
+  const allCities = ['all', ...Array.from(new Set(initialPostsData.map(p => p.location)))];
+
+
   return (
     <div className="space-y-6">
        <div>
@@ -764,26 +776,51 @@ export default function CommunityPage() {
         </p>
       </div>
 
-       <div className="flex items-center gap-4">
-            <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search community..." className="pl-9" />
+       <div className="space-y-4">
+            <div className="flex items-center gap-4">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input placeholder="Search community..." className="pl-9" />
+                </div>
+                <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} />
             </div>
-            <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} />
+             <div className="flex flex-col md:flex-row gap-2">
+                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                    <SelectTrigger className="w-full md:w-[180px]">
+                        <SelectValue placeholder="Filter by category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {allCategories.map(cat => (
+                            <SelectItem key={cat} value={cat}>{cat === 'all' ? 'All Categories' : cat}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Select value={filterCity} onValueChange={setFilterCity}>
+                    <SelectTrigger className="w-full md:w-[180px]">
+                        <SelectValue placeholder="Filter by city" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {allCities.map(city => (
+                             <SelectItem key={city} value={city}>{city === 'all' ? 'All Cities' : city}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+             </div>
         </div>
 
 
        <Tabs defaultValue="home" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
                 <TabsTrigger value="myposts">My Posts</TabsTrigger>
-                <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="local">Local Groups</TabsTrigger>
             </TabsList>
             <TabsContent value="home" className="space-y-4 pt-4">
-                {posts.map((post) => (
+                {filteredPosts.length > 0 ? filteredPosts.map((post) => (
                     <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
-                ))}
+                )) : (
+                    <p className="text-center text-muted-foreground pt-8">No posts found for the selected filters.</p>
+                )}
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
@@ -793,13 +830,6 @@ export default function CommunityPage() {
                 ) : (
                     <p className="text-center text-muted-foreground pt-8">You haven't created any posts yet.</p>
                 )}
-            </TabsContent>
-            <TabsContent value="categories" className="pt-4">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {['Crops', 'Pests', 'Equipment', 'Market', 'Schemes', 'Fertilizers', 'Irrigation', 'General'].map(cat => (
-                        <Button key={cat} variant="outline" className="h-20 text-base">{cat}</Button>
-                    ))}
-                 </div>
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
@@ -869,5 +899,7 @@ export default function CommunityPage() {
   );
 }
 
+
+    
 
     
