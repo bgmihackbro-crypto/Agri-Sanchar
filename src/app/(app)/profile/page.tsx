@@ -59,10 +59,10 @@ export default function ProfilePage() {
         setIsEditing(true);
       }
     } else {
-        // If no profile at all, enter edit mode and assume it's a new user
-        setIsEditing(true);
+        // If no profile at all, send to login, as they shouldn't be here.
+        router.push('/login');
     }
-  }, []);
+  }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;

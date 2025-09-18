@@ -83,34 +83,47 @@ export default function LoginPage() {
     // Simulate successful verification and login
     setTimeout(() => {
       try {
-        const farmerId = `AS-${Date.now().toString().slice(-7)}`;
-        
-        const userProfile = {
-          farmerId: farmerId,
-          name: "Simulated User",
-          phone: "+91" + phone,
-          avatar: `https://picsum.photos/seed/${phone}/100/100`,
-          farmSize: "10",
-          city: "Ludhiana",
-          state: "Punjab",
-          annualIncome: "500000",
-        };
+        // In a real app, we would fetch the user profile from a database here.
+        // For now, we retrieve it from localStorage if it exists from a previous signup.
+        const existingProfile = localStorage.getItem("userProfile");
+        let userProfile;
 
-        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        if (existingProfile) {
+            userProfile = JSON.parse(existingProfile);
+             // Ensure the phone number matches, simple validation
+            if (userProfile.phone !== `+91${phone}`) {
+                 toast({ variant: "destructive", title: "Login Error", description: "No account found for this phone number. Please sign up." });
+                 setLoading(false);
+                 router.push('/signup');
+                 return;
+            }
+        } else {
+            // This case handles a user trying to log in without ever signing up.
+            toast({ variant: "destructive", title: "Login Error", description: "No account found. Please sign up first." });
+            setLoading(false);
+            router.push('/signup');
+            return;
+        }
+
         addWelcomeNotification(userProfile.name);
 
         toast({
-          title: "Login Successful (Simulated)",
+          title: "Login Successful",
           description: "Welcome back to Agri-Sanchar!",
         });
 
-        router.push("/dashboard");
+        if (userProfile.state && userProfile.city) {
+            router.push("/dashboard");
+        } else {
+            router.push("/profile");
+        }
+
       } catch (error) {
         console.error("Simulated login error:", error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Simulated login failed.",
+          description: "An unexpected error occurred during login.",
         });
       } finally {
         setLoading(false);

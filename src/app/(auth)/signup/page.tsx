@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { v4 as uuidv4 } from 'uuid';
+
 
 const SIMULATED_OTP = "123456";
 
@@ -80,7 +82,7 @@ export default function SignupPage() {
     setTimeout(() => {
       try {
         // Generate a unique farmer ID
-        const farmerId = `AS-${Date.now().toString().slice(-7)}`;
+        const farmerId = `AS-${uuidv4()}`;
 
         const userProfile = {
           farmerId: farmerId,
@@ -97,7 +99,7 @@ export default function SignupPage() {
         addWelcomeNotification(userProfile.name);
 
         toast({
-          title: "Welcome to Agri-Sanchar! (Simulated)",
+          title: "Welcome to Agri-Sanchar!",
           description: "Your account has been created. Please complete your profile.",
         });
 
