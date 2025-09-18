@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -115,7 +116,6 @@ const getWeather = ai.defineTool(
 const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: { schema: AnswerFarmerQuestionInputSchema },
-  output: { schema: z.object({ answer: z.string() }) },
   tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
@@ -221,10 +221,10 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     }
 
     const llmResponse = await answerFarmerQuestionPrompt(input);
-    const output = llmResponse.output;
+    const answer = llmResponse.text;
 
-    if (output) {
-      return { answer: output.answer };
+    if (answer) {
+      return { answer: answer };
     }
 
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
