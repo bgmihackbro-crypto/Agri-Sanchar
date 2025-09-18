@@ -8,32 +8,13 @@
  */
 
 import { ai } from '@/ai/genkit';
+import {
+  WeatherForecastInputSchema,
+  WeatherForecastOutputSchema,
+  type WeatherForecastInput,
+  type WeatherForecastOutput,
+} from '@/ai/types';
 import { z } from 'zod';
-
-// ---------- Schemas ----------
-const DailyForecastSchema = z.object({
-  time: z.string(),
-  temp: z.string(),
-  condition: z.string(),
-});
-
-const WeeklyForecastSchema = z.object({
-  day: z.string(),
-  temp: z.string(),
-  condition: z.string(),
-});
-
-export const WeatherForecastInputSchema = z.object({
-  city: z.string().describe('The city for which to fetch the weather forecast.'),
-});
-export type WeatherForecastInput = z.infer<typeof WeatherForecastInputSchema>;
-
-export const WeatherForecastOutputSchema = z.object({
-  daily: z.array(DailyForecastSchema).optional(),
-  weekly: z.array(WeeklyForecastSchema).optional(),
-  error: z.string().optional(),
-});
-export type WeatherForecastOutput = z.infer<typeof WeatherForecastOutputSchema>;
 
 // ---------- Flow ----------
 
@@ -75,8 +56,8 @@ const getWeatherForecastFlow = ai.defineFlow(
       const forecastData = await forecastResponse.json();
       
       // Process data for the UI
-      const dailyForecasts: z.infer<typeof DailyForecastSchema>[] = [];
-      const weeklyForecasts: z.infer<typeof WeeklyForecastSchema>[] = [];
+      const dailyForecasts: z.infer<typeof WeatherForecastOutputSchema.shape.daily.element>[] = [];
+      const weeklyForecasts: z.infer<typeof WeatherForecastOutputSchema.shape.weekly.element>[] = [];
 
       // Create daily forecast (next 4 timestamps)
       for (let i = 0; i < 4 && i < forecastData.list.length; i++) {

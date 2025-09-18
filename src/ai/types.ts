@@ -25,6 +25,30 @@ export const PredictCropPricesOutputSchema = z.object({
 });
 export type PredictCropPricesOutput = z.infer<typeof PredictCropPricesOutputSchema>;
 
+// Weather Schemas
+const DailyForecastSchema = z.object({
+  time: z.string(),
+  temp: z.string(),
+  condition: z.string(),
+});
+
+const WeeklyForecastSchema = z.object({
+  day: z.string(),
+  temp: z.string(),
+  condition: z.string(),
+});
+
+export const WeatherForecastInputSchema = z.object({
+  city: z.string().describe('The city for which to fetch the weather forecast.'),
+});
+export type WeatherForecastInput = z.infer<typeof WeatherForecastInputSchema>;
+
+export const WeatherForecastOutputSchema = z.object({
+  daily: z.array(DailyForecastSchema).optional(),
+  weekly: z.array(WeeklyForecastSchema).optional(),
+  error: z.string().optional(),
+});
+export type WeatherForecastOutput = z.infer<typeof WeatherForecastOutputSchema>;
     
 
     

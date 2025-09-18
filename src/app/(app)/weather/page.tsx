@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze } from "lucide-react";
 import { useNotifications } from "@/context/notification-context";
-import { getWeatherForecast, type WeatherForecastOutput } from "@/ai/flows/get-weather-forecast";
+import { getWeatherForecast } from "@/ai/flows/get-weather-forecast";
+import { type WeatherForecastOutput } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
