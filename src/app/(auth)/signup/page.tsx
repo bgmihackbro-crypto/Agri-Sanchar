@@ -41,7 +41,7 @@ export default function SignupPage() {
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp]_useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
@@ -115,7 +115,7 @@ export default function SignupPage() {
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-green-200/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-black">
           {otpSent ? "Enter the simulated OTP to create your account." : "Create your account to get started (Simulated)."}
         </CardDescription>
       </CardHeader>

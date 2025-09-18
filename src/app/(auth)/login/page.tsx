@@ -119,7 +119,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-green-200/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">Login</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-black">
           {otpSent ? "Enter the simulated OTP to continue." : "Enter your phone number to login (Simulated)."}
         </CardDescription>
       </CardHeader>
