@@ -131,6 +131,7 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
+                className="border-green-400 focus-visible:ring-green-400"
               />
             </div>
             <div className="grid gap-2">
@@ -147,6 +148,7 @@ export default function SignupPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
+                  className="border-green-400 focus-visible:ring-green-400"
                 />
               </div>
             </div>

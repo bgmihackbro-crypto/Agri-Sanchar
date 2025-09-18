@@ -140,6 +140,7 @@ export default function LoginPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
+                  className="border-green-400 focus-visible:ring-green-400"
                 />
               </div>
             </div>
