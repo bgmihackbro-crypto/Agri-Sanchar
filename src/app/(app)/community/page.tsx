@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -10,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat, Building, Briefcase } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -312,6 +311,52 @@ const initialPostsData = [
     comments: [],
   },
 ];
+
+const expertData = [
+  {
+    name: "Dr. Anjali Verma",
+    avatar: "https://picsum.photos/seed/expert-1/80/80",
+    specialization: "Agronomy & Soil Science",
+    location: "Punjab Agricultural University, Ludhiana",
+    type: "expert",
+  },
+  {
+    name: "Digital Green",
+    avatar: "https://picsum.photos/seed/ngo-1/80/80",
+    specialization: "Community-led Agricultural Videos",
+    location: "Across India",
+    type: "ngo",
+  },
+  {
+    name: "Dr. Rakesh Kumar",
+    avatar: "https://picsum.photos/seed/expert-2/80/80",
+    specialization: "Horticulture & Pest Management",
+    location: "IARI, New Delhi",
+    type: "expert",
+  },
+  {
+    name: "Agri-Tech Foundation",
+    avatar: "https://picsum.photos/seed/ngo-2/80/80",
+    specialization: "Promoting Sustainable Farming",
+    location: "Pune, Maharashtra",
+    type: "ngo",
+  },
+   {
+    name: "Dr. Meera Desai",
+    avatar: "https://picsum.photos/seed/expert-3/80/80",
+    specialization: "Organic Farming & Certification",
+    location: "Bengaluru, Karnataka",
+    type: "expert",
+  },
+  {
+    name: "Watershed Organisation Trust (WOTR)",
+    avatar: "https://picsum.photos/seed/ngo-3/80/80",
+    specialization: "Watershed Development & Climate Adaptation",
+    location: "Ahmednagar, Maharashtra",
+    type: "ngo",
+  },
+];
+
 
 type UserProfile = {
     farmerId: string;
@@ -780,7 +825,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetForm(); }}>
             <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90">
+                <Button>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Post
                 </Button>
@@ -947,10 +992,11 @@ export default function CommunityPage() {
 
 
        <Tabs defaultValue="home" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
                 <TabsTrigger value="myposts">My Posts</TabsTrigger>
                 <TabsTrigger value="local">Local Groups</TabsTrigger>
+                <TabsTrigger value="experts">Expert &amp; NGOs</TabsTrigger>
             </TabsList>
             <TabsContent value="home" className="space-y-4 pt-4">
                 {filteredPosts.length > 0 ? filteredPosts.map((post) => (
@@ -1030,13 +1076,38 @@ export default function CommunityPage() {
                     </div>
                 )}
              </TabsContent>
+            <TabsContent value="experts" className="pt-4 space-y-4">
+                 <div className="grid gap-4 md:grid-cols-2">
+                    {expertData.map(expert => (
+                         <Card key={expert.name}>
+                            <CardHeader className="flex flex-row items-center gap-4">
+                                <Avatar className="h-16 w-16">
+                                    <AvatarImage src={expert.avatar} />
+                                    <AvatarFallback>{expert.name.substring(0,2)}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                    <CardTitle className="text-lg flex items-center gap-2">
+                                        {expert.name}
+                                        <Badge variant="outline" className={expert.type === 'expert' ? 'border-blue-500 text-blue-600' : 'border-green-500 text-green-600'}>
+                                            {expert.type === 'expert' ? <Briefcase className="h-3 w-3 mr-1" /> : <Building className="h-3 w-3 mr-1" />}
+                                            {expert.type === 'expert' ? 'Expert' : 'NGO'}
+                                        </Badge>
+                                    </CardTitle>
+                                    <p className="text-sm text-muted-foreground">{expert.specialization}</p>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">{expert.location}</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button className="w-full">Connect</Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                 </div>
+            </TabsContent>
         </Tabs>
 
     </div>
   );
 }
-
-
-    
-
-    
