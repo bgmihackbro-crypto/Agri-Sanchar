@@ -1,6 +1,6 @@
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, serverTimestamp, Timestamp, DocumentData, WithFieldValue } from 'firebase/firestore';
+import { collection, addDoc, getDocs, serverTimestamp, Timestamp, DocumentData, WithFieldValue, query, orderBy } from 'firebase/firestore';
 
 export interface Group {
     id: string;
@@ -34,13 +34,16 @@ export const createGroup = async (groupData: NewGroupData): Promise<Group> => {
 };
 
 /**
- * Fetches all groups from Firestore.
+ * Fetches all groups from Firestore, ordered by creation date.
  * @returns An array of group objects.
  */
 export const getGroups = async (): Promise<Group[]> => {
-    const querySnapshot = await getDocs(collection(db, "groups"));
+    const q = query(collection(db, "groups"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
     } as Group));
 };
+
+    

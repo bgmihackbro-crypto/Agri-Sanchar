@@ -235,7 +235,7 @@ export default function CommunityPage() {
         setIsLoadingGroups(true);
         try {
             const fetchedGroups = await getGroups();
-            setGroups(fetchedGroups);
+            setGroups(fetchedGroups.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()));
         } catch (error) {
             console.error("Error fetching groups:", error);
         } finally {
@@ -293,7 +293,7 @@ export default function CommunityPage() {
                     <CreateGroupDialog onGroupCreated={handleGroupCreated} />
                 </div>
                 {isLoadingGroups ? (
-                    <div className="flex justify-center"><Spinner /></div>
+                    <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">Loading groups...</p></div>
                 ) : groups.length === 0 ? (
                     <p className="text-center text-muted-foreground pt-8">No local groups yet. Why not create one?</p>
                 ) : (
@@ -328,3 +328,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
