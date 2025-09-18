@@ -1,7 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { Timestamp } from 'firebase/firestore'; // Keep for type consistency
-import { BOT_USER } from './chat';
+import { BOT_USER, EXPERT_BOT_USER } from './chat';
 
 export interface Group {
     id: string;
@@ -21,8 +21,8 @@ export interface GroupMember {
     avatar: string;
 }
 
-// Type for creating a new group, `id` and `createdAt` will be generated.
-export type NewGroupData = Omit<Group, 'id' | 'createdAt'>;
+// Type for creating a new group, `createdAt` will be generated. `id` can be optional.
+export type NewGroupData = Omit<Group, 'createdAt'> & { id?: string };
 
 // Helper to get groups from localStorage
 const getStoredGroups = (): Group[] => {
@@ -46,13 +46,16 @@ const setStoredGroups = (groups: Group[]) => {
  */
 export const createGroup = (groupData: NewGroupData): Group => {
     const groups = getStoredGroups();
+    const isDirectMessage = groupData.id && groupData.id.startsWith('dm-');
+    
     const newGroup: Group = {
         ...groupData,
-        id: uuidv4(),
+        id: groupData.id || uuidv4(), // Use provided ID or generate a new one
         createdAt: Timestamp.now(),
-        // Add the bot to the members list on creation
-        members: [...groupData.members, BOT_USER.id], 
+        // Add the bot to public groups, but not DMs
+        members: isDirectMessage ? groupData.members : [...groupData.members, BOT_USER.id], 
     };
+
     const updatedGroups = [newGroup, ...groups];
     setStoredGroups(updatedGroups);
     return newGroup;
@@ -142,6 +145,9 @@ export const getGroupMembers = (groupId: string): GroupMember[] => {
        if (id === BOT_USER.id) {
            return { id: BOT_USER.id, name: BOT_USER.name, avatar: BOT_USER.avatar };
        }
+       if (id === EXPERT_BOT_USER.id) {
+            return { id: EXPERT_BOT_USER.id, name: EXPERT_BOT_USER.name, avatar: EXPERT_BOT_USER.avatar };
+       }
        
        if (typeof window !== 'undefined') {
             const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
@@ -149,10 +155,10 @@ export const getGroupMembers = (groupId: string): GroupMember[] => {
                 return { id, name: userProfile.name, avatar: userProfile.avatar };
             }
        }
-       // Fallback for other members
+       // Fallback for other members/experts
        return {
             id: id,
-            name: `Farmer ${id.substring(3, 7)}`,
+            name: `User ${id.substring(0, 4)}`,
             avatar: `https://picsum.photos/seed/${id}/40/40`,
         }
     });
@@ -181,9 +187,13 @@ export const addUserToGroup = (groupId: string, userId: string): {success: boole
         return { success: true };
     }
     
-    // Validate format for non-bot users
-    if (userId !== BOT_USER.id && !userId.startsWith('AS-')) {
-        return { success: false, error: 'Invalid Farmer ID format.' };
+    // A simple validation for farmer IDs
+    if (!userId.startsWith('AS-') && userId !== BOT_USER.id && userId !== EXPERT_BOT_USER.id) {
+        // Allow expert/ngo IDs which might not follow farmer ID format
+        const isExpertOrNgo = !userId.startsWith('AS-');
+        if (!isExpertOrNgo) {
+             return { success: false, error: 'Invalid Farmer ID format.' };
+        }
     }
     
     const userName = `Farmer ${userId.substring(3, 7)}`;

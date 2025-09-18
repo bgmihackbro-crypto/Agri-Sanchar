@@ -57,6 +57,12 @@ export const BOT_USER = {
     avatar: 'https://picsum.photos/seed/gurpreet/40/40'
 };
 
+export const EXPERT_BOT_USER = {
+    id: 'bot-expert-1',
+    name: 'Dr. Anjali Verma',
+    avatar: 'https://picsum.photos/seed/expert-1/40/40'
+};
+
 const BOT_REPLIES = [
     "That's interesting. I had a similar problem last year with my crops.",
     "Thanks for sharing this with the group!",
@@ -66,34 +72,41 @@ const BOT_REPLIES = [
     "Can you share more details?",
 ];
 
-const maybeTriggerBotReply = (groupId: string, messageAuthorId: string) => {
-    // Don't let the bot reply to itself
-    if (messageAuthorId === BOT_USER.id) {
+const maybeTriggerBotReply = (groupId: string, messageAuthorId: string, isDirectMessage: boolean) => {
+    // Don't let bots reply to themselves
+    if (messageAuthorId === BOT_USER.id || messageAuthorId === EXPERT_BOT_USER.id) {
         return;
     }
 
-    // Have the bot reply sometimes, not always
-    if (Math.random() > 0.4) { // 60% chance to reply
-        const delay = Math.random() * 2000 + 1000; // 1-3 second delay
+    const shouldReply = Math.random() > 0.4;
+    if (!shouldReply) return;
+    
+    const delay = Math.random() * 2000 + 1000; // 1-3 second delay
 
-        setTimeout(() => {
-            const replyText = BOT_REPLIES[Math.floor(Math.random() * BOT_REPLIES.length)];
-            const botMessage: Message = {
+    setTimeout(() => {
+        let botMessage: Message;
+        if (isDirectMessage) {
+            botMessage = {
                 id: uuidv4(),
-                author: BOT_USER,
-                text: replyText,
+                author: EXPERT_BOT_USER,
+                text: "Thanks for reaching out. How can I help you today?",
                 timestamp: Timestamp.now(),
             };
-            
-            const messages = getStoredMessages(groupId);
-            const updatedMessages = [...messages, botMessage];
-            // Use setStoredMessages which handles dispatching the event
-            setStoredMessages(groupId, updatedMessages);
-            // This was the missing piece to make the bot's reply show up
-            window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
+        } else {
+             botMessage = {
+                id: uuidv4(),
+                author: BOT_USER,
+                text: BOT_REPLIES[Math.floor(Math.random() * BOT_REPLIES.length)],
+                timestamp: Timestamp.now(),
+            };
+        }
+        
+        const messages = getStoredMessages(groupId);
+        const updatedMessages = [...messages, botMessage];
+        setStoredMessages(groupId, updatedMessages);
+        window.dispatchEvent(new CustomEvent('new-message', { detail: { groupId } }));
 
-        }, delay);
-    }
+    }, delay);
 };
 
 
@@ -131,7 +144,9 @@ export const sendMessage = async ({ groupId, author, text, file, onProgress }: S
     setStoredMessages(groupId, updatedMessages);
     
     // 3. Trigger the bot simulation
-    maybeTriggerBotReply(groupId, author.id);
+    // We can crudely check if it's a DM by the group name format
+    const isDirectMessage = groupId.startsWith('dm-');
+    maybeTriggerBotReply(groupId, author.id, isDirectMessage);
 };
 
 

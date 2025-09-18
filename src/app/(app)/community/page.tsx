@@ -29,6 +29,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Timestamp } from "firebase/firestore";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { sendMessage } from "@/lib/firebase/chat";
+import { EXPERT_BOT_USER } from "@/lib/firebase/chat";
 
 const initialPostsData = [
   {
@@ -314,13 +315,15 @@ const initialPostsData = [
 
 const expertData = [
   {
-    name: "Dr. Anjali Verma",
+    id: EXPERT_BOT_USER.id,
+    name: EXPERT_BOT_USER.name,
     avatar: "https://picsum.photos/seed/expert-1/80/80",
     specialization: "Agronomy & Soil Science",
     location: "Punjab Agricultural University, Ludhiana",
     type: "expert",
   },
   {
+    id: 'ngo-1',
     name: "Digital Green",
     avatar: "https://picsum.photos/seed/ngo-1/80/80",
     specialization: "Community-led Agricultural Videos",
@@ -328,6 +331,7 @@ const expertData = [
     type: "ngo",
   },
   {
+    id: 'expert-2',
     name: "Dr. Rakesh Kumar",
     avatar: "https://picsum.photos/seed/expert-2/80/80",
     specialization: "Horticulture & Pest Management",
@@ -335,6 +339,7 @@ const expertData = [
     type: "expert",
   },
   {
+    id: 'ngo-2',
     name: "Agri-Tech Foundation",
     avatar: "https://picsum.photos/seed/ngo-2/80/80",
     specialization: "Promoting Sustainable Farming",
@@ -342,6 +347,7 @@ const expertData = [
     type: "ngo",
   },
    {
+    id: 'expert-3',
     name: "Dr. Meera Desai",
     avatar: "https://picsum.photos/seed/expert-3/80/80",
     specialization: "Organic Farming & Certification",
@@ -349,6 +355,7 @@ const expertData = [
     type: "expert",
   },
   {
+    id: 'ngo-3',
     name: "Watershed Organisation Trust (WOTR)",
     avatar: "https://picsum.photos/seed/ngo-3/80/80",
     specialization: "Watershed Development & Climate Adaptation",
@@ -877,6 +884,8 @@ export default function CommunityPage() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
   const { toast } = useToast();
+  const router = useRouter();
+
 
   const fetchGroups = () => {
         setIsLoadingGroups(true);
@@ -949,11 +958,36 @@ export default function CommunityPage() {
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
   const allCities = ['all', ...Array.from(new Set(initialPostsData.map(p => p.location)))];
 
-  const handleConnect = (name: string) => {
-    toast({
-        title: "Connection Request Sent",
-        description: `Your request to connect with ${name} has been sent.`,
-    });
+  const handleConnect = (expert: (typeof expertData)[0]) => {
+      if (!userProfile) {
+          toast({ variant: 'destructive', title: "Login required", description: "You need to be logged in to connect with experts." });
+          return;
+      }
+
+      toast({ title: "Creating Chat...", description: `Preparing a direct chat with ${expert.name}.` });
+
+      // Create a "group" that represents a direct message channel
+      const dmGroupId = `dm-${userProfile.farmerId}-${expert.id}`;
+      const existingDm = getGroups().find(g => g.id === dmGroupId);
+
+      if (existingDm) {
+          router.push(`/community/${dmGroupId}`);
+          return;
+      }
+
+      const newDmGroup = createGroup({
+          id: dmGroupId, // Use a predictable ID for DMs
+          name: `Chat with ${expert.name}`,
+          description: `Direct message channel between ${userProfile.name} and ${expert.name}.`,
+          city: userProfile.city,
+          ownerId: userProfile.farmerId,
+          members: [userProfile.farmerId, expert.id],
+          createdBy: userProfile.name,
+          avatarUrl: expert.avatar,
+      });
+
+      handleGroupCreated();
+      router.push(`/community/${newDmGroup.id}`);
   };
 
 
@@ -1108,7 +1142,7 @@ export default function CommunityPage() {
                                 <p className="text-sm text-muted-foreground">{expert.location}</p>
                             </CardContent>
                             <CardFooter>
-                                <Button className="w-full" onClick={() => handleConnect(expert.name)}>Connect</Button>
+                                <Button className="w-full" onClick={() => handleConnect(expert)}>Connect</Button>
                             </CardFooter>
                         </Card>
                     ))}
