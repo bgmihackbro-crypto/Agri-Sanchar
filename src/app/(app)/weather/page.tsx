@@ -150,7 +150,7 @@ export default function WeatherPage() {
             <Card className="bg-green-50 border-green-200">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-headline text-green-800">
-                        <Bot className="h-6 w-6" /> AI Farming Tips
+                        <Bot className="h-6 w-6" /> AI Suggestion
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
