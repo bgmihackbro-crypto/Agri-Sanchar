@@ -590,10 +590,9 @@ export default function CommunityPage() {
 
 
        <Tabs defaultValue="home" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
-                <TabsTrigger value="myposts">My Posts</TabsTrigger>
                 <TabsTrigger value="local">Local Groups</TabsTrigger>
             </TabsList>
             <TabsContent value="home" className="space-y-4 pt-4">
@@ -603,9 +602,6 @@ export default function CommunityPage() {
             </TabsContent>
             <TabsContent value="categories" className="pt-4">
                 <p className="text-center text-muted-foreground">Category filters will be available here.</p>
-            </TabsContent>
-             <TabsContent value="myposts" className="pt-4">
-                <p className="text-center text-muted-foreground">Posts you have created will appear here.</p>
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
