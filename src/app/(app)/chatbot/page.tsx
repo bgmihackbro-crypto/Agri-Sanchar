@@ -164,11 +164,11 @@ export default function ChatbotPage() {
                     className={cn(
                       "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm",
                       message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-background"
+                        ? "bg-muted"
+                        : "bg-primary text-primary-foreground"
                     )}
                   >
-                    <div className="text-xs opacity-75 mb-1">{format(message.timestamp, "p")}</div>
+                    <div className="text-xs opacity-75 mb-1">{message.timestamp ? format(message.timestamp, "p"): ''}</div>
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     {message.image && (
                       <img
@@ -248,7 +248,7 @@ export default function ChatbotPage() {
               placeholder="Ask about crops, prices, or upload a photo..."
               disabled={isLoading}
             />
-            <Button type="submit" className="bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center gap-2" disabled={isLoading || (!input.trim() && !imageFile)}>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 flex items-center gap-2" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
               <span>Send</span>
             </Button>
