@@ -49,6 +49,51 @@ const fileToDataUri = (file: File): Promise<string> => {
     });
 };
 
+// --- Bot Simulation ---
+
+const BOT_USER = {
+    id: 'bot-farmer-1',
+    name: 'Gurpreet Singh',
+    avatar: 'https://picsum.photos/seed/gurpreet/40/40'
+};
+
+const BOT_REPLIES = [
+    "That's interesting. I had a similar problem last year with my crops.",
+    "Thanks for sharing this with the group!",
+    "Looks good! My crop is also doing well this season.",
+    "I'm not sure about that, has anyone else seen this before?",
+    "Good advice. I will try this.",
+    "Can you share more details?",
+];
+
+const maybeTriggerBotReply = (groupId: string, messageAuthorId: string) => {
+    // Don't let the bot reply to itself
+    if (messageAuthorId === BOT_USER.id) {
+        return;
+    }
+
+    // Have the bot reply sometimes, not always
+    if (Math.random() > 0.6) { // 60% chance to reply
+        const delay = Math.random() * 2000 + 1000; // 1-3 second delay
+
+        setTimeout(() => {
+            const replyText = BOT_REPLIES[Math.floor(Math.random() * BOT_REPLIES.length)];
+            const botMessage: Message = {
+                id: uuidv4(),
+                author: BOT_USER,
+                text: replyText,
+                timestamp: Timestamp.now(),
+            };
+            
+            const messages = getStoredMessages(groupId);
+            const updatedMessages = [...messages, botMessage];
+            setStoredMessages(groupId, updatedMessages);
+
+        }, delay);
+    }
+};
+
+
 /**
  * Sends a message to a group chat using localStorage, handling file uploads if necessary.
  */
@@ -81,6 +126,9 @@ export const sendMessage = async ({ groupId, author, text, file, onProgress }: S
 
     const updatedMessages = [...messages, newMessage];
     setStoredMessages(groupId, updatedMessages);
+    
+    // 3. Trigger the bot simulation
+    maybeTriggerBotReply(groupId, author.id);
 };
 
 
