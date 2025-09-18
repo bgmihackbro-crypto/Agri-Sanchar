@@ -38,7 +38,7 @@ const getWeatherForecastFlow = ai.defineFlow(
 
     try {
       // 1. Get coordinates for the city
-      const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
+      const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
         city
       )},IN&limit=1&appid=${apiKey}`;
       const geoResponse = await fetch(geoUrl);
