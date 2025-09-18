@@ -77,15 +77,19 @@ export default function ChatbotPage() {
     if (!input.trim() && !imageFile) return;
 
     setIsLoading(true);
+    
+    const currentMessages = [
+        ...messages,
+        {
+          id: Date.now(),
+          role: "user" as const,
+          content: input,
+          ...(imageFile && { image: URL.createObjectURL(imageFile) }),
+          timestamp: new Date(),
+        },
+      ];
+    setMessages(currentMessages);
 
-    const userMessage: Message = {
-      id: Date.now(),
-      role: "user",
-      content: input,
-      ...(imageFile && { image: URL.createObjectURL(imageFile) }),
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, userMessage]);
 
     let aiResponse = "Sorry, I could not process your request.";
     try {
@@ -93,11 +97,19 @@ export default function ChatbotPage() {
       if (imageFile) {
         photoDataUri = await fileToDataUri(imageFile);
       }
+      
+      const history = currentMessages
+        .filter(m => m.role !== 'user' || m.content) // don't pass user messages with no text content
+        .map(m => ({
+            role: m.role,
+            content: m.content,
+        }));
 
       const response = await answerFarmerQuestion({
         question: input,
         photoDataUri: photoDataUri,
         city: userProfile?.city,
+        history: history,
       });
       aiResponse = response.answer ?? 'Sorry, I could not generate a response.';
     } catch (error) {
@@ -255,3 +267,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    

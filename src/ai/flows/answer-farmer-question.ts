@@ -25,6 +25,10 @@ const AnswerFarmerQuestionInputSchema = z.object({
     ),
   city: z.string().optional().describe("The farmer's city, used to provide location-specific information like local market prices."),
   returnJson: z.boolean().optional().describe('Set to true to get a direct JSON output from tools if applicable.'),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant']),
+    content: z.string(),
+  })).optional().describe('The conversation history.'),
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
@@ -112,6 +116,17 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
+
+{{#if history}}
+This is the conversation history. Use it to provide contextual answers.
+{{#each history}}
+{{#if (eq role 'user')}}
+User: {{content}}
+{{else}}
+AI: {{content}}
+{{/if}}
+{{/each}}
+{{/if}}
 
 {{#if photoDataUri}}
 A photo has been provided. You MUST analyze this photo in the context of the user's question. If the user is asking to identify a problem (like a disease or pest), perform a step-by-step diagnosis.
@@ -222,3 +237,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
+
+    
