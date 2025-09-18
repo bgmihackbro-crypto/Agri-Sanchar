@@ -72,53 +72,28 @@ const getWeatherForecastFlow = ai.defineFlow(
       }
 
       // Create weekly forecast (one per day for 7 days)
-      const dailyData: { [key: string]: any } = {};
+      const processedDays = new Set<string>();
+      
       forecastData.list.forEach((item: any) => {
-          const day = new Date(item.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' });
-          if (!dailyData[day]) {
-              dailyData[day] = item;
-          }
-      });
-      
-      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const today = new Date();
-      
-      for(let i=0; i<7; i++){
-          const currentDay = new Date(today);
-          currentDay.setDate(today.getDate() + i);
-          const dayOfWeek = weekdays[currentDay.getDay()];
-          
-          const item = Object.values(dailyData).find((d: any) => new Date(d.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }) === dayOfWeek);
+          const date = new Date(item.dt * 1000);
+          const dayString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
 
-          if (item) {
+          if (!processedDays.has(dayString)) {
+              processedDays.add(dayString);
+
+              const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+              const today = new Date();
+              const isToday = date.getDate() === today.getDate() &&
+                              date.getMonth() === today.getMonth() &&
+                              date.getFullYear() === today.getFullYear();
+
               weeklyForecasts.push({
-                  day: i === 0 ? 'Today' : dayOfWeek,
+                  day: isToday ? 'Today' : dayOfWeek,
                   temp: `${Math.round(item.main.temp_max)}°C`,
                   condition: item.weather[0].main,
               });
           }
-      }
-
-      // Ensure we have a 7-day forecast, even if API returns less for some reason.
-      // This part might not be strictly necessary if the above loop works correctly, but it's a good fallback.
-      if (weeklyForecasts.length < 7) {
-          const existingDays = new Set(weeklyForecasts.map(f => f.day));
-          const lastAvailableForecast = weeklyForecasts[weeklyForecasts.length - 1];
-
-          for (let i = weeklyForecasts.length; i < 7; i++) {
-              const nextDay = new Date(today);
-              nextDay.setDate(today.getDate() + i);
-              const dayOfWeek = weekdays[nextDay.getDay()];
-              
-              if (!existingDays.has(dayOfWeek) && !existingDays.has('Today') && i > 0) {
-                 weeklyForecasts.push({
-                    day: dayOfWeek,
-                    temp: lastAvailableForecast ? lastAvailableForecast.temp : "N/A",
-                    condition: lastAvailableForecast ? lastAvailableForecast.condition : "N/A",
-                });
-              }
-          }
-      }
+      });
 
 
       return {
