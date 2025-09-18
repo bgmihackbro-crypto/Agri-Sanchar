@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze, Sunrise, Sunset, Gauge, Bot } from "lucide-react";
+import { Sun, CloudRain, CloudSun, Cloudy, Moon, Wind, Droplets, Thermometer, Haze, Sunrise, Sunset, Gauge, Bot, KeyRound } from "lucide-react";
 import { useNotifications } from "@/context/notification-context";
 import { getWeatherForecast } from "@/ai/flows/get-weather-forecast";
 import { type WeatherForecastOutput } from "@/ai/types";
@@ -110,10 +110,21 @@ export default function WeatherPage() {
         )}
 
         {error && !isLoading && (
-            <Alert variant="destructive">
-                <AlertTitle>Error Fetching Weather</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-            </Alert>
+             error.includes("API key") ? (
+                <Alert variant="destructive">
+                    <KeyRound className="h-4 w-4" />
+                    <AlertTitle>Weather Service Not Configured</AlertTitle>
+                    <AlertDescription>
+                        The OpenWeatherMap API key is missing. To see the weather forecast, please add your API key to the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">.env</code> file.
+                        <pre className="mt-2 rounded-md bg-muted p-2 text-xs">OPENWEATHER_API_KEY=YOUR_API_KEY_HERE</pre>
+                    </AlertDescription>
+                </Alert>
+             ) : (
+                <Alert variant="destructive">
+                    <AlertTitle>Error Fetching Weather</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+             )
         )}
 
       {!isLoading && !error && weatherData && (
@@ -229,3 +240,5 @@ export default function WeatherPage() {
     </div>
   );
 }
+
+    
