@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -186,14 +186,16 @@ export default function SoilTestingPage() {
   };
 
   const activeReport = useMemo(() => {
-    const report = reports.find(r => r.id === activeReportId);
-    // When active report changes, clear old calculation results
-    if (report?.id !== activeReport?.id) {
-        setCalculationResult(null);
-        setCalculationError(null);
-    }
-    return report;
+    return reports.find(r => r.id === activeReportId);
   }, [reports, activeReportId]);
+
+  // When active report changes, clear old calculation results
+  useEffect(() => {
+      setCalculationResult(null);
+      setCalculationError(null);
+      setFarmArea('');
+      setCropType('');
+  }, [activeReportId]);
 
   return (
     <div className="space-y-6">
