@@ -320,7 +320,7 @@ const expertData = [
     name: EXPERT_BOT_USER.name,
     avatar: "https://picsum.photos/seed/expert-1/80/80",
     specialization: "Agronomy & Soil Science",
-    location: "Punjab Agricultural University, Ludhiana",
+    location: "Ludhiana",
     contact: "+91 98765 12345",
     type: "expert",
   },
@@ -329,7 +329,7 @@ const expertData = [
     name: "Digital Green",
     avatar: "https://picsum.photos/seed/ngo-1/80/80",
     specialization: "Community-led Agricultural Videos",
-    location: "Across India",
+    location: "Patna",
     contact: "+91 91234 56789",
     type: "ngo",
   },
@@ -338,7 +338,7 @@ const expertData = [
     name: "Dr. Rakesh Kumar",
     avatar: "https://picsum.photos/seed/expert-2/80/80",
     specialization: "Horticulture & Pest Management",
-    location: "IARI, New Delhi",
+    location: "New Delhi",
     contact: "+91 99887 76655",
     type: "expert",
   },
@@ -347,7 +347,7 @@ const expertData = [
     name: "Agri-Tech Foundation",
     avatar: "https://picsum.photos/seed/ngo-2/80/80",
     specialization: "Promoting Sustainable Farming",
-    location: "Pune, Maharashtra",
+    location: "Pune",
     contact: "+91 98765 54321",
     type: "ngo",
   },
@@ -356,7 +356,7 @@ const expertData = [
     name: "Dr. Meera Desai",
     avatar: "https://picsum.photos/seed/expert-3/80/80",
     specialization: "Organic Farming & Certification",
-    location: "Bengaluru, Karnataka",
+    location: "Bengaluru",
     contact: "+91 91122 33445",
     type: "expert",
   },
@@ -365,7 +365,7 @@ const expertData = [
     name: "Watershed Organisation Trust (WOTR)",
     avatar: "https://picsum.photos/seed/ngo-3/80/80",
     specialization: "Watershed Development & Climate Adaptation",
-    location: "Ahmednagar, Maharashtra",
+    location: "Pune",
     contact: "+91 95566 77889",
     type: "ngo",
   },
@@ -962,8 +962,21 @@ export default function CommunityPage() {
       return categoryMatch && cityMatch;
   });
 
+  const filteredGroups = groups.filter(group => {
+      const cityMatch = filterCity === 'all' || group.city === filterCity;
+      // No category filter for groups
+      return cityMatch;
+  });
+
+  const filteredExperts = expertData.filter(expert => {
+      const categoryMatch = filterCategory === 'all' || expert.specialization.includes(filterCategory);
+      const cityMatch = filterCity === 'all' || expert.location === filterCity;
+      return categoryMatch && cityMatch;
+  });
+
+
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
-  const allCities = ['all', ...Array.from(new Set(initialPostsData.map(p => p.location)))];
+  const allCities = ['all', ...Array.from(new Set([...initialPostsData.map(p => p.location), ...expertData.map(e => e.location)]))];
 
   const handleChat = (expert: (typeof expertData)[0]) => {
       if (!userProfile) {
@@ -1018,21 +1031,21 @@ export default function CommunityPage() {
              <div className="flex flex-col md:flex-row gap-2">
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
                     <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by category" />
+                        <SelectValue placeholder="Filter by Topic" />
                     </SelectTrigger>
                     <SelectContent>
                         {allCategories.map(cat => (
-                            <SelectItem key={cat} value={cat}>{cat === 'all' ? 'All Categories' : cat}</SelectItem>
+                            <SelectItem key={cat} value={cat}>{cat === 'all' ? 'All Topics' : cat}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
                 <Select value={filterCity} onValueChange={setFilterCity}>
                     <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by city" />
+                        <SelectValue placeholder="Filter by Location" />
                     </SelectTrigger>
                     <SelectContent>
                         {allCities.map(city => (
-                             <SelectItem key={city} value={city}>{city === 'all' ? 'All Cities' : city}</SelectItem>
+                             <SelectItem key={city} value={city}>{city === 'all' ? 'All Locations' : city}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -1087,11 +1100,11 @@ export default function CommunityPage() {
                 </div>
                 {isLoadingGroups ? (
                     <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">Loading groups...</p></div>
-                ) : groups.length === 0 ? (
-                    <p className="text-center text-muted-foreground pt-8">No local groups yet. Why not create one?</p>
+                ) : filteredGroups.length === 0 ? (
+                    <p className="text-center text-muted-foreground pt-8">No local groups match the current filters.</p>
                 ) : (
                     <div className="grid gap-4 md:grid-cols-2">
-                    {groups.map(group => (
+                    {filteredGroups.map(group => (
                         <Card key={group.id}>
                             <CardHeader>
                                 <div className="flex justify-between items-start">
@@ -1127,7 +1140,7 @@ export default function CommunityPage() {
              </TabsContent>
             <TabsContent value="experts" className="pt-4 space-y-4">
                  <div className="grid gap-4 md:grid-cols-2">
-                    {expertData.map(expert => (
+                    {filteredExperts.length > 0 ? filteredExperts.map(expert => (
                          <Card key={expert.id}>
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <Avatar className="h-16 w-16">
@@ -1160,7 +1173,9 @@ export default function CommunityPage() {
                                 </Button>
                             </CardFooter>
                         </Card>
-                    ))}
+                    )) : (
+                        <p className="text-center text-muted-foreground pt-8 md:col-span-2">No experts or NGOs match the current filters.</p>
+                    )}
                  </div>
             </TabsContent>
         </Tabs>
@@ -1168,4 +1183,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
 
