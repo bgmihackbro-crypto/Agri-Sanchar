@@ -206,7 +206,7 @@ const initialPostsData = [
     time: "2 days ago",
     title: "Thinking of switching to floriculture. Good idea?",
     content: "I have a 2-acre plot and I am considering growing marigolds instead of vegetables. Is the market good for flowers in Bengaluru? What are the risks?",
-    image: "https://images.unsplash.com/photo-1562208942-36e619d67554?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXJpZ29sZCUyMGZhcm18ZW58MHx8fHwxNzU4MzIwMjAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1543051932-6ef9fecfbc80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8ZmFybXxlbnwwfHx8fDE3NTgyOTkzODZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "marigold farm",
     mediaType: 'image',
     likes: 35,
