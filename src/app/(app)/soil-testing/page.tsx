@@ -21,6 +21,11 @@ import {
   CheckCircle,
   AlertTriangle,
   FileClock,
+  Calculator,
+  Building,
+  CircleHelp,
+  Combine,
+  Tractor,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -33,6 +38,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 type SoilReport = {
@@ -228,30 +236,11 @@ export default function SoilTestingPage() {
                     )}
                 </CardContent>
             </Card>
-
-            <Card className="bg-amber-50 border-amber-200">
-                <CardHeader>
-                    <CardTitle className="text-amber-900">How to Collect Soil Samples</CardTitle>
-                </CardHeader>
-                 <Accordion type="single" collapsible className="w-full px-6">
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Show Instructions</AccordionTrigger>
-                        <AccordionContent className="text-amber-800 text-sm space-y-2">
-                           <p>1. Use a clean spade or auger.</p>
-                           <p>2. Take V-shaped cuts of soil 15cm deep from 8-10 spots in a zig-zag pattern across your field.</p>
-                           <p>3. Mix all samples together on a clean sheet and remove debris.</p>
-                           <p>4. Reduce the sample to about 500g by quartering and discarding opposite quarters.</p>
-                           <p>5. Air-dry the sample in the shade before packing.</p>
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-                <div className="p-6"></div>
-            </Card>
         </div>
 
-        {/* Right Column: Analysis Display */}
-        <div className="lg:col-span-2">
-            <Card className="min-h-[500px]">
+        {/* Right Column: Analysis Display and Tools */}
+        <div className="lg:col-span-2 space-y-6">
+            <Card className="min-h-[300px]">
                 <CardHeader>
                     <CardTitle>Analysis & Recommendations</CardTitle>
                     <CardDescription>
@@ -260,45 +249,113 @@ export default function SoilTestingPage() {
                 </CardHeader>
                 <CardContent>
                     {!activeReport ? (
-                         <div className="flex flex-col items-center justify-center h-96 text-center">
+                         <div className="flex flex-col items-center justify-center h-64 text-center">
                             <FlaskConical className="h-16 w-16 text-muted-foreground/50"/>
                             <p className="mt-4 text-muted-foreground">Your report analysis will appear here.</p>
                         </div>
                     ) : isLoading && !activeReport.analysis && !activeReport.analysisError ? (
-                        <div className="flex flex-col items-center justify-center h-96 text-center">
+                        <div className="flex flex-col items-center justify-center h-64 text-center">
                             <Spinner className="h-12 w-12" />
                             <p className="mt-4 text-muted-foreground">AI is analyzing your report. This may take a moment...</p>
                         </div>
                     ) : activeReport.analysisError ? (
-                         <div className="flex flex-col items-center justify-center h-96 text-center text-destructive p-4 bg-destructive/5 rounded-lg">
+                         <div className="flex flex-col items-center justify-center h-64 text-center text-destructive p-4 bg-destructive/5 rounded-lg">
                             <AlertTriangle className="h-16 w-16"/>
                             <p className="mt-4 font-semibold">Analysis Failed</p>
                             <p className="mt-2 text-sm">{activeReport.analysisError}</p>
                         </div>
                     ) : activeReport.analysis ? (
-                        <div className="space-y-6 animate-fade-in">
-                            <section>
-                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-3"><BarChart3 className="h-5 w-5 text-primary"/>Key Metrics</h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                    {activeReport.analysis.keyMetrics.map(metric => (
-                                        <div key={metric.name} className="p-3 border rounded-lg">
-                                            <p className="text-sm text-muted-foreground">{metric.name}</p>
-                                            <p className="text-xl font-bold">{metric.value}</p>
-                                            <Badge variant="outline" className={`mt-1 ${getStatusColor(metric.status)}`}>{metric.status}</Badge>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                             <section>
-                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-2"><Trees className="h-5 w-5 text-green-600"/>Crop Suitability</h3>
-                                <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">{activeReport.analysis.cropSuitability}</p>
-                            </section>
-                             <section>
-                                <h3 className="text-lg font-semibold flex items-center gap-2 mb-2"><FlaskConical className="h-5 w-5 text-blue-600"/>Fertilizer & Amendment Recommendations</h3>
-                                <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md whitespace-pre-wrap">{activeReport.analysis.fertilizerRecommendation}</p>
-                            </section>
-                        </div>
+                        <Accordion type="multiple" defaultValue={['metrics', 'crops', 'fertilizer']} className="w-full">
+                            <AccordionItem value="metrics">
+                                <AccordionTrigger className="text-lg font-semibold"><BarChart3 className="h-5 w-5 mr-2 text-primary"/>Key Metrics</AccordionTrigger>
+                                <AccordionContent>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                                        {activeReport.analysis.keyMetrics.map(metric => (
+                                            <div key={metric.name} className="p-3 border rounded-lg">
+                                                <p className="text-sm text-muted-foreground">{metric.name}</p>
+                                                <p className="text-xl font-bold">{metric.value}</p>
+                                                <Badge variant="outline" className={`mt-1 ${getStatusColor(metric.status)}`}>{metric.status}</Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                             <AccordionItem value="crops">
+                                <AccordionTrigger className="text-lg font-semibold"><Trees className="h-5 w-5 mr-2 text-green-600"/>Crop Suitability</AccordionTrigger>
+                                <AccordionContent>
+                                    <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">{activeReport.analysis.cropSuitability}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                             <AccordionItem value="fertilizer">
+                                <AccordionTrigger className="text-lg font-semibold"><Combine className="h-5 w-5 mr-2 text-blue-600"/>Fertilizer Recommendations</AccordionTrigger>
+                                <AccordionContent>
+                                    <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md whitespace-pre-wrap">{activeReport.analysis.fertilizerRecommendation}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     ) : null}
+                </CardContent>
+            </Card>
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Calculator className="text-primary"/> Fertilizer Calculator</CardTitle>
+                    <CardDescription>Get a customized fertilizer recommendation for your specific crop and area.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                         <div className="space-y-2">
+                            <Label htmlFor="area">Farm Area (acres)</Label>
+                            <Input id="area" type="number" placeholder="e.g., 2.5" />
+                        </div>
+                        <div className="space-y-2">
+                             <Label htmlFor="crop-type">Crop Type</Label>
+                            <Select>
+                                <SelectTrigger id="crop-type">
+                                    <SelectValue placeholder="Select crop" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="wheat">Wheat</SelectItem>
+                                    <SelectItem value="rice">Rice</SelectItem>
+                                    <SelectItem value="maize">Maize</SelectItem>
+                                    <SelectItem value="cotton">Cotton</SelectItem>
+                                    <SelectItem value="sugarcane">Sugarcane</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button disabled={!activeReport?.analysis} className="w-full">
+                        <Tractor className="mr-2 h-4 w-4"/>
+                        Calculate Required Dosage
+                    </Button>
+                </CardFooter>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Resources & Support</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="labs">
+                            <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
+                            <AccordionContent>
+                                <p className="text-sm text-muted-foreground">
+                                    Visit the <a href="https://soilhealth.dac.gov.in/soil-testing-laboratories" target="_blank" rel="noopener noreferrer" className="text-primary underline">official government portal</a> to find a soil testing laboratory in your district. Many Krishi Vigyan Kendras (KVKs) also offer testing services.
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>
+                         <AccordionItem value="subsidies">
+                            <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Subsidies</AccordionTrigger>
+                            <AccordionContent>
+                                 <p className="text-sm text-muted-foreground">
+                                    Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing. Farmers can get their soil tested at subsidized rates. Contact your local agriculture office for more details on subsidies and procedures in your state.
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </CardContent>
             </Card>
         </div>
@@ -306,3 +363,5 @@ export default function SoilTestingPage() {
     </div>
   );
 }
+
+    
