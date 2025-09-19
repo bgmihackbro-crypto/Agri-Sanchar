@@ -980,7 +980,11 @@ const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPost
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl p-0">
+                 <DialogHeader>
+                    <DialogTitle className="sr-only">Post from {post.author}</DialogTitle>
+                    <DialogDescription className="sr-only">{post.title}</DialogDescription>
+                </DialogHeader>
                  <Collapsible defaultOpen={true} asChild>
                     <PostCard
                         post={post}
@@ -1377,3 +1381,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
