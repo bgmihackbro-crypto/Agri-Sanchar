@@ -193,13 +193,12 @@ export default function SoilTestingPage() {
     return reports.find(r => r.id === activeReportId);
   }, [reports, activeReportId]);
 
-  // When active report changes, clear old calculation results
   useEffect(() => {
-      setCalculationResult(null);
-      setCalculationError(null);
-      setFarmArea('');
-      setCropType('');
-  }, [activeReportId]);
+    setCalculationResult(null);
+    setCalculationError(null);
+    setFarmArea('');
+    setCropType('');
+  }, [activeReport]);
 
   return (
     <div className="space-y-6">
@@ -290,18 +289,6 @@ export default function SoilTestingPage() {
                     <CardTitle>How to Collect Soil Samples</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="aspect-video rounded-lg overflow-hidden border mb-4">
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src="https://www.youtube.com/embed/n7w2-Y3J3-Y" 
-                            title="YouTube video player" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen
-                            className="w-full h-full"
-                            >
-                        </iframe>
-                    </div>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                             <AccordionTrigger><Map className="h-4 w-4 mr-2"/>Select a Representative Area</AccordionTrigger>
