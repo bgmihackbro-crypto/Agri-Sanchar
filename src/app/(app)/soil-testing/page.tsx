@@ -320,9 +320,9 @@ export default function SoilTestingPage() {
                     <CardTitle>How to Collect Soil Samples</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                     <Link href="https://www.youtube.com/watch?v=F4h_g3a2n5M" target="_blank" rel="noopener noreferrer" className="block relative group">
+                     <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
                         <Image 
-                            src="https://img.youtube.com/vi/F4h_g3a2n5M/hqdefault.jpg" 
+                            src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
                             alt="Video on how to collect soil samples"
                             width={1280}
                             height={720}
