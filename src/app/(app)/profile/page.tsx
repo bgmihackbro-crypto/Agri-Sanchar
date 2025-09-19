@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Save, Check, Upload, Hash } from "lucide-react";
+import { Edit, Save, Check, Upload, Hash, CalendarIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -26,6 +26,11 @@ import {
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
 import { useRouter } from "next/navigation";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -42,6 +47,9 @@ export default function ProfilePage() {
     city: "",
     state: "",
     annualIncome: "",
+    gender: "",
+    age: "",
+    dob: "",
   });
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
@@ -50,7 +58,7 @@ export default function ProfilePage() {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
-      setProfile(parsedProfile);
+      setProfile(prev => ({...prev, ...parsedProfile}));
       if (parsedProfile.state) {
         setAvailableCities(indianCities[parsedProfile.state] || []);
       }
@@ -78,6 +86,16 @@ export default function ProfilePage() {
     setProfile((prev) => ({ ...prev, city: value }));
   };
   
+  const handleGenderChange = (value: string) => {
+    setProfile((prev) => ({ ...prev, gender: value }));
+  };
+  
+  const handleDobChange = (date: Date | undefined) => {
+      if (date) {
+        setProfile((prev) => ({ ...prev, dob: date.toISOString() }));
+      }
+  }
+
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -190,6 +208,77 @@ export default function ProfilePage() {
                 placeholder="e.g., Ram Singh"
               />
             </div>
+             <div className="space-y-2">
+              <Label htmlFor="dob">Date of Birth</Label>
+               {isEditing ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !profile.dob && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {profile.dob ? format(new Date(profile.dob), "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={profile.dob ? new Date(profile.dob) : undefined}
+                        onSelect={handleDobChange}
+                        initialFocus
+                        captionLayout="dropdown-buttons"
+                        fromYear={1930}
+                        toYear={new Date().getFullYear()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+               ) : (
+                 <Input
+                  id="dob"
+                  value={profile.dob ? format(new Date(profile.dob), "PPP") : ""}
+                  readOnly={true}
+                  placeholder="Not set"
+                />
+               )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="age">Age</Label>
+              <Input
+                id="age"
+                type="number"
+                value={profile.age}
+                readOnly={!isEditing}
+                onChange={handleInputChange}
+                placeholder="e.g., 42"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gender">Gender</Label>
+              {isEditing ? (
+                <Select onValueChange={handleGenderChange} value={profile.gender}>
+                  <SelectTrigger id="gender">
+                    <SelectValue placeholder="Select your gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id="gender"
+                  value={profile.gender}
+                  readOnly={true}
+                  placeholder="Not set"
+                />
+              )}
+            </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
                <div className="flex items-center gap-2">
@@ -299,3 +388,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    
