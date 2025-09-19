@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -309,7 +310,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "How to control stem borer in sugarcane?",
     content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1620055797539-843815b512f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdWdhcmNhbmUlMjBwZXN0fGVufDB8fHx8MTc1ODMyMTQwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1641754644192-24e09c2b444b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOHx8c3VnYXIlMjBjYW5lYXxlbnwwfHx8fDE3NTgzMDQ5Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "sugarcane pest",
     mediaType: 'image',
     likes: 29,
@@ -1298,6 +1299,8 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
 
     
 
