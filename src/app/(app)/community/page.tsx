@@ -31,6 +31,10 @@ import { Timestamp } from "firebase/firestore";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { sendMessage } from "@/lib/firebase/chat";
 import { EXPERT_BOT_USER } from "@/lib/firebase/chat";
+import { indianCities } from "@/lib/indian-cities";
+
+const allCitiesList = Object.values(indianCities).flat();
+
 
 const initialPostsData = [
   {
@@ -714,6 +718,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated 
 const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [city, setCity] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -723,16 +728,20 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
     useEffect(() => {
         const profile = localStorage.getItem('userProfile');
         if (profile) {
-            setUserProfile(JSON.parse(profile));
+            const parsed = JSON.parse(profile);
+            setUserProfile(parsed);
+            if (parsed.city) {
+                setCity(parsed.city);
+            }
         }
     }, []);
 
     const handleSubmit = () => {
-        if (!name.trim() || !userProfile?.farmerId || !userProfile.city) {
+        if (!name.trim() || !city || !userProfile?.farmerId) {
             toast({
                 variant: "destructive",
                 title: "Incomplete Information",
-                description: "Cannot create group without required user details.",
+                description: "Group Name and City are required.",
             });
             return;
         }
@@ -742,7 +751,7 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
             const newGroupData = {
                 name,
                 description,
-                city: userProfile.city,
+                city: city,
                 ownerId: userProfile.farmerId,
                 members: [userProfile.farmerId],
                 createdBy: userProfile.name,
@@ -757,6 +766,7 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
             setIsOpen(false);
             setName('');
             setDescription('');
+            setCity(userProfile?.city || '');
             router.push(`/community/${newGroup.id}`);
         } catch (error) {
             console.error("Error creating group:", error);
@@ -792,6 +802,23 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
                         </Label>
                         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" placeholder="e.g., Ludhiana Wheat Growers" />
                     </div>
+                     <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="city" className="text-right">
+                            City
+                        </Label>
+                        <div className="col-span-3">
+                            <Select onValueChange={setCity} value={city}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a city..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {allCitiesList.sort().map(c => (
+                                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="description" className="text-right">
                             Description
@@ -800,7 +827,7 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleSubmit} disabled={isCreating || !name.trim()}>
+                    <Button type="submit" onClick={handleSubmit} disabled={isCreating || !name.trim() || !city}>
                         {isCreating && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
                         Create Group
                     </Button>
@@ -875,7 +902,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetForm(); }}>
             <DialogTrigger asChild>
-                <Button>
+                 <Button className="bg-primary hover:bg-primary/90">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Post
                 </Button>
@@ -1225,6 +1252,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
 
 
 
