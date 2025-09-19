@@ -241,9 +241,42 @@ export default function SoilTestingPage() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6 items-start">
-        {/* Left Column: Upload and History */}
+        {/* Left Column: Instructions and Upload */}
         <div className="lg:col-span-1 space-y-6">
-           <Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>How to Collect Soil Samples</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                     <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
+                        <Image 
+                            src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
+                            alt="Video on how to collect soil samples"
+                            width={1280}
+                            height={720}
+                            className="rounded-lg w-full aspect-video object-cover"
+                        />
+                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg transition-opacity opacity-0 group-hover:opacity-100">
+                            <PlayCircle className="h-16 w-16 text-white/80" />
+                        </div>
+                    </Link>
+                    <div className="space-y-4">
+                        {instructionSteps.map((step, index) => (
+                           <div key={index} className="flex items-start gap-4">
+                               <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20">
+                                   <step.icon className="h-5 w-5" />
+                               </div>
+                               <div>
+                                   <h4 className="font-semibold">{step.title}</h4>
+                                   <p className="text-sm text-muted-foreground">{step.description}</p>
+                               </div>
+                           </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
                 <CardHeader>
                     <CardTitle>Upload New Report</CardTitle>
                     <CardDescription>Select a PDF or image of your soil test report.</CardDescription>
@@ -287,14 +320,17 @@ export default function SoilTestingPage() {
                      )}
                 </CardFooter>
             </Card>
+        </div>
 
+        {/* Right Column: Analysis, Tools, and History */}
+        <div className="lg:col-span-2 space-y-6">
             <Card>
                 <CardHeader>
                     <CardTitle>Report History</CardTitle>
                 </CardHeader>
                 <CardContent>
                     {reports.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-4">No reports uploaded yet.</p>
+                        <p className="text-sm text-muted-foreground text-center py-4">No reports uploaded yet. Analysis of your first report will appear below.</p>
                     ) : (
                         <div className="space-y-2">
                             {reports.map(report => (
@@ -315,47 +351,11 @@ export default function SoilTestingPage() {
                 </CardContent>
             </Card>
 
-             <Card>
-                <CardHeader>
-                    <CardTitle>How to Collect Soil Samples</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
-                        <Image 
-                            src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
-                            alt="Video on how to collect soil samples"
-                            width={1280}
-                            height={720}
-                            className="rounded-lg w-full aspect-video object-cover"
-                        />
-                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg transition-opacity opacity-0 group-hover:opacity-100">
-                            <PlayCircle className="h-16 w-16 text-white/80" />
-                        </div>
-                    </Link>
-                    <div className="space-y-4">
-                        {instructionSteps.map((step, index) => (
-                           <div key={index} className="flex items-start gap-4">
-                               <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20">
-                                   <step.icon className="h-5 w-5" />
-                               </div>
-                               <div>
-                                   <h4 className="font-semibold">{step.title}</h4>
-                                   <p className="text-sm text-muted-foreground">{step.description}</p>
-                               </div>
-                           </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-
-        {/* Right Column: Analysis Display and Tools */}
-        <div className="lg:col-span-2 space-y-6">
             <Card className="min-h-[300px]">
                 <CardHeader>
                     <CardTitle>Analysis & Recommendations</CardTitle>
                     <CardDescription>
-                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Upload a report to see AI-powered insights here."}
+                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Upload and select a report to see AI-powered insights here."}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -508,5 +508,3 @@ export default function SoilTestingPage() {
     </div>
   );
 }
-
-    
