@@ -32,6 +32,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
 import { analyzeSoilReport, type SoilReportAnalysisOutput } from '@/ai/flows/analyze-soil-report';
+import { calculateFertilizer, type FertilizerCalculationOutput } from '@/ai/flows/calculate-fertilizer';
 import {
   Accordion,
   AccordionContent,
@@ -41,6 +42,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 type SoilReport = {
@@ -75,6 +77,14 @@ export default function SoilTestingPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
+  
+  // State for fertilizer calculator
+  const [farmArea, setFarmArea] = useState('');
+  const [cropType, setCropType] = useState('');
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [calculationResult, setCalculationResult] = useState<FertilizerCalculationOutput | null>(null);
+  const [calculationError, setCalculationError] = useState<string | null>(null);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -103,6 +113,8 @@ export default function SoilTestingPage() {
     if (!selectedFile) return;
 
     setIsLoading(true);
+    setCalculationResult(null);
+    setCalculationError(null);
 
     try {
       const fileUrl = await fileToDataUri(selectedFile);
@@ -114,7 +126,6 @@ export default function SoilTestingPage() {
         fileUrl: fileUrl,
       };
       
-      // Add report to state immediately to show it in the list
       setReports(prev => [newReport, ...prev]);
       setActiveReportId(newReport.id);
       
@@ -136,7 +147,6 @@ export default function SoilTestingPage() {
         });
       }
       
-      // Update the report with the analysis result
       setReports(prev => prev.map(r => r.id === newReport.id ? { ...r, analysis: analysisResult, analysisError: analysisError } : r));
 
     } catch (error) {
@@ -148,9 +158,41 @@ export default function SoilTestingPage() {
        if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
+  
+  const handleCalculateDosage = async () => {
+    if (!activeReport?.analysis || !farmArea || !cropType) {
+        toast({ variant: 'destructive', title: 'Missing Information', description: 'Please ensure a report is analyzed and fill in both area and crop type.'});
+        return;
+    }
+
+    setIsCalculating(true);
+    setCalculationResult(null);
+    setCalculationError(null);
+
+    try {
+        const result = await calculateFertilizer({
+            soilMetrics: activeReport.analysis.keyMetrics,
+            areaInAcres: parseFloat(farmArea),
+            cropType: cropType,
+        });
+        setCalculationResult(result);
+        toast({ title: 'Calculation Complete', description: 'Fertilizer dosage has been calculated.'});
+    } catch (e: any) {
+        setCalculationError(e.message || 'An unexpected error occurred.');
+        toast({ variant: 'destructive', title: 'Calculation Failed', description: e.message || 'Could not calculate fertilizer dosage.'});
+    } finally {
+        setIsCalculating(false);
+    }
+  };
 
   const activeReport = useMemo(() => {
-    return reports.find(r => r.id === activeReportId);
+    const report = reports.find(r => r.id === activeReportId);
+    // When active report changes, clear old calculation results
+    if (report?.id !== activeReport?.id) {
+        setCalculationResult(null);
+        setCalculationError(null);
+    }
+    return report;
   }, [reports, activeReportId]);
 
   return (
@@ -229,7 +271,7 @@ export default function SoilTestingPage() {
                                         <p className="font-medium text-sm">{report.fileName}</p>
                                         <p className="text-xs text-muted-foreground">{report.uploadDate}</p>
                                     </div>
-                                    {report.analysis ? <CheckCircle className="h-5 w-5 text-green-500" /> : report.analysisError ? <AlertTriangle className="h-5 w-5 text-red-500" /> : <FileClock className="h-5 w-5 text-muted-foreground"/> }
+                                    {isLoading && activeReportId === report.id && !report.analysis && !report.analysisError ? <Spinner className="h-5 w-5"/> : report.analysis ? <CheckCircle className="h-5 w-5 text-green-500" /> : report.analysisError ? <AlertTriangle className="h-5 w-5 text-red-500" /> : <FileClock className="h-5 w-5 text-muted-foreground"/> }
                                 </button>
                             ))}
                         </div>
@@ -253,7 +295,7 @@ export default function SoilTestingPage() {
                             <FlaskConical className="h-16 w-16 text-muted-foreground/50"/>
                             <p className="mt-4 text-muted-foreground">Your report analysis will appear here.</p>
                         </div>
-                    ) : isLoading && !activeReport.analysis && !activeReport.analysisError ? (
+                    ) : isLoading && activeReportId === activeReport.id && !activeReport.analysis && !activeReport.analysisError ? (
                         <div className="flex flex-col items-center justify-center h-64 text-center">
                             <Spinner className="h-12 w-12" />
                             <p className="mt-4 text-muted-foreground">AI is analyzing your report. This may take a moment...</p>
@@ -303,32 +345,66 @@ export default function SoilTestingPage() {
                     <CardDescription>Get a customized fertilizer recommendation for your specific crop and area.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                          <div className="space-y-2">
                             <Label htmlFor="area">Farm Area (acres)</Label>
-                            <Input id="area" type="number" placeholder="e.g., 2.5" />
+                            <Input id="area" type="number" placeholder="e.g., 2.5" value={farmArea} onChange={e => setFarmArea(e.target.value)} disabled={!activeReport?.analysis} />
                         </div>
                         <div className="space-y-2">
                              <Label htmlFor="crop-type">Crop Type</Label>
-                            <Select>
+                            <Select onValueChange={setCropType} value={cropType} disabled={!activeReport?.analysis}>
                                 <SelectTrigger id="crop-type">
                                     <SelectValue placeholder="Select crop" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="wheat">Wheat</SelectItem>
-                                    <SelectItem value="rice">Rice</SelectItem>
-                                    <SelectItem value="maize">Maize</SelectItem>
-                                    <SelectItem value="cotton">Cotton</SelectItem>
-                                    <SelectItem value="sugarcane">Sugarcane</SelectItem>
+                                    <SelectItem value="Wheat">Wheat</SelectItem>
+                                    <SelectItem value="Rice">Rice</SelectItem>
+                                    <SelectItem value="Maize">Maize</SelectItem>
+                                    <SelectItem value="Cotton">Cotton</SelectItem>
+                                    <SelectItem value="Sugarcane">Sugarcane</SelectItem>
+                                    <SelectItem value="Chickpea">Chickpea</SelectItem>
+                                    <SelectItem value="Lentil">Lentil</SelectItem>
+                                    <SelectItem value="Potato">Potato</SelectItem>
+                                    <SelectItem value="Tomato">Tomato</SelectItem>
+                                    <SelectItem value="Onion">Onion</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
+                     {isCalculating && (
+                        <div className="flex justify-center items-center py-4">
+                            <Spinner className="mr-2 h-5 w-5"/>
+                            <p className="text-muted-foreground">Calculating required dosage...</p>
+                        </div>
+                    )}
+                     {calculationError && (
+                        <Alert variant="destructive">
+                            <AlertTriangle className="h-4 w-4"/>
+                            <AlertTitle>Calculation Failed</AlertTitle>
+                            <AlertDescription>{calculationError}</AlertDescription>
+                        </Alert>
+                     )}
+                     {calculationResult && (
+                        <Alert variant="default" className="bg-green-50 border-green-200">
+                             <AlertTitle className="font-semibold text-green-800 flex items-center gap-2">
+                                <Tractor className="h-5 w-5"/>
+                                Calculated Dosage for {farmArea} acres of {cropType}
+                            </AlertTitle>
+                            <AlertDescription>
+                                <ul className="mt-2 list-disc pl-5 text-green-900 space-y-1">
+                                    {calculationResult.recommendations.map(rec => (
+                                        <li key={rec.fertilizer}>{rec.fertilizer}: <span className="font-bold">{rec.quantity}</span></li>
+                                    ))}
+                                </ul>
+                                {calculationResult.notes && <p className="mt-3 text-xs text-green-800/80">{calculationResult.notes}</p>}
+                            </AlertDescription>
+                        </Alert>
+                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button disabled={!activeReport?.analysis} className="w-full">
-                        <Tractor className="mr-2 h-4 w-4"/>
-                        Calculate Required Dosage
+                    <Button onClick={handleCalculateDosage} disabled={!activeReport?.analysis || !farmArea || !cropType || isCalculating} className="w-full">
+                        {isCalculating ? <Spinner className="mr-2 h-4 w-4"/> : <Tractor className="mr-2 h-4 w-4"/>}
+                        {isCalculating ? 'Calculating...' : 'Calculate Required Dosage'}
                     </Button>
                 </CardFooter>
             </Card>
@@ -363,5 +439,3 @@ export default function SoilTestingPage() {
     </div>
   );
 }
-
-    
