@@ -53,6 +53,7 @@ export default function ProfilePage() {
   });
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -211,7 +212,7 @@ export default function ProfilePage() {
              <div className="space-y-2">
               <Label htmlFor="dob">Date of Birth</Label>
                {isEditing ? (
-                  <Popover>
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -234,6 +235,9 @@ export default function ProfilePage() {
                         fromYear={1930}
                         toYear={new Date().getFullYear()}
                       />
+                      <div className="p-2 border-t">
+                          <Button onClick={() => setIsCalendarOpen(false)} className="w-full">OK</Button>
+                      </div>
                     </PopoverContent>
                   </Popover>
                ) : (
@@ -388,7 +392,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-    
-
-    
