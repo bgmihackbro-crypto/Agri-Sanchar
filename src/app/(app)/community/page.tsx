@@ -69,7 +69,7 @@ const initialPostsData = [
     time: "5 hours ago",
     title: "Healthy rice paddy this season!",
     content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
-    image: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyaWNlfGVufDB8fHx8MTc1ODIyMjg1MHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyaWNlfGVufDB8fHx8fDE3NTgyMjI4NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "rice paddy",
     mediaType: 'image',
     likes: 28,
@@ -953,6 +953,7 @@ export default function CommunityPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const router = useRouter();
 
@@ -1029,18 +1030,27 @@ export default function CommunityPage() {
   const filteredPosts = posts.filter(post => {
       const categoryMatch = filterCategory === 'all' || post.category === filterCategory;
       const cityMatch = filterCity === 'all' || post.location === filterCity;
-      return categoryMatch && cityMatch;
+      const searchMatch = !searchQuery || 
+                          post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          post.content.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && cityMatch && searchMatch;
   });
 
   const filteredGroups = groups.filter(group => {
       const cityMatch = filterCity === 'all' || group.city === filterCity;
-      return cityMatch;
+      const searchMatch = !searchQuery || 
+                          group.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (group.description && group.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      return cityMatch && searchMatch;
   });
 
   const filteredExperts = expertData.filter(expert => {
       const categoryMatch = filterCategory === 'all' || expert.specialization.toLowerCase().includes(filterCategory.toLowerCase());
       const cityMatch = filterCity === 'all' || expert.location === filterCity;
-      return categoryMatch && cityMatch;
+      const searchMatch = !searchQuery || 
+                          expert.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          expert.specialization.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && cityMatch && searchMatch;
   });
 
 
@@ -1093,7 +1103,12 @@ export default function CommunityPage() {
             <div className="flex items-center gap-4">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search community..." className="pl-9" />
+                    <Input 
+                        placeholder="Search community..." 
+                        className="pl-9"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
                 <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} />
             </div>
@@ -1252,6 +1267,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
 
 
 
