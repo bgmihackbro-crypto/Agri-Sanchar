@@ -212,36 +212,36 @@ export default function SoilTestingPage() {
     {
       icon: Map,
       title: "Select a Representative Area",
-      description: "Choose a spot that accurately represents your field. Avoid unusual areas like near fences, trees, water sources, or where fertilizer has been spilled. For a large field, divide it into sections based on soil type, color, or past crop performance and take separate samples from each.",
+      description: "Choose a spot that accurately represents your field. Avoid unusual areas like near fences, trees, or where fertilizer has been spilled.",
     },
     {
       icon: Shovel,
       title: "Dig and Collect the Sample",
-      description: "Using a spade or auger, clear any surface litter. Dig a 'V' shaped hole to a depth of 6 inches (15 cm). From one side of the 'V', take a uniform slice of soil, about 1-2 inches thick, from top to bottom. This is one sub-sample.",
+      description: "Using a spade, clear any surface litter. Dig a 'V' shaped hole to a depth of 6 inches (15 cm). Take a uniform slice of soil.",
     },
     {
       icon: Box,
       title: "Create a Composite Sample",
-      description: "Repeat the digging process in at least 8-10 different spots across the representative area. Collect all the sub-samples in a clean bucket or plastic tub. Do not use bags that previously held fertilizers or other chemicals.",
+      description: "Repeat the digging process in at least 8-10 different spots. Collect all the sub-samples in a clean bucket.",
     },
     {
       icon: Combine,
-      title: "Mix and Prepare the Final Sample",
-      description: "Break up any lumps or clods in the bucket and remove stones, roots, or other debris. Mix all the sub-samples together thoroughly to create a single, uniform composite sample. Spread the mixed soil on a clean sheet of paper or plastic and let it air-dry in the shade (never in direct sunlight).",
+      title: "Mix and Prepare Final Sample",
+      description: "Break up any lumps, remove debris, and mix thoroughly. Air-dry the mixed soil in the shade, never in direct sunlight.",
     },
      {
       icon: Tag,
       title: "Pack and Label Correctly",
-      description: "From the dried composite sample, take about half a kilogram (500g) of soil. Pack it into a clean, properly labeled cloth or plastic bag. The label should clearly state your name, address, farmer ID, date of sampling, and the field number or name.",
+      description: "From the dried sample, take about half a kilogram (500g). Pack it in a clean, labeled bag with your name, date, and field ID.",
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Soil Testing</h1>
+        <h1 className="text-3xl font-bold font-headline">Soil Testing Center</h1>
         <p className="text-muted-foreground">
-          Upload soil health reports to get AI-powered analysis and recommendations.
+          Upload soil health reports for AI-powered analysis and recommendations.
         </p>
       </div>
 
@@ -250,7 +250,7 @@ export default function SoilTestingPage() {
         <div className="lg:col-span-1 space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>How to Collect Soil Samples</CardTitle>
+                    <CardTitle>1. How to Collect Soil Samples</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
@@ -312,14 +312,18 @@ export default function SoilTestingPage() {
                 </CardContent>
             </Card>
 
-            <Card>
+        </div>
+
+        {/* Right Column: Analysis, Tools, and History */}
+        <div className="lg:col-span-2 space-y-6">
+             <Card>
                 <CardHeader>
-                    <CardTitle>Upload New Report</CardTitle>
-                    <CardDescription>Select a PDF or image of your soil test report.</CardDescription>
+                    <CardTitle>2. Upload & Analyze Report</CardTitle>
+                    <CardDescription>Select a PDF or image of your soil test report to begin.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div 
-                        className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary transition-colors"
+                        className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary transition-colors bg-muted/20"
                         onClick={() => fileInputRef.current?.click()}
                     >
                          <input
@@ -355,43 +359,37 @@ export default function SoilTestingPage() {
                         </Button>
                      )}
                 </CardFooter>
+                  {reports.length > 0 && (
+                    <div className="border-t mt-4">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-base">Report History</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                             <div className="space-y-2">
+                                {reports.map(report => (
+                                    <button
+                                        key={report.id}
+                                        onClick={() => setActiveReportId(report.id)}
+                                        className={`w-full text-left p-3 rounded-md border flex items-center justify-between transition-colors ${activeReportId === report.id ? 'bg-primary/10 border-primary shadow-sm' : 'hover:bg-muted/50'}`}
+                                    >
+                                        <div>
+                                            <p className="font-medium text-sm">{report.fileName}</p>
+                                            <p className="text-xs text-muted-foreground">{report.uploadDate}</p>
+                                        </div>
+                                        {isLoading && activeReportId === report.id && !report.analysis && !report.analysisError ? <Spinner className="h-5 w-5"/> : report.analysis ? <CheckCircle className="h-5 w-5 text-green-500" /> : report.analysisError ? <AlertTriangle className="h-5 w-5 text-red-500" /> : <FileClock className="h-5 w-5 text-muted-foreground"/> }
+                                    </button>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </div>
+                 )}
             </Card>
 
-             <Card>
-                <CardHeader>
-                    <CardTitle>Report History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {reports.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-4">No reports uploaded yet. Analysis of your first report will appear below.</p>
-                    ) : (
-                        <div className="space-y-2">
-                            {reports.map(report => (
-                                <button
-                                    key={report.id}
-                                    onClick={() => setActiveReportId(report.id)}
-                                    className={`w-full text-left p-3 rounded-md border flex items-center justify-between transition-colors ${activeReportId === report.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted/50'}`}
-                                >
-                                    <div>
-                                        <p className="font-medium text-sm">{report.fileName}</p>
-                                        <p className="text-xs text-muted-foreground">{report.uploadDate}</p>
-                                    </div>
-                                    {isLoading && activeReportId === report.id && !report.analysis && !report.analysisError ? <Spinner className="h-5 w-5"/> : report.analysis ? <CheckCircle className="h-5 w-5 text-green-500" /> : report.analysisError ? <AlertTriangle className="h-5 w-5 text-red-500" /> : <FileClock className="h-5 w-5 text-muted-foreground"/> }
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
-
-        {/* Right Column: Analysis, Tools, and History */}
-        <div className="lg:col-span-2 space-y-6">
             <Card className="min-h-[300px]">
                 <CardHeader>
-                    <CardTitle>Analysis & Recommendations</CardTitle>
+                    <CardTitle>3. Analysis & Recommendations</CardTitle>
                     <CardDescription>
-                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Upload and select a report to see AI-powered insights here."}
+                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Select a report to see AI-powered insights here."}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -446,8 +444,8 @@ export default function SoilTestingPage() {
             
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Calculator className="text-primary"/> Fertilizer Calculator</CardTitle>
-                    <CardDescription>Get a customized fertilizer recommendation for your specific crop and area.</CardDescription>
+                    <CardTitle className="flex items-center gap-2">4. Fertilizer Calculator</CardTitle>
+                    <CardDescription>Get a customized fertilizer dosage for your specific crop and area.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -508,7 +506,7 @@ export default function SoilTestingPage() {
                 </CardContent>
                 <CardFooter>
                     <Button onClick={handleCalculateDosage} disabled={!activeReport?.analysis || !farmArea || !cropType || isCalculating} className="w-full">
-                        {isCalculating ? <Spinner className="mr-2 h-4 w-4"/> : <Tractor className="mr-2 h-4 w-4"/>}
+                        {isCalculating ? <Spinner className="mr-2 h-4 w-4"/> : <Calculator className="mr-2 h-4 w-4"/>}
                         {isCalculating ? 'Calculating...' : 'Calculate Required Dosage'}
                     </Button>
                 </CardFooter>
