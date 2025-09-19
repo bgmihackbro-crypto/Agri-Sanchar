@@ -221,7 +221,7 @@ export default function ProfilePage() {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {profile.dob ? format(new Date(profile.dob), "PPP") : <span>Pick a date</span>}
+                        {profile.dob ? format(new Date(profile.dob), "dd-MM-yyyy") : <span>Pick a date</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -239,7 +239,7 @@ export default function ProfilePage() {
                ) : (
                  <Input
                   id="dob"
-                  value={profile.dob ? format(new Date(profile.dob), "PPP") : ""}
+                  value={profile.dob ? format(new Date(profile.dob), "dd-MM-yyyy") : ""}
                   readOnly={true}
                   placeholder="Not set"
                 />
@@ -388,5 +388,7 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    
 
     
