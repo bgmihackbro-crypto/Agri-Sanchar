@@ -30,6 +30,7 @@ import {
   Shovel,
   Box,
   Tag,
+  PlayCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -47,6 +48,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 
 type SoilReport = {
@@ -194,11 +196,40 @@ export default function SoilTestingPage() {
   }, [reports, activeReportId]);
 
   useEffect(() => {
+    // When active report changes, clear old calculation results
     setCalculationResult(null);
     setCalculationError(null);
     setFarmArea('');
     setCropType('');
   }, [activeReport]);
+
+  const instructionSteps = [
+    {
+      icon: Map,
+      title: "Select a Representative Area",
+      description: "Choose a spot that accurately represents your field. Avoid unusual areas like near fences, trees, water sources, or where fertilizer has been spilled. For a large field, divide it into sections based on soil type, color, or past crop performance and take separate samples from each.",
+    },
+    {
+      icon: Shovel,
+      title: "Dig and Collect the Sample",
+      description: "Using a spade or auger, clear any surface litter. Dig a 'V' shaped hole to a depth of 6 inches (15 cm). From one side of the 'V', take a uniform slice of soil, about 1-2 inches thick, from top to bottom. This is one sub-sample.",
+    },
+    {
+      icon: Box,
+      title: "Create a Composite Sample",
+      description: "Repeat the digging process in at least 8-10 different spots across the representative area. Collect all the sub-samples in a clean bucket or plastic tub. Do not use bags that previously held fertilizers or other chemicals.",
+    },
+    {
+      icon: Combine,
+      title: "Mix and Prepare the Final Sample",
+      description: "Break up any lumps or clods in the bucket and remove stones, roots, or other debris. Mix all the sub-samples together thoroughly to create a single, uniform composite sample. Spread the mixed soil on a clean sheet of paper or plastic and let it air-dry in the shade (never in direct sunlight).",
+    },
+     {
+      icon: Tag,
+      title: "Pack and Label Correctly",
+      description: "From the dried composite sample, take about half a kilogram (500g) of soil. Pack it into a clean, properly labeled cloth or plastic bag. The label should clearly state your name, address, farmer ID, date of sampling, and the field number or name.",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -288,33 +319,32 @@ export default function SoilTestingPage() {
                 <CardHeader>
                     <CardTitle>How to Collect Soil Samples</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
-                            <AccordionTrigger><Map className="h-4 w-4 mr-2"/>Select a Representative Area</AccordionTrigger>
-                            <AccordionContent>
-                                Choose a spot that represents the majority of your field. Avoid unusual spots like near a fence, tree, or water source.
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2">
-                            <AccordionTrigger><Shovel className="h-4 w-4 mr-2"/>Dig and Collect</AccordionTrigger>
-                            <AccordionContent>
-                                Dig a V-shaped hole about 6 inches (15 cm) deep. Take a 1-inch thick slice from one side of the hole from top to bottom.
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-3">
-                            <AccordionTrigger><Box className="h-4 w-4 mr-2"/>Mix and Pack</AccordionTrigger>
-                            <AccordionContent>
-                                Collect 8-10 such samples from different spots in the field. Mix them thoroughly in a clean bucket. Take about half a kilogram of the mixed soil, let it dry in the shade, and pack it in a clean cloth bag.
-                            </AccordionContent>
-                        </AccordionItem>
-                         <AccordionItem value="item-4">
-                            <AccordionTrigger><Tag className="h-4 w-4 mr-2"/>Label the Sample</AccordionTrigger>
-                            <AccordionContent>
-                                Label the bag clearly with your name, address, farmer ID, and the date of collection.
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
+                <CardContent className="space-y-4">
+                     <Link href="https://www.youtube.com/watch?v=F4h_g3a2n5M" target="_blank" rel="noopener noreferrer" className="block relative group">
+                        <Image 
+                            src="https://img.youtube.com/vi/F4h_g3a2n5M/hqdefault.jpg" 
+                            alt="Video on how to collect soil samples"
+                            width={1280}
+                            height={720}
+                            className="rounded-lg w-full aspect-video object-cover"
+                        />
+                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg transition-opacity opacity-0 group-hover:opacity-100">
+                            <PlayCircle className="h-16 w-16 text-white/80" />
+                        </div>
+                    </Link>
+                    <div className="space-y-4">
+                        {instructionSteps.map((step, index) => (
+                           <div key={index} className="flex items-start gap-4">
+                               <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20">
+                                   <step.icon className="h-5 w-5" />
+                               </div>
+                               <div>
+                                   <h4 className="font-semibold">{step.title}</h4>
+                                   <p className="text-sm text-muted-foreground">{step.description}</p>
+                               </div>
+                           </div>
+                        ))}
+                    </div>
                 </CardContent>
             </Card>
         </div>
@@ -478,3 +508,5 @@ export default function SoilTestingPage() {
     </div>
   );
 }
+
+    
