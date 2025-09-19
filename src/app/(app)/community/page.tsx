@@ -622,15 +622,19 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
 
     if (isGrid) {
         return (
-            <Card className="overflow-hidden">
-                <CardContent className="p-0">
-                     {renderMedia(post) ? renderMedia(post) : (
-                         <div className="p-4 aspect-square">
-                             <h4 className="font-semibold mb-1 line-clamp-2">{post.title}</h4>
-                             <p className="text-xs text-muted-foreground line-clamp-4">{post.content}</p>
-                         </div>
-                     )}
-                </CardContent>
+            <Card className="overflow-hidden relative group cursor-pointer">
+                 {renderMedia(post) ? renderMedia(post) : (
+                    <div className="p-4 aspect-square">
+                        <h4 className="font-semibold mb-1 line-clamp-2">{post.title}</h4>
+                        <p className="text-xs text-muted-foreground line-clamp-4">{post.content}</p>
+                    </div>
+                 )}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                     <div className="flex items-center gap-4 text-sm font-semibold">
+                        <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> {post.likes}</span>
+                        <span className="flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> {post.comments.length}</span>
+                    </div>
+                </div>
             </Card>
         )
     }
@@ -971,6 +975,28 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
     );
 };
 
+const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPostCreated, open, onOpenChange }: { post: Post | null, userProfile: UserProfile | null, groups: Group[], onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; onPostCreated: (post: Post) => void; open: boolean; onOpenChange: (open: boolean) => void }) => {
+    if (!post) return null;
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="max-w-2xl">
+                 <Collapsible defaultOpen={true} asChild>
+                    <PostCard
+                        post={post}
+                        onLike={onLike}
+                        onComment={onComment}
+                        userProfile={userProfile}
+                        groups={groups}
+                        onPostCreated={onPostCreated}
+                        isGrid={false}
+                    />
+                </Collapsible>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 
 export default function CommunityPage() {
   const [posts, setPosts] = useState<(Post)[]>(initialPostsData);
@@ -981,6 +1007,7 @@ export default function CommunityPage() {
   const [filterCity, setFilterCity] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('home');
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -1038,6 +1065,9 @@ export default function CommunityPage() {
         setPosts(prevPosts =>
             prevPosts.map(p => (p.id === postId ? { ...p, likes: p.likes + 1 } : p))
         );
+         if (selectedPost && selectedPost.id === postId) {
+            setSelectedPost(prev => prev ? { ...prev, likes: prev.likes + 1 } : null);
+        }
     };
 
     const handleComment = (postId: number, newComment: Comment) => {
@@ -1046,6 +1076,9 @@ export default function CommunityPage() {
                 p.id === postId ? { ...p, comments: [...p.comments, newComment] } : p
             )
         );
+        if (selectedPost && selectedPost.id === postId) {
+            setSelectedPost(prev => prev ? { ...prev, comments: [...prev.comments, newComment] } : null);
+        }
     };
 
   const isProfileComplete = !!(userProfile?.state && userProfile.city);
@@ -1194,6 +1227,17 @@ export default function CommunityPage() {
              </div>
         </div>
 
+      <PostDetailDialog 
+        post={selectedPost}
+        open={!!selectedPost}
+        onOpenChange={(open) => { if(!open) setSelectedPost(null); }}
+        userProfile={userProfile}
+        groups={userGroups}
+        onLike={handleLike}
+        onComment={handleComment}
+        onPostCreated={handleNewPost}
+      />
+
 
        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
@@ -1206,9 +1250,9 @@ export default function CommunityPage() {
                 {filteredPosts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredPosts.map((post) => (
-                           <Collapsible key={post.id} asChild>
+                           <div key={post.id} onClick={() => setSelectedPost(post)}>
                              <PostCard post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} isGrid={true} />
-                           </Collapsible>
+                           </div>
                         ))}
                     </div>
                 ) : (
