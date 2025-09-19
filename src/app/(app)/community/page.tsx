@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -954,6 +953,7 @@ export default function CommunityPage() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('home');
   const { toast } = useToast();
   const router = useRouter();
 
@@ -1053,6 +1053,37 @@ export default function CommunityPage() {
       return categoryMatch && cityMatch && searchMatch;
   });
 
+  // Effect to handle automatic tab switching based on search results
+  useEffect(() => {
+    if (!searchQuery) return;
+
+    const resultsCount = {
+        home: filteredPosts.length,
+        local: filteredGroups.length,
+        experts: filteredExperts.length
+    };
+    
+    // Don't switch if the current tab already has results
+    if (resultsCount[activeTab as keyof typeof resultsCount] > 0) {
+        return;
+    }
+
+    // Find the tab with the most results
+    let maxResults = 0;
+    let bestTab = activeTab;
+
+    for (const [tab, count] of Object.entries(resultsCount)) {
+        if (count > maxResults) {
+            maxResults = count;
+            bestTab = tab;
+        }
+    }
+
+    if (bestTab !== activeTab) {
+        setActiveTab(bestTab);
+    }
+  }, [searchQuery, filteredPosts.length, filteredGroups.length, filteredExperts.length, activeTab]);
+
 
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
   const allCities = ['all', ...Array.from(new Set([...initialPostsData.map(p => p.location), ...expertData.map(e => e.location), ...initialGroupsData.map(g => g.city)]))];
@@ -1137,7 +1168,7 @@ export default function CommunityPage() {
         </div>
 
 
-       <Tabs defaultValue="home" className="w-full">
+       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
                 <TabsTrigger value="myposts">My Posts ({myPosts.length})</TabsTrigger>
@@ -1268,7 +1299,4 @@ export default function CommunityPage() {
   );
 }
 
-
-
-
-
+    
