@@ -31,8 +31,6 @@ import {
   Box,
   Tag,
   PlayCircle,
-  Phone,
-  MapPin,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -51,7 +49,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
-import { soilTestingLabs, type SoilTestingLab } from '@/lib/soil-labs';
 
 
 type SoilReport = {
@@ -91,8 +88,6 @@ export default function SoilTestingPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [nearbyLabs, setNearbyLabs] = useState<SoilTestingLab[]>([]);
   
   // State for fertilizer calculator
   const [farmArea, setFarmArea] = useState('');
@@ -105,21 +100,6 @@ export default function SoilTestingPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
-  useEffect(() => {
-    const profile = localStorage.getItem("userProfile");
-    if (profile) {
-      const parsed = JSON.parse(profile);
-      setUserProfile(parsed);
-      
-      // Filter labs based on user's location
-      let labs = soilTestingLabs.filter(lab => lab.city === parsed.city);
-      if (labs.length === 0) { // Fallback to state if no city match
-          labs = soilTestingLabs.filter(lab => lab.state === parsed.state);
-      }
-      setNearbyLabs(labs);
-    }
-  }, []);
-
   const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -512,37 +492,14 @@ export default function SoilTestingPage() {
                         <AccordionItem value="labs">
                             <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
                             <AccordionContent>
-                                {userProfile && nearbyLabs.length > 0 ? (
-                                    <div className="space-y-4 pt-2">
-                                        {nearbyLabs.map((lab, index) => (
-                                            <div key={index} className="p-3 border rounded-lg bg-muted/50">
-                                                <p className="font-semibold">{lab.name}</p>
-                                                <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                                                    <MapPin className="h-4 w-4" /> {lab.address}, {lab.city}
-                                                </p>
-                                                {lab.contact && (
-                                                    <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                                                        <Phone className="h-4 w-4" /> {lab.contact}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : userProfile ? (
-                                    <p className="text-sm text-muted-foreground py-2">
-                                        No soil testing labs found for your location ({userProfile.city}, {userProfile.state}). Check the{' '}
-                                        <a href="https://soilhealth.dac.gov.in/soil-testing-laboratories" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                            official government portal
-                                        </a> to find one.
-                                    </p>
-                                ) : (
-                                     <p className="text-sm text-muted-foreground py-2">
-                                        Please complete your profile with your location to find nearby labs. In the meantime, you can visit the{' '}
-                                        <a href="https://soilhealth.dac.gov.in/soil-testing-laboratories" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                            official government portal
-                                        </a>.
-                                    </p>
-                                )}
+                                <p className="text-sm text-muted-foreground py-2">
+                                    Click the link below to find a comprehensive list of soil testing laboratories across India.
+                                </p>
+                                <Button asChild className="mt-2 w-full">
+                                    <a href="https://www.napanta.com/soil-testing-laboratory" target="_blank" rel="noopener noreferrer">
+                                        Open Lab Directory
+                                    </a>
+                                </Button>
                             </AccordionContent>
                         </AccordionItem>
                          <AccordionItem value="subsidies">
