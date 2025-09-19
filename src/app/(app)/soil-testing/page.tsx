@@ -256,7 +256,7 @@ export default function SoilTestingPage() {
                     <CardTitle>Analysis & Recommendations</CardTitle>
                     <CardDescription>
                         {activeReport ? `Showing results for ${activeReport.fileName}`: "Upload a report to see AI-powered insights here."}
-                    </p>
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     {!activeReport ? (
