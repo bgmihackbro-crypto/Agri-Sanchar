@@ -283,6 +283,37 @@ export default function SoilTestingPage() {
 
             <Card>
                 <CardHeader>
+                    <CardTitle>Resources & Support</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Accordion type="single" collapsible className="w-full" defaultValue="labs">
+                        <AccordionItem value="labs">
+                            <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
+                            <AccordionContent>
+                                <p className="text-sm text-muted-foreground py-2">
+                                    Click the link below to find a comprehensive list of soil testing laboratories across India.
+                                </p>
+                                <Button asChild className="mt-2 w-full">
+                                    <a href="https://www.napanta.com/soil-testing-laboratory" target="_blank" rel="noopener noreferrer">
+                                        Open Lab Directory
+                                    </a>
+                                </Button>
+                            </AccordionContent>
+                        </AccordionItem>
+                         <AccordionItem value="subsidies">
+                            <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Subsidies</AccordionTrigger>
+                            <AccordionContent>
+                                 <p className="text-sm text-muted-foreground">
+                                    Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing. Farmers can get their soil tested at subsidized rates. Contact your local agriculture office for more details on subsidies and procedures in your state.
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
                     <CardTitle>Upload New Report</CardTitle>
                     <CardDescription>Select a PDF or image of your soil test report.</CardDescription>
                 </CardHeader>
@@ -483,36 +514,6 @@ export default function SoilTestingPage() {
                 </CardFooter>
             </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Resources & Support</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full" defaultValue="labs">
-                        <AccordionItem value="labs">
-                            <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
-                            <AccordionContent>
-                                <p className="text-sm text-muted-foreground py-2">
-                                    Click the link below to find a comprehensive list of soil testing laboratories across India.
-                                </p>
-                                <Button asChild className="mt-2 w-full">
-                                    <a href="https://www.napanta.com/soil-testing-laboratory" target="_blank" rel="noopener noreferrer">
-                                        Open Lab Directory
-                                    </a>
-                                </Button>
-                            </AccordionContent>
-                        </AccordionItem>
-                         <AccordionItem value="subsidies">
-                            <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Subsidies</AccordionTrigger>
-                            <AccordionContent>
-                                 <p className="text-sm text-muted-foreground">
-                                    Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing. Farmers can get their soil tested at subsidized rates. Contact your local agriculture office for more details on subsidies and procedures in your state.
-                                </p>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
         </div>
       </div>
     </div>
