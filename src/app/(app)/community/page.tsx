@@ -32,6 +32,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { sendMessage } from "@/lib/firebase/chat";
 import { EXPERT_BOT_USER } from "@/lib/firebase/chat";
 import { indianCities } from "@/lib/indian-cities";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 
 const allCitiesList = Object.values(indianCities).flat();
 
@@ -243,7 +245,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "Onion prices are expected to rise",
     content: "I heard from a trader at the Indore mandi that onion prices might go up in the next few weeks due to low supply. Might be a good idea to hold your stock if you can.",
-    image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbmlvbnxlbnwwfHx8fDE3NTgzMDQ1NjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbmlvbnxlbnwwfHx8fDE3NTgzMDQ1NjN8MA&ixlibrb-4.1.0&q=80&w=1080",
     imageHint: "onion market",
     mediaType: 'image',
     likes: 58,
@@ -276,7 +278,7 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Is vermicompost better than cow dung manure?",
     content: "I have been using cow dung manure for a long time. I hear a lot about vermicompost now. Is it really better? What are the benefits and costs?",
-    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODMwNDYyMHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODMwNDYyMHww&ixlibrb-4.1.0&q=80&w=1080",
     imageHint: "vermicompost",
     mediaType: 'image',
     likes: 33,
@@ -293,7 +295,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "Canal water schedule for this month?",
     content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1688987742688-d32fde871a25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODMwNDY3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1688987742688-d32fde871a25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODMwNDY3Mnww&ixlibrb-4.1.0&q=80&w=1080",
     imageHint: "jute irrigation",
     mediaType: 'image',
     likes: 15,
@@ -310,7 +312,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "How to control stem borer in sugarcane?",
     content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1641754644192-24e09c2b444b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOHx8c3VnYXIlMjBjYW5lYXxlbnwwfHx8fDE3NTgzMDQ5Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1641754644192-24e09c2b444b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxOHx8c3VnYXIlMjBjYW5lYXxlbnwwfHx8fDE3NTgzMDQ5Nzl8MA&ixlibrb-4.1.0&q=80&w=1080",
     imageHint: "sugarcane pest",
     mediaType: 'image',
     likes: 29,
@@ -580,8 +582,9 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
 };
 
 
-const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[]; onPostCreated: (post: Post) => void; }) => {
+const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated, isGrid = false }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[]; onPostCreated: (post: Post) => void; isGrid?: boolean; }) => {
     const [commentText, setCommentText] = useState("");
+    const [isExpanded, setIsExpanded] = useState(false);
     
     const handleCommentSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -600,14 +603,14 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated 
       const mediaType = p.mediaType || 'image';
 
       return (
-         <div className="mt-4 rounded-lg overflow-hidden border">
+         <div className={cn("mt-2 rounded-lg overflow-hidden border", isGrid ? 'aspect-square' : '')}>
            {mediaType.startsWith('image') ? (
               <Image
                 src={p.image}
                 alt={p.title || 'Post image'}
                 width={600}
-                height={400}
-                className="w-full h-auto"
+                height={600}
+                className="w-full h-full object-cover"
                 data-ai-hint={p.imageHint}
               />
            ) : (
@@ -617,100 +620,123 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated 
       );
     }
 
+    if (isGrid) {
+        return (
+            <Card className="overflow-hidden">
+                <CardContent className="p-0">
+                     {renderMedia(post) ? renderMedia(post) : (
+                         <div className="p-4 aspect-square">
+                             <h4 className="font-semibold mb-1 line-clamp-2">{post.title}</h4>
+                             <p className="text-xs text-muted-foreground line-clamp-4">{post.content}</p>
+                         </div>
+                     )}
+                </CardContent>
+            </Card>
+        )
+    }
+
     return (
     <Card className="animate-fade-in-up">
-      <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-        <Avatar>
+      <CardHeader className="flex flex-row items-start gap-3 space-y-0 p-4">
+        <Avatar className="h-9 w-9">
           <AvatarImage src={post.avatar} data-ai-hint={post.avatarHint} />
           <AvatarFallback>{post.author.substring(0, 2)}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             <div>
-              <p className="font-semibold">{post.author}</p>
+              <p className="font-semibold text-sm">{post.author}</p>
               <p className="text-xs text-muted-foreground">
                 {post.time} • {post.location}
               </p>
             </div>
              {post.originalAuthor ? (
-                 <Badge variant="secondary">
+                 <Badge variant="secondary" className="text-xs">
                     <Repeat className="h-3 w-3 mr-1.5"/>
                     Shared
                 </Badge>
              ) : (
-                <Badge className={`${post.categoryColor} text-white`}>{post.category}</Badge>
+                <Badge className={`${post.categoryColor} text-white text-xs`}>{post.category}</Badge>
              )}
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-2 pt-0">
          {post.originalAuthor ? (
             <>
                 <p className="text-sm text-muted-foreground mb-2">Shared from <span className="font-semibold text-foreground">{post.originalAuthor}</span></p>
-                <Card className="p-4 bg-muted/50">
-                    <h4 className="font-semibold mb-2">{post.title}</h4>
-                    <p className="text-sm text-muted-foreground">{post.content}</p>
+                <Card className="p-3 bg-muted/50">
+                    <h4 className="font-semibold mb-1 text-sm">{post.title}</h4>
+                    <p className="text-xs text-muted-foreground">{post.content}</p>
                     {renderMedia(post)}
                 </Card>
             </>
          ) : (
             <>
-                <h4 className="font-semibold mb-2">{post.title}</h4>
-                <p className="text-sm text-muted-foreground">{post.content}</p>
+                <h4 className="font-semibold mb-1">{post.title}</h4>
+                <p className={cn("text-sm text-muted-foreground", !isExpanded && "line-clamp-2")}>{post.content}</p>
+                {post.content.length > 100 && (
+                     <button onClick={() => setIsExpanded(!isExpanded)} className="text-xs text-primary font-semibold mt-1">
+                        {isExpanded ? "Read less" : "Read more"}
+                    </button>
+                )}
                 {renderMedia(post)}
             </>
          )}
       </CardContent>
-      <CardFooter className="flex items-center justify-between border-t pt-4">
-         <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => onLike(post.id)} className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                <ThumbsUp className="h-4 w-4" /> {post.likes}
+      <CardFooter className="flex items-center justify-between p-2">
+         <div className="flex">
+            <Button variant="ghost" size="sm" onClick={() => onLike(post.id)} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
+                <ThumbsUp className="h-4 w-4" /> <span className="text-xs">{post.likes}</span>
             </Button>
-            <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                <MessageCircle className="h-4 w-4" /> {post.comments.length}
-            </Button>
+            <CollapsibleTrigger asChild>
+                 <Button variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
+                    <MessageCircle className="h-4 w-4" /> <span className="text-xs">{post.comments.length}</span>
+                </Button>
+            </CollapsibleTrigger>
             <ShareDialog post={post} groups={groups} userProfile={userProfile} onPostCreated={onPostCreated} />
          </div>
       </CardFooter>
-      <div className="px-6 pb-4 space-y-4">
-        <Separator />
-        {post.comments.length > 0 && (
-          <div className="space-y-3">
-            {post.comments.map((comment, index) => (
-                <div key={index} className="flex items-start gap-3">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={comment.isAi ? '' : comment.avatar} data-ai-hint="farm icon" />
-                        <AvatarFallback>{comment.author.substring(0,2)}</AvatarFallback>
-                    </Avatar>
-                    <div className={`flex-1 p-2 rounded-md text-sm ${comment.isAi ? 'bg-primary/10' : 'bg-muted/70'}`}>
-                        <div className="flex items-center gap-2">
-                            <p className="font-semibold">{comment.author}</p>
-                             {comment.isExpert && <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200"><Award className="h-3 w-3 mr-1"/>Expert Answer</Badge>}
+        <CollapsibleContent>
+            <div className="px-4 pb-4 space-y-3 border-t pt-3">
+                {post.comments.length > 0 && (
+                <div className="space-y-3">
+                    {post.comments.map((comment, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={comment.isAi ? '' : comment.avatar} data-ai-hint="farm icon" />
+                                <AvatarFallback>{comment.author.substring(0,2)}</AvatarFallback>
+                            </Avatar>
+                            <div className={`flex-1 p-2 rounded-md text-sm ${comment.isAi ? 'bg-primary/10' : 'bg-muted/70'}`}>
+                                <div className="flex items-center gap-2">
+                                    <p className="font-semibold">{comment.author}</p>
+                                    {comment.isExpert && <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200"><Award className="h-3 w-3 mr-1"/>Expert</Badge>}
+                                </div>
+                                <p className="text-foreground/80 text-xs">{comment.content}</p>
+                            </div>
                         </div>
-                        <p className="text-foreground/80">{comment.content}</p>
-                    </div>
+                    ))}
                 </div>
-            ))}
-          </div>
-        )}
-         {userProfile && (
-                <form onSubmit={handleCommentSubmit} className="flex items-center gap-3 pt-2">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={userProfile.avatar} />
-                        <AvatarFallback>{userProfile.name.substring(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    <Input 
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="Write a comment..."
-                        className="h-9"
-                    />
-                    <Button type="submit" size="icon" className="h-9 w-9" disabled={!commentText.trim()}>
-                        <Send className="h-4 w-4" />
-                    </Button>
-                </form>
-            )}
-      </div>
+                )}
+                {userProfile && (
+                        <form onSubmit={handleCommentSubmit} className="flex items-center gap-2 pt-2">
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={userProfile.avatar} />
+                                <AvatarFallback>{userProfile.name.substring(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            <Input 
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                placeholder="Write a comment..."
+                                className="h-9 text-xs"
+                            />
+                            <Button type="submit" size="icon" className="h-9 w-9" disabled={!commentText.trim()}>
+                                <Send className="h-4 w-4" />
+                            </Button>
+                        </form>
+                    )}
+            </div>
+      </CollapsibleContent>
     </Card>
     );
 };
@@ -1176,17 +1202,25 @@ export default function CommunityPage() {
                 <TabsTrigger value="local">Discover Groups</TabsTrigger>
                 <TabsTrigger value="experts">Expert &amp; NGOs</TabsTrigger>
             </TabsList>
-            <TabsContent value="home" className="space-y-4 pt-4">
-                {filteredPosts.length > 0 ? filteredPosts.map((post) => (
-                    <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
-                )) : (
+            <TabsContent value="home" className="pt-4">
+                {filteredPosts.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredPosts.map((post) => (
+                           <Collapsible key={post.id} asChild>
+                             <PostCard post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} isGrid={true} />
+                           </Collapsible>
+                        ))}
+                    </div>
+                ) : (
                     <p className="text-center text-muted-foreground pt-8">No posts found for the selected filters.</p>
                 )}
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
                     myPosts.map((post) => (
-                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
+                         <Collapsible key={post.id} asChild>
+                            <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
+                        </Collapsible>
                     ))
                 ) : (
                     <p className="text-center text-muted-foreground pt-8">You haven't created any posts yet.</p>
@@ -1299,9 +1333,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
