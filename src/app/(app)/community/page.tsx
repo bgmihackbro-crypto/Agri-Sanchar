@@ -189,7 +189,7 @@ const initialPostsData = [
     time: "1 day ago",
     title: "Whitefly problem in my cotton crop",
     content: "My cotton plants are infested with whiteflies. They are causing the leaves to turn yellow and sticky. What is the best way to control them organically?",
-    image: "https://images.unsplash.com/photo-1617953141905-cde7260c6867?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb3R0b24lMjBwZXN0fGVufDB8fHx8MTc1ODMyMDAwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1609211593856-20240d322bcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMnx8Y290dG9uJTIwcGxhbnQlMjB8ZW58MHx8fHwxNzU4MzA0NTAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "cotton pest",
     mediaType: 'image',
     likes: 22,
@@ -223,7 +223,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Subsidy on polyhouse construction?",
     content: "Does anyone know if there is a government subsidy available for constructing a polyhouse in Maharashtra? I want to grow high-value vegetables.",
-    image: "https://images.unsplash.com/photo-1629022533818-a1f7786f3f27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb2x5aG91c2V8ZW58MHx8fHwxNzU4MzIwNDAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1752608277943-e2f36ab66c34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8cG9seWhvdXNlfGVufDB8fHx8MTc1ODMwNDUyMnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "polyhouse farming",
     mediaType: 'image',
     likes: 41,
@@ -242,7 +242,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "Onion prices are expected to rise",
     content: "I heard from a trader at the Indore mandi that onion prices might go up in the next few weeks due to low supply. Might be a good idea to hold your stock if you can.",
-    image: "https://images.unsplash.com/photo-1580252431633-5431b994843b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvmlvbiUyMG1hcmtldHxlbnwwfHx8fDE3NTgzMjA2MDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbmlvbnxlbnwwfHx8fDE3NTgzMDQ1NjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "onion market",
     mediaType: 'image',
     likes: 58,
@@ -275,7 +275,7 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Is vermicompost better than cow dung manure?",
     content: "I have been using cow dung manure for a long time. I hear a lot about vermicompost now. Is it really better? What are the benefits and costs?",
-    image: "https://images.unsplash.com/photo-1600129994005-953c83a5332f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx2ZXJtaWNvbXBvc3R8ZW58MHx8fHwxNzU4MzIxMDAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODMwNDYyMHww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "vermicompost",
     mediaType: 'image',
     likes: 33,
@@ -292,7 +292,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "Canal water schedule for this month?",
     content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1596707378959-2a07c6c34532?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxqJTIwaXJyaWdhdGlvbnxlbnwwfHx8fDE3NTgzMjEyMDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1688987742688-d32fde871a25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODMwNDY3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "jute irrigation",
     mediaType: 'image',
     likes: 15,
@@ -1298,5 +1298,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
 
     
