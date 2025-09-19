@@ -115,11 +115,13 @@ const getWeather = ai.defineTool(
 // ---------- Prompt / Flow ----------
 const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
-  input: { schema: AnswerFarmerQuestionInputSchema },
+  input: { schema: AnswerFarmerQuestionInputSchema.extend({ currentDate: z.string() }) },
   tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
+
+If asked for the current date, use this: {{{currentDate}}}.
 
 {{#if photoDataUri}}
 A photo has been provided. You MUST analyze this photo in the context of the user's question. If the user is asking to identify a problem (like a disease or pest), perform a step-by-step diagnosis.
@@ -220,7 +222,13 @@ const answerFarmerQuestionFlow = ai.defineFlow(
       return { answer: '', priceData: priceData.records };
     }
 
-    const llmResponse = await answerFarmerQuestionPrompt(input);
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const llmResponse = await answerFarmerQuestionPrompt({...input, currentDate });
     const answer = llmResponse.text;
 
     if (answer) {
