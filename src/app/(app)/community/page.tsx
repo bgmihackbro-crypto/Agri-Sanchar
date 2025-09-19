@@ -603,7 +603,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
       const mediaType = p.mediaType || 'image';
 
       return (
-         <div className={cn("mt-2 rounded-lg overflow-hidden border", isGrid ? 'aspect-square' : '')}>
+         <div className={cn("mt-2 rounded-lg overflow-hidden border", isGrid ? 'aspect-square' : 'max-h-[50vh]')}>
            {mediaType.startsWith('image') ? (
               <Image
                 src={p.image}
@@ -614,7 +614,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
                 data-ai-hint={p.imageHint}
               />
            ) : (
-             <video src={p.image} className="w-full h-auto" controls />
+             <video src={p.image} className="w-full h-full object-cover" controls />
            )}
          </div>
       );
