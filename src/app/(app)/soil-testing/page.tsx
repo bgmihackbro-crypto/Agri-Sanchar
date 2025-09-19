@@ -26,6 +26,10 @@ import {
   CircleHelp,
   Combine,
   Tractor,
+  Map,
+  Shovel,
+  Box,
+  Tag,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -278,6 +282,52 @@ export default function SoilTestingPage() {
                             ))}
                         </div>
                     )}
+                </CardContent>
+            </Card>
+
+             <Card>
+                <CardHeader>
+                    <CardTitle>How to Collect Soil Samples</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="aspect-video rounded-lg overflow-hidden border mb-4">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/n7w2-Y3J3-Y" 
+                            title="YouTube video player" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowFullScreen
+                            className="w-full h-full"
+                            >
+                        </iframe>
+                    </div>
+                    <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger><Map className="h-4 w-4 mr-2"/>Select a Representative Area</AccordionTrigger>
+                            <AccordionContent>
+                                Choose a spot that represents the majority of your field. Avoid unusual spots like near a fence, tree, or water source.
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                            <AccordionTrigger><Shovel className="h-4 w-4 mr-2"/>Dig and Collect</AccordionTrigger>
+                            <AccordionContent>
+                                Dig a V-shaped hole about 6 inches (15 cm) deep. Take a 1-inch thick slice from one side of the hole from top to bottom.
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-3">
+                            <AccordionTrigger><Box className="h-4 w-4 mr-2"/>Mix and Pack</AccordionTrigger>
+                            <AccordionContent>
+                                Collect 8-10 such samples from different spots in the field. Mix them thoroughly in a clean bucket. Take about half a kilogram of the mixed soil, let it dry in the shade, and pack it in a clean cloth bag.
+                            </AccordionContent>
+                        </AccordionItem>
+                         <AccordionItem value="item-4">
+                            <AccordionTrigger><Tag className="h-4 w-4 mr-2"/>Label the Sample</AccordionTrigger>
+                            <AccordionContent>
+                                Label the bag clearly with your name, address, farmer ID, and the date of collection.
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </CardContent>
             </Card>
         </div>
