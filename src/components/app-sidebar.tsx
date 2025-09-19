@@ -28,7 +28,7 @@ const links = [
   { href: "/weather", label: "Weather", icon: CloudSun },
   { href: "/community", label: "Community", icon: Users },
   { href: "/market", label: "Market Prices", icon: TrendingUp },
-  { href: "#", label: "Soil Testing", icon: FlaskConical },
+  { href: "/soil-testing", label: "Soil Testing", icon: FlaskConical },
   { href: "#", label: "Pesticide Guide", icon: Bug },
   { href: "/profile", label: "Profile", icon: User },
 ];
@@ -44,7 +44,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={link.label}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith(link.href) && link.href !== '#'}
+                isActive={link.href !== '#' && pathname.startsWith(link.href)}
                 tooltip={link.label}
                 className="justify-start"
               >
