@@ -369,8 +369,44 @@ const expertData = [
     contact: "+91 95566 77889",
     type: "ngo",
   },
+  {
+    id: 'expert-4',
+    name: "Dr. Vijay Singh",
+    avatar: "https://picsum.photos/seed/expert-4/80/80",
+    specialization: "Crops & Fertilizers",
+    location: "Hisar",
+    contact: "+91 94123 45678",
+    type: "expert",
+  },
+  {
+    id: 'ngo-4',
+    name: "BAIF Development Research Foundation",
+    avatar: "https://picsum.photos/seed/ngo-4/80/80",
+    specialization: "Livestock Development & Water Management",
+    location: "Pune",
+    contact: "+91 98220 12345",
+    type: "ngo",
+  },
+  {
+    id: 'expert-5',
+    name: "Dr. Aisha Khan",
+    avatar: "https://picsum.photos/seed/expert-5/80/80",
+    specialization: "Pests & Irrigation",
+    location: "Hyderabad",
+    contact: "+91 99887 76655",
+    type: "expert",
+  },
 ];
 
+
+const initialGroupsData = [
+  { id: 'group-1', name: 'Ludhiana Wheat Farmers', city: 'Ludhiana', description: 'A group for wheat farmers in Ludhiana to discuss best practices.', createdBy: 'Admin', members: ['user-1'] },
+  { id: 'group-2', name: 'Jalandhar Potato Growers', city: 'Jalandhar', description: 'Connecting potato growers in the Jalandhar region.', createdBy: 'Admin', members: ['user-2'] },
+  { id: 'group-3', name: 'Patiala Dairy Farmers', city: 'Patiala', description: 'Discussions on dairy farming, cattle health, and milk prices.', createdBy: 'Admin', members: ['user-3'] },
+  { id: 'group-4', name: 'Organic Farming Pune', city: 'Pune', description: 'A community for organic farmers in and around Pune.', createdBy: 'Admin', members: ['user-4'] },
+  { id: 'group-5', name: 'Bengaluru Horticulturists', city: 'Bengaluru', description: 'For farmers growing fruits, vegetables, and flowers in Bengaluru.', createdBy: 'Admin', members: ['user-5'] },
+  { id: 'group-6', name: 'Hyderabad Cotton & Chilli', city: 'Hyderabad', description: 'Market trends and farming techniques for cotton and chilli.', createdBy: 'Admin', members: ['user-6'] },
+];
 
 type UserProfile = {
     farmerId: string;
@@ -897,13 +933,20 @@ export default function CommunityPage() {
   const fetchGroups = () => {
         setIsLoadingGroups(true);
         try {
-            const user = localStorage.getItem('userProfile');
-            const farmerId = user ? JSON.parse(user).farmerId : null;
-            if (farmerId) {
-                 const fetchedGroups = getGroups().filter(g => g.members.includes(farmerId));
-                 setGroups(fetchedGroups);
+            const allGroups = getGroups();
+            if (!localStorage.getItem('groups')) {
+                // If local storage is empty, populate with initial data
+                initialGroupsData.forEach(groupData => {
+                    const newGroupData = {
+                        ...groupData,
+                        ownerId: 'admin-user',
+                        avatarUrl: `https://picsum.photos/seed/${groupData.name.replace(/\s/g, '-')}/100/100`
+                    };
+                    createGroup(newGroupData);
+                });
+                setGroups(getGroups());
             } else {
-                setGroups([]);
+                 setGroups(allGroups);
             }
         } catch (error) {
             console.error("Error fetching groups:", error);
@@ -964,19 +1007,18 @@ export default function CommunityPage() {
 
   const filteredGroups = groups.filter(group => {
       const cityMatch = filterCity === 'all' || group.city === filterCity;
-      // No category filter for groups
       return cityMatch;
   });
 
   const filteredExperts = expertData.filter(expert => {
-      const categoryMatch = filterCategory === 'all' || expert.specialization.includes(filterCategory);
+      const categoryMatch = filterCategory === 'all' || expert.specialization.toLowerCase().includes(filterCategory.toLowerCase());
       const cityMatch = filterCity === 'all' || expert.location === filterCity;
       return categoryMatch && cityMatch;
   });
 
 
   const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
-  const allCities = ['all', ...Array.from(new Set([...initialPostsData.map(p => p.location), ...expertData.map(e => e.location)]))];
+  const allCities = ['all', ...Array.from(new Set([...initialPostsData.map(p => p.location), ...expertData.map(e => e.location), ...initialGroupsData.map(g => g.city)]))];
 
   const handleChat = (expert: (typeof expertData)[0]) => {
       if (!userProfile) {
@@ -1056,8 +1098,8 @@ export default function CommunityPage() {
        <Tabs defaultValue="home" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="home">Home Feed</TabsTrigger>
-                <TabsTrigger value="myposts">My Posts</TabsTrigger>
-                <TabsTrigger value="local">Local Groups</TabsTrigger>
+                <TabsTrigger value="myposts">My Posts ({myPosts.length})</TabsTrigger>
+                <TabsTrigger value="local">Discover Groups</TabsTrigger>
                 <TabsTrigger value="experts">Expert &amp; NGOs</TabsTrigger>
             </TabsList>
             <TabsContent value="home" className="space-y-4 pt-4">
@@ -1183,5 +1225,6 @@ export default function CommunityPage() {
     </div>
   );
 }
+
 
 
