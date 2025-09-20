@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -561,7 +562,7 @@ export default function PesticideGuidePage() {
                             </p>
                             </CardContent>
                             <CardFooter>
-                            <DetailDialog pesticide={pesticide} t={t.pesticideGuide} />
+                            <DetailDialog pesticide={pesticide} t={t} />
                             </CardFooter>
                         </Card>
                         ))}
