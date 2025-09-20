@@ -192,8 +192,11 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         <Dialog>
             <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">{scheme.name}</CardTitle>
-                    <CardDescription className="line-clamp-2">{scheme.description}</CardDescription>
+                    <div className="flex justify-between items-start">
+                        <CardTitle className="font-headline text-lg pr-2">{scheme.name}</CardTitle>
+                        {getStatusBadge(scheme.status, t)}
+                    </div>
+                    <CardDescription className="line-clamp-2 pt-1">{scheme.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-3">
                     <div className="flex items-center gap-2 text-sm">
