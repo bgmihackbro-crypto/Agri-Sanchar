@@ -259,8 +259,12 @@ export default function ChatbotPage() {
       };
       
       recognitionRef.current.onerror = (event: any) => {
-          console.error("Speech recognition error", event.error);
-          toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
+          // The 'no-speech' error is not a real error. It just means the user was silent.
+          // We don't want to show an error toast for this.
+          if (event.error !== 'no-speech') {
+            console.error("Speech recognition error", event.error);
+            toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
+          }
           setIsRecording(false);
           recognitionRef.current = null; // Ensure clean instance
       };
@@ -441,6 +445,5 @@ export default function ChatbotPage() {
       </Card>
     </div>
   );
-}
 
     
