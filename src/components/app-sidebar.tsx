@@ -9,10 +9,10 @@ import {
   LayoutDashboard,
   Users,
   User,
-  Search,
   TrendingUp,
   FlaskConical,
-  Bug
+  Bug,
+  Tractor
 } from "lucide-react";
 import {
   SidebarContent,
@@ -29,7 +29,7 @@ export function AppSidebar() {
   const links = [
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
-    { href: "/detection", label: t.sidebar.detection, icon: Search },
+    { href: "/rental-equipment", label: t.sidebar.rental, icon: Tractor },
     { href: "/weather", label: t.sidebar.weather, icon: CloudSun },
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
@@ -43,7 +43,7 @@ export function AppSidebar() {
       <SidebarContent className="pt-8">
         <SidebarMenu>
           {links.map((link) => (
-            <SidebarMenuItem key={link.label}>
+            <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
                 isActive={link.href !== '#' && pathname.startsWith(link.href)}
