@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Image from 'next/image';
 
 type UserProfile = {
   farmSize: string;
@@ -189,12 +190,12 @@ function SchemeCalculator({ scheme, t }: { scheme: Scheme, t: any }) {
 function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
     return (
         <Dialog>
-            <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300">
+            <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                <div className="relative aspect-video">
+                    <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                </div>
                 <CardHeader>
-                    <div className="flex justify-between items-start gap-2">
-                        <CardTitle className="font-headline text-lg">{scheme.name}</CardTitle>
-                        <Landmark className="h-8 w-8 text-primary/70 flex-shrink-0"/>
-                    </div>
+                    <CardTitle className="font-headline text-lg">{scheme.name}</CardTitle>
                     <CardDescription className="line-clamp-2">{scheme.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-3">
@@ -210,10 +211,6 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                     </div>
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-3">
-                    <div className="flex justify-between w-full items-center">
-                        {getStatusBadge(scheme.status, t)}
-                        {scheme.lastDate && <p className="text-xs text-destructive font-semibold">{t.schemes.lastDate}: {scheme.lastDate}</p>}
-                    </div>
                      <DialogTrigger asChild>
                         <Button variant="outline" className="w-full">
                             <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
@@ -222,76 +219,80 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                 </CardFooter>
             </Card>
 
-            <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
-                    <DialogDescription>{scheme.description}</DialogDescription>
-                    <div className="flex justify-between items-center pt-2">
-                        {getStatusBadge(scheme.status, t)}
+            <DialogContent className="sm:max-w-sm p-0">
+                <ScrollArea className="max-h-[90vh]">
+                    <div className="relative aspect-video">
+                        <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
                     </div>
-                </DialogHeader>
-                <ScrollArea className="max-h-[60vh] -mx-6 px-6">
-                    <div className="space-y-6 py-4">
-                        <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-lg">{t.schemes.benefits}</h3>
-                                <ul className="space-y-3">
-                                {scheme.benefits.map((benefit, i) => (
-                                        <li key={i} className="flex items-start gap-3">
-                                            <BenefitIcon benefit={benefit} t={t} />
-                                            <span className="text-sm text-muted-foreground">{benefit}</span>
-                                        </li>
-                                ))}
-                                </ul>
-                            </div>
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-lg">{t.schemes.eligibility}</h3>
-                                <ul className="space-y-3">
-                                    {scheme.eligibility.criteria.map((item, i) => (
-                                        <li key={i} className="flex items-start gap-3">
-                                            <UserCheck className="h-5 w-5 text-blue-600" />
-                                            <span className="text-sm text-muted-foreground">{item}</span>
-                                        </li>
+                    <div className="p-6 space-y-4">
+                        <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
+                        <DialogDescription>{scheme.description}</DialogDescription>
+                        <div className="flex justify-between items-center pt-2">
+                            {getStatusBadge(scheme.status, t)}
+                        </div>
+                    
+                        <div className="space-y-6 py-4">
+                            <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-lg">{t.schemes.benefits}</h3>
+                                    <ul className="space-y-3">
+                                    {scheme.benefits.map((benefit, i) => (
+                                            <li key={i} className="flex items-start gap-3">
+                                                <BenefitIcon benefit={benefit} t={t} />
+                                                <span className="text-sm text-muted-foreground">{benefit}</span>
+                                            </li>
                                     ))}
-                                </ul>
-                            </div>
-                            <div className="space-y-4 md:col-span-2">
-                                <h3 className="font-semibold text-lg">{t.schemes.documents}</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {scheme.documents.map((doc, i) => (
-                                        <Badge key={i} variant="secondary" className="flex items-center gap-2">
-                                            <FileText className="h-4 w-4" />
-                                            {doc}
-                                        </Badge>
-                                    ))}
+                                    </ul>
+                                </div>
+                                <div className="space-y-4">
+                                    <h3 className="font-semibold text-lg">{t.schemes.eligibility}</h3>
+                                    <ul className="space-y-3">
+                                        {scheme.eligibility.criteria.map((item, i) => (
+                                            <li key={i} className="flex items-start gap-3">
+                                                <UserCheck className="h-5 w-5 text-blue-600" />
+                                                <span className="text-sm text-muted-foreground">{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 md:col-span-2">
+                                    <h3 className="font-semibold text-lg">{t.schemes.documents}</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {scheme.documents.map((doc, i) => (
+                                            <Badge key={i} variant="secondary" className="flex items-center gap-2">
+                                                <FileText className="h-4 w-4" />
+                                                {doc}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="space-y-4 md:col-span-2">
+                                    <h3 className="font-semibold text-lg">{t.schemes.applicationProcess}</h3>
+                                    <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6">                  
+                                        {scheme.applicationProcess.map((step, i) => (
+                                            <li key={i} className="ml-6">
+                                                <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    <span className="font-bold text-blue-800 dark:text-blue-300 text-xs">{i + 1}</span>
+                                                </span>
+                                                <p className="font-semibold text-sm">{step.step}</p>
+                                                <p className="text-xs text-muted-foreground">{step.detail}</p>
+                                            </li>
+                                        ))}
+                                    </ol>
                                 </div>
                             </div>
-                            <div className="space-y-4 md:col-span-2">
-                                <h3 className="font-semibold text-lg">{t.schemes.applicationProcess}</h3>
-                                <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6">                  
-                                    {scheme.applicationProcess.map((step, i) => (
-                                        <li key={i} className="ml-6">
-                                            <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                                <span className="font-bold text-blue-800 dark:text-blue-300 text-xs">{i + 1}</span>
-                                            </span>
-                                            <p className="font-semibold text-sm">{step.step}</p>
-                                            <p className="text-xs text-muted-foreground">{step.detail}</p>
-                                        </li>
-                                    ))}
-                                </ol>
-                            </div>
+                            <SchemeCalculator scheme={scheme} t={t} />
                         </div>
-                        <SchemeCalculator scheme={scheme} t={t} />
+                    </div>
+                    <div className="flex justify-end pt-4 border-t p-6">
+                        <Button asChild>
+                            <Link href={scheme.link} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                {t.schemes.applyHere}
+                            </Link>
+                        </Button>
                     </div>
                 </ScrollArea>
-                <div className="flex justify-end pt-4 border-t">
-                    <Button asChild>
-                        <Link href={scheme.link} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            {t.schemes.applyHere}
-                        </Link>
-                    </Button>
-                </div>
             </DialogContent>
         </Dialog>
     );
