@@ -32,7 +32,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-1",
         ownerName: "Balwinder Singh",
         ownerAvatar: "https://picsum.photos/seed/wheat-field/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1563724129500-2613de406a74?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://media.istockphoto.com/id/1256742117/photo/tractor-in-the-field-stock-photo.jpg?s=1024x1024&w=is&k=20&c=H2S3J8ttmJzevXet-FXfsyFLXpei_4aXao6Fqlqr2YA=",
         description: "Well-maintained Sonalika DI 745 III tractor. Suitable for ploughing and tilling. Available with a driver.",
         contact: "+919876543210"
     },
@@ -270,7 +270,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-18",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1595184221192-3e3c54c038ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
         contact: "+919876543227"
     },
@@ -370,7 +370,3 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
-
-    
-
-    
