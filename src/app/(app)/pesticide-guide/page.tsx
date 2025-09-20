@@ -11,7 +11,6 @@ import { Search, Bug, Leaf, TestTube, Target, Info } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -130,7 +129,7 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                     </div>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
-                    <p className="text-sm text-muted-foreground">{pesticide.description}</p>
+                    <p className="text-sm text-foreground">{pesticide.description}</p>
                     <div className="space-y-2">
                         <h4 className="font-semibold">Active Ingredient</h4>
                         <p className="text-sm">{pesticide.activeIngredient}</p>
