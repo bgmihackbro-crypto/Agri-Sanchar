@@ -17,6 +17,7 @@ import { Search, PlusCircle, Tractor, Tag, Phone, MapPin, IndianRupee, Clock, Ca
 import { Spinner } from "@/components/ui/spinner";
 import { createRental, getRentals, type Rental, type NewRentalData } from "@/lib/firebase/rentals";
 import { indianCities } from "@/lib/indian-cities";
+import { Badge } from "@/components/ui/badge";
 
 const allCitiesList = Object.values(indianCities).flat().sort();
 const equipmentCategories = ["Tractor", "Harvester", "Tiller", "Planter", "Sprayer", "Baler", "Other"];
@@ -377,3 +378,5 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
+
+    
