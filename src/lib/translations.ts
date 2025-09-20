@@ -247,7 +247,7 @@ export const translations = {
             title: "मौसम पूर्वानुमान",
             subtitle: (city: string, state: string) => `${city}, ${state} के लिए`,
             loading: "लाइव मौसम डेटा प्राप्त किया जा रहा है...",
-            aiSuggestion: "एआई सुझाव",
+aiSuggestion: "एआई सुझाव",
             error: {
                 title: "मौसम डेटा प्राप्त करने में त्रुटि",
                 fetchFailed: "मौसम डेटा प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।",
