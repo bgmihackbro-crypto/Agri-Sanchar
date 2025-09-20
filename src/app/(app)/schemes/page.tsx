@@ -192,7 +192,13 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         <Dialog>
             <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300 overflow-hidden">
                 <div className="relative aspect-video">
-                    <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                    {scheme.imageUrl ? (
+                        <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                    ) : (
+                        <div className="h-full w-full bg-muted flex items-center justify-center">
+                            <Landmark className="h-12 w-12 text-muted-foreground/50"/>
+                        </div>
+                    )}
                 </div>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg">{scheme.name}</CardTitle>
@@ -222,7 +228,13 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
             <DialogContent className="sm:max-w-sm p-0">
                 <ScrollArea className="max-h-[90vh]">
                     <div className="relative aspect-video">
-                        <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                       {scheme.imageUrl ? (
+                            <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                        ) : (
+                            <div className="h-full w-full bg-muted flex items-center justify-center">
+                                <Landmark className="h-12 w-12 text-muted-foreground/50"/>
+                            </div>
+                        )}
                     </div>
                     <div className="p-6 space-y-4">
                         <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
@@ -297,5 +309,3 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         </Dialog>
     );
 }
-
-    
