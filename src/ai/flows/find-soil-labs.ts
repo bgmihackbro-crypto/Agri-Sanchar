@@ -4,22 +4,12 @@
  * @fileOverview Fetches soil testing laboratory data from data.gov.in.
  *
  * - findSoilLabs: A function that returns a list of labs for a given state/city.
- * - SoilLab: The type for an individual soil lab.
  */
 
 import { ai } from '@/ai/genkit';
+import { SoilLab, SoilLabSchema } from '@/ai/types';
 import { z } from 'zod';
 
-
-export const SoilLabSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  address: z.string(),
-  city: z.string(),
-  state: z.string(),
-  phone: z.string().optional(),
-});
-export type SoilLab = z.infer<typeof SoilLabSchema>;
 
 const FindSoilLabsInputSchema = z.object({
     state: z.string(),

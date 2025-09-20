@@ -41,7 +41,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
 import { analyzeSoilReport, type SoilReportAnalysisOutput } from '@/ai/flows/analyze-soil-report';
 import { calculateFertilizer, type FertilizerCalculationOutput } from '@/ai/flows/calculate-fertilizer';
-import { findSoilLabs, type SoilLab } from '@/ai/flows/find-soil-labs';
+import { findSoilLabs } from '@/ai/flows/find-soil-labs';
+import { type SoilLab } from '@/ai/types';
 import {
   Accordion,
   AccordionContent,
@@ -317,7 +318,7 @@ export default function SoilTestingPage() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                     <Link href="https://youtu.be/T_0N__RsNBg?si=aD7T4k7tl06C8eYR" target="_blank" rel="noopener noreferrer" className="block relative group">
+                     <Link href="https://youtu.be/T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
                         <Image 
                             src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
                             alt="Video on how to collect soil samples"
@@ -632,3 +633,4 @@ export default function SoilTestingPage() {
     </div>
   );
 }
+```

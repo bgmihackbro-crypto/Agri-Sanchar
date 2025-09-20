@@ -61,5 +61,16 @@ export const WeatherForecastOutputSchema = z.object({
 });
 export type WeatherForecastOutput = z.infer<typeof WeatherForecastOutputSchema>;
     
-
+// Soil Lab Schemas
+export const SoilLabSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string(),
+  city: z.string(),
+  state: z.string(),
+  phone: z.string().optional(),
+});
+export type SoilLab = z.infer<typeof SoilLabSchema>;
     
+
+```
