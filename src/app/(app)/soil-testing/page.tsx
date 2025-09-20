@@ -33,6 +33,7 @@ import {
   PlayCircle,
   Phone,
   MapPin,
+  ExternalLink,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +41,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
 import { analyzeSoilReport, type SoilReportAnalysisOutput } from '@/ai/flows/analyze-soil-report';
 import { calculateFertilizer, type FertilizerCalculationOutput } from '@/ai/flows/calculate-fertilizer';
+import { findSoilLabs, type SoilLab } from '@/ai/flows/find-soil-labs';
 import {
   Accordion,
   AccordionContent,
@@ -53,7 +55,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
 import { indianStates } from '@/lib/indian-states';
 import { indianCities } from '@/lib/indian-cities';
-import { soilLabs, type SoilLab } from '@/lib/soil-labs';
 
 
 type SoilReport = {
@@ -106,11 +107,14 @@ export default function SoilTestingPage() {
   const [labCity, setLabCity] = useState('');
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   const [nearbyLabs, setNearbyLabs] = useState<SoilLab[]>([]);
+  const [isFindingLabs, setIsFindingLabs] = useState(false);
+  const [labError, setLabError] = useState<string | null>(null);
 
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  // Load user location from profile
   useEffect(() => {
     const profile = localStorage.getItem('userProfile');
     if (profile) {
@@ -126,22 +130,34 @@ export default function SoilTestingPage() {
     }
   }, []);
 
+  // Fetch labs when location changes
   useEffect(() => {
-    if (labCity) {
-      const cityLabs = soilLabs.filter(lab => lab.city === labCity);
-      setNearbyLabs(cityLabs);
-    } else if (labState) {
-      const stateLabs = soilLabs.filter(lab => lab.state === labState);
-      setNearbyLabs(stateLabs.slice(0, 5)); // Limit to 5 if showing for whole state
-    } else {
+    const fetchLabs = async () => {
+      if (!labState) return;
+      
+      setIsFindingLabs(true);
+      setLabError(null);
       setNearbyLabs([]);
-    }
-  }, [labCity, labState]);
+
+      try {
+        const result = await findSoilLabs({ state: labState, city: labCity });
+        if (result.error) {
+          setLabError(result.error);
+        } else {
+          setNearbyLabs(result.labs);
+        }
+      } catch (err: any) {
+        setLabError(err.message || "Failed to fetch lab data.");
+      } finally {
+        setIsFindingLabs(false);
+      }
+    };
+    fetchLabs();
+  }, [labState, labCity]);
   
   const handleLabStateChange = (state: string) => {
     setLabState(state);
     setLabCity('');
-    setNearbyLabs([]);
     setAvailableCities(indianCities[state] || []);
   };
   
@@ -301,7 +317,7 @@ export default function SoilTestingPage() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                     <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
+                     <Link href="https://youtu.be/T_0N__RsNBg?si=aD7T4k7tl06C8eYR" target="_blank" rel="noopener noreferrer" className="block relative group">
                         <Image 
                             src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
                             alt="Video on how to collect soil samples"
@@ -357,12 +373,23 @@ export default function SoilTestingPage() {
                                       </SelectContent>
                                     </Select>
                                   </div>
-                                  <div className="space-y-3">
-                                      {nearbyLabs.length > 0 ? (
+                                  <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                     {isFindingLabs ? (
+                                          <div className="flex items-center justify-center py-6">
+                                            <Spinner className="mr-2 h-5 w-5" />
+                                            <p className="text-sm text-muted-foreground">Finding labs...</p>
+                                          </div>
+                                      ) : labError ? (
+                                        <Alert variant="destructive" className="text-xs">
+                                          <AlertTriangle className="h-4 w-4"/>
+                                          <AlertTitle>Error</AlertTitle>
+                                          <AlertDescription>{labError}</AlertDescription>
+                                        </Alert>
+                                      ) : nearbyLabs.length > 0 ? (
                                         nearbyLabs.map(lab => (
                                           <div key={lab.id} className="p-3 border rounded-lg">
                                             <p className="font-semibold">{lab.name}</p>
-                                            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><MapPin className="h-4 w-4" /> {lab.address}</p>
+                                            <p className="text-sm text-muted-foreground flex items-start gap-2 mt-1"><MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" /> {lab.address}</p>
                                             {lab.phone && <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><Phone className="h-4 w-4" /> {lab.phone}</p>}
                                           </div>
                                         ))
@@ -374,13 +401,19 @@ export default function SoilTestingPage() {
                             </AccordionContent>
                         </AccordionItem>
                          <AccordionItem value="subsidies">
-                            <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Subsidies</AccordionTrigger>
-                            <AccordionContent>
+                             <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Schemes</AccordionTrigger>
+                             <AccordionContent className="space-y-3 pt-2">
                                  <p className="text-sm text-muted-foreground">
-                                    Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing. Farmers can get their soil tested at subsidized rates. Contact your local agriculture office for more details on subsidies and procedures in your state.
-                                </p>
-                            </AccordionContent>
-                        </AccordionItem>
+                                     Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing at subsidized rates.
+                                 </p>
+                                  <Button variant="outline" size="sm" asChild>
+                                      <Link href="https://soilhealth.dac.gov.in/" target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink className="mr-2 h-4 w-4" />
+                                        Visit Soil Health Card Portal
+                                    </Link>
+                                 </Button>
+                             </AccordionContent>
+                         </AccordionItem>
                     </Accordion>
                 </CardContent>
             </Card>
