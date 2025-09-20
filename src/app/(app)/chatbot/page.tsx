@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Send, User, X } from "lucide-react";
+import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 
 type Message = {
-  id: number;
+  id: string;
   role: "user" | "assistant";
   content: string;
   image?: string;
@@ -41,14 +41,51 @@ export default function ChatbotPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [nowPlayingMessageId, setNowPlayingMessageId] = useState<string | null>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null); // For SpeechRecognition instance
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
       setUserProfile(JSON.parse(savedProfile));
     }
+    
+    // Initialize SpeechRecognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = 'en-US';
+
+        recognitionRef.current.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+                .map((result: any) => result[0])
+                .map((result: any) => result.transcript)
+                .join('');
+            setInput(transcript);
+        };
+
+        recognitionRef.current.onend = () => {
+            setIsRecording(false);
+        };
+        
+        recognitionRef.current.onerror = (event: any) => {
+            console.error("Speech recognition error", event.error);
+            setIsRecording(false);
+        };
+
+    }
+    
+     // Cleanup speech synthesis on component unmount or when navigating away
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+
   }, []);
 
   useEffect(() => {
@@ -56,6 +93,24 @@ export default function ChatbotPage() {
       scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
+  
+  const speak = (message: Message) => {
+    // If this message is already playing, stop it (toggle)
+    if (nowPlayingMessageId === message.id) {
+      window.speechSynthesis.cancel();
+      setNowPlayingMessageId(null);
+      return;
+    }
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(message.content);
+    utterance.onstart = () => setNowPlayingMessageId(message.id);
+    utterance.onend = () => setNowPlayingMessageId(null);
+    utterance.onerror = () => setNowPlayingMessageId(null); // Handle errors
+    window.speechSynthesis.speak(utterance);
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -72,12 +127,12 @@ export default function ChatbotPage() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() && !imageFile) return;
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if ((!input.trim() && !imageFile) || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now(),
+      id: `user-${Date.now()}`,
       role: "user",
       content: input,
       ...(imageFile && { image: URL.createObjectURL(imageFile) }),
@@ -92,7 +147,7 @@ export default function ChatbotPage() {
     
     setIsLoading(true);
 
-    let aiResponse = "Sorry, I could not process your request.";
+    let aiResponseContent = "Sorry, I could not process your request.";
     try {
       let photoDataUri: string | undefined = undefined;
       if (currentImageFile) {
@@ -104,21 +159,41 @@ export default function ChatbotPage() {
         photoDataUri: photoDataUri,
         city: userProfile?.city,
       });
-      aiResponse = response.answer ?? 'Sorry, I could not generate a response.';
+      aiResponseContent = response.answer ?? 'Sorry, I could not generate a response.';
     } catch (error) {
       console.error("AI Error:", error);
-      aiResponse = "I can’t provide that information at the moment.. ";
+      aiResponseContent = "I can’t provide that information at the moment.";
     }
 
     const assistantMessage: Message = {
-      id: Date.now() + 1,
+      id: `asst-${Date.now()}`,
       role: "assistant",
-      content: aiResponse,
+      content: aiResponseContent,
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, assistantMessage]);
-    
     setIsLoading(false);
+    
+    // Automatically speak the new assistant message
+    speak(assistantMessage);
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      // Automatically submit when recording is stopped and there is input
+      if(input.trim() || imageFile) {
+          handleSubmit();
+      }
+    } else {
+      if(recognitionRef.current) {
+        recognitionRef.current.start();
+        setIsRecording(true);
+      } else {
+        alert("Speech recognition is not supported in your browser.");
+      }
+    }
   };
 
   const removeImage = () => {
@@ -162,7 +237,7 @@ export default function ChatbotPage() {
                   )}
                   <div
                     className={cn(
-                      "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm",
+                      "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm relative group",
                       message.role === "user"
                         ? "bg-muted"
                         : "bg-primary text-primary-foreground"
@@ -176,6 +251,20 @@ export default function ChatbotPage() {
                         alt="user upload"
                         className="mt-2 rounded-lg max-w-full h-auto"
                       />
+                    )}
+                     {message.role === 'assistant' && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute -bottom-2 -right-2 h-7 w-7 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity"
+                            onClick={() => speak(message)}
+                        >
+                            {nowPlayingMessageId === message.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin"/>
+                            ) : (
+                                <Volume2 className="h-4 w-4" />
+                            )}
+                        </Button>
                     )}
                   </div>
                   {message.role === "user" && (
@@ -231,6 +320,7 @@ export default function ChatbotPage() {
               variant="outline"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
             >
               <ImageIcon className="h-4 w-4" />
               <span className="sr-only">Upload Image</span>
@@ -245,12 +335,16 @@ export default function ChatbotPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about crops, prices, or upload a photo..."
+              placeholder={isRecording ? "Listening..." : "Ask about crops, prices, or upload a photo..."}
               disabled={isLoading}
             />
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 flex items-center gap-2" disabled={isLoading || (!input.trim() && !imageFile)}>
+             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading || !recognitionRef.current} variant={isRecording ? 'destructive': 'outline'}>
+                <Mic className="h-4 w-4" />
+                <span className="sr-only">Record voice message</span>
+            </Button>
+            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
-              <span>Send</span>
+              <span className="sr-only">Send</span>
             </Button>
           </form>
         </CardFooter>
@@ -258,3 +352,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
