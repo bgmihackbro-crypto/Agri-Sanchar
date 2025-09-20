@@ -167,7 +167,6 @@ export default function ChatbotPage() {
       stopRecording();
     }
     
-    const wasVoice = lastInputWasVoice.current;
     lastInputWasVoice.current = false;
 
     const userMessage: Message = {
@@ -213,10 +212,6 @@ export default function ChatbotPage() {
     };
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
-    
-    if (wasVoice) {
-      speak(assistantMessage);
-    }
   };
 
   const startRecording = () => {
@@ -227,6 +222,10 @@ export default function ChatbotPage() {
       }
       
       // Always create a new instance
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
+      }
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
@@ -268,7 +267,9 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current = null;
     }
+    setIsRecording(false);
   };
 
   const toggleRecording = () => {
@@ -437,5 +438,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
