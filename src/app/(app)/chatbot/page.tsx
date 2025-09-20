@@ -216,9 +216,7 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    if (lastInputWasVoice.current) {
-        speak(assistantMessage);
-    }
+    speak(assistantMessage);
   };
 
   const startRecording = () => {
@@ -248,7 +246,6 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onend = () => {
           setIsRecording(false);
-          recognitionRef.current = null; // Ensure clean instance
           // Auto-submit after recording stops and there's text
           // Using a timeout to ensure the final 'input' state is set
           setTimeout(() => {
@@ -258,6 +255,7 @@ export default function ChatbotPage() {
                   handleSubmit();
               }
           }, 100);
+          recognitionRef.current = null; // Ensure clean instance
       };
       
       recognitionRef.current.onerror = (event: any) => {
@@ -274,7 +272,6 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
-        recognitionRef.current = null;
     }
     setIsRecording(false);
   };
@@ -445,3 +442,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
