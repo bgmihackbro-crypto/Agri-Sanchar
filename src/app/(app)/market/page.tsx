@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import type { PriceRecord, PricePrediction } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
 import { useNotifications } from "@/context/notification-context";
+import { useTranslation } from "@/hooks/use-translation";
 
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
@@ -47,6 +48,7 @@ export default function MarketPricesPage() {
   const [error, setError] = useState<string | null>(null);
   const { addNotification } = useNotifications();
   const [isAllIndia, setIsAllIndia] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -77,6 +79,7 @@ export default function MarketPricesPage() {
     setIsAllIndia(city === null);
 
     const locationForRequest = city === 'all' ? null : city;
+    const locationName = locationForRequest || t.market.allIndia;
 
     try {
       // 1. Fetch current prices
@@ -91,8 +94,8 @@ export default function MarketPricesPage() {
         currentPrices = response.priceData;
         setPrices(currentPrices); // Show current prices immediately
          addNotification({
-          title: "Market Prices Updated",
-          description: `Live mandi prices have been successfully loaded for ${locationForRequest || 'India'}.`,
+          title: t.market.notification.updated,
+          description: t.market.notification.loaded(locationName),
         });
       } else if (response.answer) {
         setError(response.answer);
@@ -100,7 +103,7 @@ export default function MarketPricesPage() {
         setIsLoading(false);
         return;
       } else {
-        setError(`No market data could be found for ${locationForRequest || 'India'}.`);
+        setError(t.market.error.noData(locationName));
         setIsLoading(false);
         return;
       }
@@ -133,7 +136,7 @@ export default function MarketPricesPage() {
       
     } catch (e) {
       console.error(e);
-      setError(`Failed to fetch market data for ${city || 'India'}.`);
+      setError(t.market.error.fetchFailed(locationName));
       setIsLoading(false);
       setIsPredicting(false);
     }
@@ -161,11 +164,11 @@ export default function MarketPricesPage() {
     if (!suggestion) return null;
     switch (suggestion) {
       case 'Sell':
-        return <Badge variant="destructive">Sell</Badge>;
+        return <Badge variant="destructive">{t.market.suggestion.sell}</Badge>;
       case 'Hold/Buy':
-        return <Badge className="bg-green-600 text-white">Hold/Buy</Badge>;
+        return <Badge className="bg-green-600 text-white">{t.market.suggestion.holdBuy}</Badge>;
       case 'Hold':
-        return <Badge variant="secondary">Hold</Badge>;
+        return <Badge variant="secondary">{t.market.suggestion.hold}</Badge>;
       default:
         return null;
     }
@@ -175,23 +178,23 @@ export default function MarketPricesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Live Market Prices</h1>
+        <h1 className="text-3xl font-bold font-headline">{t.market.title}</h1>
         <p className="text-muted-foreground">
-          Track real-time crop prices with AI-powered suggestions.
+          {t.market.description}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Select Your Location</CardTitle>
+          <CardTitle>{t.market.locationTitle}</CardTitle>
           <CardDescription>
-            Choose your state and city to see local mandi prices, or view prices from all over India.
+            {t.market.locationDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select onValueChange={handleStateChange} value={selectedState}>
             <SelectTrigger>
-              <SelectValue placeholder="Select a State" />
+              <SelectValue placeholder={t.market.statePlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {indianStates.map((state) => (
@@ -207,10 +210,10 @@ export default function MarketPricesPage() {
             disabled={!selectedState || isLoading}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a City" />
+              <SelectValue placeholder={t.market.cityPlaceholder} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All India</SelectItem>
+              <SelectItem value="all">{t.market.allIndia}</SelectItem>
               {availableCities.map((city) => (
                 <SelectItem key={city} value={city}>
                   {city}
@@ -225,17 +228,17 @@ export default function MarketPricesPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
-              <TrendingUp className="h-6 w-6 text-primary" /> Prices for {selectedCity === 'all' || isAllIndia ? 'All India' : selectedCity}
+              <TrendingUp className="h-6 w-6 text-primary" /> {t.market.pricesFor(selectedCity === 'all' || isAllIndia ? t.market.allIndia : selectedCity)}
             </CardTitle>
             <CardDescription>
-              Live prices from mandis (All prices per quintal). AI suggestions are available in single city view.
+              {t.market.pricesDescription}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading && (
               <div className="flex justify-center items-center py-8">
                 <Spinner className="h-8 w-8 text-primary" />
-                <p className="ml-2 text-muted-foreground">Fetching live data...</p>
+                <p className="ml-2 text-muted-foreground">{t.market.fetching}</p>
               </div>
             )}
             {error && (
@@ -247,11 +250,11 @@ export default function MarketPricesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Crop</TableHead>
-                    {isAllIndia && <TableHead>Market</TableHead>}
-                    <TableHead className="text-right">Current Price (₹)</TableHead>
-                    {!isAllIndia && <TableHead className="text-right">Next 2 Weeks (AI Est.)</TableHead>}
-                    {!isAllIndia && <TableHead className="text-right">AI Suggestion</TableHead>}
+                    <TableHead>{t.market.table.crop}</TableHead>
+                    {isAllIndia && <TableHead>{t.market.table.market}</TableHead>}
+                    <TableHead className="text-right">{t.market.table.currentPrice}</TableHead>
+                    {!isAllIndia && <TableHead className="text-right">{t.market.table.next2Weeks}</TableHead>}
+                    {!isAllIndia && <TableHead className="text-right">{t.market.table.aiSuggestion}</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -283,12 +286,12 @@ export default function MarketPricesPage() {
             )}
              {!isLoading && !error && prices?.length === 0 && (
                <div className="text-center py-8 text-muted-foreground">
-                <p>No price data found for {selectedCity === 'all' || isAllIndia ? 'All India' : selectedCity}. Data may be temporarily unavailable.</p>
+                <p>{t.market.error.noPriceData(selectedCity === 'all' || isAllIndia ? t.market.allIndia : selectedCity)}</p>
               </div>
             )}
              {!isLoading && !error && !prices && !isLoading && (
                <div className="text-center py-8 text-muted-foreground">
-                <p>Select a city to see prices.</p>
+                <p>{t.market.error.selectCity}</p>
               </div>
             )}
           </CardContent>
@@ -297,5 +300,3 @@ export default function MarketPricesPage() {
     </div>
   );
 }
-
-    

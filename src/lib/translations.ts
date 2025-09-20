@@ -137,6 +137,40 @@ export const translations = {
                 weekly: "7-Day Forecast",
             }
         },
+        market: {
+            title: "Live Market Prices",
+            description: "Track real-time crop prices with AI-powered suggestions.",
+            locationTitle: "Select Your Location",
+            locationDescription: "Choose your state and city to see local mandi prices, or view prices from all over India.",
+            statePlaceholder: "Select a State",
+            cityPlaceholder: "Select a City",
+            allIndia: "All India",
+            pricesFor: (location: string) => `Prices for ${location}`,
+            pricesDescription: "Live prices from mandis (All prices per quintal). AI suggestions are available in single city view.",
+            fetching: "Fetching live data...",
+            table: {
+                crop: "Crop",
+                market: "Market",
+                currentPrice: "Current Price (₹)",
+                next2Weeks: "Next 2 Weeks (AI Est.)",
+                aiSuggestion: "AI Suggestion",
+            },
+            error: {
+                fetchFailed: (location: string) => `Failed to fetch market data for ${location}.`,
+                noData: (location: string) => `No market data could be found for ${location}.`,
+                noPriceData: (location: string) => `No price data found for ${location}. Data may be temporarily unavailable.`,
+                selectCity: "Select a city to see prices.",
+            },
+            notification: {
+                updated: "Market Prices Updated",
+                loaded: (location: string) => `Live mandi prices have been successfully loaded for ${location}.`,
+            },
+            suggestion: {
+                sell: "Sell",
+                holdBuy: "Hold/Buy",
+                hold: "Hold",
+            },
+        }
     },
     Hindi: {
         languageSelection: {
@@ -247,7 +281,7 @@ export const translations = {
             title: "मौसम पूर्वानुमान",
             subtitle: (city: string, state: string) => `${city}, ${state} के लिए`,
             loading: "लाइव मौसम डेटा प्राप्त किया जा रहा है...",
-aiSuggestion: "एआई सुझाव",
+            aiSuggestion: "एआई सुझाव",
             error: {
                 title: "मौसम डेटा प्राप्त करने में त्रुटि",
                 fetchFailed: "मौसम डेटा प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।",
@@ -275,6 +309,40 @@ aiSuggestion: "एआई सुझाव",
                 weekly: "7-दिन का पूर्वानुमान",
             }
         },
+        market: {
+            title: "लाइव बाजार मूल्य",
+            description: "एआई-संचालित सुझावों के साथ वास्तविक समय में फसल की कीमतों को ट्रैक करें।",
+            locationTitle: "अपना स्थान चुनें",
+            locationDescription: "स्थानीय मंडी कीमतों को देखने के लिए अपना राज्य और शहर चुनें, या पूरे भारत की कीमतें देखें।",
+            statePlaceholder: "एक राज्य चुनें",
+            cityPlaceholder: "एक शहर चुनें",
+            allIndia: "पूरे भारत में",
+            pricesFor: (location: string) => `${location} के लिए कीमतें`,
+            pricesDescription: "मंडियों से लाइव कीमतें (सभी कीमतें प्रति क्विंटल)। एआई सुझाव एकल शहर दृश्य में उपलब्ध हैं।",
+            fetching: "लाइव डेटा प्राप्त किया जा रहा है...",
+            table: {
+                crop: "फसल",
+                market: "बाजार",
+                currentPrice: "वर्तमान मूल्य (₹)",
+                next2Weeks: "अगले 2 सप्ताह (एआई अनुमान)",
+                aiSuggestion: "एआई सुझाव",
+            },
+            error: {
+                fetchFailed: (location: string) => `${location} के लिए बाजार डेटा प्राप्त करने में विफल।`,
+                noData: (location: string) => `${location} के लिए कोई बाजार डेटा नहीं मिला।`,
+                noPriceData: (location: string) => `${location} के लिए कोई मूल्य डेटा नहीं मिला। डेटा अस्थायी रूप से अनुपलब्ध हो सकता है।`,
+                selectCity: "कीमतें देखने के लिए एक शहर चुनें।",
+            },
+            notification: {
+                updated: "बाजार मूल्य अपडेट किए गए",
+                loaded: (location: string) => `${location} के लिए लाइव मंडी कीमतें सफलतापूर्वक लोड हो गई हैं।`,
+            },
+            suggestion: {
+                sell: "बेचें",
+                holdBuy: "रोकें/खरीदें",
+                hold: "रोकें",
+            },
+        }
     }
 };
 
