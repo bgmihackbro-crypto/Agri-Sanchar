@@ -72,5 +72,3 @@ export const SoilLabSchema = z.object({
 });
 export type SoilLab = z.infer<typeof SoilLabSchema>;
     
-
-```
