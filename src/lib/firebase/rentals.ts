@@ -144,7 +144,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-9",
         ownerName: "Sunita Devi",
         ownerAvatar: "https://picsum.photos/seed/marigold-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1601267448652-e3c6395b033d?q=80&w=987&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1601267448652-e3c6395b033d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "16-liter capacity battery sprayer for easy and uniform spraying of pesticides and fertilizers. Comes with multiple nozzles.",
         contact: "+919876543218"
     },
@@ -242,7 +242,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-16",
         ownerName: "Suresh Rao",
         ownerAvatar: "https://picsum.photos/seed/orange-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Heavy-duty 3-disc plough for primary tillage in hard and dry soil. Can break up new ground effectively.",
         contact: "+919876543225"
     },
@@ -284,7 +284,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-19",
         ownerName: "Anil Kumar",
         ownerAvatar: "https://picsum.photos/seed/bhopal-farmer/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1616357497917-a0a41d9d9b8a?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1616357497917-a0a41d9d9b8a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity thresher suitable for wheat, soybean, maize, and pulses. Provides clean grain output.",
         contact: "+919876543228"
     },
@@ -298,7 +298,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-20",
         ownerName: "Rakesh Kumar",
         ownerAvatar: "https://picsum.photos/seed/expert-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1627553229605-22673a31c5dd?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1627553229605-22673a31c5dd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "German-engineered Claas harvester for efficient and loss-free harvesting of multiple crops. Available for booking.",
         contact: "+919876543229"
     }
