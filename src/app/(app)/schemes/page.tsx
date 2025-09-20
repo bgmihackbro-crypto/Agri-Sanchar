@@ -134,7 +134,7 @@ export default function SchemesPage() {
             )}
             
             <div>
-                <h2 className="text-2xl font-bold font-headline mb-4">{t.schemes.allSchemes}</h2>
+                
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {otherSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} />)}
                 </div>
@@ -210,7 +210,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                         <span className="text-muted-foreground">{scheme.benefitsSummary}</span>
                     </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex-col gap-2 items-stretch">
                     <DialogTrigger asChild>
                         <Button variant="outline" className="w-full">
                             <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
@@ -309,3 +309,4 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         </Dialog>
     );
 }
+
