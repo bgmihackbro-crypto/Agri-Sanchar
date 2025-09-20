@@ -30,6 +30,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 
 export default function ProfilePage() {
@@ -37,6 +38,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [profile, setProfile] = useState({
     farmerId: "",
@@ -125,8 +127,8 @@ export default function ProfilePage() {
     if (!profile.state || !profile.city || !profile.name) {
        toast({
         variant: "destructive",
-        title: "Incomplete Information",
-        description: "Please fill out your Name, State, and City before saving.",
+        title: t.profile.toast.incomplete,
+        description: t.profile.toast.incompleteDesc,
       });
       return;
     }
@@ -137,8 +139,8 @@ export default function ProfilePage() {
     localStorage.removeItem('selectedLanguage');
 
     toast({
-      title: "Profile Updated",
-      description: "Your details have been saved successfully.",
+      title: t.profile.toast.updated,
+      description: t.profile.toast.updatedDesc,
       action: <Check className="h-5 w-5 text-green-500" />,
     });
     // Force a re-render in other components using the avatar
@@ -180,10 +182,10 @@ export default function ProfilePage() {
               </div>
               <div>
                 <CardTitle className="text-2xl font-headline">
-                  {isEditing ? "Edit Profile" : profile.name}
+                  {isEditing ? t.profile.editTitle : t.profile.viewTitle(profile.name)}
                 </CardTitle>
                 <CardDescription>
-                  {isEditing ? "Please complete your details to continue." : "Manage your personal and farm details."}
+                  {isEditing ? t.profile.descriptionIncomplete : t.profile.description}
                 </CardDescription>
               </div>
             </div>
@@ -202,7 +204,7 @@ export default function ProfilePage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="space-y-2">
-              <Label htmlFor="farmerId">Farmer ID</Label>
+              <Label htmlFor="farmerId">{t.profile.farmerId}</Label>
                <div className="flex items-center gap-2">
                  <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
                     <Hash className="h-4 w-4" />
@@ -216,17 +218,17 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t.profile.name}</Label>
               <Input
                 id="name"
                 value={profile.name}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
-                placeholder="e.g., Ram Singh"
+                placeholder={t.profile.namePlaceholder}
               />
             </div>
              <div className="space-y-2">
-              <Label htmlFor="dob">Date of Birth</Label>
+              <Label htmlFor="dob">{t.profile.dob}</Label>
                {isEditing ? (
                   <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
@@ -238,7 +240,7 @@ export default function ProfilePage() {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {profile.dob ? format(new Date(profile.dob), "dd-MM-yyyy") : <span>Pick a date</span>}
+                        {profile.dob ? format(new Date(profile.dob), "dd-MM-yyyy") : <span>{t.profile.pickDate}</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -261,33 +263,33 @@ export default function ProfilePage() {
                   id="dob"
                   value={profile.dob ? format(new Date(profile.dob), "dd-MM-yyyy") : ""}
                   readOnly={true}
-                  placeholder="Not set"
+                  placeholder={t.profile.notSet}
                 />
                )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="age">Age</Label>
+              <Label htmlFor="age">{t.profile.age}</Label>
               <Input
                 id="age"
                 type="number"
                 value={profile.age}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
-                placeholder="e.g., 42"
+                placeholder={t.profile.agePlaceholder}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
+              <Label htmlFor="gender">{t.profile.gender}</Label>
               {isEditing ? (
                 <Select onValueChange={handleGenderChange} value={profile.gender}>
                   <SelectTrigger id="gender">
-                    <SelectValue placeholder="Select your gender" />
+                    <SelectValue placeholder={t.profile.genderPlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                    <SelectItem value="male">{t.profile.male}</SelectItem>
+                    <SelectItem value="female">{t.profile.female}</SelectItem>
+                    <SelectItem value="other">{t.profile.other}</SelectItem>
+                    <SelectItem value="prefer-not-to-say">{t.profile.preferNotToSay}</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
@@ -295,12 +297,12 @@ export default function ProfilePage() {
                   id="gender"
                   value={profile.gender}
                   readOnly={true}
-                  placeholder="Not set"
+                  placeholder={t.profile.notSet}
                 />
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t.profile.phone}</Label>
                <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
                   +91
@@ -314,37 +316,37 @@ export default function ProfilePage() {
               </div>
             </div>
              <div className="space-y-2">
-              <Label htmlFor="language">Preferred Language</Label>
+              <Label htmlFor="language">{t.profile.language}</Label>
               {isEditing ? (
                  <Select onValueChange={(v) => handleLanguageChange(v as 'English' | 'Hindi')} value={profile.language}>
                   <SelectTrigger id="language">
-                    <SelectValue placeholder="Select language" />
+                    <SelectValue placeholder={t.profile.languagePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="English">English</SelectItem>
-                    <SelectItem value="Hindi">हिन्दी</SelectItem>
+                    <SelectItem value="English">{t.profile.english}</SelectItem>
+                    <SelectItem value="Hindi">{t.profile.hindi}</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
-                <Input id="language" value={profile.language} readOnly={true} />
+                <Input id="language" value={profile.language === 'Hindi' ? t.profile.hindi : t.profile.english} readOnly={true} />
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="farmSize">Farm Size (in Acres)</Label>
+              <Label htmlFor="farmSize">{t.profile.farmSize}</Label>
               <Input
                 id="farmSize"
                 value={profile.farmSize}
                 readOnly={!isEditing}
                 onChange={handleInputChange}
-                placeholder="e.g., 10"
+                placeholder={t.profile.farmSizePlaceholder}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="state">State</Label>
+              <Label htmlFor="state">{t.profile.state}</Label>
               {isEditing ? (
                 <Select onValueChange={handleStateChange} value={profile.state}>
                   <SelectTrigger id="state">
-                    <SelectValue placeholder="Select your state" />
+                    <SelectValue placeholder={t.profile.statePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {indianStates.map((state) => (
@@ -359,12 +361,12 @@ export default function ProfilePage() {
                   id="state"
                   value={profile.state}
                   readOnly={true}
-                  placeholder="e.g., Punjab"
+                  placeholder={t.profile.stateExample}
                 />
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city">{t.profile.city}</Label>
               {isEditing ? (
                 <Select
                   onValueChange={handleCityChange}
@@ -372,7 +374,7 @@ export default function ProfilePage() {
                   disabled={!profile.state}
                 >
                   <SelectTrigger id="city">
-                    <SelectValue placeholder="Select your city" />
+                    <SelectValue placeholder={t.profile.cityPlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableCities.map((city) => (
@@ -388,12 +390,12 @@ export default function ProfilePage() {
                   value={profile.city}
                   readOnly={!isEditing}
                   onChange={handleInputChange}
-                  placeholder="e.g., Ludhiana"
+                  placeholder={t.profile.cityExample}
                 />
               )}
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="annualIncome">Annual Income (₹)</Label>
+              <Label htmlFor="annualIncome">{t.profile.income}</Label>
                <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
                   ₹
@@ -403,7 +405,7 @@ export default function ProfilePage() {
                   value={profile.annualIncome}
                   readOnly={!isEditing}
                   onChange={handleInputChange}
-                  placeholder="e.g., 5,00,000"
+                  placeholder={t.profile.incomePlaceholder}
                 />
               </div>
             </div>
@@ -416,7 +418,7 @@ export default function ProfilePage() {
               className="w-full bg-primary hover:bg-primary/90"
             >
               <Save className="mr-2 h-4 w-4" />
-              Save Changes
+              {t.profile.save}
             </Button>
           </CardFooter>
         )}
