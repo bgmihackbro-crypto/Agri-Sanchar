@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
-import { Search, PlusCircle, Tractor, Tag, Phone, MapPin, IndianRupee, Clock, Calendar, Upload, X, Star } from "lucide-react";
+import { Search, PlusCircle, Tractor, Tag, Phone, MapPin, IndianRupee, Clock, Calendar, Upload, X, Star, Info } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { createRental, getRentals, type Rental, type NewRentalData } from "@/lib/firebase/rentals";
 import { indianCities } from "@/lib/indian-cities";
@@ -41,7 +41,7 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
     const [price, setPrice] = useState("");
     const [priceUnit, setPriceUnit] = useState<"per_hour" | "per_day">("per_day");
     const [description, setDescription] = useState("");
-    const [contact, setContact] = useState(userProfile.phone);
+    const [contact, setContact] = useState("");
     const [address, setAddress] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -211,6 +211,58 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
     )
 }
 
+const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">
+                    <Info className="mr-2 h-4 w-4" /> {t.rental.viewDetails}
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+                <DialogHeader>
+                    <div className="relative aspect-video mb-4">
+                        <Image src={rental.imageUrl} alt={rental.name} fill className="rounded-md object-cover" />
+                    </div>
+                    <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
+                    <DialogDescription className="flex items-center gap-4 pt-1">
+                        <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
+                        <span className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="h-4 w-4" /> {rental.location}</span>
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4 max-h-[50vh] overflow-y-auto pr-2">
+                    <div className="space-y-1">
+                        <h4 className="font-semibold">{t.rental.addDialog.descriptionLabel}</h4>
+                        <p className="text-sm text-muted-foreground">{rental.description}</p>
+                    </div>
+                     <div className="space-y-1">
+                        <h4 className="font-semibold">{t.rental.addDialog.addressLabel}</h4>
+                        <p className="text-sm text-muted-foreground">{rental.address || t.profile.notSet}</p>
+                    </div>
+                    <div className="space-y-1">
+                        <h4 className="font-semibold">{t.rental.ownerTitle}</h4>
+                        <div className="flex items-center gap-2">
+                            <Image src={rental.ownerAvatar} alt={rental.ownerName} width={32} height={32} className="rounded-full" />
+                            <p className="text-sm font-medium">{rental.ownerName}</p>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter className="sm:justify-between items-center">
+                    <div className="text-2xl font-bold flex items-center gap-1.5">
+                        <IndianRupee className="h-6 w-6"/> {rental.price}
+                        <span className="text-sm font-normal text-muted-foreground">/ {rental.priceUnit === 'per_day' ? t.rental.day : t.rental.hour}</span>
+                    </div>
+                    <Button asChild>
+                        <a href={`tel:${rental.contact}`}>
+                            <Phone className="mr-2 h-4 w-4"/> {t.rental.callOwner}
+                        </a>
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 const RentalCard = ({ rental, t }: { rental: Rental, t: any }) => {
     return (
         <Card className="flex flex-col overflow-hidden">
@@ -236,20 +288,11 @@ const RentalCard = ({ rental, t }: { rental: Rental, t: any }) => {
                 </div>
             </CardContent>
             <CardFooter className="p-4 pt-0 flex-col items-start gap-3">
-                <div className="text-2xl font-bold flex items-center gap-1.5">
+                 <div className="text-2xl font-bold flex items-center gap-1.5">
                     <IndianRupee className="h-6 w-6"/> {rental.price}
                     <span className="text-sm font-normal text-muted-foreground">/ {rental.priceUnit === 'per_day' ? t.rental.day : t.rental.hour}</span>
                 </div>
-                <div className="w-full flex items-center gap-2">
-                     <Button className="w-full" asChild>
-                        <a href={`tel:${rental.contact}`}>
-                            <Phone className="mr-2 h-4 w-4"/> {t.rental.callOwner}
-                        </a>
-                     </Button>
-                      <Button variant="outline" className="w-full">
-                        {t.rental.bookNow}
-                      </Button>
-                </div>
+                <RentalDetailDialog rental={rental} t={t} />
             </CardFooter>
         </Card>
     )
@@ -279,6 +322,9 @@ export default function RentalEquipmentPage() {
         if (profile) {
             const parsed = JSON.parse(profile) as UserProfile;
             setUserProfile(parsed);
+             if (parsed.city) {
+                setFilterCity(parsed.city);
+            }
         }
         fetchRentals();
     }, []);

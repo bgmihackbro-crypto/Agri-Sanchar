@@ -568,8 +568,10 @@ export const translations = {
             perHour: "hour",
             day: "day",
             hour: "hour",
+            ownerTitle: "Owner",
             callOwner: "Call Owner",
             bookNow: "Book Now",
+            viewDetails: "View Details",
             addDialog: {
                 button: "List Your Equipment",
                 title: "List Your Equipment for Rent",
@@ -1165,8 +1167,10 @@ export const translations = {
             perHour: "घंटा",
             day: "दिन",
             hour: "घंटा",
+            ownerTitle: "मालिक",
             callOwner: "मालिक को कॉल करें",
             bookNow: "अभी बुक करें",
+            viewDetails: "विवरण देखें",
             addDialog: {
                 button: "अपना उपकरण सूचीबद्ध करें",
                 title: "किराए के लिए अपना उपकरण सूचीबद्ध करें",
