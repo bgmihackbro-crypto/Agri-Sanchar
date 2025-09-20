@@ -47,7 +47,7 @@ export const translations = {
             haveAccount: "Already have an account?",
             login: "Login",
             otpSentTitle: "OTP Sent (Simulated)",
-            otpSentDesc: "Enter 123456 to sign up.",
+            otpSentDesc: "Sign up by entering 123456.",
             invalidOtpTitle: "Invalid OTP",
             invalidOtpDesc: "The OTP you entered is incorrect.",
             welcomeTitle: (name: string) => `Welcome, ${name}!`,
@@ -104,6 +104,38 @@ export const translations = {
             aiError: "I can’t provide that information at the moment.",
             aiProcessError: "Sorry, I could not process your request.",
             aiResponseError: "Sorry, I could not generate a response.",
+        },
+        weather: {
+            title: "Weather Forecast",
+            subtitle: (city: string, state: string) => `For ${city}, ${state}`,
+            loading: "Fetching live weather data...",
+            aiSuggestion: "AI Suggestion",
+            error: {
+                title: "Error Fetching Weather",
+                fetchFailed: "Failed to fetch weather data. Please try again later.",
+                apiKeyTitle: "Weather Service Not Configured",
+                apiKeyDesc1: "The OpenWeatherMap API key is missing. To see the weather forecast, please add your API key to the .env file.",
+            },
+            notification: {
+                unavailable: "Weather Unavailable",
+                alert: "Weather Alert",
+                loaded: (city: string, condition: string) => `Forecast loaded for ${city}. Current condition: ${condition}.`,
+            },
+            current: {
+                title: "Current Conditions",
+                realFeel: "Real Feel",
+                humidity: "Humidity",
+                wind: "Wind",
+                pressure: "Pressure",
+            },
+            tabs: {
+                today: "Today",
+                weekly: "7-Day",
+            },
+            forecast: {
+                today: "Today's Forecast",
+                weekly: "7-Day Forecast",
+            }
         },
     },
     Hindi: {
@@ -166,7 +198,7 @@ export const translations = {
             language: "भाषा",
             logout: "लॉग आउट",
             languageUpdated: "भाषा अपडेट की गई",
-            languageUpdatedDesc: (lang: string) => `भाषा ${lang} पर सेट कर दी गई है।`,
+            languageUpdatedDesc: (lang: string) => `भाषा ${lang === 'English' ? 'English' : 'हिन्दी'} पर सेट कर दी गई है।`,
         },
         sidebar: {
             dashboard: "डैशबोर्ड",
@@ -210,6 +242,38 @@ export const translations = {
             aiError: "मैं इस समय वह जानकारी प्रदान नहीं कर सकता।",
             aiProcessError: "क्षमा करें, मैं आपके अनुरोध पर कार्रवाई नहीं कर सका।",
             aiResponseError: "क्षमा करें, मैं प्रतिक्रिया उत्पन्न नहीं कर सका।",
+        },
+        weather: {
+            title: "मौसम पूर्वानुमान",
+            subtitle: (city: string, state: string) => `${city}, ${state} के लिए`,
+            loading: "लाइव मौसम डेटा प्राप्त किया जा रहा है...",
+            aiSuggestion: "एआई सुझाव",
+            error: {
+                title: "मौसम डेटा प्राप्त करने में त्रुटि",
+                fetchFailed: "मौसम डेटा प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।",
+                apiKeyTitle: "मौसम सेवा कॉन्फ़िगर नहीं है",
+                apiKeyDesc1: "OpenWeatherMap एपीआई कुंजी गायब है। मौसम पूर्वानुमान देखने के लिए, कृपया अपनी एपीआई कुंजी को .env फ़ाइल में जोड़ें।",
+            },
+            notification: {
+                unavailable: "मौसम अनुपलब्ध",
+                alert: "मौसम चेतावनी",
+                loaded: (city: string, condition: string) => `${city} के लिए पूर्वानुमान लोड हो गया। वर्तमान स्थिति: ${condition}।`,
+            },
+            current: {
+                title: "वर्तमान स्थितियाँ",
+                realFeel: "वास्तविक महसूस",
+                humidity: "नमी",
+                wind: "हवा",
+                pressure: "दबाव",
+            },
+            tabs: {
+                today: "आज",
+                weekly: "7-दिन",
+            },
+            forecast: {
+                today: "आज का पूर्वानुमान",
+                weekly: "7-दिन का पूर्वानुमान",
+            }
         },
     }
 };

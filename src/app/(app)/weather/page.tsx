@@ -10,6 +10,7 @@ import { getWeatherForecast } from "@/ai/flows/get-weather-forecast";
 import { type WeatherForecastOutput } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTranslation } from "@/hooks/use-translation";
 
 
 const ICONS: { [key: string]: React.ElementType } = {
@@ -43,6 +44,7 @@ export default function WeatherPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { addNotification } = useNotifications();
+    const { t } = useTranslation();
 
 
     useEffect(() => {
@@ -69,21 +71,21 @@ export default function WeatherPage() {
                 if (forecast.error) {
                     setError(forecast.error);
                     addNotification({
-                        title: "Weather Unavailable",
+                        title: t.weather.notification.unavailable,
                         description: forecast.error,
                     });
                 } else {
                     setWeatherData(forecast);
                     addNotification({
-                        title: "Weather Alert",
-                        description: `Forecast loaded for ${userCity}. Current condition: ${forecast.current?.condition || "N/A"}.`
+                        title: t.weather.notification.alert,
+                        description: t.weather.notification.loaded(userCity, forecast.current?.condition || "N/A")
                     });
                 }
             } catch (e) {
-                const errorMessage = "Failed to fetch weather data. Please try again later.";
+                const errorMessage = t.weather.error.fetchFailed;
                 setError(errorMessage);
                  addNotification({
-                    title: "Weather Error",
+                    title: t.weather.error.title,
                     description: errorMessage
                 });
                 console.error(e);
@@ -92,20 +94,20 @@ export default function WeatherPage() {
         };
 
         fetchWeatherData();
-    }, [addNotification]);
+    }, [addNotification, t]);
 
 
   return (
     <div className="space-y-6 animate-fade-in-up">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Weather Forecast</h1>
-        <p className="text-muted-foreground">For {city}, {state}</p>
+        <h1 className="text-3xl font-bold font-headline">{t.weather.title}</h1>
+        <p className="text-muted-foreground">{t.weather.subtitle(city, state)}</p>
       </div>
 
        {isLoading && (
             <div className="flex justify-center items-center py-16">
                 <Spinner className="h-10 w-10 text-primary" />
-                <p className="ml-3 text-muted-foreground">Fetching live weather data...</p>
+                <p className="ml-3 text-muted-foreground">{t.weather.loading}</p>
             </div>
         )}
 
@@ -113,15 +115,15 @@ export default function WeatherPage() {
              error.includes("API key") ? (
                 <Alert variant="destructive">
                     <KeyRound className="h-4 w-4" />
-                    <AlertTitle>Weather Service Not Configured</AlertTitle>
+                    <AlertTitle>{t.weather.error.apiKeyTitle}</AlertTitle>
                     <AlertDescription>
-                        The OpenWeatherMap API key is missing. To see the weather forecast, please add your API key to the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">.env</code> file.
+                        {t.weather.error.apiKeyDesc1}
                         <pre className="mt-2 rounded-md bg-muted p-2 text-xs">OPENWEATHER_API_KEY=YOUR_API_KEY_HERE</pre>
                     </AlertDescription>
                 </Alert>
              ) : (
                 <Alert variant="destructive">
-                    <AlertTitle>Error Fetching Weather</AlertTitle>
+                    <AlertTitle>{t.weather.error.title}</AlertTitle>
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
              )
@@ -131,26 +133,26 @@ export default function WeatherPage() {
           <>
           <Card>
             <CardHeader>
-                <CardTitle>Current Conditions</CardTitle>
+                <CardTitle>{t.weather.current.title}</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-primary/5 border gap-2">
-                    <p className="font-semibold text-primary/80">Real Feel</p>
+                    <p className="font-semibold text-primary/80">{t.weather.current.realFeel}</p>
                     <Thermometer className="w-10 h-10 text-primary"/>
                     <p className="text-2xl font-bold">{weatherData.current?.realFeel}</p>
                 </div>
                 <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-primary/5 border gap-2">
-                    <p className="font-semibold text-primary/80">Humidity</p>
+                    <p className="font-semibold text-primary/80">{t.weather.current.humidity}</p>
                     <Droplets className="w-10 h-10 text-primary"/>
                     <p className="text-2xl font-bold">{weatherData.current?.humidity}</p>
                 </div>
                  <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-primary/5 border gap-2">
-                    <p className="font-semibold text-primary/80">Wind</p>
+                    <p className="font-semibold text-primary/80">{t.weather.current.wind}</p>
                     <Wind className="w-10 h-10 text-primary"/>
                     <p className="text-2xl font-bold">{weatherData.current?.windSpeed}</p>
                 </div>
                  <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-primary/5 border gap-2">
-                    <p className="font-semibold text-primary/80">Pressure</p>
+                    <p className="font-semibold text-primary/80">{t.weather.current.pressure}</p>
                     <Gauge className="w-10 h-10 text-primary"/>
                     <p className="text-lg font-bold">{weatherData.current?.pressure}</p>
                 </div>
@@ -161,7 +163,7 @@ export default function WeatherPage() {
             <Card className="bg-green-50 border-green-200">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 font-headline text-green-800">
-                        <Bot className="h-6 w-6" /> AI Suggestion
+                        <Bot className="h-6 w-6" /> {t.weather.aiSuggestion}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -173,14 +175,14 @@ export default function WeatherPage() {
 
             <Tabs defaultValue="weekly" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 max-w-sm">
-                <TabsTrigger value="daily">Today</TabsTrigger>
-                <TabsTrigger value="weekly">7-Day</TabsTrigger>
+                <TabsTrigger value="daily">{t.weather.tabs.today}</TabsTrigger>
+                <TabsTrigger value="weekly">{t.weather.tabs.weekly}</TabsTrigger>
                 </TabsList>
                 <TabsContent value="daily">
                 <Card>
                     <CardHeader>
                     <CardTitle className="font-headline flex items-center justify-between">
-                      <span>Today's Forecast</span>
+                      <span>{t.weather.forecast.today}</span>
                       {weatherData.current?.temp && (
                         <span className="text-2xl font-bold text-primary">{weatherData.current.temp}</span>
                       )}
@@ -209,7 +211,7 @@ export default function WeatherPage() {
                 <TabsContent value="weekly">
                 <Card>
                     <CardHeader>
-                    <CardTitle className="font-headline">7-Day Forecast</CardTitle>
+                    <CardTitle className="font-headline">{t.weather.forecast.weekly}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                     {weatherData.weekly?.map((forecast) => {
@@ -240,5 +242,3 @@ export default function WeatherPage() {
     </div>
   );
 }
-
-    
