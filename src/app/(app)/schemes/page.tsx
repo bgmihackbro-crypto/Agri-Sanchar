@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useTranslation } from '@/hooks/use-translation';
 import { schemes, type Scheme } from '@/lib/schemes';
-import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator } from 'lucide-react';
+import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator, ListChecks, CaseUpper, StepForward } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 type UserProfile = {
   farmSize: string;
@@ -209,53 +210,62 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                         <span className="text-muted-foreground">{scheme.benefitsSummary}</span>
                     </div>
                 </CardContent>
-                <CardFooter className="flex-col items-start gap-3">
-                    <div className="flex w-full gap-2">
-                        <DialogTrigger asChild>
-                            <Button variant="outline" className="w-full">
-                                <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
-                            </Button>
-                        </DialogTrigger>
-                    </div>
+                <CardFooter>
+                    <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                            <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
+                        </Button>
+                    </DialogTrigger>
                 </CardFooter>
             </Card>
 
-            <DialogContent className="sm:max-w-sm p-0">
-                <ScrollArea className="max-h-[90vh]">
+            <DialogContent className="sm:max-w-md p-0">
+                <ScrollArea className="max-h-[80vh]">
                     <div className="p-6 space-y-4">
-                        <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
-                        <DialogDescription>{scheme.description}</DialogDescription>
-                        <div className="flex justify-between items-center pt-2">
-                            {getStatusBadge(scheme.status, t)}
-                        </div>
-                    
-                        <div className="space-y-6 py-4">
-                            <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold text-lg">{t.schemes.benefits}</h3>
-                                    <ul className="space-y-3">
-                                    {scheme.benefits.map((benefit, i) => (
-                                            <li key={i} className="flex items-start gap-3">
-                                                <BenefitIcon benefit={benefit} t={t} />
-                                                <span className="text-sm text-muted-foreground">{benefit}</span>
-                                            </li>
-                                    ))}
+                        <DialogHeader className="text-left">
+                            <DialogTitle className="text-2xl font-headline mb-1">{scheme.name}</DialogTitle>
+                            <DialogDescription>{scheme.description}</DialogDescription>
+                        </DialogHeader>
+                        
+                        {getStatusBadge(scheme.status, t)}
+
+                        <Accordion type="multiple" defaultValue={['benefits', 'eligibility']} className="w-full space-y-1">
+                            <AccordionItem value="benefits" className="border-b-0">
+                                <AccordionTrigger className="text-lg font-semibold bg-muted/50 px-4 rounded-md hover:no-underline">
+                                    <div className="flex items-center gap-2"><HandCoins className="h-5 w-5 text-primary"/>{t.schemes.benefits}</div>
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-2 px-2">
+                                     <ul className="space-y-3 p-2">
+                                        {scheme.benefits.map((benefit, i) => (
+                                                <li key={i} className="flex items-start gap-3">
+                                                    <BenefitIcon benefit={benefit} t={t} />
+                                                    <span className="text-sm text-muted-foreground">{benefit}</span>
+                                                </li>
+                                        ))}
                                     </ul>
-                                </div>
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold text-lg">{t.schemes.eligibility}</h3>
-                                    <ul className="space-y-3">
+                                </AccordionContent>
+                            </AccordionItem>
+                             <AccordionItem value="eligibility" className="border-b-0">
+                                <AccordionTrigger className="text-lg font-semibold bg-muted/50 px-4 rounded-md hover:no-underline">
+                                    <div className="flex items-center gap-2"><UserCheck className="h-5 w-5 text-primary"/>{t.schemes.eligibility}</div>
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-2 px-2">
+                                    <ul className="space-y-3 p-2">
                                         {scheme.eligibility.criteria.map((item, i) => (
                                             <li key={i} className="flex items-start gap-3">
-                                                <UserCheck className="h-5 w-5 text-blue-600" />
+                                                <CaseUpper className="h-5 w-5 text-blue-600 flex-shrink-0" />
                                                 <span className="text-sm text-muted-foreground">{item}</span>
                                             </li>
                                         ))}
                                     </ul>
-                                </div>
-                                <div className="space-y-4 md:col-span-2">
-                                    <h3 className="font-semibold text-lg">{t.schemes.documents}</h3>
-                                    <div className="flex flex-wrap gap-2">
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="documents" className="border-b-0">
+                                <AccordionTrigger className="text-lg font-semibold bg-muted/50 px-4 rounded-md hover:no-underline">
+                                    <div className="flex items-center gap-2"><ListChecks className="h-5 w-5 text-primary"/>{t.schemes.documents}</div>
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-2 px-2">
+                                    <div className="flex flex-wrap gap-2 p-2">
                                         {scheme.documents.map((doc, i) => (
                                             <Badge key={i} variant="secondary" className="flex items-center gap-2">
                                                 <FileText className="h-4 w-4" />
@@ -263,10 +273,14 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                             </Badge>
                                         ))}
                                     </div>
-                                </div>
-                                <div className="space-y-4 md:col-span-2">
-                                    <h3 className="font-semibold text-lg">{t.schemes.applicationProcess}</h3>
-                                    <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6">                  
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="process" className="border-b-0">
+                                <AccordionTrigger className="text-lg font-semibold bg-muted/50 px-4 rounded-md hover:no-underline">
+                                    <div className="flex items-center gap-2"><StepForward className="h-5 w-5 text-primary"/>{t.schemes.applicationProcess}</div>
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-2 px-2">
+                                     <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6 mt-2 ml-2">                  
                                         {scheme.applicationProcess.map((step, i) => (
                                             <li key={i} className="ml-6">
                                                 <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
@@ -277,11 +291,12 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                             </li>
                                         ))}
                                     </ol>
-                                </div>
-                            </div>
-                        </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
                     </div>
-                    <div className="flex justify-end pt-4 border-t p-6">
+                    <div className="flex justify-end pt-4 border-t p-6 bg-muted/30">
                         <Button asChild>
                             <Link href={scheme.link} target="_blank" rel="noopener noreferrer">
                                 <ExternalLink className="mr-2 h-4 w-4" />
