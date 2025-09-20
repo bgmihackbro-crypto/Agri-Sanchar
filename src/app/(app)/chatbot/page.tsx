@@ -37,6 +37,63 @@ type UserProfile = {
   language?: 'English' | 'Hindi' | 'Hinglish';
 }
 
+const translations = {
+  'English': {
+    title: "AI Expert Chat",
+    thinking: "Thinking...",
+    placeholder: "Ask about crops, prices, or upload a photo...",
+    listening: "Listening...",
+    uploadImage: "Upload Image",
+    recordVoice: "Record voice message",
+    send: "Send",
+    speechError: "Speech Error",
+    speechErrorDesc: "Could not play the voice message.",
+    voiceError: "Voice Error",
+    voiceErrorDesc: "Could not start voice recognition: ",
+    notSupported: "Not Supported",
+    notSupportedDesc: "Speech recognition is not supported in your browser.",
+    aiError: "I can’t provide that information at the moment.",
+    aiProcessError: "Sorry, I could not process your request.",
+    aiResponseError: "Sorry, I could not generate a response.",
+  },
+  'Hindi': {
+    title: "एआई विशेषज्ञ चैट",
+    thinking: "सोच रहा है...",
+    placeholder: "फसलों, कीमतों के बारे में पूछें, या एक फोटो अपलोड करें...",
+    listening: "सुन रहा है...",
+    uploadImage: "छवि अपलोड करें",
+    recordVoice: "वॉयस संदेश रिकॉर्ड करें",
+    send: "भेजें",
+    speechError: "वाणी त्रुटि",
+    speechErrorDesc: "वॉइस संदेश नहीं चला सका।",
+    voiceError: "आवाज त्रुटि",
+    voiceErrorDesc: "आवाज पहचान शुरू नहीं हो सकी: ",
+    notSupported: "समर्थित नहीं",
+    notSupportedDesc: "आपके ब्राउज़र में आवाज पहचान समर्थित नहीं है।",
+    aiError: "मैं इस समय वह जानकारी प्रदान नहीं कर सकता।",
+    aiProcessError: "क्षमा करें, मैं आपके अनुरोध पर कार्रवाई نہیں कर सका।",
+    aiResponseError: "क्षमा करें, मैं प्रतिक्रिया उत्पन्न नहीं कर सका।",
+  },
+  'Hinglish': {
+    title: "AI Expert Chat",
+    thinking: "Soch raha hai...",
+    placeholder: "Fasalon, keematon ke baare mein poochein, ya ek photo upload karein...",
+    listening: "Sunn raha hai...",
+    uploadImage: "Image upload karein",
+    recordVoice: "Voice message record karein",
+    send: "Bhejein",
+    speechError: "Speech Error",
+    speechErrorDesc: "Voice message nahi chala saka.",
+    voiceError: "Voice Error",
+    voiceErrorDesc: "Voice recognition shuru nahi ho saki: ",
+    notSupported: "Not Supported",
+    notSupportedDesc: "Aapke browser mein speech recognition supported nahi hai.",
+    aiError: "Main is samay yeh jaankari nahi de sakta.",
+    aiProcessError: "Sorry, main aapke request ko process nahi kar saka.",
+aiResponseError: "Sorry, main response generate nahi kar saka.",
+  }
+}
+
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -52,6 +109,8 @@ export default function ChatbotPage() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null); // For SpeechRecognition instance
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const t = translations[userProfile?.language || 'English'];
 
 
   useEffect(() => {
@@ -139,7 +198,7 @@ export default function ChatbotPage() {
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
         console.error("Speech synthesis error", e);
-        toast({ variant: 'destructive', title: "Speech Error", description: "Could not play the voice message." });
+        toast({ variant: 'destructive', title: t.speechError, description: t.speechErrorDesc });
         setNowPlayingMessageId(null);
     }
     utteranceRef.current = utterance;
@@ -185,7 +244,7 @@ export default function ChatbotPage() {
     
     setIsLoading(true);
 
-    let aiResponseContent = "Sorry, I could not process your request.";
+    let aiResponseContent = t.aiProcessError;
     try {
       let photoDataUri: string | undefined = undefined;
       if (currentImageFile) {
@@ -198,10 +257,10 @@ export default function ChatbotPage() {
         city: userProfile?.city,
         language: userProfile?.language || 'English',
       });
-      aiResponseContent = response.answer ?? 'Sorry, I could not generate a response.';
+      aiResponseContent = response.answer ?? t.aiResponseError;
     } catch (error) {
       console.error("AI Error:", error);
-      aiResponseContent = "I can’t provide that information at the moment.";
+      aiResponseContent = t.aiError;
     }
 
     const assistantMessage: Message = {
@@ -220,7 +279,7 @@ export default function ChatbotPage() {
   const startRecording = () => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-          toast({ variant: 'destructive', title: 'Not Supported', description: "Speech recognition is not supported in your browser." });
+          toast({ variant: 'destructive', title: t.notSupported, description: t.notSupportedDesc });
           return;
       }
       
@@ -247,7 +306,7 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onerror = (event: any) => {
           console.error("Speech recognition error", event.error);
-          toast({ variant: 'destructive', title: 'Voice Error', description: `Could not start voice recognition: ${event.error}`});
+          toast({ variant: 'destructive', title: t.voiceError, description: `${t.voiceErrorDesc}${event.error}`});
           setIsRecording(false);
       };
 
@@ -281,7 +340,7 @@ export default function ChatbotPage() {
       <Card className="h-[calc(100vh-10rem)] flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-headline">
-            <Bot className="h-6 w-6 text-primary" /> AI Expert Chat
+            <Bot className="h-6 w-6 text-primary" /> {t.title}
           </CardTitle>
         </CardHeader>
         <CardContent 
@@ -359,7 +418,7 @@ export default function ChatbotPage() {
                   </Avatar>
                   <div className="max-w-xs p-3 rounded-lg bg-muted flex items-center gap-2 shadow-sm">
                     <Spinner className="h-4 w-4 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Thinking...</span>
+                    <span className="text-sm text-muted-foreground">{t.thinking}</span>
                   </div>
                 </div>
               )}
@@ -398,7 +457,7 @@ export default function ChatbotPage() {
               disabled={isLoading}
             >
               <ImageIcon className="h-4 w-4" />
-              <span className="sr-only">Upload Image</span>
+              <span className="sr-only">{t.uploadImage}</span>
             </Button>
             <Input
               type="file"
@@ -410,16 +469,16 @@ export default function ChatbotPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={isRecording ? "Listening..." : "Ask about crops, prices, or upload a photo..."}
+              placeholder={isRecording ? t.listening : t.placeholder}
               disabled={isLoading}
             />
              <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
                 <Mic className="h-4 w-4" />
-                <span className="sr-only">Record voice message</span>
+                <span className="sr-only">{t.recordVoice}</span>
             </Button>
             <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
-              <span className="sr-only">Send</span>
+              <span className="sr-only">{t.send}</span>
             </Button>
           </form>
         </CardFooter>
@@ -427,11 +486,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
 
     
