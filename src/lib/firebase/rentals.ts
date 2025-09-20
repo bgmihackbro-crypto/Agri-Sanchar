@@ -144,7 +144,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-9",
         ownerName: "Sunita Devi",
         ownerAvatar: "https://picsum.photos/seed/marigold-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1601267448652-e3c6395b033d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1601267448652-e3c6395b033d?q=80&w=987&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "16-liter capacity battery sprayer for easy and uniform spraying of pesticides and fertilizers. Comes with multiple nozzles.",
         contact: "+919876543218"
     },
@@ -256,7 +256,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-17",
         ownerName: "Dr. Vijay Singh",
         ownerAvatar: "https://picsum.photos/seed/expert-4/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1627923769935-373809623c2c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1695426189912-4214f4943f77?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Precision land leveling for water conservation and improved crop yield. Comes with a trained operator.",
         contact: "+919876543226"
     },
@@ -270,7 +270,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-18",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1543051932-6ef9fecfbc80?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1595184221192-3e3c54c038ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
         contact: "+919876543227"
     },
@@ -284,7 +284,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-19",
         ownerName: "Anil Kumar",
         ownerAvatar: "https://picsum.photos/seed/bhopal-farmer/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1616357497917-a0a41d9d9b8a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity thresher suitable for wheat, soybean, maize, and pulses. Provides clean grain output.",
         contact: "+919876543228"
     },
@@ -298,7 +298,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-20",
         ownerName: "Rakesh Kumar",
         ownerAvatar: "https://picsum.photos/seed/expert-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1529159942819-334f07de4fe5?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1560933939-142c69993297?q=80&w=1068&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "German-engineered Claas harvester for efficient and loss-free harvesting of multiple crops. Available for booking.",
         contact: "+919876543229"
     }
