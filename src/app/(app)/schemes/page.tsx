@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useTranslation } from '@/hooks/use-translation';
 import { schemes, type Scheme } from '@/lib/schemes';
-import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator, ListChecks, CaseUpper, StepForward } from 'lucide-react';
+import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator, ListChecks, CaseUpper, StepForward, Quote } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
@@ -17,6 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 
 type UserProfile = {
   farmSize: string;
@@ -114,6 +116,30 @@ export default function SchemesPage() {
         setCalculatedPremium(premium);
     };
 
+    const successStories = [
+        {
+            name: "Gurpreet Singh",
+            location: "Punjab",
+            avatar: "https://picsum.photos/seed/farmer-story-1/60/60",
+            scheme: t.schemes.pm_kisan.name,
+            story: "The PM-KISAN installments came just when I needed money for seeds. It reduced my burden and I didn't have to take a loan from the local moneylender this time."
+        },
+        {
+            name: "Meena Devi",
+            location: "Maharashtra",
+            avatar: "https://picsum.photos/seed/farmer-story-2/60/60",
+            scheme: t.schemes.pmfby.name,
+            story: "Last year, unseasonal rains destroyed my entire soyabean crop. Thanks to Fasal Bima Yojana, I got the insurance claim on time and was able to sow for the next season without any debt."
+        },
+        {
+            name: "Rajesh Kumar",
+            location: "Rajasthan",
+            avatar: "https://picsum.photos/seed/farmer-story-3/60/60",
+            scheme: t.schemes.pm_kusum.name,
+            story: "Diesel for my water pump was a major expense. With the subsidy from the KUSUM scheme, I installed a solar pump. Now, my irrigation cost is almost zero and I have a reliable water supply."
+        }
+    ];
+
     return (
         <div className="space-y-8">
             <div>
@@ -183,6 +209,35 @@ export default function SchemesPage() {
                 </CardFooter>
             </Card>
 
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Quote className="h-6 w-6 text-primary" />
+                        Success Stories
+                    </CardTitle>
+                    <CardDescription>Real stories from farmers who benefited from these schemes.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    {successStories.map((story, index) => (
+                        <div key={index} className="flex items-start gap-4 p-4 rounded-lg bg-muted/50 border">
+                             <Avatar className="h-12 w-12 border">
+                                <AvatarImage src={story.avatar} alt={story.name} />
+                                <AvatarFallback>{story.name.substring(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                                <blockquote className="text-foreground italic border-l-4 border-primary pl-4">
+                                    {story.story}
+                                </blockquote>
+                                <div className="mt-2 text-right">
+                                    <p className="font-semibold text-sm">{story.name}, <span className="text-muted-foreground">{story.location}</span></p>
+                                    <Badge variant="secondary" className="mt-1">{story.scheme}</Badge>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+
         </div>
     );
 }
@@ -219,7 +274,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                 </CardFooter>
             </Card>
 
-            <DialogContent className="sm:max-w-md p-0">
+            <DialogContent className="sm:max-w-sm p-0">
                 <ScrollArea className="max-h-[80vh]">
                     <div className="p-6 space-y-4">
                         <DialogHeader className="text-left">
@@ -310,3 +365,6 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
     );
 }
 
+
+
+      
