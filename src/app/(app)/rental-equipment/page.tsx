@@ -267,7 +267,7 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
 const RentalCard = ({ rental, t }: { rental: Rental, t: any }) => {
     return (
         <Card className="flex flex-col overflow-hidden">
-             <div className="relative aspect-video">
+            <div className="relative aspect-video">
                 <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
             </div>
             <CardContent className="p-4 flex-grow">
