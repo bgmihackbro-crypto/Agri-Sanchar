@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,11 +21,64 @@ import { v4 as uuidv4 } from 'uuid';
 
 const SIMULATED_OTP = "123456";
 
-const addWelcomeNotification = (name: string) => {
+const translations = {
+    'English': {
+        signUp: "Sign Up",
+        createAccount: "Create your account to get started (Simulated).",
+        enterOtp: "Enter the simulated OTP to create your account.",
+        nameLabel: "Full Name",
+        namePlaceholder: "Ram Singh",
+        phoneLabel: "Phone Number",
+        phonePlaceholder: "9876543210",
+        sendOtp: "Send OTP",
+        sendingOtp: "Sending OTP...",
+        otpLabel: "One-Time Password",
+        otpPlaceholder: "123456",
+        verifyAndCreate: "Verify OTP & Create Account",
+        verifying: "Verifying...",
+        haveAccount: "Already have an account?",
+        login: "Login",
+        otpSentTitle: "OTP Sent (Simulated)",
+        otpSentDesc: "Enter 123456 to sign up.",
+        invalidOtpTitle: "Invalid OTP",
+        invalidOtpDesc: "The OTP you entered is incorrect.",
+        welcomeTitle: "Welcome to Agri-Sanchar!",
+        welcomeDesc: "Your account has been created. Please complete your profile.",
+        signupFailedTitle: "Signup Failed",
+        signupFailedDesc: "There was a problem creating your profile."
+    },
+    'Hindi': {
+        signUp: "साइन अप करें",
+        createAccount: "शुरू करने के लिए अपना खाता बनाएं (नकली)।",
+        enterOtp: "अपना खाता बनाने के लिए नकली ओटीपी दर्ज करें।",
+        nameLabel: "पूरा नाम",
+        namePlaceholder: "राम सिंह",
+        phoneLabel: "फ़ोन नंबर",
+        phonePlaceholder: "9876543210",
+        sendOtp: "ओटीपी भेजें",
+        sendingOtp: "ओटीपी भेजा जा रहा है...",
+        otpLabel: "वन-टाइम पासवर्ड",
+        otpPlaceholder: "123456",
+        verifyAndCreate: "ओटीपी सत्यापित करें और खाता बनाएं",
+        verifying: "सत्यापित हो रहा है...",
+        haveAccount: "पहले से एक खाता मौजूद है?",
+        login: "लॉग इन करें",
+        otpSentTitle: "ओटीपी भेजा गया (नकली)",
+        otpSentDesc: "साइन अप करने के लिए 123456 दर्ज करें।",
+        invalidOtpTitle: "अमान्य ओटीपी",
+        invalidOtpDesc: "आपके द्वारा दर्ज किया गया ओटीपी गलत है।",
+        welcomeTitle: "कृषि-संचार में आपका स्वागत है!",
+        welcomeDesc: "आपका खाता बन गया है। कृपया अपनी प्रोफ़ाइल पूरी करें।",
+        signupFailedTitle: "साइनअप विफल",
+        signupFailedDesc: "आपकी प्रोफ़ाइल बनाने में कोई समस्या हुई।"
+    }
+};
+
+const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     const newNotification = {
         id: Date.now().toString(),
-        title: `Welcome, ${name}!`,
-        description: "Your Agri-Sanchar account has been created successfully.",
+        title: lang === 'Hindi' ? `स्वागत है, ${name}!` : `Welcome, ${name}!`,
+        description: lang === 'Hindi' ? "आपका कृषि-संचार खाता सफलतापूर्वक बना दिया गया है।" : "Your Agri-Sanchar account has been created successfully.",
         read: false,
         timestamp: Date.now(),
     };
@@ -46,6 +99,16 @@ export default function SignupPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [language, setLanguage] = useState<'English' | 'Hindi'>('English');
+
+  useEffect(() => {
+    const lang = localStorage.getItem('selectedLanguage');
+    if (lang === 'Hindi') {
+        setLanguage('Hindi');
+    }
+  }, []);
+
+  const t = translations[language];
 
   const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,8 +120,8 @@ export default function SignupPage() {
       setLoading(false);
       setOtpSent(true);
       toast({
-        title: "OTP Sent (Simulated)",
-        description: `Enter ${SIMULATED_OTP} to sign up.`,
+        title: t.otpSentTitle,
+        description: t.otpSentDesc,
       });
     }, 1000);
   };
@@ -70,18 +133,16 @@ export default function SignupPage() {
     if (otp !== SIMULATED_OTP) {
       toast({
         variant: "destructive",
-        title: "Invalid OTP",
-        description: "The OTP you entered is incorrect.",
+        title: t.invalidOtpTitle,
+        description: t.invalidOtpDesc,
       });
       return;
     }
 
     setLoading(true);
 
-    // Simulate successful verification and signup
     setTimeout(() => {
       try {
-        // Generate a unique farmer ID
         const farmerId = `AS-${uuidv4()}`;
 
         const userProfile = {
@@ -93,14 +154,15 @@ export default function SignupPage() {
           city: "",
           state: "",
           annualIncome: "",
+          language: language,
         };
 
         localStorage.setItem("userProfile", JSON.stringify(userProfile));
-        addWelcomeNotification(userProfile.name);
+        addWelcomeNotification(userProfile.name, language);
 
         toast({
-          title: "Welcome to Agri-Sanchar!",
-          description: "Your account has been created. Please complete your profile.",
+          title: t.welcomeTitle,
+          description: t.welcomeDesc,
         });
 
         router.push("/profile");
@@ -108,8 +170,8 @@ export default function SignupPage() {
         console.error("Simulated signup error:", error);
         toast({
           variant: "destructive",
-          title: "Signup Failed",
-          description: "There was a problem creating your profile.",
+          title: t.signupFailedTitle,
+          description: t.signupFailedDesc,
         });
       } finally {
         setLoading(false);
@@ -118,30 +180,29 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/90 backdrop-blur-sm border-green-200/50">
+    <Card className="w-full max-w-sm animate-card-flip-in bg-white/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
-        <CardDescription className="text-black">
-          {otpSent ? "Enter the simulated OTP to create your account." : "Create your account to get started (Simulated)."}
+        <CardTitle className="text-2xl font-headline">{t.signUp}</CardTitle>
+        <CardDescription className="text-muted-foreground">
+          {otpSent ? t.enterOtp : t.createAccount}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name" className="text-foreground text-left">Full Name</Label>
+              <Label htmlFor="name" className="text-foreground text-left">{t.nameLabel}</Label>
               <Input
                 id="name"
-                placeholder="Ram Singh"
+                placeholder={t.namePlaceholder}
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
-                className="border-green-400 focus-visible:ring-green-400"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground text-left">Phone Number</Label>
+              <Label htmlFor="phone" className="text-foreground text-left">{t.phoneLabel}</Label>
               <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   +91
@@ -149,45 +210,44 @@ export default function SignupPage() {
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="9876543210"
+                  placeholder={t.phonePlaceholder}
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
                   disabled={loading}
-                  className="border-green-400 focus-visible:ring-green-400"
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || phone.length < 10 || name.length === 0}>
+            <Button type="submit" className="w-full" disabled={loading || phone.length < 10 || name.length === 0}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? "Sending OTP..." : "Send OTP"}
+              {loading ? t.sendingOtp : t.sendOtp}
             </Button>
           </form>
         ) : (
            <form onSubmit={handleVerifyOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground text-left">One-Time Password</Label>
+              <Label htmlFor="otp" className="text-foreground text-left">{t.otpLabel}</Label>
               <Input
                 id="otp"
                 type="tel"
-                placeholder="123456"
+                placeholder={t.otpPlaceholder}
                 required
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
                 disabled={loading}
-                className="tracking-widest text-center border-green-400 focus-visible:ring-green-400"
+                className="tracking-widest text-center"
               />
             </div>
-            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold" disabled={loading || otp.length < 6}>
+            <Button type="submit" className="w-full" disabled={loading || otp.length < 6}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? "Verifying..." : "Verify OTP & Create Account"}
+              {loading ? t.verifying : t.verifyAndCreate}
             </Button>
           </form>
         )}
         <div className="mt-4 text-center text-sm text-foreground">
-          Already have an account?{" "}
+          {t.haveAccount}{" "}
           <Link href="/login" className="underline text-primary font-semibold">
-            Login
+            {t.login}
           </Link>
         </div>
       </CardContent>

@@ -58,8 +58,16 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
+    const preselectedLang = localStorage.getItem("selectedLanguage");
+
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
+      
+      // If a language was just selected on the previous screen, set it.
+      if (preselectedLang && !parsedProfile.language) {
+          parsedProfile.language = preselectedLang;
+      }
+
       setProfile(prev => ({...prev, ...parsedProfile}));
       if (parsedProfile.state) {
         setAvailableCities(indianCities[parsedProfile.state] || []);
@@ -92,7 +100,7 @@ export default function ProfilePage() {
     setProfile((prev) => ({ ...prev, gender: value }));
   };
   
-   const handleLanguageChange = (value: string) => {
+   const handleLanguageChange = (value: 'English' | 'Hindi') => {
     setProfile((prev) => ({ ...prev, language: value }));
   };
   
@@ -125,6 +133,9 @@ export default function ProfilePage() {
 
     setIsEditing(false);
     localStorage.setItem("userProfile", JSON.stringify(profile));
+    // We can now remove the temporary language selection
+    localStorage.removeItem('selectedLanguage');
+
     toast({
       title: "Profile Updated",
       description: "Your details have been saved successfully.",
@@ -305,7 +316,7 @@ export default function ProfilePage() {
              <div className="space-y-2">
               <Label htmlFor="language">Preferred Language</Label>
               {isEditing ? (
-                 <Select onValueChange={handleLanguageChange} value={profile.language}>
+                 <Select onValueChange={(v) => handleLanguageChange(v as 'English' | 'Hindi')} value={profile.language}>
                   <SelectTrigger id="language">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
