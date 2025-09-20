@@ -28,7 +28,7 @@ const AnswerFarmerQuestionInputSchema = z.object({
     ),
   city: z.string().optional().describe("The farmer's city, used to provide location-specific information like local market prices."),
   returnJson: z.boolean().optional().describe('Set to true to get a direct JSON output from tools if applicable.'),
-  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi')."),
+  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi'). This is a hint, but the AI should prioritize the user's question language."),
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
@@ -129,10 +129,9 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   name: 'answerFarmerQuestionPrompt',
   input: { schema: AnswerFarmerQuestionInputSchema.extend({ currentDate: z.string() }) },
   tools: [getMandiPrices, getWeather],
-  prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
+  prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions.
 
-Your response MUST be in the following language: {{{language}}}.
-If the language is 'Hindi', you must reply in Devanagari script.
+**CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language. If the question is in Hindi, you MUST reply in Devanagari script. If it's in English, reply in English.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON. If the data includes the market, include that in the table.
 
@@ -226,7 +225,7 @@ export async function answerFarmerQuestion(input: AnswerFarmerQuestionInput): Pr
 const answerFarmerQuestionFlow = ai.defineFlow(
   {
     name: 'answerFarmerQuestionFlow',
-    inputSchema: AnswerFarmerQuestionInputSchema,
+    inputSchema: AnswerFarmer-QuestionInputSchema,
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
   async (input) => {
@@ -249,7 +248,6 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     const requestData = {
       ...input,
       currentDate,
-      language: input.language || 'English', // Default to English
     };
 
     const llmResponse = await answerFarmerQuestionPrompt(requestData);

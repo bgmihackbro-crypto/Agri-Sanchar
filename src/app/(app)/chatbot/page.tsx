@@ -116,7 +116,10 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
-    const targetLang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
+    
+    // Simple language detection for voice selection
+    const isHindi = /[\u0900-\u097F]/.test(message.content);
+    const targetLang = isHindi ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
     let selectedVoice = null;
@@ -199,7 +202,7 @@ export default function ChatbotPage() {
         question: input,
         photoDataUri: photoDataUri,
         city: userProfile?.city,
-        language: userProfile?.language || 'English',
+        // Language is now detected by the AI flow from the question itself
       });
       aiResponseContent = response.answer ?? t.chatbot.aiResponseError;
     } catch (error) {
@@ -236,6 +239,7 @@ export default function ChatbotPage() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
+      // Let's allow both languages for better flexibility during recognition
       recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
@@ -278,8 +282,8 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
+        // The onend event will handle the rest
     }
-    setIsRecording(false);
   };
 
   const toggleRecording = () => {
@@ -338,6 +342,18 @@ export default function ChatbotPage() {
                         : "bg-primary text-primary-foreground"
                     )}
                   >
+                     <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-7 w-7 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity"
+                        onClick={() => speak(message)}
+                    >
+                        {nowPlayingMessageId === message.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin"/>
+                        ) : (
+                            <Volume2 className="h-4 w-4" />
+                        )}
+                    </Button>
                     <div className="text-xs opacity-75 mb-1">{message.timestamp ? format(message.timestamp, "p"): ''}</div>
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     {message.image && (
@@ -346,20 +362,6 @@ export default function ChatbotPage() {
                         alt="user upload"
                         className="mt-2 rounded-lg max-w-full h-auto"
                       />
-                    )}
-                     {message.role === 'assistant' && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute -top-2 -right-2 h-7 w-7 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity"
-                            onClick={() => speak(message)}
-                        >
-                            {nowPlayingMessageId === message.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin"/>
-                            ) : (
-                                <Volume2 className="h-4 w-4" />
-                            )}
-                        </Button>
                     )}
                   </div>
                   {message.role === "user" && (
@@ -447,7 +449,5 @@ export default function ChatbotPage() {
       </Card>
     </div>
   );
-
-    
 
     
