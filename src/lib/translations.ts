@@ -982,6 +982,7 @@ export const translations = {
             analysisPlaceholder: "एआई-संचालित अंतर्दृष्टि देखने के लिए एक रिपोर्ट चुनें या अपलोड करें।",
             analysisLoading: "एआई आपकी रिपोर्ट का विश्लेषण कर रहा है। इसमें कुछ समय लग सकता है...",
             analysisFailed: "विश्लेषण विफल",
+
             results: {
                 metrics: "मुख्य मीट्रिक्स",
                 crops: "फसल उपयुक्तता",
