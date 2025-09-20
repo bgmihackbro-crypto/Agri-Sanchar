@@ -73,9 +73,20 @@ export default function ChatbotPage() {
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = populateVoiceList;
     }
+
+    // This is a workaround for a bug in some browsers where the speech synthesis
+    // engine can go idle and cause errors. Periodically sending a silent utterance
+    // keeps the engine "warm" and ready to speak.
+    const speechKeepAlive = setInterval(() => {
+        if (window.speechSynthesis.speaking) return;
+        const utterance = new SpeechSynthesisUtterance("");
+        utterance.volume = 0; // Make it silent
+        window.speechSynthesis.speak(utterance);
+    }, 5000);
     
     // Cleanup speech synthesis on component unmount
     return () => {
+      clearInterval(speechKeepAlive);
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
@@ -416,6 +427,8 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
 
