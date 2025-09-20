@@ -63,6 +63,11 @@ export const translations = {
             languageUpdated: "Language Updated",
             languageUpdatedDesc: (lang: string) => `Language has been set to ${lang}.`,
         },
+        notifications: {
+            title: "Notifications",
+            markAllRead: "Mark all as read",
+            noNotifications: "No new notifications",
+        },
         sidebar: {
             dashboard: "Dashboard",
             chatbot: "AI Chatbot",
@@ -72,6 +77,13 @@ export const translations = {
             market: "Market Prices",
             soil: "Soil Testing",
             pesticide: "Pesticide Guide",
+            profile: "Profile",
+        },
+        bottomNav: {
+            home: "Home",
+            community: "Community",
+            scan: "Scan",
+            market: "Market",
             profile: "Profile",
         },
         dashboard: {
@@ -86,6 +98,10 @@ export const translations = {
                 market: { title: "Market Prices", description: "Fresh daily market rates, price trends, and better selling suggestions." },
                 schemes: { title: "Government Schemes", description: "Get information and updates on schemes like PM-KISAN.", badge: "New" },
                 pesticide: { title: "Pesticide Guide", description: "Accurate information and usage methods for organic and chemical pesticides." },
+            },
+            schemeNotification: {
+                title: (scheme: string) => `New Update: ${scheme}`,
+                description: "Check the latest details about this government scheme and its benefits.",
             }
         },
         chatbot: {
@@ -511,7 +527,7 @@ export const translations = {
             problemPlaceholder: "Describe the problem you see on your crop... For example: 'The leaves are turning yellow and have small white insects underneath.'",
             getRecommendation: "Get AI Recommendation",
             analyzing: "Analyzing...",
-aiThinking: "AI is thinking...",
+            aiThinking: "AI is thinking...",
             aiRecommendation: "AI Recommendation",
             reasoning: "Reasoning",
             usage: "Usage Instructions",
@@ -595,6 +611,11 @@ aiThinking: "AI is thinking...",
             languageUpdated: "भाषा अपडेट की गई",
             languageUpdatedDesc: (lang: string) => `भाषा ${lang === 'English' ? 'English' : 'हिन्दी'} पर सेट कर दी गई है।`,
         },
+        notifications: {
+            title: "सूचनाएं",
+            markAllRead: "सभी को पढ़ा हुआ चिह्नित करें",
+            noNotifications: "कोई नई सूचनाएं नहीं",
+        },
         sidebar: {
             dashboard: "डैशबोर्ड",
             chatbot: "एआई चैटबॉट",
@@ -604,6 +625,13 @@ aiThinking: "AI is thinking...",
             market: "बाजार मूल्य",
             soil: "मिट्टी परीक्षण",
             pesticide: "कीटनाशक गाइड",
+            profile: "प्रोफ़ाइल",
+        },
+        bottomNav: {
+            home: "होम",
+            community: "समुदाय",
+            scan: "स्कैन",
+            market: "बाजार",
             profile: "प्रोफ़ाइल",
         },
         dashboard: {
@@ -618,6 +646,10 @@ aiThinking: "AI is thinking...",
                 market: { title: "बाजार मूल्य", description: "ताज़ा दैनिक बाजार दरें, मूल्य रुझान, और बेहतर बिक्री के सुझाव।" },
                 schemes: { title: "सरकारी योजनाएं", description: "पीएम-किसान जैसी योजनाओं पर जानकारी और अपडेट प्राप्त करें।", badge: "नया" },
                 pesticide: { title: "कीटनाशक गाइड", description: "जैविक और रासायनिक कीटनाशकों के लिए सटीक जानकारी और उपयोग के तरीके।" },
+            },
+             schemeNotification: {
+                title: (scheme: string) => `नई अपडेट: ${scheme}`,
+                description: "इस सरकारी योजना और इसके लाभों के बारे में नवीनतम विवरण देखें।",
             }
         },
         chatbot: {
@@ -655,7 +687,7 @@ aiThinking: "AI is thinking...",
             analyzing: "विश्लेषण हो रहा है...",
             analysisFailed: "विश्लेषण विफल",
             analysisError: "एआई के साथ संचार करते समय एक त्रुटि हुई। कृपया फिर से प्रयास करें।",
-aiAnalysisTitle: "एआई विशेषज्ञ विश्लेषण",
+            aiAnalysisTitle: "एआई विशेषज्ञ विश्लेषण",
             aiThinking: "सोच रहा है...",
             defaultQuestion: "इस पौधे में क्या खराबी है? छवि का विश्लेषण करें।",
         },

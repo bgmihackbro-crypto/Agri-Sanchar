@@ -22,8 +22,8 @@ export default function DashboardPage() {
 
   const handleSchemeClick = (e: React.MouseEvent, title: string) => {
       addNotification({
-          title: `New Update: ${title}`,
-          description: "Check the latest details about this government scheme and its benefits.",
+          title: t.dashboard.schemeNotification.title(title),
+          description: t.dashboard.schemeNotification.description,
       });
   };
 
@@ -71,7 +71,7 @@ export default function DashboardPage() {
       icon: Landmark,
       badge: t.dashboard.services.schemes.badge,
       badgeColor: "bg-green-500",
-      onClick: (e: React.MouseEvent) => handleSchemeClick(e, "Government Schemes")
+      onClick: (e: React.MouseEvent) => handleSchemeClick(e, t.dashboard.services.schemes.title)
     },
     {
       title: t.dashboard.services.pesticide.title,

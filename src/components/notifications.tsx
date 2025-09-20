@@ -16,9 +16,11 @@ import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { useTranslation } from "@/hooks/use-translation";
 
 export function Notifications() {
   const { notifications, markAllAsRead, unreadCount } = useNotifications();
+  const { t } = useTranslation();
 
   return (
     <DropdownMenu>
@@ -32,21 +34,21 @@ export function Notifications() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-80 md:w-96" align="end">
         <div className="flex items-center justify-between p-2">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuLabel>{t.notifications.title}</DropdownMenuLabel>
             {unreadCount > 0 && (
                 <Button variant="ghost" size="sm" onClick={(e) => {
                     e.preventDefault();
                     markAllAsRead();
                 }}>
                     <CheckCheck className="mr-2 h-4 w-4" />
-                    Mark all as read
+                    {t.notifications.markAllRead}
                 </Button>
             )}
         </div>
         <DropdownMenuSeparator />
         <ScrollArea className="h-80">
             {notifications.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground p-4">No new notifications</p>
+                <p className="text-center text-sm text-muted-foreground p-4">{t.notifications.noNotifications}</p>
             ) : (
                  notifications.map((notification) => (
                     <DropdownMenuItem key={notification.id} className={cn("flex-col items-start gap-1 whitespace-normal", !notification.read && "bg-primary/5")}>
