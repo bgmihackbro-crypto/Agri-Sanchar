@@ -14,7 +14,7 @@ export function BottomNav() {
   const navLinks = [
     { href: "/dashboard", label: t.bottomNav.home, icon: Home },
     { href: "/community", label: t.bottomNav.community, icon: Users },
-    { href: "/detection", label: t.bottomNav.scan, icon: Search },
+    { href: "/detection", label: t.bottomNav.rentals, icon: Search },
     { href: "/market", label: t.bottomNav.market, icon: TrendingUp },
     { href: "/profile", label: t.bottomNav.profile, icon: User },
   ];
@@ -27,7 +27,7 @@ export function BottomNav() {
           const isActive = pathname.startsWith(link.href);
           return (
             <Link
-              key={link.label}
+              key={link.href}
               href={link.href}
               className={cn(
                 "inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group",
