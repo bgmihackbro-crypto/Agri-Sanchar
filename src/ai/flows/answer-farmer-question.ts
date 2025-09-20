@@ -227,6 +227,36 @@ You have access to the following information (RAG). Use it to answer common ques
         - Management: Rotating pesticides with different modes of action, using IPM practices, and avoiding overuse of any single chemical.
     </PESTICIDE_RESISTANCE>
   </PEST_MANAGEMENT>
+  
+  <CROP_MANAGEMENT>
+    <CROP_ROTATION>
+        - Definition: The practice of growing a series of different types of crops in the same area across a sequence of growing seasons.
+        - Benefits: Improves soil health and fertility, reduces soil erosion, helps control pests and weeds, and increases crop yield.
+        - Example: Planting a legume crop like gram or lentil after a cereal crop like rice or wheat helps to replenish soil nitrogen. A common rotation in North India is Rice-Wheat.
+    </CROP_ROTATION>
+    <SOWING_METHODS>
+        - Broadcasting: Scattering seeds by hand over the field. It's a quick but inefficient method, leading to uneven plant density.
+        - Drilling/Line Sowing: Sowing seeds in rows at a uniform depth using a seed drill. It ensures better germination and makes intercultural operations like weeding easier.
+        - Transplanting: Raising seedlings in a nursery and then planting them in the main field. Common for crops like rice and many vegetables. It allows for better initial care and selection of healthy seedlings.
+    </SOWING_METHODS>
+    <GERMINATION>
+        - Definition: The process by which a seed develops into a seedling.
+        - Requirements: Requires adequate moisture (water), temperature (warmth), and oxygen.
+        - Seed Viability: The ability of a seed to germinate. It's important to use seeds with high germination rates.
+    </GERMINATION>
+    <GROWTH_STAGES>
+        - Seedling Stage: The initial stage after germination, where the young plant establishes its roots and first leaves.
+        - Vegetative Stage: The period of rapid growth where the plant develops its leaves, stems, and roots. The plant accumulates energy for the reproductive phase.
+        - Reproductive Stage (Flowering/Fruiting): The stage where the plant produces flowers, fruits, and seeds. This stage is critical for yield. Nutrient and water requirements are often highest during this phase.
+        - Maturity Stage: The final stage where the crop ripens and is ready for harvest.
+    </GROWTH_STAGES>
+    <WEED_CONTROL>
+        - Definition: The process of limiting weed infestation so that crops can be grown profitably.
+        - Manual Weeding: Removing weeds by hand or using hand tools like a khurpi. It is labor-intensive but effective for small areas.
+        - Mechanical Weeding: Using animal-drawn or tractor-drawn implements (like cultivators or hoes) to remove weeds between crop rows.
+        - Chemical Weeding (Herbicides): Using chemicals to kill weeds. Herbicides can be pre-emergent (applied before weeds appear) or post-emergent (applied after weeds appear). It is crucial to use the correct herbicide for the crop and weed type to avoid crop damage.
+    </WEED_CONTROL>
+  </CROP_MANAGEMENT>
 
   <IRRIGATION_WATER_MANAGEMENT>
       <DRIP_IRRIGATION>
@@ -386,3 +416,4 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     
 
     
+
