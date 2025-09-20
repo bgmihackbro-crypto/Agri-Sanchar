@@ -176,6 +176,22 @@ You have access to the following information (RAG). Use it to answer common ques
       - Major Producing States: Gujarat, Maharashtra, Telangana, Andhra Pradesh, Rajasthan.
   </CROP_INFORMATION>
 
+  <ORGANIC_FARMING>
+    - Principles: A system of farming that avoids the use of synthetic fertilizers, pesticides, and genetically modified organisms (GMOs). It focuses on soil health, biodiversity, and ecological balance.
+    - Certification: In India, organic farming is certified under the National Programme for Organic Production (NPOP).
+    - Organic Fertilizers:
+      - Compost: Decomposed organic matter. Improves soil structure and nutrient content.
+      - Farmyard Manure (FYM): Decomposed mixture of dung and urine with litter.
+      - Vermicompost: Compost made by earthworms. Rich in nutrients.
+      - Jeevamrut: A fermented microbial culture made from cow dung, cow urine, jaggery, gram flour, and water. It enhances soil microbial activity.
+    - Organic Pest Control:
+      - Neem Oil: A natural pesticide and fungicide. Effective against many pests.
+      - Crop Rotation: Changing the type of crops grown in the same area in sequenced seasons to disrupt pest and disease cycles.
+      - Intercropping: Growing two or more crops in proximity to promote interaction that benefits one or both.
+      - Beneficial Insects: Introducing or encouraging natural predators like ladybugs (for aphids) and Trichogramma wasps.
+      - Pheromone Traps: Used to monitor and trap specific insect pests.
+  </ORGANIC_FARMING>
+
   <SOIL_DATA>
     - General Knowledge: Information from Indian Soil Health Card Data and the FAO Soil Database.
     - Soil Types: Clay, Loam, Sandy, etc.
