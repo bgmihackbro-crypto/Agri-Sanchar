@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown, ShieldAlert, Timer } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +36,11 @@ const pesticideData = [
       "May need frequent reapplication, especially after rain.",
       "Can have a strong odor."
     ],
+    safetyPrecautions: [
+        "While organic, avoid direct contact with eyes and skin.",
+        "Keep out of reach of children."
+    ],
+    preHarvestInterval: "None, can be used up to the day of harvest.",
     color: "bg-green-100 text-green-800",
   },
   {
@@ -54,8 +59,14 @@ const pesticideData = [
     disadvantages: [
         "Can be harmful to pollinators like bees.",
         "Pests may develop resistance over time.",
-        "Requires a waiting period before harvest (pre-harvest interval)."
+        "Requires a waiting period before harvest."
     ],
+    safetyPrecautions: [
+        "Wear protective clothing, gloves, and eye protection.",
+        "Do not eat, drink, or smoke while handling.",
+        "Avoid inhaling the spray mist."
+    ],
+    preHarvestInterval: "7-21 days, depending on the crop. Refer to the product label.",
     color: "bg-red-100 text-red-800",
   },
   {
@@ -76,6 +87,12 @@ const pesticideData = [
         "Needs to be reapplied after rain.",
         "Can leave a visible residue on produce."
     ],
+    safetyPrecautions: [
+        "Use in a well-ventilated area.",
+        "Avoid contact with skin and eyes.",
+        "Wash hands thoroughly after use."
+    ],
+    preHarvestInterval: "7-10 days for most vegetables. Refer to label.",
     color: "bg-blue-100 text-blue-800",
   },
   {
@@ -96,6 +113,11 @@ const pesticideData = [
         "Requires specific temperature and humidity for best results.",
         "Has a shorter shelf life."
     ],
+    safetyPrecautions: [
+        "Even though it's biological, avoid inhaling the powder.",
+        "Store in a cool, dry place away from direct sunlight."
+    ],
+    preHarvestInterval: "None.",
     color: "bg-green-100 text-green-800",
   },
   {
@@ -116,6 +138,12 @@ const pesticideData = [
         "Banned or restricted in many countries.",
         "Can persist in the environment."
     ],
+    safetyPrecautions: [
+        "Extremely toxic. Must use full protective equipment.",
+        "Ensure proper disposal of empty containers.",
+        "Keep away from water bodies."
+    ],
+    preHarvestInterval: "14-30 days. Strictly follow label recommendations.",
     color: "bg-red-100 text-red-800",
   },
   {
@@ -136,6 +164,11 @@ const pesticideData = [
         "Cannot be mixed with chemical fungicides.",
         "May be slow to establish in the soil."
     ],
+    safetyPrecautions: [
+        "Not harmful, but it's good practice to wear a mask to avoid inhaling spores.",
+        "Keep product dry before use."
+    ],
+    preHarvestInterval: "None.",
     color: "bg-green-100 text-green-800",
   },
    {
@@ -156,6 +189,12 @@ const pesticideData = [
         "Can lead to herbicide-resistant weeds.",
         "Damages any crop it comes in contact with (non-selective)."
     ],
+    safetyPrecautions: [
+        "Avoid spray drift to desired plants.",
+        "Wear gloves and eye protection.",
+        "Do not use in household gardens."
+    ],
+    preHarvestInterval: "N/A for its intended use (pre-sowing or non-crop areas).",
     color: "bg-orange-100 text-orange-800",
   },
    {
@@ -176,6 +215,11 @@ const pesticideData = [
         "Lures need to be replaced periodically.",
         "Only effective for the specific target pest."
     ],
+    safetyPrecautions: [
+        "Handle lures with care to avoid contamination.",
+        "Place traps away from direct human traffic."
+    ],
+    preHarvestInterval: "None.",
     color: "bg-green-100 text-green-800",
   },
   {
@@ -196,6 +240,12 @@ const pesticideData = [
         "May accumulate in the soil over time.",
         "Can be washed off by rain."
     ],
+    safetyPrecautions: [
+        "Avoid application during hot weather to prevent plant burn.",
+        "Wear standard protective equipment.",
+        "Can be toxic to aquatic life."
+    ],
+    preHarvestInterval: "5-10 days, varies by crop.",
     color: "bg-blue-100 text-blue-800",
   },
   {
@@ -216,6 +266,12 @@ const pesticideData = [
       "Higher cost compared to some chemical alternatives.",
       "Effectiveness can be reduced by sunlight."
     ],
+    safetyPrecautions: [
+        "Spray during late evening to protect bees.",
+        "Store away from direct sunlight.",
+        "Follow label instructions for mixing."
+    ],
+    preHarvestInterval: "3-7 days, depending on the crop.",
     color: "bg-green-100 text-green-800",
   },
   {
@@ -236,6 +292,12 @@ const pesticideData = [
       "Has been linked to colony collapse disorder in bees.",
       "Persistence in the environment can be a concern."
     ],
+    safetyPrecautions: [
+        "Do not use near fish ponds or bee hives.",
+        "Strictly adhere to dosage recommendations to avoid environmental damage.",
+        "Use full protective gear."
+    ],
+    preHarvestInterval: "15-30 days. Varies significantly, check the label.",
     color: "bg-red-100 text-red-800",
   },
   {
@@ -256,6 +318,12 @@ const pesticideData = [
       "Not effective against all fungal diseases.",
       "Can be washed away by rain."
     ],
+    safetyPrecautions: [
+        "Do not spray in temperatures above 32°C (90°F).",
+        "Can cause irritation to eyes and skin.",
+        "Do not mix with horticultural oils."
+    ],
+    preHarvestInterval: "1-7 days, check for specific crop.",
     color: "bg-blue-100 text-blue-800",
   }
 ];
@@ -278,8 +346,22 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                             <Badge variant="secondary">{pesticide.target}</Badge>
                     </div>
                 </DialogHeader>
-                <div className="space-y-4 py-2 max-h-[50vh] overflow-y-auto pr-4">
+                <div className="space-y-4 py-2 max-h-[60vh] overflow-y-auto pr-4">
                     <p className="text-sm text-foreground">{pesticide.description}</p>
+
+                     <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+                        <h4 className="font-semibold text-yellow-900 flex items-center gap-2"><ShieldAlert className="h-5 w-5"/>Safety Precautions</h4>
+                        <ul className="space-y-1.5 text-sm text-yellow-800 list-disc pl-5 mt-2">
+                            {pesticide.safetyPrecautions.map((adv, i) => (
+                                <li key={i}>{adv}</li>
+                            ))}
+                        </ul>
+                    </div>
+
+                     <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                        <h4 className="font-semibold text-blue-900 flex items-center gap-2"><Timer className="h-5 w-5"/>Pre-Harvest Interval (PHI)</h4>
+                        <p className="text-sm text-blue-800 mt-1">{pesticide.preHarvestInterval}</p>
+                    </div>
                     
                     <div className="space-y-2">
                         <h4 className="font-semibold">Advantages</h4>
@@ -450,5 +532,3 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
-
-    
