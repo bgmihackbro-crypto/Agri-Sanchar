@@ -221,7 +221,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                 </CardFooter>
             </Card>
 
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-lg">
                  <DialogHeader>
                     <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
                     <DialogDescription>{scheme.description}</DialogDescription>
