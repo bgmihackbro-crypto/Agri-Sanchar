@@ -31,6 +31,8 @@ import {
   Box,
   Tag,
   PlayCircle,
+  Phone,
+  MapPin,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -49,6 +51,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
+import { indianStates } from '@/lib/indian-states';
+import { indianCities } from '@/lib/indian-cities';
+import { soilLabs, type SoilLab } from '@/lib/soil-labs';
 
 
 type SoilReport = {
@@ -96,9 +101,49 @@ export default function SoilTestingPage() {
   const [calculationResult, setCalculationResult] = useState<FertilizerCalculationOutput | null>(null);
   const [calculationError, setCalculationError] = useState<string | null>(null);
 
+  // State for lab finder
+  const [labState, setLabState] = useState('');
+  const [labCity, setLabCity] = useState('');
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [nearbyLabs, setNearbyLabs] = useState<SoilLab[]>([]);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+      const parsed = JSON.parse(profile) as UserProfile;
+      if (parsed.state) {
+        setLabState(parsed.state);
+        const cities = indianCities[parsed.state] || [];
+        setAvailableCities(cities);
+        if (parsed.city && cities.includes(parsed.city)) {
+          setLabCity(parsed.city);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (labCity) {
+      const cityLabs = soilLabs.filter(lab => lab.city === labCity);
+      setNearbyLabs(cityLabs);
+    } else if (labState) {
+      const stateLabs = soilLabs.filter(lab => lab.state === labState);
+      setNearbyLabs(stateLabs.slice(0, 5)); // Limit to 5 if showing for whole state
+    } else {
+      setNearbyLabs([]);
+    }
+  }, [labCity, labState]);
+  
+  const handleLabStateChange = (state: string) => {
+    setLabState(state);
+    setLabCity('');
+    setNearbyLabs([]);
+    setAvailableCities(indianCities[state] || []);
+  };
   
   const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -250,7 +295,10 @@ export default function SoilTestingPage() {
         <div className="lg:col-span-1 space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>1. How to Collect Soil Samples</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                        <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">1</span>
+                        How to Collect Soil Samples
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <Link href="https://www.youtube.com/watch?v=T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
@@ -290,14 +338,39 @@ export default function SoilTestingPage() {
                         <AccordionItem value="labs">
                             <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
                             <AccordionContent>
-                                <p className="text-sm text-muted-foreground py-2">
-                                    Click the link below to find a comprehensive list of soil testing laboratories across India.
-                                </p>
-                                <Button asChild className="mt-2 w-full">
-                                    <a href="https://www.napanta.com/soil-testing-laboratory" target="_blank" rel="noopener noreferrer">
-                                        Open Lab Directory
-                                    </a>
-                                </Button>
+                                <div className="space-y-4 pt-2">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <Select onValueChange={handleLabStateChange} value={labState}>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select State" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                                      </SelectContent>
+                                    </Select>
+                                    <Select onValueChange={setLabCity} value={labCity} disabled={!labState}>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select City" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {availableCities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="space-y-3">
+                                      {nearbyLabs.length > 0 ? (
+                                        nearbyLabs.map(lab => (
+                                          <div key={lab.id} className="p-3 border rounded-lg">
+                                            <p className="font-semibold">{lab.name}</p>
+                                            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><MapPin className="h-4 w-4" /> {lab.address}</p>
+                                            {lab.phone && <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><Phone className="h-4 w-4" /> {lab.phone}</p>}
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <p className="text-sm text-center text-muted-foreground py-4">{labState ? "No labs found for the selected area." : "Please select a state to find labs."}</p>
+                                      )}
+                                  </div>
+                                </div>
                             </AccordionContent>
                         </AccordionItem>
                          <AccordionItem value="subsidies">
@@ -318,7 +391,10 @@ export default function SoilTestingPage() {
         <div className="lg:col-span-2 space-y-6">
              <Card>
                 <CardHeader>
-                    <CardTitle>2. Upload & Analyze Report</CardTitle>
+                   <CardTitle className="flex items-center gap-2">
+                        <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">2</span>
+                        Upload & Analyze Report
+                    </CardTitle>
                     <CardDescription>Select a PDF or image of your soil test report to begin.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -387,9 +463,12 @@ export default function SoilTestingPage() {
 
             <Card className="min-h-[300px]">
                 <CardHeader>
-                    <CardTitle>3. Analysis & Recommendations</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                        <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">3</span>
+                        Analysis & Recommendations
+                    </CardTitle>
                     <CardDescription>
-                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Select a report to see AI-powered insights here."}
+                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Select or upload a report to see AI-powered insights."}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -444,7 +523,10 @@ export default function SoilTestingPage() {
             
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">4. Fertilizer Calculator</CardTitle>
+                     <CardTitle className="flex items-center gap-2">
+                        <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">4</span>
+                        Fertilizer Calculator
+                    </CardTitle>
                     <CardDescription>Get a customized fertilizer dosage for your specific crop and area.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
