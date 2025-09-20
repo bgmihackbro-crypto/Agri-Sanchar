@@ -186,7 +186,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-12",
         ownerName: "Kavita Patel",
         ownerAvatar: "https://picsum.photos/seed/sugarcane/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1621282692291-a588bf33241d?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1621282692291-a588bf33241d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Mechanical sugarcane harvester for quick and efficient harvesting. Reduces labor costs significantly.",
         contact: "+919876543221"
     },
@@ -242,9 +242,65 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-16",
         ownerName: "Suresh Rao",
         ownerAvatar: "https://picsum.photos/seed/orange-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Heavy-duty 3-disc plough for primary tillage in hard and dry soil. Can break up new ground effectively.",
         contact: "+919876543225"
+    },
+    {
+        name: "Laser Land Leveler",
+        category: "Other",
+        price: 1200,
+        priceUnit: "per_hour",
+        location: "Hisar",
+        address: "Near Haryana Agricultural University",
+        ownerId: "user-17",
+        ownerName: "Dr. Vijay Singh",
+        ownerAvatar: "https://picsum.photos/seed/expert-4/40/40",
+        imageUrl: "https://images.unsplash.com/photo-1627923769935-373809623c2c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        description: "Precision land leveling for water conservation and improved crop yield. Comes with a trained operator.",
+        contact: "+919876543226"
+    },
+    {
+        name: "Post Hole Digger",
+        category: "Other",
+        price: 1000,
+        priceUnit: "per_day",
+        location: "Jaipur",
+        address: "Vatika Road, Jaipur",
+        ownerId: "user-18",
+        ownerName: "Priya Singh",
+        ownerAvatar: "https://picsum.photos/seed/compost/40/40",
+        imageUrl: "https://images.unsplash.com/photo-1543051932-6ef9fecfbc80?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
+        contact: "+919876543227"
+    },
+    {
+        name: "Multi-crop Thresher",
+        category: "Harvester",
+        price: 3000,
+        priceUnit: "per_day",
+        location: "Bhopal",
+        address: "Near Mandideep, Bhopal",
+        ownerId: "user-19",
+        ownerName: "Anil Kumar",
+        ownerAvatar: "https://picsum.photos/seed/bhopal-farmer/40/40",
+        imageUrl: "https://images.unsplash.com/photo-1635562985686-4f8bb9c0d3bf?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        description: "High-capacity thresher suitable for wheat, soybean, maize, and pulses. Provides clean grain output.",
+        contact: "+919876543228"
+    },
+    {
+        name: "Claas Multi-crop Harvester",
+        category: "Harvester",
+        price: 2800,
+        priceUnit: "per_hour",
+        location: "Karnal",
+        address: "GT Road, Karnal",
+        ownerId: "user-20",
+        ownerName: "Rakesh Kumar",
+        ownerAvatar: "https://picsum.photos/seed/expert-2/40/40",
+        imageUrl: "https://images.unsplash.com/photo-1529159942819-334f07de4fe5?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        description: "German-engineered Claas harvester for efficient and loss-free harvesting of multiple crops. Available for booking.",
+        contact: "+919876543229"
     }
 ];
 
