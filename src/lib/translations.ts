@@ -8,10 +8,10 @@ export const translations = {
         },
         login: {
             title: "Login",
-            enterPhone: "Enter your phone number to login. please use 9999999999 for test case",
+            enterPhone: "Enter your phone number to login. ( Test with 9876543210. )",
             enterOtp: "Enter the test OTP to continue.",
             phoneLabel: "Phone Number",
-            phonePlaceholder: "9999999999",
+            phonePlaceholder: "9876543210",
             sendOtp: "Send OTP",
             sendingOtp: "Sending OTP...",
             otpLabel: "One-Time Password",
@@ -72,11 +72,9 @@ export const translations = {
             dashboard: "Dashboard",
             chatbot: "AI Chatbot",
             rental: "Rental Equipment",
-            weather: "Weather",
             community: "Community",
             market: "Market Prices",
             soil: "Soil Testing",
-            pesticide: "Pesticide Guide",
             profile: "Profile",
             detection: "Detection",
             schemes: "Schemes",
@@ -438,7 +436,6 @@ export const translations = {
             documents: "Required Documents",
             applyHere: "Apply Here",
             viewDetails: "View Details",
-            lastDate: "Last Date",
             status: {
                 ongoing: "Ongoing",
                 upcoming: "Upcoming",
@@ -746,10 +743,10 @@ aiThinking: "AI is thinking...",
         },
         login: {
             title: "लॉग इन करें",
-            enterPhone: "लॉग इन करने के लिए अपना फ़ोन नंबर दर्ज करें। कृपया टेस्ट केस के लिए 9999999999 का उपयोग करें।",
+            enterPhone: "लॉग इन करने के लिए अपना फ़ोन नंबर दर्ज करें। (9876543210 के साथ परीक्षण करें)",
             enterOtp: "जारी रखने के लिए टेस्ट ओटीपी दर्ज करें।",
             phoneLabel: "फ़ोन नंबर",
-            phonePlaceholder: "9999999999",
+            phonePlaceholder: "9876543210",
             sendOtp: "ओटीपी भेजें",
             sendingOtp: "ओटीपी भेजा जा रहा है...",
             otpLabel: "वन-टाइम पासवर्ड",
@@ -810,11 +807,9 @@ aiThinking: "AI is thinking...",
             dashboard: "डैशबोर्ड",
             chatbot: "एआई चैटबॉट",
             rental: "किराये के उपकरण",
-            weather: "मौसम",
             community: "समुदाय",
             market: "बाजार मूल्य",
             soil: "मिट्टी परीक्षण",
-            pesticide: "कीटनाशक गाइड",
             profile: "प्रोफ़ाइल",
             detection: "पहचान",
             schemes: "योजनाएं"
@@ -1479,5 +1474,7 @@ aiThinking: "एआई सोच रहा है...",
 };
 
 export type Translations = typeof translations.English;
+
+    
 
     
