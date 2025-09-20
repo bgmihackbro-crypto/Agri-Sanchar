@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -7,14 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown, ShieldAlert, Timer } from "lucide-react";
+import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown, ShieldAlert, Timer, Bot, Wand2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Spinner } from "@/components/ui/spinner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { recommendPesticide, type PesticideRecommendationOutput } from "@/ai/flows/recommend-pesticide";
+import { useToast } from "@/hooks/use-toast";
 
 
 const pesticideData = [
@@ -342,8 +347,8 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-headline">{pesticide.name}</DialogTitle>
                     <div className="flex flex-wrap gap-2 pt-1">
-                            <Badge className={pesticide.color}>{pesticide.type}</Badge>
-                            <Badge variant="secondary">{pesticide.target}</Badge>
+                        <Badge className={pesticide.color}>{pesticide.type}</Badge>
+                        <Badge variant="secondary">{pesticide.target}</Badge>
                     </div>
                 </DialogHeader>
                 <div className="space-y-4 py-2 max-h-[60vh] overflow-y-auto pr-4">
@@ -417,6 +422,13 @@ export default function PesticideGuidePage() {
   const [filterTarget, setFilterTarget] = useState("all");
   const [filterCrop, setFilterCrop] = useState("all");
 
+  const [wizardCrop, setWizardCrop] = useState("");
+  const [wizardProblem, setWizardProblem] = useState("");
+  const [isRecommending, setIsRecommending] = useState(false);
+  const [recommendation, setRecommendation] = useState<PesticideRecommendationOutput | null>(null);
+  const [recommendationError, setRecommendationError] = useState<string | null>(null);
+  const { toast } = useToast();
+
   const allCrops = ["all", ...Array.from(new Set(pesticideData.flatMap(p => p.crops)))].sort();
 
   const filteredPesticides = pesticideData.filter((pesticide) => {
@@ -437,6 +449,29 @@ export default function PesticideGuidePage() {
     }
   }
 
+  const handleGetRecommendation = async () => {
+    if (!wizardCrop || !wizardProblem) {
+        toast({ variant: 'destructive', title: 'Missing Information', description: 'Please enter both a crop and a problem description.' });
+        return;
+    }
+    setIsRecommending(true);
+    setRecommendation(null);
+    setRecommendationError(null);
+
+    try {
+        const result = await recommendPesticide({
+            crop: wizardCrop,
+            problem: wizardProblem,
+            pesticideData: JSON.stringify(pesticideData),
+        });
+        setRecommendation(result);
+    } catch (e: any) {
+        setRecommendationError(e.message || "An unknown error occurred.");
+    } finally {
+        setIsRecommending(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -446,89 +481,170 @@ export default function PesticideGuidePage() {
         </p>
       </div>
 
-      <Card>
-        <CardContent className="p-4 space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search for a pesticide..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Select onValueChange={setFilterType} value={filterType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Organic">Organic</SelectItem>
-                <SelectItem value="Chemical">Chemical</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select onValueChange={setFilterTarget} value={filterTarget}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by Target" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Targets</SelectItem>
-                <SelectItem value="Insecticide">Insecticide</SelectItem>
-                <SelectItem value="Fungicide">Fungicide</SelectItem>
-                <SelectItem value="Herbicide">Herbicide</SelectItem>
-                <SelectItem value="Insect Monitoring">Insect Monitoring</SelectItem>
-                <SelectItem value="Bactericide">Bactericide</SelectItem>
-                <SelectItem value="Acaricide">Acaricide</SelectItem>
-              </SelectContent>
-            </Select>
-             <Select onValueChange={setFilterCrop} value={filterCrop}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by Crop" />
-              </SelectTrigger>
-              <SelectContent>
-                {allCrops.map(crop => (
-                    <SelectItem key={crop} value={crop}>{crop === 'all' ? 'All Crops' : crop}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+       <Tabs defaultValue="directory" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="directory"><Search className="mr-2 h-4 w-4"/>Pesticide Directory</TabsTrigger>
+                <TabsTrigger value="wizard"><Wand2 className="mr-2 h-4 w-4"/>AI Wizard</TabsTrigger>
+            </TabsList>
+            <TabsContent value="directory" className="pt-4">
+                 <Card>
+                    <CardContent className="p-4 space-y-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                        placeholder="Search for a pesticide..."
+                        className="pl-9"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Select onValueChange={setFilterType} value={filterType}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            <SelectItem value="Organic">Organic</SelectItem>
+                            <SelectItem value="Chemical">Chemical</SelectItem>
+                        </SelectContent>
+                        </Select>
+                        <Select onValueChange={setFilterTarget} value={filterTarget}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by Target" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Targets</SelectItem>
+                            <SelectItem value="Insecticide">Insecticide</SelectItem>
+                            <SelectItem value="Fungicide">Fungicide</SelectItem>
+                            <SelectItem value="Herbicide">Herbicide</SelectItem>
+                            <SelectItem value="Insect Monitoring">Insect Monitoring</SelectItem>
+                            <SelectItem value="Bactericide">Bactericide</SelectItem>
+                            <SelectItem value="Acaricide">Acaricide</SelectItem>
+                        </SelectContent>
+                        </Select>
+                        <Select onValueChange={setFilterCrop} value={filterCrop}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by Crop" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {allCrops.map(crop => (
+                                <SelectItem key={crop} value={crop}>{crop === 'all' ? 'All Crops' : crop}</SelectItem>
+                            ))}
+                        </SelectContent>
+                        </Select>
+                    </div>
+                    </CardContent>
+                </Card>
 
-        {filteredPesticides.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPesticides.map((pesticide) => (
-                <Card key={pesticide.name} className="flex flex-col">
+                {filteredPesticides.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                        {filteredPesticides.map((pesticide) => (
+                        <Card key={pesticide.name} className="flex flex-col">
+                            <CardHeader>
+                                <div className="flex items-start justify-between">
+                                    <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
+                                    <div className={`p-2 rounded-lg ${pesticide.color}`}>
+                                        {getIcon(pesticide.type)}
+                                    </div>
+                                </div>
+                                <CardDescription className="flex gap-2 pt-1">
+                                    <Badge variant="outline">{pesticide.type}</Badge>
+                                    <Badge variant="secondary">{pesticide.target}</Badge>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-grow">
+                            <p className="text-sm text-muted-foreground line-clamp-3">
+                                {pesticide.description}
+                            </p>
+                            </CardContent>
+                            <CardFooter>
+                            <DetailDialog pesticide={pesticide} />
+                            </CardFooter>
+                        </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-16">
+                        <p className="text-muted-foreground">No pesticides found matching your criteria.</p>
+                    </div>
+                )}
+
+            </TabsContent>
+            <TabsContent value="wizard" className="pt-4">
+                <Card>
                     <CardHeader>
-                        <div className="flex items-start justify-between">
-                            <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
-                            <div className={`p-2 rounded-lg ${pesticide.color}`}>
-                                {getIcon(pesticide.type)}
-                            </div>
-                        </div>
-                        <CardDescription className="flex gap-2 pt-1">
-                            <Badge variant="outline">{pesticide.type}</Badge>
-                            <Badge variant="secondary">{pesticide.target}</Badge>
-                        </CardDescription>
+                        <CardTitle>AI Recommendation Wizard</CardTitle>
+                        <CardDescription>Describe your problem, and our AI will suggest a suitable pesticide from our guide.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-grow">
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                        {pesticide.description}
-                    </p>
+                    <CardContent className="space-y-4">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Input
+                                placeholder="Enter Crop Name (e.g., Cotton)"
+                                value={wizardCrop}
+                                onChange={(e) => setWizardCrop(e.target.value)}
+                                disabled={isRecommending}
+                            />
+                        </div>
+                        <Textarea
+                            placeholder="Describe the problem you see on your crop... For example: 'The leaves are turning yellow and have small white insects underneath.'"
+                            rows={4}
+                            value={wizardProblem}
+                            onChange={(e) => setWizardProblem(e.target.value)}
+                            disabled={isRecommending}
+                        />
                     </CardContent>
                     <CardFooter>
-                       <DetailDialog pesticide={pesticide} />
+                        <Button onClick={handleGetRecommendation} disabled={isRecommending || !wizardCrop || !wizardProblem}>
+                            {isRecommending ? <Spinner className="mr-2 h-4 w-4"/> : <Bot className="mr-2 h-4 w-4"/>}
+                            {isRecommending ? "Analyzing..." : "Get AI Recommendation"}
+                        </Button>
                     </CardFooter>
                 </Card>
-                ))}
-            </div>
-        ) : (
-            <div className="text-center py-16">
-                 <p className="text-muted-foreground">No pesticides found matching your criteria.</p>
-            </div>
-        )}
+                
+                {isRecommending && (
+                     <div className="text-center py-16">
+                        <Spinner className="h-8 w-8 text-primary"/>
+                        <p className="mt-2 text-muted-foreground">AI is thinking...</p>
+                    </div>
+                )}
 
+                {recommendationError && (
+                    <Alert variant="destructive" className="mt-6">
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{recommendationError}</AlertDescription>
+                    </Alert>
+                )}
+
+                {recommendation && (
+                    <Card className="mt-6 animate-fade-in">
+                        <CardHeader>
+                            <CardTitle>AI Recommendation</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                             <Alert className="bg-primary/5">
+                                <AlertTitle className="font-bold text-lg text-primary">{recommendation.recommendation}</AlertTitle>
+                            </Alert>
+                            
+                            <div>
+                                <h4 className="font-semibold">Reasoning</h4>
+                                <p className="text-muted-foreground text-sm">{recommendation.reasoning}</p>
+                            </div>
+                            
+                             <div>
+                                <h4 className="font-semibold">Usage Instructions</h4>
+                                <p className="text-muted-foreground text-sm">{recommendation.usage}</p>
+                            </div>
+                             <p className="text-xs text-muted-foreground pt-4">
+                                Disclaimer: This is an AI-generated recommendation. Always verify with a local expert and read the product label before use.
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
+
+
+            </TabsContent>
+        </Tabs>
     </div>
   );
 }
