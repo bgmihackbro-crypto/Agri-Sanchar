@@ -61,16 +61,20 @@ export default function ChatbotPage() {
 
     const populateVoiceList = () => {
         const availableVoices = window.speechSynthesis.getVoices();
+        // Don't set if list is empty, wait for the event.
         if (availableVoices.length > 0) {
             setVoices(availableVoices);
+            // Voices are loaded, we can remove the event listener
+            window.speechSynthesis.onvoiceschanged = null;
         }
     };
     
-    // Voices may load asynchronously
     populateVoiceList();
-    window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
     
-    // Cleanup speech synthesis on component unmount or when navigating away
+    // Cleanup speech synthesis on component unmount
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -102,10 +106,11 @@ export default function ChatbotPage() {
     const targetLang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
-    // Try to find a higher quality voice
     let selectedVoice = null;
     if (targetLang === 'hi-IN') {
-        selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && (voice.name.includes('Google') || voice.name.includes('Rishi')));
+        // Prioritize Google voices, then Rishi.
+        selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
+                     || voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Rishi'));
     } else {
         selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google'));
     }
@@ -119,7 +124,7 @@ export default function ChatbotPage() {
     utterance.onerror = (e) => {
         console.error("Speech synthesis error", e);
         toast({ variant: 'destructive', title: "Speech Error", description: "Could not play the voice message." });
-        setNowPlayingMessageId(null); // Handle errors
+        setNowPlayingMessageId(null);
     }
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
@@ -144,7 +149,6 @@ export default function ChatbotPage() {
     e?.preventDefault();
     if ((!input.trim() && !imageFile) || isLoading) return;
 
-    // Stop any active recognition
     if (isRecording) {
       stopRecording();
     }
@@ -204,7 +208,6 @@ export default function ChatbotPage() {
           return;
       }
       
-      // Re-initialize on every start for robustness
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
@@ -222,7 +225,6 @@ export default function ChatbotPage() {
           setIsRecording(false);
           // Auto-submit if there's text after recording stops
           if (input.trim() || imageFile) {
-            // Using a timeout to ensure the final transcript is set before submitting
             setTimeout(() => handleSubmit(), 100);
           }
       };
