@@ -8,10 +8,10 @@ export const translations = {
         },
         login: {
             title: "Login",
-            enterPhone: "Enter your phone number to login. Test with 9876543210.",
+            enterPhone: "Enter your phone number to login. please use 9999999999 for test case",
             enterOtp: "Enter the test OTP to continue.",
             phoneLabel: "Phone Number",
-            phonePlaceholder: "9876543210",
+            phonePlaceholder: "9999999999",
             sendOtp: "Send OTP",
             sendingOtp: "Sending OTP...",
             otpLabel: "One-Time Password",
@@ -746,10 +746,10 @@ aiThinking: "AI is thinking...",
         },
         login: {
             title: "लॉग इन करें",
-            enterPhone: "लॉग इन करने के लिए अपना फ़ोन नंबर दर्ज करें। टेस्ट के लिए 9876543210 का उपयोग करें।",
+            enterPhone: "लॉग इन करने के लिए अपना फ़ोन नंबर दर्ज करें। कृपया टेस्ट केस के लिए 9999999999 का उपयोग करें।",
             enterOtp: "जारी रखने के लिए टेस्ट ओटीपी दर्ज करें।",
             phoneLabel: "फ़ोन नंबर",
-            phonePlaceholder: "9876543210",
+            phonePlaceholder: "9999999999",
             sendOtp: "ओटीपी भेजें",
             sendingOtp: "ओटीपी भेजा जा रहा है...",
             otpLabel: "वन-टाइम पासवर्ड",
@@ -1479,3 +1479,5 @@ aiThinking: "एआई सोच रहा है...",
 };
 
 export type Translations = typeof translations.English;
+
+    
