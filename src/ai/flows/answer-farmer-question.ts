@@ -293,11 +293,41 @@ You have access to the following information (RAG). Use it to answer common ques
       </WATER_CONSERVATION>
   </IRRIGATION_WATER_MANAGEMENT>
 
-  <SOIL_DATA>
-    - General Knowledge: Information from Indian Soil Health Card Data and the FAO Soil Database.
-    - Soil Types: Clay, Loam, Sandy, etc.
-    - Key Metrics: pH, organic matter, Nitrogen (N), Phosphorus (P), Potassium (K) levels.
-  </SOIL_DATA>
+  <SOIL_MANAGEMENT>
+    <SOIL_TESTING>
+        - Definition: A scientific analysis of a soil sample to determine its nutrient content, composition, and other characteristics like pH level.
+        - Importance: Helps farmers understand the fertility of their soil, avoid over/under-use of fertilizers, and improve crop yield. It is a key part of cost-effective and environmentally friendly farming.
+        - How to: Samples should be collected from multiple spots in a field to create a representative composite sample.
+    </SOIL_TESTING>
+    <SOIL_HEALTH_CARD>
+        - Definition: A government scheme in India that provides farmers with a report on the nutrient status of their soil along with recommendations on the appropriate dosage of nutrients to improve soil health and fertility.
+        - Content: The card displays the soil's status for 12 parameters: N, P, K (macronutrients); S (secondary-nutrient); Zn, Fe, Cu, Mn, Bo (micronutrients); and pH, EC, OC (physical parameters).
+    </SOIL_HEALTH_CARD>
+    <SOIL_FERTILITY>
+        - Definition: The ability of the soil to sustain agricultural plant growth, i.e., to provide plant habitat and result in sustained and consistent yields of high quality.
+        - NPK (Nitrogen, Phosphorus, Potassium): The three primary macronutrients essential for plant growth. Nitrogen is for leaf growth, Phosphorus for root, flower, and fruit development, and Potassium for overall plant health and disease resistance.
+        - Micronutrients: Nutrients required in smaller quantities but are still essential for plant growth, such as Zinc (Zn), Iron (Fe), Boron (B), and Manganese (Mn). Deficiencies can cause poor growth.
+    </SOIL_FERTILITY>
+    <PH_LEVEL>
+        - Definition: A measure of how acidic or alkaline the soil is. A pH of 7 is neutral. Below 7 is acidic, and above 7 is alkaline.
+        - Importance: Soil pH affects nutrient availability. Most crops prefer a pH range of 6.0 to 7.5.
+        - Management: Lime can be added to acidic soils to raise pH. Gypsum or organic matter can be used on alkaline soils to lower pH.
+    </PH_LEVEL>
+    <SOIL_MOISTURE>
+        - Definition: The water held in the spaces between soil particles.
+        - Importance: Essential for nutrient transport and photosynthesis. Proper soil moisture is critical for seed germination and plant growth.
+        - Conservation: Techniques like mulching, cover cropping, and adding organic matter can help retain soil moisture.
+    </SOIL_MOISTURE>
+    <SOIL_EROSION>
+        - Definition: The displacement of the upper layer of soil, a form of soil degradation. It is caused by agents such as water, wind, and tillage.
+        - Prevention: Contour farming, terracing, building check dams, and planting cover crops can help prevent soil erosion.
+    </SOIL_EROSION>
+    <LAND_PREPARATION>
+        - Definition: The process of preparing the land for sowing seeds or planting seedlings.
+        - Steps: Includes ploughing (tilling) to loosen the soil, levelling to ensure uniform water distribution, and manuring to improve fertility.
+        - Tillage: Can be conventional (deep ploughing) or conservation (minimum/zero tillage) which helps in conserving soil and water.
+    </LAND_PREPARATION>
+  </SOIL_MANAGEMENT>
 
   <WEATHER_CLIMATE_DATA>
     - General Knowledge: Access to real-time and historical weather data from APIs like OpenWeatherMap and agroclimatic data from NASA POWER.
@@ -416,4 +446,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     
 
     
+
 
