@@ -80,7 +80,9 @@ export default function ChatbotPage() {
         recognitionRef.current.stop();
       }
       window.speechSynthesis.cancel();
-      window.speechSynthesis.onvoiceschanged = null;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
     };
 
   }, []);
@@ -108,11 +110,14 @@ export default function ChatbotPage() {
 
     let selectedVoice = null;
     if (targetLang === 'hi-IN') {
-        // Prioritize Google voices, then Rishi.
+        // Prioritize Google voices, then Rishi for Hindi.
         selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
                      || voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Rishi'));
     } else {
-        selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google'));
+        // Prioritize high-quality female voices for English.
+        selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google') && voice.name.includes('Female')) 
+                     || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Samantha'))
+                     || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Female'));
     }
     
     if (selectedVoice) {
@@ -411,6 +416,8 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
 
