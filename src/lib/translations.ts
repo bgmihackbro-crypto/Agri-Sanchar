@@ -405,6 +405,132 @@ export const translations = {
                 failed: "Failed to Join",
                 unexpectedError: "An unexpected error occurred while trying to join.",
             }
+        },
+        soilTesting: {
+            title: "Soil Testing Center",
+            description: "Upload soil health reports for AI-powered analysis and recommendations.",
+            collectTitle: "How to Collect Soil Samples",
+            videoAlt: "Video on how to collect soil samples",
+            steps: {
+                area: {
+                    title: "Select a Representative Area",
+                    description: "Choose a spot that accurately represents your field. Avoid unusual areas like near fences, trees, or where fertilizer has been spilled."
+                },
+                dig: {
+                    title: "Dig and Collect the Sample",
+                    description: "Using a spade, clear any surface litter. Dig a 'V' shaped hole to a depth of 6 inches (15 cm). Take a uniform slice of soil."
+                },
+                composite: {
+                    title: "Create a Composite Sample",
+                    description: "Repeat the digging process in at least 8-10 different spots. Collect all the sub-samples in a clean bucket."
+                },
+                mix: {
+                    title: "Mix and Prepare Final Sample",
+                    description: "Break up any lumps, remove debris, and mix thoroughly. Air-dry the mixed soil in the shade, never in direct sunlight."
+                },
+                pack: {
+                    title: "Pack and Label Correctly",
+                    description: "From the dried sample, take about half a kilogram (500g). Pack it in a clean, labeled bag with your name, date, and field ID."
+                }
+            },
+            resourcesTitle: "Resources & Support",
+            findLabTitle: "Find a Lab Near You",
+            findLabDesc: "Click the button below to find an approved soil testing lab in your area using the official government portal.",
+            searchPortal: "Search Government Portal",
+            uploadTitle: "Upload & Analyze Report",
+            uploadDesc: "Select a PDF or image of your soil test report to begin.",
+            uploadPlaceholder: "Click or drag to upload",
+            uploadHint: "PDF, PNG, JPG up to 4MB",
+            uploadButton: "Upload & Analyze",
+            analyzing: "Analyzing...",
+            cancel: "Cancel",
+            history: "Report History",
+            analysisTitle: "Analysis & Recommendations",
+            analysisDesc: (filename: string) => `Showing results for ${filename}`,
+            analysisPlaceholder: "Select or upload a report to see AI-powered insights.",
+            analysisLoading: "AI is analyzing your report. This may take a moment...",
+            analysisFailed: "Analysis Failed",
+
+            results: {
+                metrics: "Key Metrics",
+                crops: "Crop Suitability",
+                fertilizer: "Fertilizer Recommendations"
+            },
+            calculator: {
+                title: "Fertilizer Calculator",
+                description: "Get a customized fertilizer dosage for your specific crop and area.",
+                areaLabel: "Farm Area (acres)",
+                areaPlaceholder: "e.g., 2.5",
+                cropLabel: "Crop Type",
+                cropPlaceholder: "Select crop",
+                calculating: "Calculating required dosage...",
+                calculateButton: "Calculate Required Dosage",
+                dosageTitle: (area: string, crop: string) => `Calculated Dosage for ${area} acres of ${crop}`
+            },
+            toast: {
+                largeFile: "File Too Large",
+                largeFileDesc: "Please upload a file smaller than 4MB.",
+                uploadFailed: "Upload Failed",
+                uploadFailedDesc: "Could not process the file.",
+                analysisComplete: "Analysis Complete",
+                analysisCompleteDesc: (filename: string) => `Successfully analyzed ${filename}.`,
+                analysisFailed: "Analysis Failed",
+                missingInfo: "Missing Information",
+                missingInfoDesc: "Please ensure a report is analyzed and fill in both area and crop type.",
+                calculationComplete: "Calculation Complete",
+                calculationCompleteDesc: "Fertilizer dosage has been calculated.",
+                calculationFailed: "Calculation Failed",
+                calculationFailedDesc: "Could not calculate fertilizer dosage."
+            }
+        },
+        pesticideGuide: {
+            title: "Pesticide Guide",
+            description: "Find information on common organic and chemical pesticides.",
+            directory: "Pesticide Directory",
+            wizard: "AI Wizard",
+            searchPlaceholder: "Search for a pesticide...",
+            filterType: "Filter by Type",
+            allTypes: "All Types",
+            organic: "Organic",
+            chemical: "Chemical",
+            filterTarget: "Filter by Target",
+            allTargets: "All Targets",
+            insecticide: "Insecticide",
+            fungicide: "Fungicide",
+            herbicide: "Herbicide",
+            monitoring: "Insect Monitoring",
+            bactericide: "Bactericide",
+            acaricide: "Acaricide",
+            filterCrop: "Filter by Crop",
+            allCrops: "All Crops",
+            noPesticidesFound: "No pesticides found matching your criteria.",
+            viewDetails: "View Details",
+            wizardTitle: "AI Recommendation Wizard",
+            wizardDesc: "Describe your problem, and our AI will suggest a suitable pesticide from our guide.",
+            cropPlaceholder: "Enter Crop Name (e.g., Cotton)",
+            problemPlaceholder: "Describe the problem you see on your crop... For example: 'The leaves are turning yellow and have small white insects underneath.'",
+            getRecommendation: "Get AI Recommendation",
+            analyzing: "Analyzing...",
+            aiThinking: "AI is thinking...",
+            aiRecommendation: "AI Recommendation",
+            reasoning: "Reasoning",
+            usage: "Usage Instructions",
+            disclaimer: "This is an AI-generated recommendation. Always verify with a local expert and read the product label before use.",
+            dialog: {
+                details: "Details",
+                precautions: "Safety Precautions",
+                phi: "Pre-Harvest Interval (PHI)",
+                advantages: "Advantages",
+                disadvantages: "Disadvantages",
+                activeIngredient: "Active Ingredient",
+                recommendedFor: "Recommended For",
+                dosage: "Dosage & Application",
+                disclaimer: "Disclaimer: Always read and follow the manufacturer's label for instructions and safety precautions before use."
+            },
+            toast: {
+                missingInfo: "Missing Information",
+                missingInfoDesc: "Please enter both a crop and a problem description.",
+            }
         }
     },
     Hindi: {
@@ -811,10 +937,133 @@ export const translations = {
                 failed: "शामिल होने में विफल",
                 unexpectedError: "शामिल होने का प्रयास करते समय एक अप्रत्याशित त्रुटि हुई।",
             }
+        },
+        soilTesting: {
+            title: "मिट्टी परीक्षण केंद्र",
+            description: "एआई-संचालित विश्लेषण और सिफारिशों के लिए मिट्टी स्वास्थ्य रिपोर्ट अपलोड करें।",
+            collectTitle: "मिट्टी के नमूने कैसे एकत्र करें",
+            videoAlt: "मिट्टी के नमूने कैसे एकत्र करें पर वीडियो",
+            steps: {
+                area: {
+                    title: "एक प्रतिनिधि क्षेत्र चुनें",
+                    description: "एक ऐसा स्थान चुनें जो आपके खेत का सटीक प्रतिनिधित्व करता हो। बाड़, पेड़ों या जहां उर्वरक गिरा हो, जैसे असामान्य क्षेत्रों से बचें।"
+                },
+                dig: {
+                    title: "नमूना खोदें और एकत्र करें",
+                    description: "एक फावड़े का उपयोग करके, किसी भी सतही कूड़े को साफ करें। 6 इंच (15 सेमी) की गहराई तक 'V' आकार का छेद खोदें। मिट्टी का एक समान टुकड़ा लें।"
+                },
+                composite: {
+                    title: "एक समग्र नमूना बनाएं",
+                    description: "कम से कम 8-10 अलग-अलग स्थानों पर खुदाई की प्रक्रिया दोहराएं। सभी उप-नमूनों को एक साफ बाल्टी में इकट्ठा करें।"
+                },
+                mix: {
+                    title: "अंतिम नमूना मिलाएं और तैयार करें",
+                    description: "किसी भी गांठ को तोड़ें, मलबा हटाएं, और अच्छी तरह मिलाएं। मिली हुई मिट्टी को छाया में सुखाएं, कभी भी सीधी धूप में नहीं।"
+                },
+                pack: {
+                    title: "सही ढंग से पैक और लेबल करें",
+                    description: "सूखे नमूने से, लगभग आधा किलोग्राम (500 ग्राम) लें। इसे अपने नाम, तारीख और खेत की आईडी के साथ एक साफ, लेबल वाले बैग में पैक करें।"
+                }
+            },
+            resourcesTitle: "संसाधन और सहायता",
+            findLabTitle: "अपने पास एक लैब खोजें",
+            findLabDesc: "आधिकारिक सरकारी पोर्टल का उपयोग करके अपने क्षेत्र में एक अनुमोदित मिट्टी परीक्षण प्रयोगशाला खोजने के लिए नीचे दिए गए बटन पर क्लिक करें।",
+            searchPortal: "सरकारी पोर्टल खोजें",
+            uploadTitle: "रिपोर्ट अपलोड और विश्लेषण करें",
+            uploadDesc: "शुरू करने के लिए अपनी मिट्टी परीक्षण रिपोर्ट की एक पीडीएफ या छवि का चयन करें।",
+            uploadPlaceholder: "अपलोड करने के लिए क्लिक करें या खींचें",
+            uploadHint: "4MB तक की PDF, PNG, JPG",
+            uploadButton: "अपलोड और विश्लेषण करें",
+            analyzing: "विश्लेषण हो रहा है...",
+            cancel: "रद्द करें",
+            history: "रिपोर्ट इतिहास",
+            analysisTitle: "विश्लेषण और सिफारिशें",
+            analysisDesc: (filename: string) => `${filename} के लिए परिणाम दिखाए जा रहे हैं`,
+            analysisPlaceholder: "एआई-संचालित अंतर्दृष्टि देखने के लिए एक रिपोर्ट चुनें या अपलोड करें।",
+            analysisLoading: "एआई आपकी रिपोर्ट का विश्लेषण कर रहा है। इसमें कुछ समय लग सकता है...",
+            analysisFailed: "विश्लेषण विफल",
+            results: {
+                metrics: "मुख्य मीट्रिक्स",
+                crops: "फसल उपयुक्तता",
+                fertilizer: "उर्वरक सिफारिशें"
+            },
+            calculator: {
+                title: "उर्वरक कैलकुलेटर",
+                description: "अपनी विशिष्ट फसल और क्षेत्र के लिए एक अनुकूलित उर्वरक खुराक प्राप्त करें।",
+                areaLabel: "खेत का क्षेत्रफल (एकड़)",
+                areaPlaceholder: "उदा., 2.5",
+                cropLabel: "फसल का प्रकार",
+                cropPlaceholder: "फसल चुनें",
+                calculating: "आवश्यक खुराक की गणना की जा रही है...",
+                calculateButton: "आवश्यक खुराक की गणना करें",
+                dosageTitle: (area: string, crop: string) => `${area} एकड़ ${crop} के लिए परिकलित खुराक`
+            },
+            toast: {
+                largeFile: "फ़ाइल बहुत बड़ी है",
+                largeFileDesc: "कृपया 4MB से छोटी फ़ाइल अपलोड करें।",
+                uploadFailed: "अपलोड विफल",
+                uploadFailedDesc: "फ़ाइल को संसाधित नहीं किया जा सका।",
+                analysisComplete: "विश्लेषण पूर्ण",
+                analysisCompleteDesc: (filename: string) => `${filename} का सफलतापूर्वक विश्लेषण किया गया।`,
+                analysisFailed: "विश्लेषण विफल",
+                missingInfo: "अधूरी जानकारी",
+                missingInfoDesc: "कृपया सुनिश्चित करें कि एक रिपोर्ट का विश्लेषण किया गया है और क्षेत्र और फसल प्रकार दोनों भरें।",
+                calculationComplete: "गणना पूर्ण",
+                calculationCompleteDesc: "उर्वरक खुराक की गणना की गई है।",
+                calculationFailed: "गणना विफल",
+                calculationFailedDesc: "उर्वरक खुराक की गणना नहीं की जा सकी।"
+            }
+        },
+        pesticideGuide: {
+            title: "कीटनाशक गाइड",
+            description: "सामान्य जैविक और रासायनिक कीटनाशकों पर जानकारी प्राप्त करें।",
+            directory: "कीटनाशक निर्देशिका",
+            wizard: "एआई विज़ार्ड",
+            searchPlaceholder: "एक कीटनाशक खोजें...",
+            filterType: "प्रकार के अनुसार फ़िल्टर करें",
+            allTypes: "सभी प्रकार",
+            organic: "जैविक",
+            chemical: "रासायनिक",
+            filterTarget: "लक्ष्य के अनुसार फ़िल्टर करें",
+            allTargets: "सभी लक्ष्य",
+            insecticide: "कीटनाशक",
+            fungicide: "कवकनाशी",
+            herbicide: "शाकनाशी",
+            monitoring: "कीट निगरानी",
+            bactericide: "जीवाणुनाशक",
+            acaricide: "माइटicide",
+            filterCrop: "फसल के अनुसार फ़िल्टर करें",
+            allCrops: "सभी फसलें",
+            noPesticidesFound: "आपके मानदंडों से मेल खाने वाला कोई कीटनाशक नहीं मिला।",
+            viewDetails: "विवरण देखें",
+            wizardTitle: "एआई सिफारिश विज़ार्ड",
+            wizardDesc: "अपनी समस्या का वर्णन करें, और हमारा एआई हमारे गाइड से एक उपयुक्त कीटनाशक का सुझाव देगा।",
+            cropPlaceholder: "फसल का नाम दर्ज करें (उदा., कपास)",
+            problemPlaceholder: "अपनी फसल पर दिखने वाली समस्या का वर्णन करें... उदाहरण के लिए: 'पत्तियां पीली हो रही हैं और नीचे छोटे सफेद कीड़े हैं।'",
+            getRecommendation: "एआई सिफारिश प्राप्त करें",
+            analyzing: "विश्लेषण हो रहा है...",
+            aiThinking: "एआई सोच रहा है...",
+            aiRecommendation: "एआई सिफारिश",
+            reasoning: "तर्क",
+            usage: "उपयोग निर्देश",
+            disclaimer: "यह एक एआई-जनित सिफारिश है। उपयोग करने से पहले हमेशा एक स्थानीय विशेषज्ञ से सत्यापित करें और उत्पाद लेबल पढ़ें।",
+            dialog: {
+                details: "विवरण",
+                precautions: "सुरक्षा सावधानियां",
+                phi: "कटाई-पूर्व अंतराल (PHI)",
+                advantages: "लाभ",
+                disadvantages: "नुकसान",
+                activeIngredient: "सक्रिय संघटक",
+                recommendedFor: "के लिए अनुशंसित",
+                dosage: "खुराक और अनुप्रयोग",
+                disclaimer: "अस्वीकरण: उपयोग से पहले निर्देशों और सुरक्षा सावधानियों के लिए हमेशा निर्माता के लेबल को पढ़ें और उसका पालन करें।"
+            },
+            toast: {
+                missingInfo: "अधूरी जानकारी",
+                missingInfoDesc: "कृपया फसल और समस्या का विवरण दोनों दर्ज करें।",
+            }
         }
     }
 };
 
 export type Translations = typeof translations.English;
-
-    

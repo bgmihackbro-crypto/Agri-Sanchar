@@ -20,6 +20,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { recommendPesticide, type PesticideRecommendationOutput } from "@/ai/flows/recommend-pesticide";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/use-translation";
 
 
 const pesticideData = [
@@ -335,19 +336,19 @@ const pesticideData = [
 
 type Pesticide = (typeof pesticideData)[0];
 
-const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
+const DetailDialog = ({ pesticide, t }: { pesticide: Pesticide, t: any }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="mt-auto w-full">
-                    <Info className="mr-2 h-4 w-4" /> View Details
+                    <Info className="mr-2 h-4 w-4" /> {t.pesticideGuide.viewDetails}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-headline">{pesticide.name}</DialogTitle>
                     <div className="flex flex-wrap gap-2 pt-1">
-                        <Badge className={pesticide.color}>{pesticide.type}</Badge>
+                        <Badge className={pesticide.color}>{pesticide.type === "Organic" ? t.pesticideGuide.organic : t.pesticideGuide.chemical}</Badge>
                         <Badge variant="secondary">{pesticide.target}</Badge>
                     </div>
                 </DialogHeader>
@@ -355,7 +356,7 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                     <p className="text-sm text-foreground">{pesticide.description}</p>
 
                      <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                        <h4 className="font-semibold text-yellow-900 flex items-center gap-2"><ShieldAlert className="h-5 w-5"/>Safety Precautions</h4>
+                        <h4 className="font-semibold text-yellow-900 flex items-center gap-2"><ShieldAlert className="h-5 w-5"/>{t.pesticideGuide.dialog.precautions}</h4>
                         <ul className="space-y-1.5 text-sm text-yellow-800 list-disc pl-5 mt-2">
                             {pesticide.safetyPrecautions.map((adv, i) => (
                                 <li key={i}>{adv}</li>
@@ -364,12 +365,12 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                     </div>
 
                      <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                        <h4 className="font-semibold text-blue-900 flex items-center gap-2"><Timer className="h-5 w-5"/>Pre-Harvest Interval (PHI)</h4>
+                        <h4 className="font-semibold text-blue-900 flex items-center gap-2"><Timer className="h-5 w-5"/>{t.pesticideGuide.dialog.phi}</h4>
                         <p className="text-sm text-blue-800 mt-1">{pesticide.preHarvestInterval}</p>
                     </div>
                     
                     <div className="space-y-2">
-                        <h4 className="font-semibold">Advantages</h4>
+                        <h4 className="font-semibold">{t.pesticideGuide.dialog.advantages}</h4>
                         <ul className="space-y-1.5 text-sm">
                             {pesticide.advantages.map((adv, i) => (
                                 <li key={i} className="flex items-start gap-2">
@@ -381,7 +382,7 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                     </div>
 
                      <div className="space-y-2">
-                        <h4 className="font-semibold">Disadvantages</h4>
+                        <h4 className="font-semibold">{t.pesticideGuide.dialog.disadvantages}</h4>
                         <ul className="space-y-1.5 text-sm">
                             {pesticide.disadvantages.map((dis, i) => (
                                 <li key={i} className="flex items-start gap-2">
@@ -393,20 +394,20 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
                     </div>
                     
                     <div className="space-y-2">
-                        <h4 className="font-semibold">Active Ingredient</h4>
+                        <h4 className="font-semibold">{t.pesticideGuide.dialog.activeIngredient}</h4>
                         <p className="text-sm">{pesticide.activeIngredient}</p>
                     </div>
                     <div className="space-y-2">
-                        <h4 className="font-semibold">Recommended For</h4>
+                        <h4 className="font-semibold">{t.pesticideGuide.dialog.recommendedFor}</h4>
                         <p className="text-sm">{pesticide.crops.join(", ")}</p>
                     </div>
                     <div className="space-y-2">
-                        <h4 className="font-semibold">Dosage & Application</h4>
+                        <h4 className="font-semibold">{t.pesticideGuide.dialog.dosage}</h4>
                         <p className="text-sm">{pesticide.dosage}</p>
                     </div>
                      <div className="!mt-6">
                         <p className="text-xs text-destructive font-semibold">
-                            Disclaimer: Always read and follow the manufacturer's label for instructions and safety precautions before use.
+                            {t.pesticideGuide.dialog.disclaimer}
                         </p>
                     </div>
                 </div>
@@ -428,6 +429,7 @@ export default function PesticideGuidePage() {
   const [recommendation, setRecommendation] = useState<PesticideRecommendationOutput | null>(null);
   const [recommendationError, setRecommendationError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const allCrops = ["all", ...Array.from(new Set(pesticideData.flatMap(p => p.crops)))].sort();
 
@@ -451,7 +453,7 @@ export default function PesticideGuidePage() {
 
   const handleGetRecommendation = async () => {
     if (!wizardCrop || !wizardProblem) {
-        toast({ variant: 'destructive', title: 'Missing Information', description: 'Please enter both a crop and a problem description.' });
+        toast({ variant: 'destructive', title: t.pesticideGuide.toast.missingInfo, description: t.pesticideGuide.toast.missingInfoDesc });
         return;
     }
     setIsRecommending(true);
@@ -475,16 +477,16 @@ export default function PesticideGuidePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Pesticide Guide</h1>
+        <h1 className="text-3xl font-bold font-headline">{t.pesticideGuide.title}</h1>
         <p className="text-muted-foreground">
-          Find information on common organic and chemical pesticides.
+          {t.pesticideGuide.description}
         </p>
       </div>
 
        <Tabs defaultValue="directory" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="directory"><Search className="mr-2 h-4 w-4"/>Pesticide Directory</TabsTrigger>
-                <TabsTrigger value="wizard"><Wand2 className="mr-2 h-4 w-4"/>AI Wizard</TabsTrigger>
+                <TabsTrigger value="directory"><Search className="mr-2 h-4 w-4"/>{t.pesticideGuide.directory}</TabsTrigger>
+                <TabsTrigger value="wizard"><Wand2 className="mr-2 h-4 w-4"/>{t.pesticideGuide.wizard}</TabsTrigger>
             </TabsList>
             <TabsContent value="directory" className="pt-4">
                  <Card>
@@ -492,7 +494,7 @@ export default function PesticideGuidePage() {
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                        placeholder="Search for a pesticide..."
+                        placeholder={t.pesticideGuide.searchPlaceholder}
                         className="pl-9"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -501,35 +503,35 @@ export default function PesticideGuidePage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Select onValueChange={setFilterType} value={filterType}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Filter by Type" />
+                            <SelectValue placeholder={t.pesticideGuide.filterType} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
-                            <SelectItem value="Organic">Organic</SelectItem>
-                            <SelectItem value="Chemical">Chemical</SelectItem>
+                            <SelectItem value="all">{t.pesticideGuide.allTypes}</SelectItem>
+                            <SelectItem value="Organic">{t.pesticideGuide.organic}</SelectItem>
+                            <SelectItem value="Chemical">{t.pesticideGuide.chemical}</SelectItem>
                         </SelectContent>
                         </Select>
                         <Select onValueChange={setFilterTarget} value={filterTarget}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Filter by Target" />
+                            <SelectValue placeholder={t.pesticideGuide.filterTarget} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Targets</SelectItem>
-                            <SelectItem value="Insecticide">Insecticide</SelectItem>
-                            <SelectItem value="Fungicide">Fungicide</SelectItem>
-                            <SelectItem value="Herbicide">Herbicide</SelectItem>
-                            <SelectItem value="Insect Monitoring">Insect Monitoring</SelectItem>
-                            <SelectItem value="Bactericide">Bactericide</SelectItem>
-                            <SelectItem value="Acaricide">Acaricide</SelectItem>
+                            <SelectItem value="all">{t.pesticideGuide.allTargets}</SelectItem>
+                            <SelectItem value="Insecticide">{t.pesticideGuide.insecticide}</SelectItem>
+                            <SelectItem value="Fungicide">{t.pesticideGuide.fungicide}</SelectItem>
+                            <SelectItem value="Herbicide">{t.pesticideGuide.herbicide}</SelectItem>
+                            <SelectItem value="Insect Monitoring">{t.pesticideGuide.monitoring}</SelectItem>
+                            <SelectItem value="Bactericide">{t.pesticideGuide.bactericide}</SelectItem>
+                            <SelectItem value="Acaricide">{t.pesticideGuide.acaricide}</SelectItem>
                         </SelectContent>
                         </Select>
                         <Select onValueChange={setFilterCrop} value={filterCrop}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Filter by Crop" />
+                            <SelectValue placeholder={t.pesticideGuide.filterCrop} />
                         </SelectTrigger>
                         <SelectContent>
                             {allCrops.map(crop => (
-                                <SelectItem key={crop} value={crop}>{crop === 'all' ? 'All Crops' : crop}</SelectItem>
+                                <SelectItem key={crop} value={crop}>{crop === 'all' ? t.pesticideGuide.allCrops : crop}</SelectItem>
                             ))}
                         </SelectContent>
                         </Select>
@@ -549,7 +551,7 @@ export default function PesticideGuidePage() {
                                     </div>
                                 </div>
                                 <CardDescription className="flex gap-2 pt-1">
-                                    <Badge variant="outline">{pesticide.type}</Badge>
+                                    <Badge variant="outline">{pesticide.type === "Organic" ? t.pesticideGuide.organic : t.pesticideGuide.chemical}</Badge>
                                     <Badge variant="secondary">{pesticide.target}</Badge>
                                 </CardDescription>
                             </CardHeader>
@@ -559,14 +561,14 @@ export default function PesticideGuidePage() {
                             </p>
                             </CardContent>
                             <CardFooter>
-                            <DetailDialog pesticide={pesticide} />
+                            <DetailDialog pesticide={pesticide} t={t.pesticideGuide} />
                             </CardFooter>
                         </Card>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-16">
-                        <p className="text-muted-foreground">No pesticides found matching your criteria.</p>
+                        <p className="text-muted-foreground">{t.pesticideGuide.noPesticidesFound}</p>
                     </div>
                 )}
 
@@ -574,20 +576,20 @@ export default function PesticideGuidePage() {
             <TabsContent value="wizard" className="pt-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>AI Recommendation Wizard</CardTitle>
-                        <CardDescription>Describe your problem, and our AI will suggest a suitable pesticide from our guide.</CardDescription>
+                        <CardTitle>{t.pesticideGuide.wizardTitle}</CardTitle>
+                        <CardDescription>{t.pesticideGuide.wizardDesc}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
-                                placeholder="Enter Crop Name (e.g., Cotton)"
+                                placeholder={t.pesticideGuide.cropPlaceholder}
                                 value={wizardCrop}
                                 onChange={(e) => setWizardCrop(e.target.value)}
                                 disabled={isRecommending}
                             />
                         </div>
                         <Textarea
-                            placeholder="Describe the problem you see on your crop... For example: 'The leaves are turning yellow and have small white insects underneath.'"
+                            placeholder={t.pesticideGuide.problemPlaceholder}
                             rows={4}
                             value={wizardProblem}
                             onChange={(e) => setWizardProblem(e.target.value)}
@@ -597,7 +599,7 @@ export default function PesticideGuidePage() {
                     <CardFooter>
                         <Button onClick={handleGetRecommendation} disabled={isRecommending || !wizardCrop || !wizardProblem}>
                             {isRecommending ? <Spinner className="mr-2 h-4 w-4"/> : <Bot className="mr-2 h-4 w-4"/>}
-                            {isRecommending ? "Analyzing..." : "Get AI Recommendation"}
+                            {isRecommending ? t.pesticideGuide.analyzing : t.pesticideGuide.getRecommendation}
                         </Button>
                     </CardFooter>
                 </Card>
@@ -605,7 +607,7 @@ export default function PesticideGuidePage() {
                 {isRecommending && (
                      <div className="text-center py-16">
                         <Spinner className="h-8 w-8 text-primary"/>
-                        <p className="mt-2 text-muted-foreground">AI is thinking...</p>
+                        <p className="mt-2 text-muted-foreground">{t.pesticideGuide.aiThinking}</p>
                     </div>
                 )}
 
@@ -619,7 +621,7 @@ export default function PesticideGuidePage() {
                 {recommendation && (
                     <Card className="mt-6 animate-fade-in">
                         <CardHeader>
-                            <CardTitle>AI Recommendation</CardTitle>
+                            <CardTitle>{t.pesticideGuide.aiRecommendation}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                              <Alert className="bg-primary/5">
@@ -627,16 +629,16 @@ export default function PesticideGuidePage() {
                             </Alert>
                             
                             <div>
-                                <h4 className="font-semibold">Reasoning</h4>
+                                <h4 className="font-semibold">{t.pesticideGuide.reasoning}</h4>
                                 <p className="text-muted-foreground text-sm">{recommendation.reasoning}</p>
                             </div>
                             
                              <div>
-                                <h4 className="font-semibold">Usage Instructions</h4>
+                                <h4 className="font-semibold">{t.pesticideGuide.usage}</h4>
                                 <p className="text-muted-foreground text-sm">{recommendation.usage}</p>
                             </div>
                              <p className="text-xs text-muted-foreground pt-4">
-                                Disclaimer: This is an AI-generated recommendation. Always verify with a local expert and read the product label before use.
+                                {t.pesticideGuide.disclaimer}
                             </p>
                         </CardContent>
                     </Card>

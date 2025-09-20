@@ -49,6 +49,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
+import { useTranslation } from '@/hooks/use-translation';
 
 
 type SoilReport = {
@@ -95,6 +96,7 @@ export default function SoilTestingPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   useEffect(() => {
     const profile = localStorage.getItem('userProfile');
@@ -116,7 +118,7 @@ export default function SoilTestingPage() {
     const file = event.target.files?.[0];
     if (file) {
         if(file.size > 4 * 1024 * 1024) { // 4MB limit
-            toast({ variant: 'destructive', title: 'File Too Large', description: 'Please upload a file smaller than 4MB.' });
+            toast({ variant: 'destructive', title: t.soilTesting.toast.largeFile, description: t.soilTesting.toast.largeFileDesc });
             return;
         }
       setSelectedFile(file);
@@ -151,14 +153,14 @@ export default function SoilTestingPage() {
       try {
         analysisResult = await analyzeSoilReport({ reportDataUri: fileUrl });
          toast({
-            title: 'Analysis Complete',
-            description: `Successfully analyzed ${newReport.fileName}.`,
+            title: t.soilTesting.toast.analysisComplete,
+            description: t.soilTesting.toast.analysisCompleteDesc(newReport.fileName),
         });
       } catch (e: any) {
         analysisError = e.message || "Failed to analyze the report.";
          toast({
             variant: 'destructive',
-            title: 'Analysis Failed',
+            title: t.soilTesting.toast.analysisFailed,
             description: analysisError,
         });
       }
@@ -167,7 +169,7 @@ export default function SoilTestingPage() {
 
     } catch (error) {
       console.error('File upload error:', error);
-      toast({ variant: 'destructive', title: 'Upload Failed', description: 'Could not process the file.' });
+      toast({ variant: 'destructive', title: t.soilTesting.toast.uploadFailed, description: t.soilTesting.toast.uploadFailedDesc });
     } finally {
       setIsLoading(false);
       setSelectedFile(null);
@@ -177,7 +179,7 @@ export default function SoilTestingPage() {
   
   const handleCalculateDosage = async () => {
     if (!activeReport?.analysis || !farmArea || !cropType) {
-        toast({ variant: 'destructive', title: 'Missing Information', description: 'Please ensure a report is analyzed and fill in both area and crop type.'});
+        toast({ variant: 'destructive', title: t.soilTesting.toast.missingInfo, description: t.soilTesting.toast.missingInfoDesc});
         return;
     }
 
@@ -192,10 +194,10 @@ export default function SoilTestingPage() {
             cropType: cropType,
         });
         setCalculationResult(result);
-        toast({ title: 'Calculation Complete', description: 'Fertilizer dosage has been calculated.'});
+        toast({ title: t.soilTesting.toast.calculationComplete, description: t.soilTesting.toast.calculationCompleteDesc});
     } catch (e: any) {
         setCalculationError(e.message || 'An unexpected error occurred.');
-        toast({ variant: 'destructive', title: 'Calculation Failed', description: e.message || 'Could not calculate fertilizer dosage.'});
+        toast({ variant: 'destructive', title: t.soilTesting.toast.calculationFailed, description: e.message || t.soilTesting.toast.calculationFailedDesc});
     } finally {
         setIsCalculating(false);
     }
@@ -209,37 +211,37 @@ export default function SoilTestingPage() {
   const instructionSteps = [
     {
       icon: Map,
-      title: "Select a Representative Area",
-      description: "Choose a spot that accurately represents your field. Avoid unusual areas like near fences, trees, or where fertilizer has been spilled.",
+      title: t.soilTesting.steps.area.title,
+      description: t.soilTesting.steps.area.description,
     },
     {
       icon: Shovel,
-      title: "Dig and Collect the Sample",
-      description: "Using a spade, clear any surface litter. Dig a 'V' shaped hole to a depth of 6 inches (15 cm). Take a uniform slice of soil.",
+      title: t.soilTesting.steps.dig.title,
+      description: t.soilTesting.steps.dig.description,
     },
     {
       icon: Box,
-      title: "Create a Composite Sample",
-      description: "Repeat the digging process in at least 8-10 different spots. Collect all the sub-samples in a clean bucket.",
+      title: t.soilTesting.steps.composite.title,
+      description: t.soilTesting.steps.composite.description,
     },
     {
       icon: Combine,
-      title: "Mix and Prepare Final Sample",
-      description: "Break up any lumps, remove debris, and mix thoroughly. Air-dry the mixed soil in the shade, never in direct sunlight.",
+      title: t.soilTesting.steps.mix.title,
+      description: t.soilTesting.steps.mix.description,
     },
      {
       icon: Tag,
-      title: "Pack and Label Correctly",
-      description: "From the dried sample, take about half a kilogram (500g). Pack it in a clean, labeled bag with your name, date, and field ID.",
+      title: t.soilTesting.steps.pack.title,
+      description: t.soilTesting.steps.pack.description,
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-headline">Soil Testing Center</h1>
+        <h1 className="text-3xl font-bold font-headline">{t.soilTesting.title}</h1>
         <p className="text-muted-foreground">
-          Upload soil health reports for AI-powered analysis and recommendations.
+          {t.soilTesting.description}
         </p>
       </div>
 
@@ -250,14 +252,14 @@ export default function SoilTestingPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">1</span>
-                        How to Collect Soil Samples
+                        {t.soilTesting.collectTitle}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <Link href="https://youtu.be/T_0N__RsNBg" target="_blank" rel="noopener noreferrer" className="block relative group">
                         <Image 
                             src="https://img.youtube.com/vi/T_0N__RsNBg/hqdefault.jpg" 
-                            alt="Video on how to collect soil samples"
+                            alt={t.soilTesting.videoAlt}
                             width={1280}
                             height={720}
                             className="rounded-lg w-full aspect-video object-cover"
@@ -284,21 +286,21 @@ export default function SoilTestingPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Resources & Support</CardTitle>
+                    <CardTitle>{t.soilTesting.resourcesTitle}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full" defaultValue="labs">
                         <AccordionItem value="labs">
-                            <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
+                            <AccordionTrigger><Building className="h-4 w-4 mr-2"/>{t.soilTesting.findLabTitle}</AccordionTrigger>
                             <AccordionContent>
                                 <div className="space-y-3 pt-2">
                                   <p className="text-sm text-muted-foreground">
-                                    Click the button below to find an approved soil testing lab in your area using the official government portal.
+                                    {t.soilTesting.findLabDesc}
                                   </p>
                                    <Button variant="outline" size="sm" asChild className="w-full">
                                       <Link href="https://soilhealth.dac.gov.in/soilTestingLabs" target="_blank" rel="noopener noreferrer">
                                         <ExternalLink className="mr-2 h-4 w-4" />
-                                        Search Government Portal
+                                        {t.soilTesting.searchPortal}
                                     </Link>
                                  </Button>
                                 </div>
@@ -316,9 +318,9 @@ export default function SoilTestingPage() {
                 <CardHeader>
                    <CardTitle className="flex items-center gap-2">
                         <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">2</span>
-                        Upload & Analyze Report
+                        {t.soilTesting.uploadTitle}
                     </CardTitle>
-                    <CardDescription>Select a PDF or image of your soil test report to begin.</CardDescription>
+                    <CardDescription>{t.soilTesting.uploadDesc}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div 
@@ -341,8 +343,8 @@ export default function SoilTestingPage() {
                          ) : (
                              <div className="text-center">
                                 <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-                                <p className="mt-2 text-sm text-muted-foreground">Click or drag to upload</p>
-                                <p className="text-xs text-muted-foreground">PDF, PNG, JPG up to 4MB</p>
+                                <p className="mt-2 text-sm text-muted-foreground">{t.soilTesting.uploadPlaceholder}</p>
+                                <p className="text-xs text-muted-foreground">{t.soilTesting.uploadHint}</p>
                             </div>
                          )}
                     </div>
@@ -350,18 +352,18 @@ export default function SoilTestingPage() {
                 <CardFooter className="flex flex-col gap-2">
                      <Button className="w-full" onClick={handleUploadAndAnalyze} disabled={!selectedFile || isLoading}>
                         {isLoading ? <Spinner className="mr-2 h-4 w-4" /> : <FlaskConical className="mr-2 h-4 w-4" />}
-                        {isLoading ? 'Analyzing...' : 'Upload & Analyze'}
+                        {isLoading ? t.soilTesting.analyzing : t.soilTesting.uploadButton}
                      </Button>
                      {selectedFile && (
                         <Button className="w-full" variant="ghost" onClick={() => setSelectedFile(null)}>
-                            <X className="mr-2 h-4 w-4" /> Cancel
+                            <X className="mr-2 h-4 w-4" /> {t.soilTesting.cancel}
                         </Button>
                      )}
                 </CardFooter>
                   {reports.length > 0 && (
                     <div className="border-t mt-4">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-base">Report History</CardTitle>
+                            <CardTitle className="text-base">{t.soilTesting.history}</CardTitle>
                         </CardHeader>
                         <CardContent>
                              <div className="space-y-2">
@@ -388,33 +390,33 @@ export default function SoilTestingPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">3</span>
-                        Analysis & Recommendations
+                        {t.soilTesting.analysisTitle}
                     </CardTitle>
                     <CardDescription>
-                        {activeReport ? `Showing results for ${activeReport.fileName}`: "Select or upload a report to see AI-powered insights."}
+                        {activeReport ? t.soilTesting.analysisDesc(activeReport.fileName): t.soilTesting.analysisPlaceholder}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     {!activeReport ? (
                          <div className="flex flex-col items-center justify-center h-64 text-center">
                             <FlaskConical className="h-16 w-16 text-muted-foreground/50"/>
-                            <p className="mt-4 text-muted-foreground">Your report analysis will appear here.</p>
+                            <p className="mt-4 text-muted-foreground">{t.soilTesting.analysisPlaceholder}</p>
                         </div>
                     ) : isLoading && activeReportId === activeReport.id && !activeReport.analysis && !activeReport.analysisError ? (
                         <div className="flex flex-col items-center justify-center h-64 text-center">
                             <Spinner className="h-12 w-12" />
-                            <p className="mt-4 text-muted-foreground">AI is analyzing your report. This may take a moment...</p>
+                            <p className="mt-4 text-muted-foreground">{t.soilTesting.analysisLoading}</p>
                         </div>
                     ) : activeReport.analysisError ? (
                          <div className="flex flex-col items-center justify-center h-64 text-center text-destructive p-4 bg-destructive/5 rounded-lg">
                             <AlertTriangle className="h-16 w-16"/>
-                            <p className="mt-4 font-semibold">Analysis Failed</p>
+                            <p className="mt-4 font-semibold">{t.soilTesting.analysisFailed}</p>
                             <p className="mt-2 text-sm">{activeReport.analysisError}</p>
                         </div>
                     ) : activeReport.analysis ? (
                         <Accordion type="multiple" defaultValue={['metrics', 'crops', 'fertilizer']} className="w-full">
                             <AccordionItem value="metrics">
-                                <AccordionTrigger className="text-lg font-semibold"><BarChart3 className="h-5 w-5 mr-2 text-primary"/>Key Metrics</AccordionTrigger>
+                                <AccordionTrigger className="text-lg font-semibold"><BarChart3 className="h-5 w-5 mr-2 text-primary"/>{t.soilTesting.results.metrics}</AccordionTrigger>
                                 <AccordionContent>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
                                         {activeReport.analysis.keyMetrics.map(metric => (
@@ -428,13 +430,13 @@ export default function SoilTestingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="crops">
-                                <AccordionTrigger className="text-lg font-semibold"><Trees className="h-5 w-5 mr-2 text-green-600"/>Crop Suitability</AccordionTrigger>
+                                <AccordionTrigger className="text-lg font-semibold"><Trees className="h-5 w-5 mr-2 text-green-600"/>{t.soilTesting.results.crops}</AccordionTrigger>
                                 <AccordionContent>
                                     <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">{activeReport.analysis.cropSuitability}</p>
                                 </AccordionContent>
                             </AccordionItem>
                              <AccordionItem value="fertilizer">
-                                <AccordionTrigger className="text-lg font-semibold"><Combine className="h-5 w-5 mr-2 text-blue-600"/>Fertilizer Recommendations</AccordionTrigger>
+                                <AccordionTrigger className="text-lg font-semibold"><Combine className="h-5 w-5 mr-2 text-blue-600"/>{t.soilTesting.results.fertilizer}</AccordionTrigger>
                                 <AccordionContent>
                                     <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md whitespace-pre-wrap">{activeReport.analysis.fertilizerRecommendation}</p>
                                 </AccordionContent>
@@ -448,21 +450,21 @@ export default function SoilTestingPage() {
                 <CardHeader>
                      <CardTitle className="flex items-center gap-2">
                         <span className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary font-bold text-lg">4</span>
-                        Fertilizer Calculator
+                        {t.soilTesting.calculator.title}
                     </CardTitle>
-                    <CardDescription>Get a customized fertilizer dosage for your specific crop and area.</CardDescription>
+                    <CardDescription>{t.soilTesting.calculator.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                          <div className="space-y-2">
-                            <Label htmlFor="area">Farm Area (acres)</Label>
-                            <Input id="area" type="number" placeholder="e.g., 2.5" value={farmArea} onChange={e => setFarmArea(e.target.value)} disabled={!activeReport?.analysis} />
+                            <Label htmlFor="area">{t.soilTesting.calculator.areaLabel}</Label>
+                            <Input id="area" type="number" placeholder={t.soilTesting.calculator.areaPlaceholder} value={farmArea} onChange={e => setFarmArea(e.target.value)} disabled={!activeReport?.analysis} />
                         </div>
                         <div className="space-y-2">
-                             <Label htmlFor="crop-type">Crop Type</Label>
+                             <Label htmlFor="crop-type">{t.soilTesting.calculator.cropLabel}</Label>
                             <Select onValueChange={setCropType} value={cropType} disabled={!activeReport?.analysis}>
                                 <SelectTrigger id="crop-type">
-                                    <SelectValue placeholder="Select crop" />
+                                    <SelectValue placeholder={t.soilTesting.calculator.cropPlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="Wheat">Wheat</SelectItem>
@@ -482,13 +484,13 @@ export default function SoilTestingPage() {
                      {isCalculating && (
                         <div className="flex justify-center items-center py-4">
                             <Spinner className="mr-2 h-5 w-5"/>
-                            <p className="text-muted-foreground">Calculating required dosage...</p>
+                            <p className="text-muted-foreground">{t.soilTesting.calculator.calculating}</p>
                         </div>
                     )}
                      {calculationError && (
                         <Alert variant="destructive">
                             <AlertTriangle className="h-4 w-4"/>
-                            <AlertTitle>Calculation Failed</AlertTitle>
+                            <AlertTitle>{t.soilTesting.toast.calculationFailed}</AlertTitle>
                             <AlertDescription>{calculationError}</AlertDescription>
                         </Alert>
                      )}
@@ -496,7 +498,7 @@ export default function SoilTestingPage() {
                         <Alert variant="default" className="bg-green-50 border-green-200">
                              <AlertTitle className="font-semibold text-green-800 flex items-center gap-2">
                                 <Tractor className="h-5 w-5"/>
-                                Calculated Dosage for {farmArea} acres of {cropType}
+                                {t.soilTesting.calculator.dosageTitle(farmArea, cropType)}
                             </AlertTitle>
                             <AlertDescription>
                                 <ul className="mt-2 list-disc pl-5 text-green-900 space-y-1">
@@ -512,7 +514,7 @@ export default function SoilTestingPage() {
                 <CardFooter>
                     <Button onClick={handleCalculateDosage} disabled={!activeReport?.analysis || !farmArea || !cropType || isCalculating} className="w-full">
                         {isCalculating ? <Spinner className="mr-2 h-4 w-4"/> : <Calculator className="mr-2 h-4 w-4"/>}
-                        {isCalculating ? 'Calculating...' : 'Calculate Required Dosage'}
+                        {isCalculating ? t.soilTesting.calculator.calculating : t.soilTesting.calculator.calculateButton}
                     </Button>
                 </CardFooter>
             </Card>
