@@ -66,10 +66,8 @@ export default function ChatbotPage() {
     const populateVoiceList = () => {
         if (typeof window === 'undefined' || !window.speechSynthesis) return;
         const availableVoices = window.speechSynthesis.getVoices();
-        // Don't set if list is empty, wait for the event.
         if (availableVoices.length > 0) {
             setVoices(availableVoices);
-            // Voices are loaded, we can remove the event listener
             window.speechSynthesis.onvoiceschanged = null;
         }
     };
@@ -78,24 +76,21 @@ export default function ChatbotPage() {
     if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = populateVoiceList;
     }
-
-    // This is a workaround for a bug in some browsers where the speech synthesis
-    // engine can go idle and cause errors. Periodically sending a silent utterance
-    // keeps the engine "warm" and ready to speak.
+    
     const speechKeepAlive = setInterval(() => {
         if (typeof window === 'undefined' || !window.speechSynthesis || window.speechSynthesis.speaking) {
             return;
         }
         const utterance = new SpeechSynthesisUtterance("");
-        utterance.volume = 0; // Make it silent
+        utterance.volume = 0;
         window.speechSynthesis.speak(utterance);
     }, 5000);
     
-    // Cleanup speech synthesis on component unmount
     return () => {
       clearInterval(speechKeepAlive);
       if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current = null;
       }
       if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -112,14 +107,12 @@ export default function ChatbotPage() {
   }, [messages]);
   
   const speak = (message: Message) => {
-    // If this message is already playing, stop it (toggle)
     if (nowPlayingMessageId === message.id) {
       window.speechSynthesis.cancel();
       setNowPlayingMessageId(null);
       return;
     }
     
-    // Cancel any ongoing speech
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
@@ -128,11 +121,9 @@ export default function ChatbotPage() {
 
     let selectedVoice = null;
     if (targetLang === 'hi-IN') {
-        // Prioritize Google voices, then Rishi for Hindi.
         selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
                      || voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Rishi'));
     } else {
-        // Prioritize high-quality female voices for English.
         selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google') && voice.name.includes('Female')) 
                      || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Samantha'))
                      || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Female'));
@@ -177,7 +168,7 @@ export default function ChatbotPage() {
     }
     
     const wasVoice = lastInputWasVoice.current;
-    lastInputWasVoice.current = false; // Reset for next message
+    lastInputWasVoice.current = false;
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -223,7 +214,6 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    // Automatically speak if the user's input was voice
     if (wasVoice) {
       speak(assistantMessage);
     }
@@ -236,6 +226,7 @@ export default function ChatbotPage() {
           return;
       }
       
+      // Always create a new instance
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
@@ -251,17 +242,23 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onend = () => {
           setIsRecording(false);
-          // Auto-submit if there's text after recording stops
-          if (input.trim() || imageFile) {
-            lastInputWasVoice.current = true; // Mark input as voice
-            setTimeout(() => handleSubmit(), 100);
-          }
+          // Auto-submit after recording stops and there's text
+          // Using a timeout to ensure the final 'input' state is set
+          setTimeout(() => {
+              const currentInput = (document.getElementById('chatbot-input') as HTMLInputElement)?.value;
+              if (currentInput && currentInput.trim()) {
+                  lastInputWasVoice.current = true;
+                  handleSubmit();
+              }
+          }, 100);
+          recognitionRef.current = null; // Clean up the instance
       };
       
       recognitionRef.current.onerror = (event: any) => {
           console.error("Speech recognition error", event.error);
           toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
           setIsRecording(false);
+          recognitionRef.current = null; // Clean up on error
       };
 
       recognitionRef.current.start();
@@ -271,7 +268,6 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
-        setIsRecording(false);
     }
   };
 
@@ -421,6 +417,7 @@ export default function ChatbotPage() {
               accept="image/*"
             />
             <Input
+              id="chatbot-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
