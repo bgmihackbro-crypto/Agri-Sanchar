@@ -34,7 +34,7 @@ type UserProfile = {
   phone: string;
   avatar: string;
   city?: string;
-  language?: 'English' | 'Hindi' | 'Hinglish';
+  language?: 'English' | 'Hindi';
 }
 
 const translations = {
@@ -71,27 +71,9 @@ const translations = {
     notSupported: "समर्थित नहीं",
     notSupportedDesc: "आपके ब्राउज़र में आवाज पहचान समर्थित नहीं है।",
     aiError: "मैं इस समय वह जानकारी प्रदान नहीं कर सकता।",
-    aiProcessError: "क्षमा करें, मैं आपके अनुरोध पर कार्रवाई نہیں कर सका।",
+    aiProcessError: "क्षमा करें, मैं आपके अनुरोध पर कार्रवाई नहीं कर सका।",
     aiResponseError: "क्षमा करें, मैं प्रतिक्रिया उत्पन्न नहीं कर सका।",
   },
-  'Hinglish': {
-    title: "AI Expert Chat",
-    thinking: "Soch raha hai...",
-    placeholder: "Fasalon, keematon ke baare mein poochein, ya ek photo upload karein...",
-    listening: "Sunn raha hai...",
-    uploadImage: "Image upload karein",
-    recordVoice: "Voice message record karein",
-    send: "Bhejein",
-    speechError: "Speech Error",
-    speechErrorDesc: "Voice message nahi chala saka.",
-    voiceError: "Voice Error",
-    voiceErrorDesc: "Voice recognition shuru nahi ho saki: ",
-    notSupported: "Not Supported",
-    notSupportedDesc: "Aapke browser mein speech recognition supported nahi hai.",
-    aiError: "Main is samay yeh jaankari nahi de sakta.",
-    aiProcessError: "Sorry, main aapke request ko process nahi kar saka.",
-aiResponseError: "Sorry, main response generate nahi kar saka.",
-  }
 }
 
 export default function ChatbotPage() {
@@ -175,7 +157,7 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
-    const targetLang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
+    const targetLang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
     let selectedVoice = null;
@@ -286,7 +268,7 @@ export default function ChatbotPage() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
+      recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
           const transcript = Array.from(event.results)
@@ -486,5 +468,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    

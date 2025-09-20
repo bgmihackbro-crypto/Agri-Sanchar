@@ -30,7 +30,7 @@ type UserProfile = {
   name: string;
   phone: string;
   avatar: string;
-  language?: 'English' | 'Hindi' | 'Hinglish';
+  language?: 'English' | 'Hindi';
 }
 
 export function UserNav() {
@@ -122,7 +122,6 @@ export function UserNav() {
                  <DropdownMenuRadioGroup value={userProfile?.language || 'English'} onValueChange={handleLanguageChange}>
                     <DropdownMenuRadioItem value="English">English</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="Hindi">हिन्दी</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="Hinglish">Hinglish</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -137,5 +136,3 @@ export function UserNav() {
     </DropdownMenu>
   );
 }
-
-    
