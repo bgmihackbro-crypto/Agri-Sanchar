@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Bot,
   CloudSun,
@@ -13,19 +13,36 @@ import {
   FlaskConical,
   Bug,
   Tractor,
-  Landmark
+  Landmark,
+  LogOut,
 } from "lucide-react";
 import {
   SidebarContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { useTranslation } from "@/hooks/use-translation";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useTranslation();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("userProfile");
+      localStorage.removeItem("selectedLanguage");
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   const links = [
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
@@ -36,13 +53,12 @@ export function AppSidebar() {
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
     { href: "/soil-testing", label: t.sidebar.soil, icon: FlaskConical },
-    { href: "/pesticide-guide", label: t.sidebar.pesticide, icon: Bug },
     { href: "/profile", label: t.sidebar.profile, icon: User },
   ];
 
   return (
     <>
-      <SidebarContent className="pt-8">
+      <SidebarContent className="pt-8 flex-1">
         <SidebarMenu>
           {links.map((link) => (
             <SidebarMenuItem key={link.href}>
@@ -61,6 +77,21 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+       <SidebarFooter>
+        <SidebarSeparator />
+        <SidebarMenu>
+           <SidebarMenuItem>
+                <SidebarMenuButton
+                    onClick={handleLogout}
+                    tooltip="Log Out"
+                    className="justify-start text-red-500 hover:bg-red-500/10 hover:text-red-500"
+                >
+                    <LogOut className="h-5 w-5" />
+                    <span>Log Out</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </>
   );
 }

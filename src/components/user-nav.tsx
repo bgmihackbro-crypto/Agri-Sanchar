@@ -133,7 +133,7 @@ export function UserNav() {
           </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:bg-red-500/10 focus:text-red-500">
           <LogOut className="mr-2 h-4 w-4" />
           <span>{t.userNav.logout}</span>
         </DropdownMenuItem>
