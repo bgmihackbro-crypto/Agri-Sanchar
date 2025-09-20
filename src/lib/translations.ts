@@ -202,6 +202,8 @@ export const translations = {
                 noData: (location: string) => `No market data could be found for ${location}.`,
                 noPriceData: (location: string) => `No price data found for ${location}. Data may be temporarily unavailable.`,
                 selectCity: "Select a city to see prices.",
+                apiKeyTitle: "Market Service Not Configured",
+                apiKeyDesc: "The data.gov.in API key is missing. To see market prices, register on data.gov.in to get a free API key and add it to your .env file."
             },
             notification: {
                 updated: "Market Prices Updated",
@@ -938,6 +940,8 @@ aiThinking: "AI is thinking...",
                 noData: (location: string) => `${location} के लिए कोई बाजार डेटा नहीं मिला।`,
                 noPriceData: (location: string) => `${location} के लिए कोई मूल्य डेटा नहीं मिला। डेटा अस्थायी रूप से अनुपलब्ध हो सकता है।`,
                 selectCity: "कीमतें देखने के लिए एक शहर चुनें।",
+                apiKeyTitle: "बाजार सेवा कॉन्फ़िगर नहीं है",
+                apiKeyDesc: "data.gov.in एपीआई कुंजी गायब है। बाजार मूल्य देखने के लिए, एक मुफ्त एपीआई कुंजी प्राप्त करने के लिए data.gov.in पर पंजीकरण करें और इसे अपनी .env फ़ाइल में जोड़ें।"
             },
             notification: {
                 updated: "बाजार मूल्य अपडेट किए गए",
@@ -1476,7 +1480,5 @@ aiThinking: "एआई सोच रहा है...",
 };
 
 export type Translations = typeof translations.English;
-
-    
 
     

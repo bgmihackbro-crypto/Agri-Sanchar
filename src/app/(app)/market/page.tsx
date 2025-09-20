@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { TrendingUp, MapPin } from "lucide-react";
+import { TrendingUp, MapPin, KeyRound } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ import type { PriceRecord, PricePrediction } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
 import { useNotifications } from "@/context/notification-context";
 import { useTranslation } from "@/hooks/use-translation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
@@ -98,12 +99,18 @@ export default function MarketPricesPage() {
           description: t.market.notification.loaded(locationName),
         });
       } else if (response.answer === 'NO_DATA_FOUND') {
-        setError(`No market data could be found for ${locationName}.`);
+        setError(t.market.error.noData(locationName));
         setPrices([]);
         setIsLoading(false);
         return;
-      } else {
-        setError(`Failed to fetch market data for ${locationName}.`);
+      } else if (response.answer === 'API_KEY_MISSING') {
+        setError('API_KEY_MISSING');
+        setPrices([]);
+        setIsLoading(false);
+        return;
+      }
+      else {
+        setError(t.market.error.fetchFailed(locationName));
         setIsLoading(false);
         return;
       }
@@ -136,7 +143,7 @@ export default function MarketPricesPage() {
       
     } catch (e) {
       console.error(e);
-      setError(`Failed to fetch market data for ${locationName}.`);
+      setError(t.market.error.fetchFailed(locationName));
       setIsLoading(false);
       setIsPredicting(false);
     }
@@ -241,7 +248,16 @@ export default function MarketPricesPage() {
                 <p className="ml-2 text-muted-foreground">{t.market.fetching}</p>
               </div>
             )}
-            {error && (
+            {error && error === 'API_KEY_MISSING' ? (
+                <Alert variant="destructive">
+                    <KeyRound className="h-4 w-4" />
+                    <AlertTitle>{t.market.error.apiKeyTitle}</AlertTitle>
+                    <AlertDescription>
+                        {t.market.error.apiKeyDesc}
+                        <pre className="mt-2 rounded-md bg-muted p-2 text-xs">GOV_DATA_API_KEY=YOUR_API_KEY_HERE</pre>
+                    </AlertDescription>
+                </Alert>
+            ) : error && (
               <div className="text-center py-8 text-destructive">
                 <p>{error}</p>
               </div>
