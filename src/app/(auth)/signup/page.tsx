@@ -128,7 +128,7 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm animate-card-flip-in bg-white/90 backdrop-blur-sm border-gray-200/50">
+    <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/80 backdrop-blur-sm border-green-200/50 dark:bg-green-900/80 dark:border-green-800/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">{t.signup.title}</CardTitle>
         <CardDescription className="text-muted-foreground">
