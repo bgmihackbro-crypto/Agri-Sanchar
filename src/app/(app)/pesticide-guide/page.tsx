@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown } from "lucide-react";
-import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -85,7 +84,7 @@ const pesticideData = [
     target: "Insecticide",
     description: "A beneficial fungus that acts as a natural insecticide against pests like whiteflies, thrips, and mealybugs.",
     activeIngredient: "Beauveria Bassiana spores",
-    crops: ["Most crops"],
+    crops: ["Vegetables", "Fruits", "Cotton", "Grapes"],
     dosage: "5 grams or 5ml per liter of water. Ensure thorough coverage.",
     advantages: [
         "Eco-friendly and non-toxic to humans and animals.",
@@ -105,7 +104,7 @@ const pesticideData = [
     target: "Insecticide",
     description: "A non-systemic insecticide used to control a wide range of chewing and sucking insects in soil or on foliage.",
     activeIngredient: "Chlorpyrifos",
-    crops: ["Rice", "Cotton", "Pulses"],
+    crops: ["Rice", "Cotton", "Pulses", "Sugarcane"],
     dosage: "2-3 ml per liter of water. Use with caution.",
      advantages: [
         "Broad-spectrum control of many pests including termites.",
@@ -145,7 +144,7 @@ const pesticideData = [
     target: "Herbicide",
     description: "A broad-spectrum systemic herbicide used to kill weeds, especially perennial grasses. Used for pre-sowing weed control.",
     activeIngredient: "Glyphosate",
-    crops: ["Non-crop areas", "Pre-sowing for many crops"],
+    crops: ["Non-crop areas", "Tea plantations"],
     dosage: "8-10 ml per liter of water. Avoid contact with main crop.",
     advantages: [
         "Highly effective in killing a wide variety of weeds.",
@@ -165,7 +164,7 @@ const pesticideData = [
     target: "Insect Monitoring",
     description: "Used to monitor and trap specific insect pests (like fruit flies or bollworms) by using sex pheromones to attract them.",
     activeIngredient: "Species-specific pheromone lure",
-    crops: ["Fruits", "Vegetables", "Cotton"],
+    crops: ["Fruits", "Vegetables", "Cotton", "Maize"],
     dosage: "5-10 traps per acre, depending on pest intensity.",
     advantages: [
         "Non-toxic and species-specific, so it doesn't harm other organisms.",
@@ -196,6 +195,66 @@ const pesticideData = [
         "Can be toxic to plants at high concentrations (phytotoxicity).",
         "May accumulate in the soil over time.",
         "Can be washed off by rain."
+    ],
+    color: "bg-blue-100 text-blue-800",
+  },
+  {
+    name: "Spinosad",
+    type: "Organic",
+    target: "Insecticide",
+    description: "A natural insecticide derived from a soil bacterium. Effective against thrips, leaf miners, and caterpillars.",
+    activeIngredient: "Spinosyn A and Spinosyn D",
+    crops: ["Grapes", "Chilli", "Cotton", "Brinjal"],
+    dosage: "0.3-0.5 ml per liter of water.",
+    advantages: [
+      "Effective at low concentrations.",
+      "Low toxicity to mammals and most beneficial insects.",
+      "Fast acting compared to other biological insecticides."
+    ],
+    disadvantages: [
+      "Can be toxic to bees when sprayed directly.",
+      "Higher cost compared to some chemical alternatives.",
+      "Effectiveness can be reduced by sunlight."
+    ],
+    color: "bg-green-100 text-green-800",
+  },
+  {
+    name: "Fipronil",
+    type: "Chemical",
+    target: "Insecticide",
+    description: "A broad-spectrum insecticide that disrupts the insect central nervous system. Effective against thrips and stem borers.",
+    activeIngredient: "Fipronil",
+    crops: ["Rice", "Grapes", "Cabbage", "Chilli"],
+    dosage: "1-2 ml per liter of water. Handle with care.",
+    advantages: [
+      "Long residual activity.",
+      "Effective against a wide range of pests.",
+      "Can be used for both foliar spray and soil application."
+    ],
+    disadvantages: [
+      "Highly toxic to fish and bees.",
+      "Has been linked to colony collapse disorder in bees.",
+      "Persistence in the environment can be a concern."
+    ],
+    color: "bg-red-100 text-red-800",
+  },
+  {
+    name: "Sulphur",
+    type: "Chemical",
+    target: "Fungicide/Acaricide",
+    description: "A contact fungicide that controls powdery mildew and also acts as a miticide against certain mites.",
+    activeIngredient: "Sulphur 80% WDG",
+    crops: ["Grapes", "Mango", "Peas", "Cowpea"],
+    dosage: "2-3 grams per liter of water.",
+    advantages: [
+      "One of the oldest and most reliable fungicides.",
+      "Provides essential nutrient (Sulphur) to the plant.",
+      "Acceptable for use in organic farming."
+    ],
+    disadvantages: [
+      "Can cause scorching on some plants in hot weather.",
+      "Not effective against all fungal diseases.",
+      "Can be washed away by rain."
     ],
     color: "bg-blue-100 text-blue-800",
   }
@@ -274,6 +333,9 @@ export default function PesticideGuidePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterTarget, setFilterTarget] = useState("all");
+  const [filterCrop, setFilterCrop] = useState("all");
+
+  const allCrops = ["all", ...Array.from(new Set(pesticideData.flatMap(p => p.crops)))].sort();
 
   const filteredPesticides = pesticideData.filter((pesticide) => {
     const searchMatch =
@@ -281,7 +343,8 @@ export default function PesticideGuidePage() {
       pesticide.description.toLowerCase().includes(searchQuery.toLowerCase());
     const typeMatch = filterType === "all" || pesticide.type === filterType;
     const targetMatch = filterTarget === "all" || pesticide.target.includes(filterTarget);
-    return searchMatch && typeMatch && targetMatch;
+    const cropMatch = filterCrop === "all" || pesticide.crops.includes(filterCrop);
+    return searchMatch && typeMatch && targetMatch && cropMatch;
   });
 
   const getIcon = (type: string) => {
@@ -312,7 +375,7 @@ export default function PesticideGuidePage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Select onValueChange={setFilterType} value={filterType}>
               <SelectTrigger>
                 <SelectValue placeholder="Filter by Type" />
@@ -333,6 +396,18 @@ export default function PesticideGuidePage() {
                 <SelectItem value="Fungicide">Fungicide</SelectItem>
                 <SelectItem value="Herbicide">Herbicide</SelectItem>
                 <SelectItem value="Insect Monitoring">Insect Monitoring</SelectItem>
+                <SelectItem value="Bactericide">Bactericide</SelectItem>
+                <SelectItem value="Acaricide">Acaricide</SelectItem>
+              </SelectContent>
+            </Select>
+             <Select onValueChange={setFilterCrop} value={filterCrop}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Crop" />
+              </SelectTrigger>
+              <SelectContent>
+                {allCrops.map(crop => (
+                    <SelectItem key={crop} value={crop}>{crop === 'all' ? 'All Crops' : crop}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -375,3 +450,5 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
+
+    
