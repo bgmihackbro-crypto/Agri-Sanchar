@@ -19,17 +19,11 @@ import { createRental, getRentals, type Rental, type NewRentalData } from "@/lib
 import { indianCities } from "@/lib/indian-cities";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { UserProfile } from "@/lib/firebase/users";
 
 const allCitiesList = Object.values(indianCities).flat().sort();
 const equipmentCategories = ["Tractor", "Harvester", "Tiller", "Planter", "Sprayer", "Baler", "Other"];
 
-type UserProfile = {
-  farmerId: string;
-  name: string;
-  avatar: string;
-  city: string;
-  phone: string;
-};
 
 const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: UserProfile, onEquipmentAdded: () => void }) => {
     const { t } = useTranslation();
@@ -433,5 +427,3 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
-
-    

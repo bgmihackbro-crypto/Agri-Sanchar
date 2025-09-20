@@ -16,11 +16,10 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
-import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from "@/hooks/use-translation";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, type ConfirmationResult } from "firebase/auth";
+import { setUserProfile, type UserProfile } from "@/lib/firebase/users";
 
-
-const SIMULATED_OTP = "123456";
 
 const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     const newNotification = {
@@ -48,6 +47,18 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const { t, language, setLanguage } = useTranslation();
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    // This is to ensure the recaptcha is only rendered once.
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible'
+      });
+    }
+  }, [auth]);
 
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
@@ -58,77 +69,89 @@ export default function SignupPage() {
     }
   }, [setLanguage]);
 
-  const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-    // Simulate sending OTP
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const phoneNumber = `+91${phone}`;
+      const appVerifier = window.recaptchaVerifier;
+      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      
+      setConfirmationResult(result);
       setOtpSent(true);
       toast({
         title: t.signup.otpSentTitle,
         description: t.signup.otpSentDesc,
       });
-    }, 1000);
+
+    } catch (error) {
+       console.error("Error sending OTP:", error);
+       toast({
+        variant: "destructive",
+        title: "Error Sending OTP",
+        description: "Could not send OTP. The phone number might be invalid or already in use.",
+      });
+    } finally {
+        setLoading(false);
+    }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading) return;
-
-    if (otp !== SIMULATED_OTP) {
-      toast({
-        variant: "destructive",
-        title: t.signup.invalidOtpTitle,
-        description: t.signup.invalidOtpDesc,
-      });
-      return;
-    }
-
+    if (loading || !confirmationResult) return;
     setLoading(true);
 
-    setTimeout(() => {
-      try {
-        const farmerId = `AS-${uuidv4()}`;
+    try {
+      const userCredential = await confirmationResult.confirm(otp);
+      const user = userCredential.user;
 
-        const userProfile = {
-          farmerId: farmerId,
-          name: name,
-          phone: "+91" + phone,
-          avatar: `https://picsum.photos/seed/${phone}/100/100`,
-          farmSize: "",
-          city: "",
-          state: "",
-          annualIncome: "",
-          language: language,
-        };
+      if (user) {
+          const userProfile: UserProfile = {
+            farmerId: user.uid, // Use Firebase UID as the unique farmerId
+            name: name,
+            phone: user.phoneNumber || `+91${phone}`,
+            avatar: `https://picsum.photos/seed/${user.uid}/100/100`,
+            farmSize: "",
+            city: "",
+            state: "",
+            annualIncome: "",
+            language: language,
+            age: "",
+            dob: "",
+            gender: "",
+          };
 
-        localStorage.setItem("userProfile", JSON.stringify(userProfile));
-        addWelcomeNotification(userProfile.name, language);
+          // Save to Firestore and then cache in localStorage
+          await setUserProfile(user.uid, userProfile);
+          localStorage.setItem("userProfile", JSON.stringify(userProfile));
+          
+          addWelcomeNotification(userProfile.name, language);
 
-        toast({
-          title: t.signup.welcomeTitle(name),
-          description: t.signup.welcomeDesc,
-        });
+          toast({
+            title: t.signup.welcomeTitle(name),
+            description: t.signup.welcomeDesc,
+          });
 
-        router.push("/profile");
-      } catch (error) {
+          router.push("/profile");
+      } else {
+        throw new Error("User not found after OTP verification");
+      }
+    } catch (error) {
         console.error("Simulated signup error:", error);
         toast({
           variant: "destructive",
           title: t.signup.signupFailedTitle,
           description: t.signup.signupFailedDesc,
         });
-      } finally {
         setLoading(false);
-      }
-    }, 1000);
+    }
   };
 
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/80 backdrop-blur-sm border-green-200/50 dark:bg-green-900/80 dark:border-green-800/50">
+      <div id="recaptcha-container"></div>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">{t.signup.title}</CardTitle>
         <CardDescription className="text-muted-foreground">

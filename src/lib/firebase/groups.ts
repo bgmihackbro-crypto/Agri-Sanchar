@@ -2,6 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Timestamp } from 'firebase/firestore'; // Keep for type consistency
 import { BOT_USER, EXPERT_BOT_USER } from './chat';
+import { type UserProfile } from './users';
 
 export interface Group {
     id: string;
@@ -22,7 +23,7 @@ export interface GroupMember {
 }
 
 // Type for creating a new group, `createdAt` will be generated. `id` can be optional.
-export type NewGroupData = Omit<Group, 'createdAt'> & { id?: string };
+export type NewGroupData = Omit<Group, 'createdAt' | 'members'> & { members: string[], id?: string };
 
 // Helper to get groups from localStorage
 const getStoredGroups = (): Group[] => {
@@ -150,8 +151,8 @@ export const getGroupMembers = (groupId: string): GroupMember[] => {
        }
        
        if (typeof window !== 'undefined') {
-            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-            if (userProfile.farmerId === id) {
+            const userProfile: UserProfile | null = JSON.parse(localStorage.getItem('userProfile') || 'null');
+            if (userProfile && userProfile.farmerId === id) {
                 return { id, name: userProfile.name, avatar: userProfile.avatar };
             }
        }
@@ -187,16 +188,7 @@ export const addUserToGroup = (groupId: string, userId: string): {success: boole
         return { success: true };
     }
     
-    // A simple validation for farmer IDs
-    if (!userId.startsWith('AS-') && userId !== BOT_USER.id && userId !== EXPERT_BOT_USER.id) {
-        // Allow expert/ngo IDs which might not follow farmer ID format
-        const isExpertOrNgo = !userId.startsWith('AS-');
-        if (!isExpertOrNgo) {
-             return { success: false, error: 'Invalid Farmer ID format.' };
-        }
-    }
-    
-    const userName = `Farmer ${userId.substring(3, 7)}`;
+    const userName = `User ${userId.substring(0, 4)}`;
     
     groups[groupIndex].members.push(userId);
     setStoredGroups(groups);

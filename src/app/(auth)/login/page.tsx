@@ -17,12 +17,14 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "@/hooks/use-translation";
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, ConfirmationResult } from "firebase/auth";
+import { getUserProfile } from "@/lib/firebase/users";
 
 const SIMULATED_OTP = "123456";
 
 const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     const welcomeMessage = lang === 'Hindi' ? `वापसी पर स्वागत है, ${name}!` : `Welcome back, ${name}!`;
-    const description = lang === 'Hindi' ? "आपने कृषि-संचार में सफलतापूर्वक लॉग इन कर लिया है।" : "You have successfully logged in to Agri-Sanchar.";
+    const description = lang === 'Hindi' ? " आपने कृषि-संचार में सफलतापूर्वक लॉग इन कर लिया है।" : "You have successfully logged in to Agri-Sanchar.";
     
     const newNotification = {
         id: Date.now().toString(),
@@ -51,6 +53,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const { t, language, setLanguage } = useTranslation();
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  
+  const auth = getAuth();
+
+  useEffect(() => {
+    // Make sure recaptcha is only rendered once
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible'
+      });
+    }
+  }, [auth]);
 
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
@@ -61,98 +75,96 @@ export default function LoginPage() {
     }
   }, [setLanguage]);
 
-  const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
 
-    // Simulate sending OTP
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const phoneNumber = `+91${phone}`;
+      const appVerifier = window.recaptchaVerifier;
+      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      setConfirmationResult(result);
       setOtpSent(true);
       toast({
         title: t.login.otpSentTitle,
         description: t.login.otpSentDesc,
       });
-    }, 1000);
-  };
-
-  const handleVerifyOtp = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (loading) return;
-
-    if (otp !== SIMULATED_OTP) {
+    } catch (error) {
+      console.error("Error sending OTP:", error);
       toast({
         variant: "destructive",
-        title: t.login.invalidOtpTitle,
-        description: t.login.invalidOtpDesc,
+        title: "Error Sending OTP",
+        description: "Could not send OTP. Please check the phone number or try again later.",
       });
-      return;
+    } finally {
+        setLoading(false);
     }
+  };
 
+  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (loading || !confirmationResult) return;
     setLoading(true);
 
-    setTimeout(() => {
-      try {
-        const existingProfile = localStorage.getItem("userProfile");
-        
-        let profileFound = false;
-        let userProfile;
+    try {
+      const userCredential = await confirmationResult.confirm(otp);
+      const user = userCredential.user;
 
-        if (existingProfile) {
-            userProfile = JSON.parse(existingProfile);
-            if (userProfile.phone === `+91${phone}`) {
-                profileFound = true;
-            }
-        }
+      if (user) {
+          const userProfile = await getUserProfile(user.uid);
 
-        if (!profileFound || !userProfile) {
-            toast({ 
-                variant: "destructive", 
-                title: t.login.loginFailedTitle, 
-                description: t.login.loginFailedDesc
-            });
-            setLoading(false);
-            router.push('/signup');
-            return;
-        }
+          if (!userProfile) {
+              toast({ 
+                  variant: "destructive", 
+                  title: t.login.loginFailedTitle, 
+                  description: t.login.loginFailedDesc
+              });
+              setLoading(false);
+              // Consider signing out the user before redirecting
+              await auth.signOut();
+              router.push('/signup');
+              return;
+          }
 
-        // Set the language in the user's profile upon successful login
-        userProfile.language = language;
-        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+          // Set the language in the user's profile upon successful login
+          userProfile.language = language;
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
 
-        addWelcomeNotification(userProfile.name, language);
+          addWelcomeNotification(userProfile.name, language);
 
-        toast({
-          title: t.login.loginSuccess,
-          description: t.login.welcomeBack(userProfile.name),
-        });
+          toast({
+            title: t.login.loginSuccess,
+            description: t.login.welcomeBack(userProfile.name),
+          });
 
-        const redirectUrl = searchParams.get('redirect');
+          const redirectUrl = searchParams.get('redirect');
 
-        if (redirectUrl) {
-            router.push(redirectUrl);
-        } else if (userProfile.state && userProfile.city) {
-            router.push("/dashboard");
-        } else {
-            router.push("/profile");
-        }
+          if (redirectUrl) {
+              router.push(redirectUrl);
+          } else if (userProfile.state && userProfile.city) {
+              router.push("/dashboard");
+          } else {
+              router.push("/profile");
+          }
+      } else {
+          throw new Error("User not found after OTP verification.");
+      }
 
-      } catch (error) {
-        console.error("Simulated login error:", error);
+    } catch (error) {
+        console.error("OTP Verification error:", error);
         toast({
           variant: "destructive",
-          title: t.login.errorTitle,
-          description: t.login.errorDesc,
+          title: t.login.invalidOtpTitle,
+          description: t.login.invalidOtpDesc,
         });
-      } finally {
         setLoading(false);
-      }
-    }, 1000);
+    }
   };
 
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/80 backdrop-blur-sm border-green-200/50 dark:bg-green-900/80 dark:border-green-800/50">
+       <div id="recaptcha-container"></div>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">{t.login.title}</CardTitle>
         <CardDescription className="text-foreground">

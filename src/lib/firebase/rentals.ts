@@ -1,6 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { Timestamp } from 'firebase/firestore';
+import { type UserProfile } from './users';
 
 export interface Rental {
     id: string;

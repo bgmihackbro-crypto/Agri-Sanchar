@@ -31,6 +31,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
+import { auth } from "@/lib/firebase";
+import { updateUserProfile, type UserProfile } from "@/lib/firebase/users";
 
 
 export default function ProfilePage() {
@@ -40,7 +42,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<UserProfile>({
     farmerId: "",
     name: "Farmer",
     phone: "",
@@ -123,7 +125,14 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      toast({ variant: "destructive", title: "Not Authenticated", description: "Please log in again." });
+      router.push('/login');
+      return;
+    }
+
     if (!profile.state || !profile.city || !profile.name) {
        toast({
         variant: "destructive",
@@ -134,19 +143,28 @@ export default function ProfilePage() {
     }
 
     setIsEditing(false);
-    localStorage.setItem("userProfile", JSON.stringify(profile));
-    // We can now remove the temporary language selection
-    localStorage.removeItem('selectedLanguage');
+    
+    try {
+      await updateUserProfile(currentUser.uid, profile);
+      localStorage.setItem("userProfile", JSON.stringify(profile));
+      
+      // We can now remove the temporary language selection
+      localStorage.removeItem('selectedLanguage');
 
-    toast({
-      title: t.profile.toast.updated,
-      description: t.profile.toast.updatedDesc,
-      action: <Check className="h-5 w-5 text-green-500" />,
-    });
-    // Force a re-render in other components using the avatar
-    window.dispatchEvent(new Event("storage"));
-    // Redirect to dashboard after saving, ensuring the profile is now complete.
-    router.push('/dashboard');
+      toast({
+        title: t.profile.toast.updated,
+        description: t.profile.toast.updatedDesc,
+        action: <Check className="h-5 w-5 text-green-500" />,
+      });
+      // Force a re-render in other components using the avatar
+      window.dispatchEvent(new Event("storage"));
+      // Redirect to dashboard after saving, ensuring the profile is now complete.
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast({ variant: "destructive", title: "Save Failed", description: "Could not save your profile to the database." });
+      setIsEditing(true); // Re-enter editing mode on failure
+    }
   };
 
   return (
