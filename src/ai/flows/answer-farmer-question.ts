@@ -228,6 +228,41 @@ You have access to the following information (RAG). Use it to answer common ques
     </PESTICIDE_RESISTANCE>
   </PEST_MANAGEMENT>
 
+  <IRRIGATION_WATER_MANAGEMENT>
+      <DRIP_IRRIGATION>
+        - Definition: A type of micro-irrigation system that saves water and nutrients by allowing water to drip slowly to the roots of plants, either from above the soil surface or buried below the surface.
+        - Advantages: High water efficiency (up to 95%), reduces weed growth, allows for fertigation (applying fertilizers with water).
+        - Suitable for: Row crops (vegetables, cotton), orchards, vineyards, and greenhouse cultivation.
+      </DRIP_IRRIGATION>
+      <SPRINKLER_IRRIGATION>
+        - Definition: A method of applying irrigation water which is similar to natural rainfall. Water is distributed through a system of pipes by pumping and sprayed into the air.
+        - Advantages: Suitable for sandy soils where water percolates quickly, can cover large and uneven areas, helps in cooling the micro-climate during high temperatures.
+        - Disadvantages: Can be affected by high winds, leading to uneven distribution. Higher evaporative losses compared to drip irrigation.
+      </SPRINKLER_IRRIGATION>
+      <WATER_HARVESTING>
+        - Definition: The collection and storage of rainwater and runoff for reuse on-site, rather than allowing it to run off and be lost.
+        - Methods: Farm ponds (Talab), check dams (Bandhara), rooftop rainwater harvesting into tanks, percolation tanks to recharge groundwater.
+        - Importance: Recharges groundwater levels, provides a crucial source of supplemental irrigation during dry spells, and reduces soil erosion.
+      </WATER_HARVESTING>
+      <CANAL_IRRIGATION>
+        - Definition: A system where water is diverted from rivers or reservoirs into a network of canals (main canals, branch canals, distributaries) to irrigate fields. It's a major source of irrigation in states like Punjab, Haryana, and Uttar Pradesh.
+        - Challenges: Water availability depends on the government's release schedule ('Warabandi' system), potential for waterlogging and soil salinity if drainage is poor, and tail-end farmers often receive less water.
+      </CANAL_IRRIGATION>
+      <GROUNDWATER_IRRIGATION>
+          - Definition: Extracting water from underground aquifers using tube wells or borewells. It is a critical source of irrigation in India.
+          - Importance: Provides a reliable and on-demand water supply, giving farmers control over irrigation timing.
+          - Challenges: Over-extraction is leading to a rapid decline in groundwater levels in many parts of the country, increased electricity costs for pumping, and risk of water contamination (e.g., with arsenic, fluoride).
+      </GROUNDWATER_IRRIGATION>
+      <WATER_CONSERVATION>
+          - Definition: The practice of using water efficiently to reduce unnecessary water usage.
+          - Techniques:
+            - Mulching: Covering the soil surface with organic (straw, husk) or plastic mulch to reduce evaporation.
+            - Laser Land Leveling: Creating a perfectly flat field to ensure uniform water distribution and reduce water loss.
+            - Zero Tillage: Planting crops directly into the residue of the previous crop without tilling the soil, which helps retain soil moisture.
+            - Choosing water-efficient crops (e.g., millets, pulses) in water-scarce areas.
+      </WATER_CONSERVATION>
+  </IRRIGATION_WATER_MANAGEMENT>
+
   <SOIL_DATA>
     - General Knowledge: Information from Indian Soil Health Card Data and the FAO Soil Database.
     - Soil Types: Clay, Loam, Sandy, etc.
