@@ -322,9 +322,6 @@ export default function RentalEquipmentPage() {
         if (profile) {
             const parsed = JSON.parse(profile) as UserProfile;
             setUserProfile(parsed);
-             if (parsed.city) {
-                setFilterCity(parsed.city);
-            }
         }
         fetchRentals();
     }, []);
