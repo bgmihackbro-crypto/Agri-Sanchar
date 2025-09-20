@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Save, Check, Upload, Hash, CalendarIcon } from "lucide-react";
+import { Edit, Save, Check, Upload, Hash, CalendarIcon, Languages } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -50,6 +50,7 @@ export default function ProfilePage() {
     gender: "",
     age: "",
     dob: "",
+    language: "English",
   });
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
@@ -89,6 +90,10 @@ export default function ProfilePage() {
   
   const handleGenderChange = (value: string) => {
     setProfile((prev) => ({ ...prev, gender: value }));
+  };
+  
+   const handleLanguageChange = (value: string) => {
+    setProfile((prev) => ({ ...prev, language: value }));
   };
   
   const handleDobChange = (date: Date | undefined) => {
@@ -297,6 +302,22 @@ export default function ProfilePage() {
                 />
               </div>
             </div>
+             <div className="space-y-2">
+              <Label htmlFor="language">Preferred Language</Label>
+              {isEditing ? (
+                 <Select onValueChange={handleLanguageChange} value={profile.language}>
+                  <SelectTrigger id="language">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="English">English</SelectItem>
+                    <SelectItem value="Hindi">हिन्दी</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input id="language" value={profile.language} readOnly={true} />
+              )}
+            </div>
             <div className="space-y-2">
               <Label htmlFor="farmSize">Farm Size (in Acres)</Label>
               <Input
@@ -392,3 +413,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    

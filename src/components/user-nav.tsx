@@ -17,20 +17,25 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuPortal,
   DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Languages, LogOut, User } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 type UserProfile = {
   name: string;
   phone: string;
   avatar: string;
+  language?: string;
 }
 
 export function UserNav() {
   const router = useRouter();
+  const { toast } = useToast();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const updateUserProfile = () => {
@@ -50,6 +55,20 @@ export function UserNav() {
         window.removeEventListener("storage", updateUserProfile);
     }
   }, []);
+
+  const handleLanguageChange = (lang: string) => {
+    if (userProfile) {
+      const updatedProfile = { ...userProfile, language: lang };
+      setUserProfile(updatedProfile);
+      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+      toast({
+        title: "Language Updated",
+        description: `Language has been set to ${lang}.`,
+      });
+      // A full reload might be necessary for all components to pick up the new language context
+      window.location.reload();
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -100,8 +119,10 @@ export function UserNav() {
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>हिन्दी</DropdownMenuItem>
+                 <DropdownMenuRadioGroup value={userProfile?.language || 'English'} onValueChange={handleLanguageChange}>
+                    <DropdownMenuRadioItem value="English">English</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="Hindi">हिन्दी</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
@@ -115,3 +136,5 @@ export function UserNav() {
     </DropdownMenu>
   );
 }
+
+    

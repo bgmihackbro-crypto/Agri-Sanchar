@@ -33,6 +33,7 @@ type UserProfile = {
   phone: string;
   avatar: string;
   city?: string;
+  language?: 'English' | 'Hindi';
 }
 
 export default function ChatbotPage() {
@@ -47,12 +48,13 @@ export default function ChatbotPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null); // For SpeechRecognition instance
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
-    if (savedProfile) {
-      setUserProfile(JSON.parse(savedProfile));
-    }
+    const profile = savedProfile ? JSON.parse(savedProfile) : null;
+    setUserProfile(profile);
     
     // Initialize SpeechRecognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -60,7 +62,8 @@ export default function ChatbotPage() {
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'en-US';
+        // Set language from profile or default
+        recognitionRef.current.lang = profile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
 
         recognitionRef.current.onresult = (event: any) => {
             const transcript = Array.from(event.results)
@@ -78,10 +81,9 @@ export default function ChatbotPage() {
             console.error("Speech recognition error", event.error);
             setIsRecording(false);
         };
-
     }
     
-     // Cleanup speech synthesis on component unmount or when navigating away
+    // Cleanup speech synthesis on component unmount or when navigating away
     return () => {
       window.speechSynthesis.cancel();
     };
@@ -106,9 +108,14 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
+    utterance.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
-    utterance.onerror = () => setNowPlayingMessageId(null); // Handle errors
+    utterance.onerror = (e) => {
+        console.error("Speech synthesis error", e);
+        setNowPlayingMessageId(null); // Handle errors
+    }
+    utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
   };
 
@@ -158,6 +165,7 @@ export default function ChatbotPage() {
         question: input,
         photoDataUri: photoDataUri,
         city: userProfile?.city,
+        language: userProfile?.language || 'English',
       });
       aiResponseContent = response.answer ?? 'Sorry, I could not generate a response.';
     } catch (error) {
@@ -188,6 +196,7 @@ export default function ChatbotPage() {
       }
     } else {
       if(recognitionRef.current) {
+        recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
         recognitionRef.current.start();
         setIsRecording(true);
       } else {
