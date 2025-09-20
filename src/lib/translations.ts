@@ -71,7 +71,7 @@ export const translations = {
         sidebar: {
             dashboard: "Dashboard",
             chatbot: "AI Chatbot",
-            detection: "Detection",
+            rental: "Rental Equipment",
             weather: "Weather",
             community: "Community",
             market: "Market Prices",
@@ -82,7 +82,7 @@ export const translations = {
         bottomNav: {
             home: "Home",
             community: "Community",
-            scan: "Scan",
+            rentals: "Rentals",
             market: "Market",
             profile: "Profile",
         },
@@ -100,6 +100,7 @@ export const translations = {
                 pesticide: { title: "Pesticide Guide", description: "Accurate information and usage methods for organic and chemical pesticides." },
                 community: { title: "Community Forum", description: "Connect with farmers, ask questions, share knowledge, and build your network." },
                 soil: { title: "Soil Testing", description: "Upload soil reports, get AI analysis, and calculate fertilizer needs." },
+                rental: { title: "Rental Equipment", description: "Find and rent farming equipment like tractors and harvesters from nearby owners." },
             },
             schemeNotification: {
                 title: (scheme: string) => `New Update: ${scheme}`,
@@ -621,7 +622,7 @@ export const translations = {
         sidebar: {
             dashboard: "डैशबोर्ड",
             chatbot: "एआई चैटबॉट",
-            detection: "पहचान",
+            rental: "किराये के उपकरण",
             weather: "मौसम",
             community: "समुदाय",
             market: "बाजार मूल्य",
@@ -632,7 +633,7 @@ export const translations = {
         bottomNav: {
             home: "होम",
             community: "समुदाय",
-            scan: "स्कैन",
+            rentals: "किराए पर",
             market: "बाजार",
             profile: "प्रोफ़ाइल",
         },
@@ -650,6 +651,7 @@ export const translations = {
                 pesticide: { title: "कीटनाशक गाइड", description: "जैविक और रासायनिक कीटनाशकों के लिए सटीक जानकारी और उपयोग के तरीके।" },
                 community: { title: "सामुदायिक मंच", description: "किसानों से जुड़ें, प्रश्न पूछें, ज्ञान साझा करें और अपना नेटवर्क बनाएं।" },
                 soil: { title: "मिट्टी परीक्षण", description: "मिट्टी की रिपोर्ट अपलोड करें, एआई विश्लेषण प्राप्त करें और उर्वरक की जरूरतों की गणना करें।" },
+                rental: { title: "किराये के उपकरण", description: "आस-पास के मालिकों से ट्रैक्टर और हार्वेस्टर जैसे खेती के उपकरण खोजें और किराए पर लें।" },
             },
              schemeNotification: {
                 title: (scheme: string) => `नई अपडेट: ${scheme}`,

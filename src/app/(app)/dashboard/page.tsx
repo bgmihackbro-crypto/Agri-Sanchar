@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -96,6 +96,15 @@ export default function DashboardPage() {
       description: t.dashboard.services.pesticide.description,
       href: "/pesticide-guide",
       icon: Bug,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: t.dashboard.services.rental.title,
+      description: t.dashboard.services.rental.description,
+      href: "/rental-equipment",
+      icon: Tractor,
       badge: null,
       badgeColor: null,
       onClick: undefined
