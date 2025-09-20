@@ -167,7 +167,9 @@ export default function ChatbotPage() {
       stopRecording();
     }
     
-    lastInputWasVoice.current = false;
+    if (e) { // If it's a form submission event, it's a typed message
+      lastInputWasVoice.current = false;
+    }
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -212,6 +214,10 @@ export default function ChatbotPage() {
     };
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
+    
+    if (lastInputWasVoice.current) {
+        speak(assistantMessage);
+    }
   };
 
   const startRecording = () => {
