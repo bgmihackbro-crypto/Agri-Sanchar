@@ -52,6 +52,12 @@ const nextConfig: NextConfig = {
         hostname: 'media.istockphoto.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.deere.com.mx',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

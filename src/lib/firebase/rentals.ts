@@ -37,8 +37,8 @@ const initialRentalsData: NewRentalData[] = [
         contact: "+919876543210"
     },
     {
-        name: "John Deere Combine Harvester",
-        category: "Harvester",
+        name: "John Deere Tractor",
+        category: "Tractor",
         price: 2500,
         priceUnit: "per_hour",
         location: "Amritsar",
@@ -46,8 +46,8 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-2",
         ownerName: "Gurpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1627553229605-22673a31c5dd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        description: "High-capacity W70 combine harvester, ideal for wheat and paddy. Book in advance for the harvest season.",
+        imageUrl: "https://www.deere.com.mx/assets/images/region-3/products/tractors/large/8r-series/8295r/trator_8295r_campo1_large_6ad8df214da04053ad0e1c8b8c52318c15ce8a8d.jpg",
+        description: "High-capacity John Deere tractor, ideal for various field operations. Book in advance for the peak season.",
         contact: "+919876543211"
     },
     {
@@ -270,7 +270,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-18",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1599719335833-273c7371a74e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
         contact: "+919876543227"
     },
