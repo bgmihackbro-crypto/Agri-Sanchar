@@ -444,6 +444,18 @@ export const translations = {
                 upcoming: "Upcoming",
                 closed: "Closed",
             },
+            calculator: {
+                title: "Benefit Calculator",
+                sumInsuredLabel: "Sum Insured (₹)",
+                sumInsuredPlaceholder: "e.g., 50000",
+                cropTypeLabel: "Crop Type",
+                cropTypePlaceholder: "Select type",
+                kharif: "Kharif",
+                rabi: "Rabi",
+                calculateButton: "Calculate Premium",
+                resultTitle: "Estimated Farmer's Premium",
+                resultDescription: (amount: string) => `You would need to pay approximately ₹${amount}. The rest is paid by the government.`,
+            },
             keywords: { // For icon selection
                 subsidy: "subsidy",
                 financial: "financial",
@@ -458,6 +470,7 @@ export const translations = {
                 description: "An income support scheme providing ₹6,000 per year in three equal installments to all landholding farmer families.",
                 eligibility: {
                     summary: "All landholder farmer families",
+                    landHolding: "any",
                     criteria: ["Must be an Indian citizen.", "All landholding farmer families with cultivable land in their names are eligible.", "Certain exclusions apply, such as institutional land holders and high-income individuals."],
                 },
                 benefitsSummary: "₹6,000/year",
@@ -535,7 +548,7 @@ export const translations = {
                 ],
                 documents: ["Usually none required from the farmer, as it is a government-driven process."],
             },
-            agri_infra_fund: {
+             agri_infra_fund: {
                 name: "Agriculture Infrastructure Fund",
                 description: "A financing facility for the creation of post-harvest management infrastructure and community farming assets.",
                 eligibility: {
@@ -657,7 +670,7 @@ export const translations = {
             problemPlaceholder: "Describe the problem you see on your crop... For example: 'The leaves are turning yellow and have small white insects underneath.'",
             getRecommendation: "Get AI Recommendation",
             analyzing: "Analyzing...",
-            aiThinking: "AI is thinking...",
+aiThinking: "AI is thinking...",
             aiRecommendation: "AI Recommendation",
             reasoning: "Reasoning",
             usage: "Usage Instructions",
@@ -1163,11 +1176,22 @@ export const translations = {
             documents: "आवश्यक दस्तावेज़",
             applyHere: "यहां आवेदन करें",
             viewDetails: "विवरण देखें",
-            lastDate: "अंतिम तिथि",
             status: {
                 ongoing: "जारी है",
                 upcoming: "आगामी",
                 closed: "बंद",
+            },
+            calculator: {
+                title: "लाभ कैलकुलेटर",
+                sumInsuredLabel: "बीमित राशि (₹)",
+                sumInsuredPlaceholder: "उदा., 50000",
+                cropTypeLabel: "फसल का प्रकार",
+                cropTypePlaceholder: "प्रकार चुनें",
+                kharif: "खरीफ",
+                rabi: "रबी",
+                calculateButton: "प्रीमियम की गणना करें",
+                resultTitle: "अनुमानित किसान प्रीमियम",
+                resultDescription: (amount: string) => `आपको लगभग ₹${amount} का भुगतान करना होगा। शेष राशि सरकार द्वारा भुगतान की जाती है।`,
             },
             keywords: {
                 subsidy: "सब्सिडी",
@@ -1183,6 +1207,7 @@ export const translations = {
                 description: "सभी भूमिधारक किसान परिवारों को तीन समान किस्तों में प्रति वर्ष ₹6,000 प्रदान करने वाली एक आय सहायता योजना।",
                 eligibility: {
                     summary: "सभी भूमिधारक किसान परिवार",
+                    landHolding: "any",
                     criteria: ["भारतीय नागरिक होना चाहिए।", "अपने नाम पर खेती योग्य भूमि वाले सभी भूमिधारक किसान परिवार पात्र हैं।", "कुछ अपवाद लागू होते हैं, जैसे कि संस्थागत भूमि धारक और उच्च आय वाले व्यक्ति।"],
                 },
                 benefitsSummary: "₹6,000/वर्ष",

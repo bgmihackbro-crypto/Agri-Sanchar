@@ -1,4 +1,5 @@
 
+
 import type { Translations } from './translations';
 
 export interface Scheme {
@@ -19,7 +20,6 @@ export interface Scheme {
     documents: string[];
     link: string;
     status: 'Ongoing' | 'Upcoming' | 'Closed';
-    lastDate?: string;
 }
 
 // Using a function to incorporate translations

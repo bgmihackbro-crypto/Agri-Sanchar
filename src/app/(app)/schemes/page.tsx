@@ -7,9 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useTranslation } from '@/hooks/use-translation';
 import { schemes, type Scheme } from '@/lib/schemes';
-import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser } from 'lucide-react';
+import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type UserProfile = {
   farmSize: string;
@@ -72,7 +76,7 @@ export default function SchemesPage() {
                 let isEligible = true;
                 // Simple eligibility check
                 const farmSize = parseFloat(userProfile.farmSize);
-                if (scheme.eligibility.landHolding && farmSize > parseFloat(scheme.eligibility.landHolding.match(/(\d+)/)?.[0] || '999')) {
+                if (scheme.eligibility.landHolding && scheme.eligibility.landHolding !== 'any' && farmSize > parseFloat(scheme.eligibility.landHolding.match(/(\d+)/)?.[0] || '999')) {
                     isEligible = false;
                 }
                 
@@ -120,6 +124,67 @@ export default function SchemesPage() {
     );
 }
 
+function SchemeCalculator({ scheme, t }: { scheme: Scheme, t: any }) {
+    const [sumInsured, setSumInsured] = useState('');
+    const [cropType, setCropType] = useState<'kharif' | 'rabi' | ''>('');
+    const [calculatedPremium, setCalculatedPremium] = useState<number | null>(null);
+
+    if (scheme.id !== 'pmfby') {
+        return null;
+    }
+
+    const handleCalculate = () => {
+        const insuredAmount = parseFloat(sumInsured);
+        if (!insuredAmount || !cropType) {
+            setCalculatedPremium(null);
+            return;
+        }
+
+        const premiumRate = cropType === 'kharif' ? 0.02 : 0.015; // 2% for Kharif, 1.5% for Rabi
+        const premium = insuredAmount * premiumRate;
+        setCalculatedPremium(premium);
+    };
+
+    return (
+        <div className="space-y-4 rounded-lg border bg-muted/50 p-4">
+             <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Calculator className="h-5 w-5 text-primary"/>
+                {t.schemes.calculator.title}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                    <Label htmlFor="sum-insured">{t.schemes.calculator.sumInsuredLabel}</Label>
+                    <Input id="sum-insured" type="number" placeholder={t.schemes.calculator.sumInsuredPlaceholder} value={sumInsured} onChange={(e) => setSumInsured(e.target.value)} />
+                </div>
+                 <div className="space-y-1.5">
+                    <Label htmlFor="crop-type">{t.schemes.calculator.cropTypeLabel}</Label>
+                    <Select onValueChange={(v) => setCropType(v as any)} value={cropType}>
+                        <SelectTrigger id="crop-type">
+                            <SelectValue placeholder={t.schemes.calculator.cropTypePlaceholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="kharif">{t.schemes.calculator.kharif}</SelectItem>
+                            <SelectItem value="rabi">{t.schemes.calculator.rabi}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            <Button onClick={handleCalculate} disabled={!sumInsured || !cropType} className="w-full sm:w-auto">
+                {t.schemes.calculator.calculateButton}
+            </Button>
+            {calculatedPremium !== null && (
+                 <Alert className="bg-green-50 border-green-200">
+                    <AlertTitle className="font-bold text-lg text-green-800">{t.schemes.calculator.resultTitle}</AlertTitle>
+                    <AlertDescription className="text-green-900">
+                         {t.schemes.calculator.resultDescription(calculatedPremium.toLocaleString('en-IN'))}
+                    </AlertDescription>
+                </Alert>
+            )}
+        </div>
+    )
+}
+
+
 function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
     return (
         <Dialog>
@@ -162,54 +227,60 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                     <DialogDescription>{scheme.description}</DialogDescription>
                     <div className="flex justify-between items-center pt-2">
                         {getStatusBadge(scheme.status, t)}
-                        {scheme.lastDate && <p className="text-sm text-destructive font-semibold">{t.schemes.lastDate}: {scheme.lastDate}</p>}
                     </div>
                 </DialogHeader>
 
-                <div className="grid md:grid-cols-2 gap-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
-                    <div className="space-y-4">
-                        <h3 className="font-semibold text-lg">{t.schemes.benefits}</h3>
-                        <ul className="space-y-3">
-                           {scheme.benefits.map((benefit, i) => (
-                                <li key={i} className="flex items-start gap-3">
-                                    <BenefitIcon benefit={benefit} t={t} />
-                                    <span className="text-sm text-muted-foreground">{benefit}</span>
-                                </li>
-                           ))}
-                        </ul>
-
-                         <h3 className="font-semibold text-lg pt-4">{t.schemes.eligibility}</h3>
-                         <ul className="space-y-3">
-                            {scheme.eligibility.criteria.map((item, i) => (
-                                <li key={i} className="flex items-start gap-3">
-                                    <UserCheck className="h-5 w-5 text-blue-600" />
-                                    <span className="text-sm text-muted-foreground">{item}</span>
-                                </li>
-                            ))}
-                        </ul>
+                <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto pr-4">
+                    <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div className="space-y-4">
+                            <h3 className="font-semibold text-lg">{t.schemes.benefits}</h3>
+                            <ul className="space-y-3">
+                               {scheme.benefits.map((benefit, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <BenefitIcon benefit={benefit} t={t} />
+                                        <span className="text-sm text-muted-foreground">{benefit}</span>
+                                    </li>
+                               ))}
+                            </ul>
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="font-semibold text-lg">{t.schemes.eligibility}</h3>
+                             <ul className="space-y-3">
+                                {scheme.eligibility.criteria.map((item, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <UserCheck className="h-5 w-5 text-blue-600" />
+                                        <span className="text-sm text-muted-foreground">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                         <div className="space-y-4 md:col-span-2">
+                            <h3 className="font-semibold text-lg">{t.schemes.documents}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                 {scheme.documents.map((doc, i) => (
+                                    <Badge key={i} variant="secondary" className="flex items-center gap-2">
+                                        <FileText className="h-4 w-4" />
+                                        {doc}
+                                    </Badge>
+                                 ))}
+                            </div>
+                        </div>
+                        <div className="space-y-4 md:col-span-2">
+                            <h3 className="font-semibold text-lg">{t.schemes.applicationProcess}</h3>
+                             <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6">                  
+                                {scheme.applicationProcess.map((step, i) => (
+                                    <li key={i} className="ml-6">
+                                        <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                            <span className="font-bold text-blue-800 dark:text-blue-300 text-xs">{i + 1}</span>
+                                        </span>
+                                        <p className="font-semibold text-sm">{step.step}</p>
+                                        <p className="text-xs text-muted-foreground">{step.detail}</p>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
                     </div>
-                    <div className="space-y-4">
-                        <h3 className="font-semibold text-lg">{t.schemes.applicationProcess}</h3>
-                         <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-4">                  
-                            {scheme.applicationProcess.map((step, i) => (
-                                <li key={i} className="ml-4">
-                                    <div className="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                                    <p className="text-sm font-semibold">{step.step}</p>
-                                    <p className="text-sm text-muted-foreground">{step.detail}</p>
-                                </li>
-                            ))}
-                        </ol>
-
-                        <h3 className="font-semibold text-lg pt-4">{t.schemes.documents}</h3>
-                        <ul className="space-y-2">
-                             {scheme.documents.map((doc, i) => (
-                                <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <FileText className="h-4 w-4 text-gray-500" />
-                                    {doc}
-                                </li>
-                             ))}
-                        </ul>
-                    </div>
+                     <SchemeCalculator scheme={scheme} t={t} />
                 </div>
 
                 <div className="flex justify-end pt-4">
@@ -224,4 +295,3 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         </Dialog>
     );
 }
-
