@@ -156,7 +156,14 @@ export default function LoginPage() {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">{t.login.title}</CardTitle>
         <CardDescription className="text-foreground">
-          {otpSent ? t.login.enterOtp : t.login.enterPhone}
+          {otpSent ? (
+            t.login.enterOtp
+          ) : (
+            <>
+              <p>{t.login.enterPhone}</p>
+              <p>{t.login.phoneTestHint}</p>
+            </>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -215,5 +222,3 @@ export default function LoginPage() {
     </Card>
   );
 }
-
-    
