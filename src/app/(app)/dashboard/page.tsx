@@ -74,10 +74,10 @@ export default function DashboardPage() {
     {
       title: "Pesticide Guide",
       description: "Accurate information and usage methods for organic and chemical pesticides.",
-      href: "#",
+      href: "/pesticide-guide",
       icon: Bug,
-      badge: "जल्द ही आ रहा",
-      badgeColor: "bg-orange-400",
+      badge: null,
+      badgeColor: null,
       onClick: undefined
     },
   ];

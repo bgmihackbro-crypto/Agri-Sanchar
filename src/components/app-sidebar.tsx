@@ -29,7 +29,7 @@ const links = [
   { href: "/community", label: "Community", icon: Users },
   { href: "/market", label: "Market Prices", icon: TrendingUp },
   { href: "/soil-testing", label: "Soil Testing", icon: FlaskConical },
-  { href: "#", label: "Pesticide Guide", icon: Bug },
+  { href: "/pesticide-guide", label: "Pesticide Guide", icon: Bug },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
