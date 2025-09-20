@@ -107,7 +107,7 @@ const initialPostsData = [
     time: "2 days ago",
     title: "Great prices for tomatoes at Jalandhar mandi!",
     content: "Just sold my tomato harvest at the Jalandhar mandi for a very good price. Demand is high right now. If you have ready produce, now is a good time to sell.",
-    image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0b21hdG98ZW58MHx8fHwxNzU4MjIyODIwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0b21hdG98ZW58MHx8fHwxNzU4MjIyODIwfDA&ixlib-rb-4.1.0&q=80&w=1080",
     imageHint: "tomatoes market",
     mediaType: 'image',
     likes: 45,
@@ -141,7 +141,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "New potato variety showing good results.",
     content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
-    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib_rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG98ZW58MHx8fHwxNzU4MjIzMzYyfDA&ixlib-rb-4.1.0&q=80&w=1080",
     imageHint: "potato harvest",
     mediaType: 'image',
     likes: 52,
@@ -193,7 +193,7 @@ const initialPostsData = [
     time: "1 day ago",
     title: "Whitefly problem in my cotton crop",
     content: "My cotton plants are infested with whiteflies. They are causing the leaves to turn yellow and sticky. What is the best way to control them organically?",
-    image: "https://images.unsplash.com/photo-1609211593856-20240d322bcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMnx8Y290dG9uJTIwcGxhbnQlMjB8ZW58MHx8fHwxNzU4MzA0NTAwfDA&ixlib_rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1609211593856-20240d322bcb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMnx8Y290dG9uJTIwcGxhbnQlMjB8ZW58MHx8fHwxNzU4MzA0NTAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "cotton pest",
     mediaType: 'image',
     likes: 22,
@@ -227,7 +227,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Subsidy on polyhouse construction?",
     content: "Does anyone know if there is a government subsidy available for constructing a polyhouse in Maharashtra? I want to grow high-value vegetables.",
-    image: "https://images.unsplash.com/photo-1752608277943-e2f36ab66c34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8cG9seWhvdXNlfGVufDB8fHx8MTc1ODMwNDUyMnww&ixlib-rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1752608277943-e2f36ab66c34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8cG9seWhvdXNlfGVufDB8fHx8MTc1ODMwNDUyMnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "polyhouse farming",
     mediaType: 'image',
     likes: 41,
@@ -983,7 +983,7 @@ const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPost
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl p-0">
+            <DialogContent className="max-w-md p-0">
                  <DialogHeader>
                     <DialogTitle className="sr-only">{t.community.post.postFrom(post.author)}</DialogTitle>
                     <DialogDescription className="sr-only">{post.title}</DialogDescription>
