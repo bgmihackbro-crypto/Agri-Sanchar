@@ -44,7 +44,7 @@ export default function WeatherPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { addNotification } = useNotifications();
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
 
 
     useEffect(() => {
@@ -66,7 +66,7 @@ export default function WeatherPage() {
             setState(userState);
 
             try {
-                const forecast = await getWeatherForecast({ city: userCity });
+                const forecast = await getWeatherForecast({ city: userCity, language: language });
 
                 if (forecast.error) {
                     setError(forecast.error);
@@ -94,7 +94,7 @@ export default function WeatherPage() {
         };
 
         fetchWeatherData();
-    }, [addNotification, t]);
+    }, [addNotification, t, language]);
 
 
   return (
@@ -160,14 +160,14 @@ export default function WeatherPage() {
           </Card>
           
           {weatherData.farmingTips && (
-            <Card className="bg-green-50 border-green-200">
+            <Card className="bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-headline text-green-800">
+                    <CardTitle className="flex items-center gap-2 font-headline text-green-800 dark:text-green-300">
                         <Bot className="h-6 w-6" /> {t.weather.aiSuggestion}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-green-900 whitespace-pre-wrap">{weatherData.farmingTips}</div>
+                    <div className="text-green-900 dark:text-green-200 whitespace-pre-wrap">{weatherData.farmingTips}</div>
                 </CardContent>
             </Card>
           )}

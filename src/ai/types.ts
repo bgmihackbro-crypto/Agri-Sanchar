@@ -50,6 +50,7 @@ const CurrentWeatherSchema = z.object({
 
 export const WeatherForecastInputSchema = z.object({
   city: z.string().describe('The city for which to fetch the weather forecast.'),
+  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi')."),
 });
 export type WeatherForecastInput = z.infer<typeof WeatherForecastInputSchema>;
 

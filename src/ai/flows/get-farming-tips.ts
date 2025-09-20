@@ -12,6 +12,7 @@ import { z } from 'zod';
 
 const FarmingTipsInputSchema = z.object({
   city: z.string(),
+  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi')."),
   current: WeatherForecastOutputSchema.shape.current,
   weekly: WeatherForecastOutputSchema.shape.weekly,
 });
@@ -33,6 +34,8 @@ const prompt = ai.definePrompt({
     prompt: `You are an expert agricultural advisor. Your goal is to provide actionable, concise farming tips based on the provided weather forecast for {{city}}.
 
 The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points.
+
+**CRITICAL INSTRUCTION**: You MUST provide your entire response in the specified language: {{{language}}}. If it is 'Hindi', you MUST reply in Devanagari script.
 
 Focus on practical advice related to irrigation, harvesting, planting schedules, pest control, and crop protection that is relevant to the given forecast.
 

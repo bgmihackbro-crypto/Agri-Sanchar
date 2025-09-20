@@ -32,7 +32,7 @@ const getWeatherForecastFlow = ai.defineFlow(
     inputSchema: WeatherForecastInputSchema,
     outputSchema: WeatherForecastOutputSchema,
   },
-  async ({ city }) => {
+  async ({ city, language }) => {
     const apiKey = process.env.OPENWEATHER_API_KEY;
     if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
       return { error: 'The weather service is not configured. Please add an API key.' };
@@ -122,7 +122,7 @@ const getWeatherForecastFlow = ai.defineFlow(
       });
 
       // 3. Get AI farming tips
-      const farmingTips = await getFarmingTips({ city, current, weekly: weeklyForecasts });
+      const farmingTips = await getFarmingTips({ city, current, weekly: weeklyForecasts, language });
 
       return {
           current,
