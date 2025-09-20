@@ -32,7 +32,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-1",
         ownerName: "Balwinder Singh",
         ownerAvatar: "https://picsum.photos/seed/wheat-field/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1675276637042-a87b5c4e0367?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1625803323233-252748937397?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Well-maintained Sonalika DI 745 III tractor. Suitable for ploughing and tilling. Available with a driver.",
         contact: "+919876543210"
     },
@@ -46,7 +46,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-2",
         ownerName: "Gurpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1632303496738-348f76e04879?q=80&w=1025&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1518993083190-3b957a06e1ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity W70 combine harvester, ideal for wheat and paddy. Book in advance for the harvest season.",
         contact: "+919876543211"
     },
@@ -60,7 +60,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-3",
         ownerName: "Sukhdev Singh",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-3/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1625803323233-252748937397?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://plus.unsplash.com/premium_photo-1678297274438-ac7135010196?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "6-feet rotavator for seedbed preparation. Works efficiently in both dry and wet soil conditions.",
         contact: "+919876543212"
     },
@@ -88,7 +88,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-5",
         ownerName: "Jaswinder Singh",
         ownerAvatar: "https://picsum.photos/seed/solar-pump/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1661962388390-34907d353dec?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1622359400204-63539943542d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "400-liter capacity tractor-mounted boom sprayer. Suitable for large fields. Covers up to 5 acres per hour.",
         contact: "+919876543214"
     },
@@ -144,7 +144,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-9",
         ownerName: "Sunita Devi",
         ownerAvatar: "https://picsum.photos/seed/marigold-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1622359400204-63539943542d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1601267448652-e3c6395b033d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "16-liter capacity battery sprayer for easy and uniform spraying of pesticides and fertilizers. Comes with multiple nozzles.",
         contact: "+919876543218"
     },
@@ -172,7 +172,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-11",
         ownerName: "Harpreet Gill",
         ownerAvatar: "https://picsum.photos/seed/potato-crop/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1678297274438-ac7135010196?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1628231882126-194315c54536?q=80&w=1033&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-operated potato digger. Efficiently digs out potatoes with minimal damage. Can cover 2-3 acres a day.",
         contact: "+919876543220"
     },
@@ -186,7 +186,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-12",
         ownerName: "Kavita Patel",
         ownerAvatar: "https://picsum.photos/seed/sugarcane/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1621282692291-a588bf33241d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1621282692291-a588bf33241d?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Mechanical sugarcane harvester for quick and efficient harvesting. Reduces labor costs significantly.",
         contact: "+919876543221"
     },
@@ -242,7 +242,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-16",
         ownerName: "Suresh Rao",
         ownerAvatar: "https://picsum.photos/seed/orange-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Heavy-duty 3-disc plough for primary tillage in hard and dry soil. Can break up new ground effectively.",
         contact: "+919876543225"
     }
