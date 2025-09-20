@@ -34,6 +34,7 @@ import { EXPERT_BOT_USER } from "@/lib/firebase/chat";
 import { indianCities } from "@/lib/indian-cities";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 const allCitiesList = Object.values(indianCities).flat();
 
@@ -433,7 +434,7 @@ type Comment = {
 type Post = (typeof initialPostsData)[0] & { originalAuthor?: string };
 
 
-const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post, groups: Group[], userProfile: UserProfile | null, onPostCreated: (post: Post) => void }) => {
+const ShareDialog = ({ post, groups, userProfile, onPostCreated, t }: { post: Post, groups: Group[], userProfile: UserProfile | null, onPostCreated: (post: Post) => void, t: any }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [isSharing, setIsSharing] = useState(false);
@@ -441,12 +442,12 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
 
     const handleShareToGroup = async () => {
         if (!selectedGroup || !userProfile) {
-            toast({ variant: 'destructive', title: 'Selection required', description: 'Please select a group to share.' });
+            toast({ variant: 'destructive', title: t.community.share.selectionRequired, description: t.community.share.selectGroup });
             return;
         }
         setIsSharing(true);
         try {
-            const postContent = `Shared Post by ${post.author}:\n\n*${post.title}*\n${post.content}`;
+            const postContent = `${t.community.share.sharedBy} ${post.author}:\n\n*${post.title}*\n${post.content}`;
             
             await sendMessage({
                 groupId: selectedGroup,
@@ -460,19 +461,19 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
                 onProgress: () => {},
             });
 
-            toast({ title: 'Post Shared!', description: `The post "${post.title}" has been shared.` });
+            toast({ title: t.community.share.postShared, description: t.community.share.postSharedDesc(post.title) });
             setIsOpen(false);
 
         } catch (error) {
             console.error("Error sharing post:", error);
-            toast({ variant: 'destructive', title: 'Error', description: 'Could not share the post.' });
+            toast({ variant: 'destructive', title: t.community.share.error, description: t.community.share.errorDesc });
         } finally {
             setIsSharing(false);
         }
     };
     
     const handleSocialShare = (platform: 'whatsapp' | 'facebook') => {
-        const text = `Check out this post from Agri-Sanchar:\n\n*${post.title}*\n${post.content}`;
+        const text = `${t.community.share.socialShareText}\n\n*${post.title}*\n${post.content}`;
         const encodedText = encodeURIComponent(text);
         
         let url = '';
@@ -496,7 +497,7 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
             author: userProfile.name, // Repost is by the current user
             avatar: userProfile.avatar,
             location: userProfile.city,
-            time: "Just now",
+            time: t.community.post.justNow,
             likes: 0,
             comments: [],
             originalAuthor: post.author, // Add reference to original author
@@ -505,7 +506,7 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
         };
 
         onPostCreated(repost);
-        toast({ title: "Post Shared!", description: "You have shared this post to your feed." });
+        toast({ title: t.community.share.postShared, description: t.community.share.sharedToFeed });
         setIsOpen(false);
     };
 
@@ -513,41 +514,41 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground hover:text-primary">
-                    <Share className="h-4 w-4" /> Share
+                    <Share className="h-4 w-4" /> {t.community.post.share}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Share Post</DialogTitle>
+                    <DialogTitle>{t.community.share.title}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                      <Card className="bg-muted/50">
                         <CardHeader className="p-4">
                             <p className="font-semibold">{post.title}</p>
-                            <p className="text-xs text-muted-foreground">by {post.author}</p>
+                            <p className="text-xs text-muted-foreground">{t.community.share.by} {post.author}</p>
                         </CardHeader>
                     </Card>
 
                     <Button onClick={handleShareToFeed} className="w-full">
-                        <Repeat className="mr-2 h-4 w-4" /> Share to Feed
+                        <Repeat className="mr-2 h-4 w-4" /> {t.community.share.shareToFeed}
                     </Button>
 
                     <div className="relative">
                         <Separator />
-                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">OR</span>
+                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">{t.community.share.or}</span>
                     </div>
 
                      <div>
-                        <Label>Share to a local group</Label>
+                        <Label>{t.community.share.shareToGroup}</Label>
                         <div className="flex gap-2 mt-2">
                              <Select onValueChange={setSelectedGroup} value={selectedGroup}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select a group..." />
+                                    <SelectValue placeholder={t.community.share.selectGroupPlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {groups.length > 0 ? groups.map(group => (
                                         <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
-                                    )) : <p className="p-4 text-sm text-muted-foreground">You are not in any groups.</p>}
+                                    )) : <p className="p-4 text-sm text-muted-foreground">{t.community.share.noGroups}</p>}
                                 </SelectContent>
                             </Select>
                              <Button onClick={handleShareToGroup} disabled={isSharing || !selectedGroup}>
@@ -558,11 +559,11 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
                     
                     <div className="relative">
                         <Separator />
-                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">OR</span>
+                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">{t.community.share.or}</span>
                     </div>
 
                     <div>
-                        <Label>Share on social media</Label>
+                        <Label>{t.community.share.shareOnSocial}</Label>
                         <div className="grid grid-cols-2 gap-2 mt-2">
                              <Button variant="outline" className="bg-[#25D366] hover:bg-[#25D366]/90 text-white" onClick={() => handleSocialShare('whatsapp')}>
                                 WhatsApp
@@ -574,7 +575,7 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>{t.community.group.cancel}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -582,7 +583,7 @@ const ShareDialog = ({ post, groups, userProfile, onPostCreated }: { post: Post,
 };
 
 
-const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated, isGrid = false }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[]; onPostCreated: (post: Post) => void; isGrid?: boolean; }) => {
+const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated, t, isGrid = false }: { post: Post, onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; userProfile: UserProfile | null; groups: Group[]; onPostCreated: (post: Post) => void; t: any; isGrid?: boolean; }) => {
     const [commentText, setCommentText] = useState("");
     const [isExpanded, setIsExpanded] = useState(false);
     
@@ -607,7 +608,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
            {mediaType.startsWith('image') ? (
               <Image
                 src={p.image}
-                alt={p.title || 'Post image'}
+                alt={p.title || t.community.post.postImageAlt}
                 width={600}
                 height={600}
                 className="w-full h-full object-cover"
@@ -640,112 +641,114 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
     }
 
     return (
-    <Card className="animate-fade-in-up">
-      <CardHeader className="flex flex-row items-start gap-3 space-y-0 p-4">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src={post.avatar} data-ai-hint={post.avatarHint} />
-          <AvatarFallback>{post.author.substring(0, 2)}</AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="font-semibold text-sm">{post.author}</p>
-              <p className="text-xs text-muted-foreground">
-                {post.time} • {post.location}
-              </p>
-            </div>
-             {post.originalAuthor ? (
-                 <Badge variant="secondary" className="text-xs">
-                    <Repeat className="h-3 w-3 mr-1.5"/>
-                    Shared
-                </Badge>
-             ) : (
-                <Badge className={`${post.categoryColor} text-white text-xs`}>{post.category}</Badge>
-             )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="px-4 pb-2 pt-0">
-         {post.originalAuthor ? (
-            <>
-                <p className="text-sm text-muted-foreground mb-2">Shared from <span className="font-semibold text-foreground">{post.originalAuthor}</span></p>
-                <Card className="p-3 bg-muted/50">
-                    <h4 className="font-semibold mb-1 text-sm">{post.title}</h4>
-                    <p className="text-xs text-muted-foreground">{post.content}</p>
-                    {renderMedia(post)}
-                </Card>
-            </>
-         ) : (
-            <>
-                <h4 className="font-semibold mb-1">{post.title}</h4>
-                <p className={cn("text-sm text-muted-foreground", !isExpanded && "line-clamp-2")}>{post.content}</p>
-                {post.content.length > 100 && (
-                     <button onClick={() => setIsExpanded(!isExpanded)} className="text-xs text-primary font-semibold mt-1">
-                        {isExpanded ? "Read less" : "Read more"}
-                    </button>
-                )}
-                {renderMedia(post)}
-            </>
-         )}
-      </CardContent>
-      <CardFooter className="flex items-center justify-between p-2">
-         <div className="flex">
-            <Button variant="ghost" size="sm" onClick={() => onLike(post.id)} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
-                <ThumbsUp className="h-4 w-4" /> <span className="text-xs">{post.likes}</span>
-            </Button>
-            <CollapsibleTrigger asChild>
-                 <Button variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
-                    <MessageCircle className="h-4 w-4" /> <span className="text-xs">{post.comments.length}</span>
-                </Button>
-            </CollapsibleTrigger>
-            <ShareDialog post={post} groups={groups} userProfile={userProfile} onPostCreated={onPostCreated} />
-         </div>
-      </CardFooter>
-        <CollapsibleContent>
-            <div className="px-4 pb-4 space-y-3 border-t pt-3">
-                {post.comments.length > 0 && (
-                <div className="space-y-3">
-                    {post.comments.map((comment, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src={comment.isAi ? '' : comment.avatar} data-ai-hint="farm icon" />
-                                <AvatarFallback>{comment.author.substring(0,2)}</AvatarFallback>
-                            </Avatar>
-                            <div className={`flex-1 p-2 rounded-md text-sm ${comment.isAi ? 'bg-primary/10' : 'bg-muted/70'}`}>
-                                <div className="flex items-center gap-2">
-                                    <p className="font-semibold">{comment.author}</p>
-                                    {comment.isExpert && <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200"><Award className="h-3 w-3 mr-1"/>Expert</Badge>}
-                                </div>
-                                <p className="text-foreground/80 text-xs">{comment.content}</p>
-                            </div>
-                        </div>
-                    ))}
+    <Collapsible asChild>
+        <Card className="animate-fade-in-up">
+        <CardHeader className="flex flex-row items-start gap-3 space-y-0 p-4">
+            <Avatar className="h-9 w-9">
+            <AvatarImage src={post.avatar} data-ai-hint={post.avatarHint} />
+            <AvatarFallback>{post.author.substring(0, 2)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+            <div className="flex items-start justify-between">
+                <div>
+                <p className="font-semibold text-sm">{post.author}</p>
+                <p className="text-xs text-muted-foreground">
+                    {post.time} • {post.location}
+                </p>
                 </div>
+                {post.originalAuthor ? (
+                    <Badge variant="secondary" className="text-xs">
+                        <Repeat className="h-3 w-3 mr-1.5"/>
+                        {t.community.post.shared}
+                    </Badge>
+                ) : (
+                    <Badge className={`${post.categoryColor} text-white text-xs`}>{post.category}</Badge>
                 )}
-                {userProfile && (
-                        <form onSubmit={handleCommentSubmit} className="flex items-center gap-2 pt-2">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src={userProfile.avatar} />
-                                <AvatarFallback>{userProfile.name.substring(0, 2)}</AvatarFallback>
-                            </Avatar>
-                            <Input 
-                                value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                placeholder="Write a comment..."
-                                className="h-9 text-xs"
-                            />
-                            <Button type="submit" size="icon" className="h-9 w-9" disabled={!commentText.trim()}>
-                                <Send className="h-4 w-4" />
-                            </Button>
-                        </form>
-                    )}
             </div>
-      </CollapsibleContent>
-    </Card>
+            </div>
+        </CardHeader>
+        <CardContent className="px-4 pb-2 pt-0">
+            {post.originalAuthor ? (
+                <>
+                    <p className="text-sm text-muted-foreground mb-2">{t.community.post.sharedFrom} <span className="font-semibold text-foreground">{post.originalAuthor}</span></p>
+                    <Card className="p-3 bg-muted/50">
+                        <h4 className="font-semibold mb-1 text-sm">{post.title}</h4>
+                        <p className="text-xs text-muted-foreground">{post.content}</p>
+                        {renderMedia(post)}
+                    </Card>
+                </>
+            ) : (
+                <>
+                    <h4 className="font-semibold mb-1">{post.title}</h4>
+                    <p className={cn("text-sm text-muted-foreground", !isExpanded && "line-clamp-2")}>{post.content}</p>
+                    {post.content.length > 100 && (
+                        <button onClick={() => setIsExpanded(!isExpanded)} className="text-xs text-primary font-semibold mt-1">
+                            {isExpanded ? t.community.post.readLess : t.community.post.readMore}
+                        </button>
+                    )}
+                    {renderMedia(post)}
+                </>
+            )}
+        </CardContent>
+        <CardFooter className="flex items-center justify-between p-2">
+            <div className="flex">
+                <Button variant="ghost" size="sm" onClick={() => onLike(post.id)} className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
+                    <ThumbsUp className="h-4 w-4" /> <span className="text-xs">{post.likes}</span>
+                </Button>
+                <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
+                        <MessageCircle className="h-4 w-4" /> <span className="text-xs">{post.comments.length}</span>
+                    </Button>
+                </CollapsibleTrigger>
+                <ShareDialog post={post} groups={groups} userProfile={userProfile} onPostCreated={onPostCreated} t={t} />
+            </div>
+        </CardFooter>
+            <CollapsibleContent>
+                <div className="px-4 pb-4 space-y-3 border-t pt-3">
+                    {post.comments.length > 0 && (
+                    <div className="space-y-3">
+                        {post.comments.map((comment, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                                <Avatar className="h-8 w-8">
+                                    <AvatarImage src={comment.isAi ? '' : comment.avatar} data-ai-hint="farm icon" />
+                                    <AvatarFallback>{comment.author.substring(0,2)}</AvatarFallback>
+                                </Avatar>
+                                <div className={`flex-1 p-2 rounded-md text-sm ${comment.isAi ? 'bg-primary/10' : 'bg-muted/70'}`}>
+                                    <div className="flex items-center gap-2">
+                                        <p className="font-semibold">{comment.author}</p>
+                                        {comment.isExpert && <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200"><Award className="h-3 w-3 mr-1"/>{t.community.post.expert}</Badge>}
+                                    </div>
+                                    <p className="text-foreground/80 text-xs">{comment.content}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    )}
+                    {userProfile && (
+                            <form onSubmit={handleCommentSubmit} className="flex items-center gap-2 pt-2">
+                                <Avatar className="h-8 w-8">
+                                    <AvatarImage src={userProfile.avatar} />
+                                    <AvatarFallback>{userProfile.name.substring(0, 2)}</AvatarFallback>
+                                </Avatar>
+                                <Input 
+                                    value={commentText}
+                                    onChange={(e) => setCommentText(e.target.value)}
+                                    placeholder={t.community.post.writeComment}
+                                    className="h-9 text-xs"
+                                />
+                                <Button type="submit" size="icon" className="h-9 w-9" disabled={!commentText.trim()}>
+                                    <Send className="h-4 w-4" />
+                                </Button>
+                            </form>
+                        )}
+                </div>
+        </CollapsibleContent>
+        </Card>
+    </Collapsible>
     );
 };
 
-const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) => {
+const CreateGroupDialog = ({ onGroupCreated, t }: { onGroupCreated: () => void, t: any }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [city, setCity] = useState('');
@@ -770,8 +773,8 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
         if (!name.trim() || !city || !userProfile?.farmerId) {
             toast({
                 variant: "destructive",
-                title: "Incomplete Information",
-                description: "Group Name and City are required.",
+                title: t.community.createGroup.incompleteTitle,
+                description: t.community.createGroup.incompleteDesc,
             });
             return;
         }
@@ -790,8 +793,8 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
             const newGroup = createGroup(newGroupData);
             onGroupCreated();
             toast({
-                title: "Group Created!",
-                description: `The "${newGroup.name}" group is now active.`,
+                title: t.community.createGroup.success,
+                description: t.community.createGroup.successDesc(newGroup.name),
             });
             setIsOpen(false);
             setName('');
@@ -802,8 +805,8 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
             console.error("Error creating group:", error);
             toast({
                 variant: 'destructive',
-                title: "Failed to Create Group",
-                description: "There was a problem creating the group. Please try again.",
+                title: t.community.createGroup.error,
+                description: t.community.createGroup.errorDesc,
             });
         } finally {
             setIsCreating(false);
@@ -815,31 +818,31 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
             <DialogTrigger asChild>
                 <Button>
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Create New Group
+                    {t.community.createGroup.button}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Create a Local Group</DialogTitle>
+                    <DialogTitle>{t.community.createGroup.title}</DialogTitle>
                     <DialogDescription>
-                        Start a new community group for farmers in your area.
+                        {t.community.createGroup.description}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name" className="text-right">
-                            Group Name
+                            {t.community.createGroup.nameLabel}
                         </Label>
-                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" placeholder="e.g., Ludhiana Wheat Growers" />
+                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" placeholder={t.community.createGroup.namePlaceholder} />
                     </div>
                      <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="city" className="text-right">
-                            City
+                            {t.community.createGroup.cityLabel}
                         </Label>
                         <div className="col-span-3">
                             <Select onValueChange={setCity} value={city}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select a city..." />
+                                    <SelectValue placeholder={t.community.createGroup.cityPlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {allCitiesList.sort().map(c => (
@@ -851,15 +854,15 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="description" className="text-right">
-                            Description
+                            {t.community.createGroup.descLabel}
                         </Label>
-                        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3" placeholder="A short description of your group's purpose." />
+                        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3" placeholder={t.community.createGroup.descPlaceholder} />
                     </div>
                 </div>
                 <DialogFooter>
                     <Button type="submit" onClick={handleSubmit} disabled={isCreating || !name.trim() || !city}>
                         {isCreating && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
-                        Create Group
+                        {t.community.createGroup.button}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -867,7 +870,7 @@ const CreateGroupDialog = ({ onGroupCreated }: { onGroupCreated: () => void }) =
     )
 }
 
-const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfile | null, onPostCreated: (post: Post) => void }) => {
+const NewPostDialog = ({ userProfile, onPostCreated, t }: { userProfile: UserProfile | null, onPostCreated: (post: Post) => void, t: any }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isPosting, setIsPosting] = useState(false);
     const [title, setTitle] = useState('');
@@ -895,7 +898,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
 
     const handlePostSubmit = () => {
         if (!title.trim() || !content.trim() || !userProfile) {
-            toast({ variant: 'destructive', title: 'Missing Information', description: 'Please provide a title and content for your post.' });
+            toast({ variant: 'destructive', title: t.community.newPost.incomplete, description: t.community.newPost.incompleteDesc });
             return;
         }
 
@@ -909,7 +912,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
                 location: userProfile.city,
                 category: "General", // Default category
                 categoryColor: "bg-gray-500",
-                time: "Just now",
+                time: t.community.post.justNow,
                 title,
                 content,
                 image: mediaPreview, // The URL.createObjectURL result
@@ -920,7 +923,7 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
             };
 
             onPostCreated(newPost);
-            toast({ title: "Post Created!", description: "Your post is now live in the community feed." });
+            toast({ title: t.community.newPost.success, description: t.community.newPost.successDesc });
             
             setIsPosting(false);
             setIsOpen(false);
@@ -934,22 +937,22 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
             <DialogTrigger asChild>
                  <Button className="bg-primary hover:bg-primary/90">
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    New Post
+                    {t.community.newPost.button}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create a New Post</DialogTitle>
-                    <DialogDescription>Share your thoughts, questions, or success with the community.</DialogDescription>
+                    <DialogTitle>{t.community.newPost.title}</DialogTitle>
+                    <DialogDescription>{t.community.newPost.description}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
-                    <Input placeholder="Post Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={isPosting}/>
-                    <Textarea placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} rows={5} disabled={isPosting} />
+                    <Input placeholder={t.community.newPost.titlePlaceholder} value={title} onChange={(e) => setTitle(e.target.value)} disabled={isPosting}/>
+                    <Textarea placeholder={t.community.newPost.contentPlaceholder} value={content} onChange={(e) => setContent(e.target.value)} rows={5} disabled={isPosting} />
 
                     {mediaPreview && (
                         <div className="relative border rounded-lg overflow-hidden">
                              {mediaFile?.type.startsWith('image/') ? (
-                                <Image src={mediaPreview} alt="Media preview" width={500} height={300} className="w-full h-auto object-cover"/>
+                                <Image src={mediaPreview} alt={t.community.newPost.mediaPreviewAlt} width={500} height={300} className="w-full h-auto object-cover"/>
                              ) : (
                                 <video src={mediaPreview} controls className="w-full h-auto"/>
                              )}
@@ -962,12 +965,12 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
                 <DialogFooter className="justify-between sm:justify-between">
                     <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isPosting}>
                         <ImageIcon className="mr-2 h-4 w-4"/>
-                        Photo/Video
+                        {t.community.newPost.photoVideo}
                     </Button>
                      <Input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,video/*"/>
                     <Button onClick={handlePostSubmit} disabled={isPosting || !title.trim() || !content.trim()}>
                         {isPosting && <Spinner className="mr-2 h-4 w-4"/>}
-                        {isPosting ? 'Posting...' : 'Post'}
+                        {isPosting ? t.community.newPost.posting : t.community.newPost.post}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -975,27 +978,26 @@ const NewPostDialog = ({ userProfile, onPostCreated }: { userProfile: UserProfil
     );
 };
 
-const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPostCreated, open, onOpenChange }: { post: Post | null, userProfile: UserProfile | null, groups: Group[], onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; onPostCreated: (post: Post) => void; open: boolean; onOpenChange: (open: boolean) => void }) => {
+const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPostCreated, open, onOpenChange, t }: { post: Post | null, userProfile: UserProfile | null, groups: Group[], onLike: (id: number) => void; onComment: (id: number, comment: Comment) => void; onPostCreated: (post: Post) => void; open: boolean; onOpenChange: (open: boolean) => void, t: any }) => {
     if (!post) return null;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl p-0">
                  <DialogHeader>
-                    <DialogTitle className="sr-only">Post from {post.author}</DialogTitle>
+                    <DialogTitle className="sr-only">{t.community.post.postFrom(post.author)}</DialogTitle>
                     <DialogDescription className="sr-only">{post.title}</DialogDescription>
                 </DialogHeader>
-                 <Collapsible defaultOpen={true} asChild>
-                    <PostCard
-                        post={post}
-                        onLike={onLike}
-                        onComment={onComment}
-                        userProfile={userProfile}
-                        groups={groups}
-                        onPostCreated={onPostCreated}
-                        isGrid={false}
-                    />
-                </Collapsible>
+                 <PostCard
+                    post={post}
+                    onLike={onLike}
+                    onComment={onComment}
+                    userProfile={userProfile}
+                    groups={groups}
+                    onPostCreated={onPostCreated}
+                    t={t}
+                    isGrid={false}
+                />
             </DialogContent>
         </Dialog>
     )
@@ -1014,6 +1016,7 @@ export default function CommunityPage() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const { t } = useTranslation();
 
 
   const fetchGroups = () => {
@@ -1154,11 +1157,11 @@ export default function CommunityPage() {
 
   const handleChat = (expert: (typeof expertData)[0]) => {
       if (!userProfile) {
-          toast({ variant: 'destructive', title: "Login required", description: "You need to be logged in to connect with experts." });
+          toast({ variant: 'destructive', title: t.community.experts.loginRequired, description: t.community.experts.loginRequiredDesc });
           return;
       }
 
-      toast({ title: "Creating Chat...", description: `Preparing a direct chat with ${expert.name}.` });
+      toast({ title: t.community.experts.creatingChat, description: t.community.experts.creatingChatDesc(expert.name) });
 
       // Create a "group" that represents a direct message channel
       const dmGroupId = `dm-${userProfile.farmerId}-${expert.id}`;
@@ -1171,8 +1174,8 @@ export default function CommunityPage() {
 
       const newDmGroup = createGroup({
           id: dmGroupId, // Use a predictable ID for DMs
-          name: `Chat with ${expert.name}`,
-          description: `Direct message channel between ${userProfile.name} and ${expert.name}.`,
+          name: t.community.experts.chatWith(expert.name),
+          description: t.community.experts.dmChannel(userProfile.name, expert.name),
           city: userProfile.city,
           ownerId: userProfile.farmerId,
           members: [userProfile.farmerId, expert.id],
@@ -1188,9 +1191,9 @@ export default function CommunityPage() {
   return (
     <div className="space-y-6">
        <div>
-        <h1 className="text-3xl font-bold font-headline">Community Forum</h1>
+        <h1 className="text-3xl font-bold font-headline">{t.community.title}</h1>
         <p className="text-muted-foreground">
-          Connect with other farmers, ask questions, and share your knowledge.
+          {t.community.description}
         </p>
       </div>
 
@@ -1199,32 +1202,32 @@ export default function CommunityPage() {
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input 
-                        placeholder="Search in a community" 
+                        placeholder={t.community.searchPlaceholder}
                         className="pl-9"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
-                <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} />
+                <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} t={t} />
             </div>
              <div className="flex flex-col md:flex-row gap-2">
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
                     <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by Topic" />
+                        <SelectValue placeholder={t.community.filterTopic} />
                     </SelectTrigger>
                     <SelectContent>
                         {allCategories.map(cat => (
-                            <SelectItem key={cat} value={cat}>{cat === 'all' ? 'All Topics' : cat}</SelectItem>
+                            <SelectItem key={cat} value={cat}>{cat === 'all' ? t.community.allTopics : cat}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
                 <Select value={filterCity} onValueChange={setFilterCity}>
                     <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Filter by Location" />
+                        <SelectValue placeholder={t.community.filterLocation} />
                     </SelectTrigger>
                     <SelectContent>
                         {allCities.map(city => (
-                             <SelectItem key={city} value={city}>{city === 'all' ? 'All Locations' : city}</SelectItem>
+                             <SelectItem key={city} value={city}>{city === 'all' ? t.community.allLocations : city}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -1240,44 +1243,43 @@ export default function CommunityPage() {
         onLike={handleLike}
         onComment={handleComment}
         onPostCreated={handleNewPost}
+        t={t}
       />
 
 
        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="home">Home Feed</TabsTrigger>
-                <TabsTrigger value="myposts">My Posts ({myPosts.length})</TabsTrigger>
-                <TabsTrigger value="local">Discover Groups</TabsTrigger>
-                <TabsTrigger value="experts">Expert &amp; NGOs</TabsTrigger>
+                <TabsTrigger value="home">{t.community.tabs.home}</TabsTrigger>
+                <TabsTrigger value="myposts">{t.community.tabs.myPosts} ({myPosts.length})</TabsTrigger>
+                <TabsTrigger value="local">{t.community.tabs.groups}</TabsTrigger>
+                <TabsTrigger value="experts">{t.community.tabs.experts}</TabsTrigger>
             </TabsList>
             <TabsContent value="home" className="pt-4">
                 {filteredPosts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredPosts.map((post) => (
                            <div key={post.id} onClick={() => setSelectedPost(post)}>
-                             <PostCard post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} isGrid={true} />
+                             <PostCard post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} isGrid={true} />
                            </div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-muted-foreground pt-8">No posts found for the selected filters.</p>
+                    <p className="text-center text-muted-foreground pt-8">{t.community.noPostsFound}</p>
                 )}
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
                     myPosts.map((post) => (
-                         <Collapsible key={post.id} asChild>
-                            <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} />
-                        </Collapsible>
+                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} />
                     ))
                 ) : (
-                    <p className="text-center text-muted-foreground pt-8">You haven't created any posts yet.</p>
+                    <p className="text-center text-muted-foreground pt-8">{t.community.noPostsYet}</p>
                 )}
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
                 <div className="flex justify-end">
                     {isProfileComplete ? (
-                        <CreateGroupDialog onGroupCreated={handleGroupCreated} />
+                        <CreateGroupDialog onGroupCreated={handleGroupCreated} t={t} />
                     ) : (
                          <TooltipProvider>
                             <Tooltip>
@@ -1285,21 +1287,21 @@ export default function CommunityPage() {
                                     <Button variant="outline" asChild>
                                         <Link href="/profile">
                                             <PlusCircle className="mr-2 h-4 w-4" />
-                                            Create New Group
+                                            {t.community.createGroup.button}
                                         </Link>
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Please complete your profile (State and City) to create a group.</p>
+                                    <p>{t.community.createGroup.completeProfile}</p>
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
                     )}
                 </div>
                 {isLoadingGroups ? (
-                    <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">Loading groups...</p></div>
+                    <div className="flex justify-center items-center py-16"><Spinner className="h-8 w-8" /><p className="ml-2">{t.community.loadingGroups}</p></div>
                 ) : filteredGroups.length === 0 ? (
-                    <p className="text-center text-muted-foreground pt-8">No local groups match the current filters.</p>
+                    <p className="text-center text-muted-foreground pt-8">{t.community.noGroupsFound}</p>
                 ) : (
                     <div className="grid gap-4 md:grid-cols-2">
                     {filteredGroups.map(group => (
@@ -1324,11 +1326,11 @@ export default function CommunityPage() {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm text-muted-foreground line-clamp-2">{group.description || "No description available."}</p>
+                                <p className="text-sm text-muted-foreground line-clamp-2">{group.description || t.community.noGroupDescription}</p>
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className="w-full">
-                                    <Link href={`/community/${group.id}`}>Open Chat</Link>
+                                    <Link href={`/community/${group.id}`}>{t.community.openChat}</Link>
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -1350,29 +1352,29 @@ export default function CommunityPage() {
                                         {expert.name}
                                         <Badge variant="outline" className={expert.type === 'expert' ? 'border-blue-500 text-blue-600' : 'border-green-500 text-green-600'}>
                                             {expert.type === 'expert' ? <Briefcase className="h-3 w-3 mr-1" /> : <Building className="h-3 w-3 mr-1" />}
-                                            {expert.type === 'expert' ? 'Expert' : 'NGO'}
+                                            {expert.type === 'expert' ? t.community.experts.expert : t.community.experts.ngo}
                                         </Badge>
                                     </CardTitle>
                                     <p className="text-sm text-muted-foreground">{expert.specialization}</p>
                                 </div>
                             </CardHeader>
                             <CardContent className="space-y-2 text-sm">
-                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">Location:</span> {expert.location}</p>
-                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">Contact:</span> {expert.contact}</p>
+                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">{t.community.experts.location}:</span> {expert.location}</p>
+                                <p className="text-muted-foreground"><span className="font-semibold text-foreground">{t.community.experts.contact}:</span> {expert.contact}</p>
                             </CardContent>
                             <CardFooter className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" asChild>
                                     <a href={`tel:${expert.contact.replace(/\s/g, '')}`}>
-                                      <Phone className="mr-2 h-4 w-4" /> Call
+                                      <Phone className="mr-2 h-4 w-4" /> {t.community.experts.call}
                                     </a>
                                 </Button>
                                 <Button onClick={() => handleChat(expert)}>
-                                    <MessageSquare className="mr-2 h-4 w-4"/> Chat
+                                    <MessageSquare className="mr-2 h-4 w-4"/> {t.community.experts.chat}
                                 </Button>
                             </CardFooter>
                         </Card>
                     )) : (
-                        <p className="text-center text-muted-foreground pt-8 md:col-span-2">No experts or NGOs match the current filters.</p>
+                        <p className="text-center text-muted-foreground pt-8 md:col-span-2">{t.community.experts.noExpertsFound}</p>
                     )}
                  </div>
             </TabsContent>
@@ -1381,5 +1383,7 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    
 
     

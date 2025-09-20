@@ -29,6 +29,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "@/hooks/use-translation";
 
 type UserProfile = {
   name: string;
@@ -50,6 +51,7 @@ export default function GroupChatPage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
@@ -70,7 +72,7 @@ export default function GroupChatPage() {
             if (details) {
                 setGroupDetails(details);
             } else {
-                toast({ variant: 'destructive', title: 'Error', description: 'Group not found.'});
+                toast({ variant: 'destructive', title: t.community.group.error, description: t.community.group.notFound});
             }
         }
     };
@@ -91,7 +93,7 @@ export default function GroupChatPage() {
           window.removeEventListener('storage', loadGroupData);
       };
     }
-  }, [groupId, router, toast]);
+  }, [groupId, router, toast, t]);
 
   useEffect(() => {
     // Scroll to bottom when new messages are added
@@ -104,7 +106,7 @@ export default function GroupChatPage() {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-          toast({ variant: 'destructive', title: 'Invalid File Type', description: 'Please select an image or video file.' });
+          toast({ variant: 'destructive', title: t.community.group.invalidFile, description: t.community.group.invalidFileDesc });
           return;
       }
       setAttachedFile(file);
@@ -137,7 +139,7 @@ export default function GroupChatPage() {
 
     } catch (error) {
         console.error("Error sending message:", error);
-        toast({ variant: 'destructive', title: 'Send Error', description: 'Could not send your message. Please try again.' });
+        toast({ variant: 'destructive', title: t.community.group.sendError, description: t.community.group.sendErrorDesc });
     } finally {
         setIsSending(false);
         setUploadProgress(0);
@@ -147,14 +149,14 @@ export default function GroupChatPage() {
   const handleClearChat = () => {
       if (groupId) {
           clearChat(groupId);
-          toast({ title: 'Chat Cleared', description: 'All messages have been removed from this chat.' });
+          toast({ title: t.community.group.chatCleared, description: t.community.group.chatClearedDesc });
       }
   }
 
   const renderMedia = (message: Message) => {
       if (message.mediaUrl) {
           if (message.mediaType?.startsWith('image/')) {
-              return <Image src={message.mediaUrl} alt="User upload" width={300} height={200} className="mt-2 rounded-lg max-w-full h-auto" />;
+              return <Image src={message.mediaUrl} alt={t.community.group.userUploadAlt} width={300} height={200} className="mt-2 rounded-lg max-w-full h-auto" />;
           }
           if (message.mediaType?.startsWith('video/')) {
               return <video src={message.mediaUrl} controls className="mt-2 rounded-lg max-w-full h-auto" />;
@@ -182,10 +184,10 @@ export default function GroupChatPage() {
                         <AvatarFallback>{groupDetails?.name?.substring(0,2) ?? 'G'}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0">
-                        <h2 className="text-lg font-semibold font-headline truncate">{groupDetails?.name ?? 'Loading...'}</h2>
+                        <h2 className="text-lg font-semibold font-headline truncate">{groupDetails?.name ?? t.community.group.loading}</h2>
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            {groupDetails?.members?.length} members
+                            {groupDetails?.members?.length} {t.community.group.members}
                         </p>
                     </div>
                 </div>
@@ -208,22 +210,22 @@ export default function GroupChatPage() {
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
                                         <Trash2 className="mr-2 h-4 w-4" />
-                                        Clear Chat
+                                        {t.community.group.clearChat}
                                     </DropdownMenuItem>
                                 </AlertDialogTrigger>
                             </DropdownMenuContent>
                         </DropdownMenu>
                          <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogTitle>{t.community.group.areYouSure}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This will permanently delete all messages in this chat. This action cannot be undone.
+                                    {t.community.group.clearChatConfirm}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t.community.group.cancel}</AlertDialogCancel>
                                 <AlertDialogAction onClick={handleClearChat} className="bg-destructive hover:bg-destructive/90">
-                                    Clear
+                                    {t.community.group.clear}
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
@@ -278,7 +280,7 @@ export default function GroupChatPage() {
                     {attachedFile.type.startsWith('image/') ? (
                         <Image
                             src={URL.createObjectURL(attachedFile)}
-                            alt="Selected media"
+                            alt={t.community.group.selectedMediaAlt}
                             width={80}
                             height={80}
                             className="rounded-md object-cover"
@@ -302,7 +304,7 @@ export default function GroupChatPage() {
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                     <Button type="button" variant="outline" size="icon" onClick={() => fileInputRef.current?.click()} disabled={isSending}>
                         <Paperclip className="h-4 w-4" />
-                        <span className="sr-only">Attach file</span>
+                        <span className="sr-only">{t.community.group.attachFile}</span>
                     </Button>
                      <Input
                         type="file"
@@ -315,7 +317,7 @@ export default function GroupChatPage() {
                     <Input 
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
+                        placeholder={t.community.group.typeMessage}
                         disabled={isSending}
                     />
                     <Button type="submit" disabled={isSending || (!newMessage.trim() && !attachedFile)}>
@@ -327,3 +329,5 @@ export default function GroupChatPage() {
     </div>
   );
 }
+
+    

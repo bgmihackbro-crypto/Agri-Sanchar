@@ -11,6 +11,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Users, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useTranslation } from '@/hooks/use-translation';
 
 type UserProfile = {
     farmerId: string;
@@ -22,6 +23,7 @@ type UserProfile = {
 export default function JoinPage({ searchParams }: { searchParams: { group: string } }) {
     const router = useRouter();
     const { toast } = useToast();
+    const { t } = useTranslation();
 
     const [group, setGroup] = useState<Group | null>(null);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -47,13 +49,13 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
             if (groupData) {
                 setGroup(groupData);
             } else {
-                setError("This group does not exist or the link is invalid.");
+                setError(t.community.join.invalidLink);
             }
         } else {
-            setError("No group ID provided in the link.");
+            setError(t.community.join.noGroupId);
         }
         setIsLoading(false);
-    }, [groupId, router]);
+    }, [groupId, router, t]);
 
     const handleJoinGroup = () => {
         if (!groupId || !userProfile) return;
@@ -69,17 +71,17 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
             const result = addUserToGroup(groupId, userProfile.farmerId);
             if (result.success) {
                 toast({
-                    title: "Welcome!",
-                    description: `You have successfully joined the "${group?.name}" group.`,
+                    title: t.community.join.welcome,
+                    description: t.community.join.joinSuccess(group?.name || ''),
                 });
                 router.push(`/community/${groupId}`);
             } else {
                 // This case handles errors like group not found, which should be rare here.
-                toast({ variant: 'destructive', title: "Failed to Join", description: result.error });
+                toast({ variant: 'destructive', title: t.community.join.failed, description: result.error });
                 setIsJoining(false);
             }
         } catch (err) {
-            toast({ variant: 'destructive', title: "Error", description: "An unexpected error occurred while trying to join." });
+            toast({ variant: 'destructive', title: t.community.join.error, description: t.community.join.unexpectedError });
             setIsJoining(false);
         }
     };
@@ -87,12 +89,12 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
     let content;
 
     if (isLoading) {
-        content = <div className="flex flex-col items-center gap-2"><Spinner className="h-8 w-8" /> <p>Loading group info...</p></div>;
+        content = <div className="flex flex-col items-center gap-2"><Spinner className="h-8 w-8" /> <p>{t.community.join.loading}</p></div>;
     } else if (error) {
         content = (
              <Card className="w-full max-w-md">
                 <CardHeader>
-                    <CardTitle>Error</CardTitle>
+                    <CardTitle>{t.community.join.error}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-destructive">{error}</p>
@@ -100,7 +102,7 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
                 <CardFooter>
                      <Button variant="outline" asChild className="w-full">
                         <Link href="/community">
-                            <ArrowLeft className="mr-2 h-4 w-4" /> Go back to Community
+                            <ArrowLeft className="mr-2 h-4 w-4" /> {t.community.join.goBack}
                         </Link>
                     </Button>
                 </CardFooter>
@@ -116,25 +118,25 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
                         <AvatarFallback>{group.name.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     <CardTitle className="font-headline">{group.name}</CardTitle>
-                    <CardDescription>You&apos;ve been invited to join this group!</CardDescription>
+                    <CardDescription>{t.community.join.invite}</CardDescription>
                     <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1"><Users className="h-4 w-4"/> {group.members.length} members</div>
+                        <div className="flex items-center gap-1"><Users className="h-4 w-4"/> {group.members.length} {t.community.group.members}</div>
                         <span>•</span>
                         <div>{group.city}</div>
                     </div>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-center text-muted-foreground bg-muted p-3 rounded-md">
-                        {group.description || "No description provided for this group."}
+                        {group.description || t.community.join.noDescription}
                     </p>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-2">
                     <Button onClick={handleJoinGroup} disabled={isJoining} className="w-full">
                         {isJoining ? <Spinner className="mr-2 h-4 w-4"/> : null}
-                        {isAlreadyMember ? "Open Chat" : "Join Group"}
+                        {isAlreadyMember ? t.community.join.openChat : t.community.join.joinGroup}
                     </Button>
                      <Button variant="ghost" asChild className="w-full">
-                        <Link href="/community">Cancel</Link>
+                        <Link href="/community">{t.community.group.cancel}</Link>
                     </Button>
                 </CardFooter>
             </Card>
@@ -147,3 +149,5 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
         </div>
     );
 }
+
+    
