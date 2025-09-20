@@ -279,7 +279,6 @@ export default function RentalEquipmentPage() {
         if (profile) {
             const parsed = JSON.parse(profile) as UserProfile;
             setUserProfile(parsed);
-            setFilterCity(parsed.city); // Default filter to user's city
         }
         fetchRentals();
     }, []);
@@ -378,5 +377,3 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
-
-    
