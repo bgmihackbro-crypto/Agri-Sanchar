@@ -225,7 +225,7 @@ export async function answerFarmerQuestion(input: AnswerFarmerQuestionInput): Pr
 const answerFarmerQuestionFlow = ai.defineFlow(
   {
     name: 'answerFarmerQuestionFlow',
-    inputSchema: AnswerFarmer-QuestionInputSchema,
+    inputSchema: AnswerFarmerQuestionInputSchema,
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
   async (input) => {
