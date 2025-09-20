@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { createRental, getRentals, type Rental, type NewRentalData } from "@/lib/firebase/rentals";
 import { indianCities } from "@/lib/indian-cities";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const allCitiesList = Object.values(indianCities).flat().sort();
 const equipmentCategories = ["Tractor", "Harvester", "Tiller", "Planter", "Sprayer", "Baler", "Other"];
@@ -220,45 +221,46 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
                     <Info className="mr-2 h-4 w-4" /> {t.rental.viewDetails}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="w-full max-w-md sm:max-w-sm">
-                <DialogHeader>
-                    <div className="relative aspect-video mb-4">
-                        <Image src={rental.imageUrl} alt={rental.name} fill className="rounded-md object-cover" />
+            <DialogContent className="sm:max-w-sm p-0">
+                <ScrollArea className="max-h-[90vh]">
+                    <div className="relative aspect-video">
+                        <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
                     </div>
-                    <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
-                    <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
-                        <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
-                        <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
-                    </div>
-                </DialogHeader>
-                <div className="py-4 space-y-4 max-h-[50vh] overflow-y-auto pr-2">
-                    <div className="space-y-1">
-                        <h4 className="font-semibold">{t.rental.addDialog.descriptionLabel}</h4>
-                        <div className="text-sm text-muted-foreground">{rental.description}</div>
-                    </div>
-                     <div className="space-y-1">
-                        <h4 className="font-semibold">{t.rental.addDialog.addressLabel}</h4>
-                        <div className="text-sm text-muted-foreground">{rental.address || t.profile.notSet}</div>
-                    </div>
-                    <div className="space-y-1">
-                        <h4 className="font-semibold">{t.rental.ownerTitle}</h4>
-                        <div className="flex items-center gap-2">
-                            <Image src={rental.ownerAvatar} alt={rental.ownerName} width={32} height={32} className="rounded-full" />
-                            <p className="text-sm font-medium">{rental.ownerName}</p>
+                    <div className="p-6 space-y-4">
+                        <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
+                        <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
+                            <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
+                            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <h4 className="font-semibold">{t.rental.addDialog.descriptionLabel}</h4>
+                            <div className="text-sm text-muted-foreground">{rental.description}</div>
+                        </div>
+                        <div className="space-y-1">
+                            <h4 className="font-semibold">{t.rental.addDialog.addressLabel}</h4>
+                            <div className="text-sm text-muted-foreground">{rental.address || t.profile.notSet}</div>
+                        </div>
+                        <div className="space-y-1">
+                            <h4 className="font-semibold">{t.rental.ownerTitle}</h4>
+                            <div className="flex items-center gap-2">
+                                <Image src={rental.ownerAvatar} alt={rental.ownerName} width={32} height={32} className="rounded-full" />
+                                <p className="text-sm font-medium">{rental.ownerName}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <DialogFooter className="sm:justify-between items-center">
-                    <div className="text-2xl font-bold flex items-center gap-1.5">
-                        <IndianRupee className="h-6 w-6"/> {rental.price}
-                        <span className="text-sm font-normal text-muted-foreground">/ {rental.priceUnit === 'per_day' ? t.rental.day : t.rental.hour}</span>
-                    </div>
-                    <Button asChild>
-                        <a href={`tel:${rental.contact}`}>
-                            <Phone className="mr-2 h-4 w-4"/> {t.rental.callOwner}
-                        </a>
-                    </Button>
-                </DialogFooter>
+                    <DialogFooter className="p-6 pt-0 mt-4 sm:justify-between items-center bg-muted/50">
+                        <div className="text-2xl font-bold flex items-center gap-1.5">
+                            <IndianRupee className="h-6 w-6"/> {rental.price}
+                            <span className="text-sm font-normal text-muted-foreground">/ {rental.priceUnit === 'per_day' ? t.rental.day : t.rental.hour}</span>
+                        </div>
+                        <Button asChild>
+                            <a href={`tel:${rental.contact}`}>
+                                <Phone className="mr-2 h-4 w-4"/> {t.rental.callOwner}
+                            </a>
+                        </Button>
+                    </DialogFooter>
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     )
