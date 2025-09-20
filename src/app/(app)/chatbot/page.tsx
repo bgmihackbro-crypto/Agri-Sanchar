@@ -45,6 +45,7 @@ export default function ChatbotPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [nowPlayingMessageId, setNowPlayingMessageId] = useState<string | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const { toast } = useToast();
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +58,17 @@ export default function ChatbotPage() {
     const savedProfile = localStorage.getItem("userProfile");
     const profile = savedProfile ? JSON.parse(savedProfile) : null;
     setUserProfile(profile);
+
+    const populateVoiceList = () => {
+        const availableVoices = window.speechSynthesis.getVoices();
+        if (availableVoices.length > 0) {
+            setVoices(availableVoices);
+        }
+    };
+    
+    // Voices may load asynchronously
+    populateVoiceList();
+    window.speechSynthesis.onvoiceschanged = populateVoiceList;
     
     // Cleanup speech synthesis on component unmount or when navigating away
     return () => {
@@ -64,6 +76,7 @@ export default function ChatbotPage() {
         recognitionRef.current.stop();
       }
       window.speechSynthesis.cancel();
+      window.speechSynthesis.onvoiceschanged = null;
     };
 
   }, []);
@@ -86,11 +99,26 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
-    utterance.lang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
+    const targetLang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
+    utterance.lang = targetLang;
+
+    // Try to find a higher quality voice
+    let selectedVoice = null;
+    if (targetLang === 'hi-IN') {
+        selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && (voice.name.includes('Google') || voice.name.includes('Rishi')));
+    } else {
+        selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google'));
+    }
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
         console.error("Speech synthesis error", e);
+        toast({ variant: 'destructive', title: "Speech Error", description: "Could not play the voice message." });
         setNowPlayingMessageId(null); // Handle errors
     }
     utteranceRef.current = utterance;
@@ -117,9 +145,8 @@ export default function ChatbotPage() {
     if ((!input.trim() && !imageFile) || isLoading) return;
 
     // Stop any active recognition
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      setIsRecording(false);
+    if (isRecording) {
+      stopRecording();
     }
 
     const userMessage: Message = {
@@ -195,7 +222,8 @@ export default function ChatbotPage() {
           setIsRecording(false);
           // Auto-submit if there's text after recording stops
           if (input.trim() || imageFile) {
-            handleSubmit();
+            // Using a timeout to ensure the final transcript is set before submitting
+            setTimeout(() => handleSubmit(), 100);
           }
       };
       
@@ -212,6 +240,7 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
+        setIsRecording(false);
     }
   };
 
@@ -380,5 +409,7 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
