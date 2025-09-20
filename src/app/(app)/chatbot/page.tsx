@@ -55,7 +55,6 @@ export default function ChatbotPage() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null); // For SpeechRecognition instance
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const lastInputWasVoice = useRef(false);
 
 
   useEffect(() => {
@@ -155,7 +154,6 @@ export default function ChatbotPage() {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
-      lastInputWasVoice.current = false;
     }
 
     if ((!input.trim() && !imageFile) || isLoading) return;
@@ -208,9 +206,7 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    if (lastInputWasVoice.current) {
-        speak(assistantMessage);
-    }
+    speak(assistantMessage);
   };
 
   const startRecording = () => {
@@ -244,7 +240,6 @@ export default function ChatbotPage() {
           setTimeout(() => {
               const currentInput = (document.getElementById('chatbot-input') as HTMLInputElement)?.value;
               if (currentInput && currentInput.trim()) {
-                  lastInputWasVoice.current = true;
                   handleSubmit();
               }
           }, 100);
@@ -434,3 +429,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
