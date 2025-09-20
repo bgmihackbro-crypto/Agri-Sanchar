@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import Image from 'next/image';
 
 type UserProfile = {
   farmSize: string;
@@ -62,6 +61,11 @@ export default function SchemesPage() {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [recommendedSchemes, setRecommendedSchemes] = useState<Scheme[]>([]);
     const [otherSchemes, setOtherSchemes] = useState<Scheme[]>([]);
+    
+    // State for the page-level calculator
+    const [sumInsured, setSumInsured] = useState('');
+    const [cropType, setCropType] = useState<'kharif' | 'rabi' | ''>('');
+    const [calculatedPremium, setCalculatedPremium] = useState<number | null>(null);
 
     useEffect(() => {
         const profile = localStorage.getItem('userProfile');
@@ -97,6 +101,18 @@ export default function SchemesPage() {
         }
     }, [userProfile, t]);
 
+    const handleCalculate = () => {
+        const insuredAmount = parseFloat(sumInsured);
+        if (!insuredAmount || !cropType) {
+            setCalculatedPremium(null);
+            return;
+        }
+
+        const premiumRate = cropType === 'kharif' ? 0.02 : 0.015; // 2% for Kharif, 1.5% for Rabi
+        const premium = insuredAmount * premiumRate;
+        setCalculatedPremium(premium);
+    };
+
     return (
         <div className="space-y-8">
             <div>
@@ -123,76 +139,58 @@ export default function SchemesPage() {
                 </div>
             </div>
 
+             <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Calculator className="h-6 w-6 text-primary" />
+                        {t.schemes.calculator.title} (PMFBY)
+                    </CardTitle>
+                    <CardDescription>{t.schemes.pmfby.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="sum-insured">{t.schemes.calculator.sumInsuredLabel}</Label>
+                            <Input id="sum-insured" type="number" placeholder={t.schemes.calculator.sumInsuredPlaceholder} value={sumInsured} onChange={(e) => setSumInsured(e.target.value)} />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="crop-type">{t.schemes.calculator.cropTypeLabel}</Label>
+                            <Select onValueChange={(v) => setCropType(v as any)} value={cropType}>
+                                <SelectTrigger id="crop-type">
+                                    <SelectValue placeholder={t.schemes.calculator.cropTypePlaceholder} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="kharif">{t.schemes.calculator.kharif}</SelectItem>
+                                    <SelectItem value="rabi">{t.schemes.calculator.rabi}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                     {calculatedPremium !== null && (
+                        <Alert className="bg-green-50 border-green-200">
+                            <AlertTitle className="font-bold text-lg text-green-800">{t.schemes.calculator.resultTitle}</AlertTitle>
+                            <AlertDescription className="text-green-900">
+                                {t.schemes.calculator.resultDescription(calculatedPremium.toLocaleString('en-IN'))}
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                </CardContent>
+                <CardFooter>
+                     <Button onClick={handleCalculate} disabled={!sumInsured || !cropType} className="w-full sm:w-auto">
+                        {t.schemes.calculator.calculateButton}
+                    </Button>
+                </CardFooter>
+            </Card>
+
         </div>
     );
 }
-
-function SchemeCalculator({ scheme, t }: { scheme: Scheme, t: any }) {
-    const [sumInsured, setSumInsured] = useState('');
-    const [cropType, setCropType] = useState<'kharif' | 'rabi' | ''>('');
-    const [calculatedPremium, setCalculatedPremium] = useState<number | null>(null);
-
-    if (scheme.id !== 'pmfby') {
-        return null;
-    }
-
-    const handleCalculate = () => {
-        const insuredAmount = parseFloat(sumInsured);
-        if (!insuredAmount || !cropType) {
-            setCalculatedPremium(null);
-            return;
-        }
-
-        const premiumRate = cropType === 'kharif' ? 0.02 : 0.015; // 2% for Kharif, 1.5% for Rabi
-        const premium = insuredAmount * premiumRate;
-        setCalculatedPremium(premium);
-    };
-
-    return (
-        <div className="space-y-4 rounded-lg border bg-muted/50 p-4">
-             <h3 className="font-semibold text-lg flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-primary"/>
-                {t.schemes.calculator.title}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                    <Label htmlFor="sum-insured">{t.schemes.calculator.sumInsuredLabel}</Label>
-                    <Input id="sum-insured" type="number" placeholder={t.schemes.calculator.sumInsuredPlaceholder} value={sumInsured} onChange={(e) => setSumInsured(e.target.value)} />
-                </div>
-                 <div className="space-y-1.5">
-                    <Label htmlFor="crop-type">{t.schemes.calculator.cropTypeLabel}</Label>
-                    <Select onValueChange={(v) => setCropType(v as any)} value={cropType}>
-                        <SelectTrigger id="crop-type">
-                            <SelectValue placeholder={t.schemes.calculator.cropTypePlaceholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="kharif">{t.schemes.calculator.kharif}</SelectItem>
-                            <SelectItem value="rabi">{t.schemes.calculator.rabi}</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
-            <Button onClick={handleCalculate} disabled={!sumInsured || !cropType} className="w-full sm:w-auto">
-                {t.schemes.calculator.calculateButton}
-            </Button>
-            {calculatedPremium !== null && (
-                 <Alert className="bg-green-50 border-green-200">
-                    <AlertTitle className="font-bold text-lg text-green-800">{t.schemes.calculator.resultTitle}</AlertTitle>
-                    <AlertDescription className="text-green-900">
-                         {t.schemes.calculator.resultDescription(calculatedPremium.toLocaleString('en-IN'))}
-                    </AlertDescription>
-                </Alert>
-            )}
-        </div>
-    )
-}
-
 
 function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
     return (
         <Dialog>
             <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
+                 <CardHeader>
                     <div className="flex justify-between items-start">
                         <CardTitle className="font-headline text-lg pr-2">{scheme.name}</CardTitle>
                         {getStatusBadge(scheme.status, t)}
@@ -218,28 +216,12 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                 <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
                             </Button>
                         </DialogTrigger>
-                        {scheme.id === 'pmfby' && (
-                             <DialogTrigger asChild>
-                                <Button variant="secondary" className="w-full">
-                                    <Calculator className="mr-2 h-4 w-4"/> {t.schemes.calculator.title}
-                                </Button>
-                             </DialogTrigger>
-                        )}
                     </div>
                 </CardFooter>
             </Card>
 
             <DialogContent className="sm:max-w-sm p-0">
                 <ScrollArea className="max-h-[90vh]">
-                     <div className="relative aspect-video">
-                        {scheme.imageUrl ? (
-                           <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
-                        ) : (
-                           <div className="h-full w-full bg-muted flex items-center justify-center">
-                             <Landmark className="h-16 w-16 text-muted-foreground/30"/>
-                           </div>
-                        )}
-                    </div>
                     <div className="p-6 space-y-4">
                         <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
                         <DialogDescription>{scheme.description}</DialogDescription>
@@ -297,7 +279,6 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                     </ol>
                                 </div>
                             </div>
-                            <SchemeCalculator scheme={scheme} t={t} />
                         </div>
                     </div>
                     <div className="flex justify-end pt-4 border-t p-6">
@@ -313,5 +294,3 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         </Dialog>
     );
 }
-
-    
