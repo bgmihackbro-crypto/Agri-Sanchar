@@ -114,6 +114,5 @@ export const schemes = (t: Translations): Scheme[] => [
         documents: t.schemes.agri_infra_fund.documents,
         link: 'https://agriinfra.dac.gov.in/',
         status: 'Ongoing',
-        lastDate: '2032-33'
     },
 ];
