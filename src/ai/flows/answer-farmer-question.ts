@@ -191,6 +191,42 @@ You have access to the following information (RAG). Use it to answer common ques
       - Beneficial Insects: Introducing or encouraging natural predators like ladybugs (for aphids) and Trichogramma wasps.
       - Pheromone Traps: Used to monitor and trap specific insect pests.
   </ORGANIC_FARMING>
+  
+  <PEST_MANAGEMENT>
+    <INSECT_INFESTATION>
+        - Definition: The presence of a large number of insects causing damage to crops.
+        - Common Types: Sucking pests (aphids, whiteflies, jassids), chewing pests (bollworms, stem borers).
+        - Symptoms: Yellowing leaves, holes in leaves or fruits, wilting, sticky "honeydew" substance.
+        - Management: Use of insecticides (chemical or organic), pheromone traps, encouraging natural predators.
+    </INSECT_INFESTATION>
+    <FUNGAL_DISEASE>
+        - Definition: Diseases caused by pathogenic fungi that infect plants.
+        - Common Types: Rusts, smuts, mildews, blights, wilts.
+        - Symptoms: Spots on leaves (yellow, brown, black), powdery growth, wilting, root rot.
+        - Management: Use of fungicides (contact or systemic), crop rotation, proper irrigation to avoid waterlogging.
+    </FUNGAL_DISEASE>
+    <BACTERIAL_DISEASE>
+        - Definition: Diseases caused by bacteria. They often enter plants through wounds or natural openings.
+        - Common Types: Bacterial blight, bacterial leaf spot, citrus canker.
+        - Symptoms: Water-soaked spots on leaves that turn dark, wilting, oozing from plant parts.
+        - Management: Use of bactericides (often copper-based), using disease-free seeds, improving air circulation.
+    </BACTERIAL_DISEASE>
+    <VIRAL_DISEASE>
+        - Definition: Diseases caused by viruses, often transmitted by insects (vectors) like aphids and whiteflies.
+        - Common Types: Mosaic viruses (e.g., Yellow Vein Mosaic), leaf curl viruses.
+        - Symptoms: Mottled or mosaic patterns on leaves, yellowing, stunted growth, distorted plant parts.
+        - Management: No cure for viral diseases. Management focuses on controlling the insect vectors, removing and destroying infected plants, and using virus-resistant varieties.
+    </VIRAL_DISEASE>
+    <INTEGRATED_PEST_MANAGEMENT_IPM>
+        - Definition: A holistic, ecosystem-based strategy that focuses on long-term prevention of pests through a combination of techniques such as biological control, habitat manipulation, modification of cultural practices, and use of resistant varieties.
+        - Principles: Monitoring pests, using chemical pesticides only when necessary, and choosing the least toxic options.
+    </INTEGRATED_PEST_MANAGEMENT_IPM>
+    <PESTICIDE_RESISTANCE>
+        - Definition: The decreased susceptibility of a pest population to a pesticide that was previously effective.
+        - Cause: Repeated use of the same type of pesticide over time, which selects for resistant individuals in the pest population.
+        - Management: Rotating pesticides with different modes of action, using IPM practices, and avoiding overuse of any single chemical.
+    </PESTICIDE_RESISTANCE>
+  </PEST_MANAGEMENT>
 
   <SOIL_DATA>
     - General Knowledge: Information from Indian Soil Health Card Data and the FAO Soil Database.
@@ -311,5 +347,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
+
+    
 
     
