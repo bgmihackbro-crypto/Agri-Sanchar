@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -120,21 +119,21 @@ export default function SchemesPage() {
         {
             name: "Gurpreet Singh",
             location: "Punjab",
-            avatar: "https://picsum.photos/seed/farmer-story-1/60/60",
+            avatar: "https://images.unsplash.com/photo-1620177088257-782f8a359334?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             scheme: t.schemes.pm_kisan.name,
             story: "The PM-KISAN installments came just when I needed money for seeds. It reduced my burden and I didn't have to take a loan from the local moneylender this time."
         },
         {
             name: "Meena Devi",
             location: "Maharashtra",
-            avatar: "https://picsum.photos/seed/farmer-story-2/60/60",
+            avatar: "https://images.unsplash.com/photo-1601288496429-7de5f9118b62?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fA%3D%3D",
             scheme: t.schemes.pmfby.name,
             story: "Last year, unseasonal rains destroyed my entire soyabean crop. Thanks to Fasal Bima Yojana, I got the insurance claim on time and was able to sow for the next season without any debt."
         },
         {
             name: "Rajesh Kumar",
             location: "Rajasthan",
-            avatar: "https://picsum.photos/seed/farmer-story-3/60/60",
+            avatar: "https://images.unsplash.com/photo-1594745561149-2212a51c9d64?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             scheme: t.schemes.pm_kusum.name,
             story: "Diesel for my water pump was a major expense. With the subsidy from the KUSUM scheme, I installed a solar pump. Now, my irrigation cost is almost zero and I have a reliable water supply."
         }
@@ -159,7 +158,7 @@ export default function SchemesPage() {
                 </div>
             )}
             
-            <div>
+            <div className="mt-8">
                 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {otherSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} />)}
@@ -279,7 +278,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                     <div className="p-6 space-y-4">
                         <DialogHeader className="text-left">
                             <DialogTitle className="text-2xl font-headline mb-1">{scheme.name}</DialogTitle>
-                            <DialogDescription>{scheme.description}</DialogDescription>
+                            <DialogDescription className="text-foreground">{scheme.description}</DialogDescription>
                         </DialogHeader>
                         
                         {getStatusBadge(scheme.status, t)}
@@ -368,3 +367,5 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
 
 
       
+
+    
