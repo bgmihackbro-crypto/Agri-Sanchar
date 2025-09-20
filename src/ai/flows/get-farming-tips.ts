@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
 
 The user is a farmer in that region. Keep the language simple and direct. Provide 2-3 numbered points.
 
-**CRITICAL INSTRUCTION**: You MUST provide your entire response in the specified language: {{{language}}}. If it is 'Hindi', you MUST reply in Devanagari script.
+**CRITICAL INSTRUCTION**: You MUST provide your entire response in the specified language: {{{language}}}. If the language is 'Hindi', you MUST reply in Devanagari script. If it is 'English', reply in English.
 
 Focus on practical advice related to irrigation, harvesting, planting schedules, pest control, and crop protection that is relevant to the given forecast.
 
@@ -49,9 +49,7 @@ Focus on practical advice related to irrigation, harvesting, planting schedules,
 - {{day}}: {{temp}}, {{condition}}
 {{/each}}
 
-Based on this, generate your tips as a numbered list. Each point must be on a new line, like this example:
-1) Tip one.
-2) Tip two.
+Based on this, generate your tips as a numbered list. Each point must be on a new line. Do not include any introductory text, just the numbered list.
 `,
 });
 
