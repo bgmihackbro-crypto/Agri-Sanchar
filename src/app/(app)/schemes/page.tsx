@@ -196,7 +196,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                         <CardTitle className="font-headline text-lg pr-2">{scheme.name}</CardTitle>
                         {getStatusBadge(scheme.status, t)}
                     </div>
-                    <CardDescription className="line-clamp-2 pt-1">{scheme.description}</CardDescription>
+                    <CardDescription className="line-clamp-2 pt-1 text-foreground">{scheme.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-3">
                     <div className="flex items-center gap-2 text-sm">
@@ -210,7 +210,14 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                         <span className="text-muted-foreground">{scheme.benefitsSummary}</span>
                     </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col items-start gap-2">
+                    {scheme.id === 'pmfby' && (
+                        <DialogTrigger asChild>
+                            <Button variant="secondary" className="w-full">
+                                <Calculator className="mr-2 h-4 w-4" /> {t.schemes.calculator.title}
+                            </Button>
+                         </DialogTrigger>
+                    )}
                     <DialogTrigger asChild>
                         <Button variant="outline" className="w-full">
                             <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
