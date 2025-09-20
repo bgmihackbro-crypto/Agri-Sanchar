@@ -64,6 +64,7 @@ export default function ChatbotPage() {
     setUserProfile(profile);
 
     const populateVoiceList = () => {
+        if (typeof window === 'undefined' || !window.speechSynthesis) return;
         const availableVoices = window.speechSynthesis.getVoices();
         // Don't set if list is empty, wait for the event.
         if (availableVoices.length > 0) {
@@ -74,7 +75,7 @@ export default function ChatbotPage() {
     };
     
     populateVoiceList();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = populateVoiceList;
     }
 
@@ -82,7 +83,9 @@ export default function ChatbotPage() {
     // engine can go idle and cause errors. Periodically sending a silent utterance
     // keeps the engine "warm" and ready to speak.
     const speechKeepAlive = setInterval(() => {
-        if (window.speechSynthesis.speaking) return;
+        if (typeof window === 'undefined' || !window.speechSynthesis || window.speechSynthesis.speaking) {
+            return;
+        }
         const utterance = new SpeechSynthesisUtterance("");
         utterance.volume = 0; // Make it silent
         window.speechSynthesis.speak(utterance);
@@ -94,8 +97,8 @@ export default function ChatbotPage() {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      window.speechSynthesis.cancel();
-      if (window.speechSynthesis) {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
@@ -437,3 +440,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
