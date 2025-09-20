@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const { t } = useTranslation();
 
   const handleSchemeClick = (e: React.MouseEvent, title: string) => {
+      e.preventDefault(); // Prevent navigation for the old implementation
       addNotification({
           title: t.dashboard.schemeNotification.title(title),
           description: t.dashboard.schemeNotification.description,
@@ -35,7 +36,6 @@ export default function DashboardPage() {
       icon: Bot,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.detection.title,
@@ -44,7 +44,6 @@ export default function DashboardPage() {
       icon: Search,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.weather.title,
@@ -53,7 +52,6 @@ export default function DashboardPage() {
       icon: CloudSun,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.market.title,
@@ -62,7 +60,6 @@ export default function DashboardPage() {
       icon: TrendingUp,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.community.title,
@@ -71,7 +68,6 @@ export default function DashboardPage() {
       icon: Users,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
      {
       title: t.dashboard.services.soil.title,
@@ -80,16 +76,14 @@ export default function DashboardPage() {
       icon: FlaskConical,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.schemes.title,
       description: t.dashboard.services.schemes.description,
-      href: "#",
+      href: "/schemes", // Updated href to point to the new page
       icon: Landmark,
       badge: t.dashboard.services.schemes.badge,
       badgeColor: "bg-green-500",
-      onClick: (e: React.MouseEvent) => handleSchemeClick(e, t.dashboard.services.schemes.title)
     },
     {
       title: t.dashboard.services.pesticide.title,
@@ -98,7 +92,6 @@ export default function DashboardPage() {
       icon: Bug,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
     {
       title: t.dashboard.services.rental.title,
@@ -107,7 +100,6 @@ export default function DashboardPage() {
       icon: Tractor,
       badge: null,
       badgeColor: null,
-      onClick: undefined
     },
   ];
 
@@ -139,7 +131,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceLinks.map((link, i) => (
             <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                <Link href={link.href} className="flex flex-col flex-grow" onClick={link.onClick}>
+                <Link href={link.href} className="flex flex-col flex-grow">
                     <CardHeader className="relative">
                         <div className="flex items-start justify-between">
                             <div className="p-3 bg-primary/10 rounded-xl">

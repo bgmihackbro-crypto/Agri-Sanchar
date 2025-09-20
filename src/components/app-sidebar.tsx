@@ -12,7 +12,8 @@ import {
   TrendingUp,
   FlaskConical,
   Bug,
-  Tractor
+  Tractor,
+  Landmark
 } from "lucide-react";
 import {
   SidebarContent,
@@ -29,6 +30,7 @@ export function AppSidebar() {
   const links = [
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
+    { href: "/schemes", label: t.sidebar.schemes, icon: Landmark },
     { href: "/rental-equipment", label: t.sidebar.rental, icon: Tractor },
     { href: "/weather", label: t.sidebar.weather, icon: CloudSun },
     { href: "/community", label: t.sidebar.community, icon: Users },
