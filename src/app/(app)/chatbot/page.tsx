@@ -116,7 +116,7 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
-    const targetLang = language === 'Hindi' ? 'hi-IN' : 'en-US';
+    const targetLang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
     let selectedVoice = null;
@@ -216,7 +216,9 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    speak(assistantMessage);
+    if (lastInputWasVoice.current) {
+        speak(assistantMessage);
+    }
   };
 
   const startRecording = () => {
@@ -234,7 +236,7 @@ export default function ChatbotPage() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = language === 'Hindi' ? 'hi-IN' : 'en-US';
+      recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
           const transcript = Array.from(event.results)
@@ -445,5 +447,7 @@ export default function ChatbotPage() {
       </Card>
     </div>
   );
+
+    
 
     
