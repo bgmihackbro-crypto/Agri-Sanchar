@@ -98,12 +98,12 @@ export default function MarketPricesPage() {
           description: t.market.notification.loaded(locationName),
         });
       } else if (response.answer === 'NO_DATA_FOUND') {
-        setError(t.market.error.noData(locationName));
+        setError(`No market data could be found for ${locationName}.`);
         setPrices([]);
         setIsLoading(false);
         return;
       } else {
-        setError(t.market.error.fetchFailed(locationName));
+        setError(`Failed to fetch market data for ${locationName}.`);
         setIsLoading(false);
         return;
       }
@@ -136,7 +136,7 @@ export default function MarketPricesPage() {
       
     } catch (e) {
       console.error(e);
-      setError(t.market.error.fetchFailed(locationName));
+      setError(`Failed to fetch market data for ${locationName}.`);
       setIsLoading(false);
       setIsPredicting(false);
     }
@@ -300,3 +300,5 @@ export default function MarketPricesPage() {
     </div>
   );
 }
+
+    
