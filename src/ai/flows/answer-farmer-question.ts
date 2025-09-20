@@ -153,23 +153,27 @@ You have access to the following information (RAG). Use it to answer common ques
   </GOVERNMENT_SCHEMES>
 
   <CROP_INFORMATION>
-    - General Knowledge: Access to datasets like PlantVillage (50,000+ images of healthy & diseased crops) and UCI Crop Dataset for classification and yield data.
+    - General Knowledge: India is the world's largest producer of milk, pulses, and jute, and ranks as the second-largest producer of rice, wheat, sugarcane, groundnut, vegetables, fruit, and cotton.
     - Wheat (Gehu):
       - Sowing Time: Rabi Season (October to December).
       - Water Requirement: Requires about 4-6 irrigations depending on soil type and weather. Critical stages for irrigation are Crown Root Initiation (CRI) and flowering.
       - Common Diseases: Rust (Yellow, Brown, Black), Powdery Mildew, Loose Smut.
+      - Major Producing States: Uttar Pradesh, Punjab, Haryana, Madhya Pradesh, Rajasthan.
     - Rice (Dhaan):
       - Sowing Time: Kharif Season (June to July). Nursery is planted first.
       - Water Requirement: High. Requires a flooded field for a significant part of its growth.
       - Common Diseases: Blast, Bacterial Blight, Sheath Blight.
+      - Major Producing States: West Bengal, Uttar Pradesh, Punjab, Tamil Nadu, Andhra Pradesh.
     - Maize (Makka):
       - Sowing Time: Kharif Season (June to July).
       - Water Requirement: Moderate. Requires about 4-5 irrigations. Sensitive to waterlogging.
       - Common Diseases: Turcicum Leaf Blight, Maydis Leaf Blight, and Stalk Rot.
+      - Major Producing States: Karnataka, Madhya Pradesh, Maharashtra, Rajasthan, Uttar Pradesh.
     - Cotton (Kapas):
       - Sowing Time: Kharif Season (April to June).
       - Water Requirement: Requires about 6-7 irrigations. Sensitive to both drought and excessive water.
       - Common Pests: Bollworm, Aphids, Whitefly.
+      - Major Producing States: Gujarat, Maharashtra, Telangana, Andhra Pradesh, Rajasthan.
   </CROP_INFORMATION>
 
   <SOIL_DATA>
