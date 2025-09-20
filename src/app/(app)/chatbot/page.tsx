@@ -229,6 +229,7 @@ export default function ChatbotPage() {
       
       if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current = null;
       }
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
@@ -245,6 +246,7 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onend = () => {
           setIsRecording(false);
+          recognitionRef.current = null;
           // Auto-submit after recording stops and there's text
           // Using a timeout to ensure the final 'input' state is set
           setTimeout(() => {
@@ -260,6 +262,7 @@ export default function ChatbotPage() {
           console.error("Speech recognition error", event.error);
           toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
           setIsRecording(false);
+          recognitionRef.current = null;
       };
 
       recognitionRef.current.start();
@@ -269,6 +272,7 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
+        recognitionRef.current = null;
     }
     setIsRecording(false);
   };
@@ -290,10 +294,14 @@ export default function ChatbotPage() {
   return (
     <div className="h-full">
       <Card className="h-[calc(100vh-10rem)] flex flex-col">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-headline">
-            <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
-          </CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2 font-headline">
+                <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
+            </CardTitle>
+            <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
+                <Mic className="h-4 w-4" />
+                <span className="sr-only">{t.chatbot.recordVoice}</span>
+            </Button>
         </CardHeader>
         <CardContent 
           className="flex-1 overflow-hidden relative"
@@ -425,10 +433,6 @@ export default function ChatbotPage() {
               placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
               disabled={isLoading}
             />
-             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
-                <Mic className="h-4 w-4" />
-                <span className="sr-only">{t.chatbot.recordVoice}</span>
-            </Button>
             <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
               <span className="sr-only">{t.chatbot.send}</span>
@@ -439,3 +443,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
