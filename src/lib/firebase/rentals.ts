@@ -88,7 +88,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-5",
         ownerName: "Jaswinder Singh",
         ownerAvatar: "https://picsum.photos/seed/solar-pump/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1622359400204-63539943542d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1622359400204-63539943542d?q=80&w=987&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "400-liter capacity tractor-mounted boom sprayer. Suitable for large fields. Covers up to 5 acres per hour.",
         contact: "+919876543214"
     },
@@ -200,7 +200,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-13",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Walk-behind power tiller, diesel engine. Ideal for small to medium-sized vegetable farms and inter-culture operations.",
         contact: "+919876543222"
     },
@@ -228,7 +228,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-15",
         ownerName: "Meena Kumari",
         ownerAvatar: "https://picsum.photos/seed/onion-market/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1661963958963-1283a0429712?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://plus.unsplash.com/premium_photo-1661963958963-1283a0429712?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-towed water tanker for irrigation and other farm uses. Clean and well-maintained.",
         contact: "+919876543224"
     },
@@ -256,7 +256,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-17",
         ownerName: "Dr. Vijay Singh",
         ownerAvatar: "https://picsum.photos/seed/expert-4/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1695426189912-4214f4943f77?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1695426189912-4214f4943f77?q=80&w=1074&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Precision land leveling for water conservation and improved crop yield. Comes with a trained operator.",
         contact: "+919876543226"
     },
@@ -284,7 +284,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-19",
         ownerName: "Anil Kumar",
         ownerAvatar: "https://picsum.photos/seed/bhopal-farmer/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1616357497917-a0a41d9d9b8a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1616357497917-a0a41d9d9b8a?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity thresher suitable for wheat, soybean, maize, and pulses. Provides clean grain output.",
         contact: "+919876543228"
     },
@@ -298,7 +298,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-20",
         ownerName: "Rakesh Kumar",
         ownerAvatar: "https://picsum.photos/seed/expert-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1560933939-142c69993297?q=80&w=1068&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1560933939-142c69993297?q=80&w=1068&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "German-engineered Claas harvester for efficient and loss-free harvesting of multiple crops. Available for booking.",
         contact: "+919876543229"
     }
@@ -370,3 +370,5 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
+
+    
