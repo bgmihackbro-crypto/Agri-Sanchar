@@ -97,13 +97,13 @@ export default function MarketPricesPage() {
           title: t.market.notification.updated,
           description: t.market.notification.loaded(locationName),
         });
-      } else if (response.answer) {
-        setError(response.answer);
+      } else if (response.answer === 'NO_DATA_FOUND') {
+        setError(t.market.error.noData(locationName));
         setPrices([]);
         setIsLoading(false);
         return;
       } else {
-        setError(t.market.error.noData(locationName));
+        setError(t.market.error.fetchFailed(locationName));
         setIsLoading(false);
         return;
       }

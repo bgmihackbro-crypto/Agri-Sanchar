@@ -12,7 +12,7 @@
  */
 
 import { z } from 'zod';
-import { ai } from '@/ai/genkit'; // your ai wrapper (make sure this exports a genkit instance)
+import { ai } from '@/ai/genkit'; // your ai wrapper (make sure this is exports a genkit instance)
 import { PriceRecordSchema } from '@/ai/types';
 import { getWeatherForecast } from './get-weather-forecast';
 
@@ -54,7 +54,7 @@ const getMandiPrices = ai.defineTool(
   async ({ city }) => {
     const apiKey = process.env.GOV_DATA_API_KEY;
     if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
-      return { error: 'Sorry, the real-time market data API is not configured. Please add the API key to the .env file.' };
+      return { error: 'API_KEY_MISSING' };
     }
 
     let url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&limit=100`;
@@ -72,10 +72,7 @@ const getMandiPrices = ai.defineTool(
       const data = await response.json();
 
       if (!data.records || data.records.length === 0) {
-        const errorMessage = city 
-            ? `Sorry, I could not find real-time mandi prices for ${city} at the moment. Please try another nearby city.`
-            : `Sorry, I could not find any real-time mandi prices at the moment.`;
-        return { error: errorMessage };
+        return { error: `NO_DATA_FOUND` };
       }
 
       const priceRecords = data.records.map((rec: any) => ({
@@ -88,10 +85,7 @@ const getMandiPrices = ai.defineTool(
 
     } catch (error) {
       console.error('Error fetching mandi prices:', error);
-      const errorMessage = city 
-        ? `Sorry, I was unable to fetch real-time market data for ${city}. There might be a connection or configuration issue.`
-        : `Sorry, I was unable to fetch real-time market data. There might be a connection or configuration issue.`
-      return { error: errorMessage };
+      return { error: `FETCH_FAILED` };
     }
   }
 );
