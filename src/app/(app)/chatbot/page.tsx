@@ -77,17 +77,7 @@ export default function ChatbotPage() {
         window.speechSynthesis.onvoiceschanged = populateVoiceList;
     }
     
-    const speechKeepAlive = setInterval(() => {
-        if (typeof window === 'undefined' || !window.speechSynthesis || window.speechSynthesis.speaking) {
-            return;
-        }
-        const utterance = new SpeechSynthesisUtterance("");
-        utterance.volume = 0;
-        window.speechSynthesis.speak(utterance);
-    }, 5000);
-    
     return () => {
-      clearInterval(speechKeepAlive);
       if (recognitionRef.current) {
         recognitionRef.current.stop();
         recognitionRef.current = null;
@@ -165,7 +155,6 @@ export default function ChatbotPage() {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
-      // This is a typed submission
       lastInputWasVoice.current = false;
     }
 
@@ -202,7 +191,6 @@ export default function ChatbotPage() {
         question: input,
         photoDataUri: photoDataUri,
         city: userProfile?.city,
-        // Language is now detected by the AI flow from the question itself
       });
       aiResponseContent = response.answer ?? t.chatbot.aiResponseError;
     } catch (error) {
@@ -219,9 +207,7 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    if (lastInputWasVoice.current) {
-        speak(assistantMessage);
-    }
+    speak(assistantMessage);
   };
 
   const startRecording = () => {
@@ -239,7 +225,6 @@ export default function ChatbotPage() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
-      // Let's allow both languages for better flexibility during recognition
       recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
@@ -252,8 +237,6 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onend = () => {
           setIsRecording(false);
-          // Auto-submit after recording stops and there's text
-          // Using a timeout to ensure the final 'input' state is set
           setTimeout(() => {
               const currentInput = (document.getElementById('chatbot-input') as HTMLInputElement)?.value;
               if (currentInput && currentInput.trim()) {
@@ -261,18 +244,16 @@ export default function ChatbotPage() {
                   handleSubmit();
               }
           }, 100);
-          recognitionRef.current = null; // Ensure clean instance
+          recognitionRef.current = null;
       };
       
       recognitionRef.current.onerror = (event: any) => {
-          // The 'no-speech' error is not a real error. It just means the user was silent.
-          // We don't want to show an error toast for this.
           if (event.error !== 'no-speech') {
             console.error("Speech recognition error", event.error);
             toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
           }
           setIsRecording(false);
-          recognitionRef.current = null; // Ensure clean instance
+          recognitionRef.current = null;
       };
 
       recognitionRef.current.start();
@@ -282,7 +263,6 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
-        // The onend event will handle the rest
     }
   };
 
@@ -307,10 +287,6 @@ export default function ChatbotPage() {
             <CardTitle className="flex items-center gap-2 font-headline">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
             </CardTitle>
-            <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
-                <Mic className="h-5 w-5" />
-                <span className="sr-only">{t.chatbot.recordVoice}</span>
-            </Button>
         </CardHeader>
         <CardContent 
           className="flex-1 overflow-hidden relative"
@@ -440,6 +416,10 @@ export default function ChatbotPage() {
               placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
               disabled={isLoading}
             />
+            <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
+                <Mic className="h-5 w-5" />
+                <span className="sr-only">{t.chatbot.recordVoice}</span>
+            </Button>
             <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
               <span className="sr-only">{t.chatbot.send}</span>
