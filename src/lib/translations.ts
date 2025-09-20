@@ -78,6 +78,7 @@ export const translations = {
             soil: "Soil Testing",
             pesticide: "Pesticide Guide",
             profile: "Profile",
+            detection: "Detection"
         },
         bottomNav: {
             home: "Home",
@@ -671,6 +672,7 @@ export const translations = {
             soil: "मिट्टी परीक्षण",
             pesticide: "कीटनाशक गाइड",
             profile: "प्रोफ़ाइल",
+            detection: "पहचान"
         },
         bottomNav: {
             home: "होम",

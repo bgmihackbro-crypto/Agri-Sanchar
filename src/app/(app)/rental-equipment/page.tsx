@@ -133,7 +133,12 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
+                         <div className="space-y-2">
+                            <Label htmlFor="location">{t.rental.filterLocation}</Label>
+                            <Input id="location" value={userProfile.city} readOnly disabled />
+                        </div>
+                     </div>
+                      <div className="space-y-2">
                             <Label htmlFor="price">{t.rental.addDialog.priceLabel}</Label>
                             <div className="flex gap-2">
                                 <Input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g., 1000" />
@@ -148,7 +153,6 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                                 </Select>
                             </div>
                         </div>
-                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="description">{t.rental.addDialog.descriptionLabel}</Label>
                         <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t.rental.addDialog.descriptionPlaceholder} />
@@ -158,7 +162,7 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                         {imagePreview ? (
                             <div className="relative">
                                 <Image src={imagePreview} alt="Preview" width={400} height={200} className="w-full h-auto rounded-md object-cover"/>
-                                <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => setImagePreview(null)}><X className="h-4 w-4"/></Button>
+                                <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => {setImageFile(null); setImagePreview(null); if(fileInputRef.current) fileInputRef.current.value = ""}}><X className="h-4 w-4"/></Button>
                             </div>
                         ) : (
                              <div className="flex items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary" onClick={() => fileInputRef.current?.click()}>
