@@ -23,8 +23,6 @@ const pesticideData = [
     name: "Neem Oil",
     type: "Organic",
     target: "Insecticide/Fungicide",
-    image: "https://picsum.photos/seed/neem-oil/400/300",
-    imageHint: "neem oil bottle",
     description: "A broad-spectrum organic pesticide effective against aphids, mites, and powdery mildew. Safe for most plants.",
     activeIngredient: "Azadirachtin",
     crops: ["Vegetables", "Fruits", "Cotton"],
@@ -45,8 +43,6 @@ const pesticideData = [
     name: "Imidacloprid",
     type: "Chemical",
     target: "Insecticide",
-    image: "https://picsum.photos/seed/imidacloprid/400/300",
-    imageHint: "chemical pesticide bottle",
     description: "A systemic insecticide used to control sucking insects like aphids, whiteflies, and jassids in various crops.",
     activeIngredient: "Imidacloprid",
     crops: ["Cotton", "Rice", "Sugarcane", "Vegetables"],
@@ -67,8 +63,6 @@ const pesticideData = [
     name: "Mancozeb",
     type: "Chemical",
     target: "Fungicide",
-    image: "https://picsum.photos/seed/mancozeb/400/300",
-    imageHint: "fungicide powder",
     description: "A broad-spectrum contact fungicide used to control a wide range of fungal diseases on fruits, vegetables, and field crops.",
     activeIngredient: "Mancozeb",
     crops: ["Potato", "Tomato", "Grapes", "Chilli"],
@@ -89,8 +83,6 @@ const pesticideData = [
     name: "Beauveria Bassiana",
     type: "Organic",
     target: "Insecticide",
-    image: "https://picsum.photos/seed/beauveria/400/300",
-    imageHint: "organic bio-pesticide",
     description: "A beneficial fungus that acts as a natural insecticide against pests like whiteflies, thrips, and mealybugs.",
     activeIngredient: "Beauveria Bassiana spores",
     crops: ["Most crops"],
@@ -111,8 +103,6 @@ const pesticideData = [
     name: "Chlorpyrifos",
     type: "Chemical",
     target: "Insecticide",
-    image: "https://picsum.photos/seed/chlorpyrifos/400/300",
-    imageHint: "chemical insecticide",
     description: "A non-systemic insecticide used to control a wide range of chewing and sucking insects in soil or on foliage.",
     activeIngredient: "Chlorpyrifos",
     crops: ["Rice", "Cotton", "Pulses"],
@@ -133,8 +123,6 @@ const pesticideData = [
     name: "Trichoderma Viride",
     type: "Organic",
     target: "Fungicide",
-    image: "https://picsum.photos/seed/trichoderma/400/300",
-    imageHint: "bio-fungicide powder",
     description: "An antagonistic fungus used for seed and soil treatment to control soil-borne diseases like root rot and wilt.",
     activeIngredient: "Trichoderma Viride spores",
     crops: ["All crops"],
@@ -155,8 +143,6 @@ const pesticideData = [
     name: "Glyphosate",
     type: "Chemical",
     target: "Herbicide",
-    image: "https://picsum.photos/seed/glyphosate/400/300",
-    imageHint: "herbicide bottle",
     description: "A broad-spectrum systemic herbicide used to kill weeds, especially perennial grasses. Used for pre-sowing weed control.",
     activeIngredient: "Glyphosate",
     crops: ["Non-crop areas", "Pre-sowing for many crops"],
@@ -177,8 +163,6 @@ const pesticideData = [
     name: "Pheromone Traps",
     type: "Organic",
     target: "Insect Monitoring",
-    image: "https://picsum.photos/seed/pheromone-trap/400/300",
-    imageHint: "pheromone trap in field",
     description: "Used to monitor and trap specific insect pests (like fruit flies or bollworms) by using sex pheromones to attract them.",
     activeIngredient: "Species-specific pheromone lure",
     crops: ["Fruits", "Vegetables", "Cotton"],
@@ -199,8 +183,6 @@ const pesticideData = [
     name: "Copper Oxychloride",
     type: "Chemical",
     target: "Fungicide/Bactericide",
-    image: "https://picsum.photos/seed/copper-oxychloride/400/300",
-    imageHint: "blue fungicide powder",
     description: "A protective fungicide and bactericide used to control diseases like leaf spot, blight, and canker in various crops.",
     activeIngredient: "Copper Oxychloride",
     crops: ["Citrus", "Potato", "Tomato", "Coffee"],
@@ -231,15 +213,6 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-4 border">
-                        <Image 
-                            src={pesticide.image}
-                            alt={pesticide.name}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={pesticide.imageHint}
-                        />
-                    </div>
                     <DialogTitle className="text-2xl font-headline">{pesticide.name}</DialogTitle>
                     <div className="flex flex-wrap gap-2 pt-1">
                             <Badge className={pesticide.color}>{pesticide.type}</Badge>
@@ -371,15 +344,6 @@ export default function PesticideGuidePage() {
                 {filteredPesticides.map((pesticide) => (
                 <Card key={pesticide.name} className="flex flex-col">
                     <CardHeader>
-                        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-4 border">
-                            <Image 
-                                src={pesticide.image}
-                                alt={pesticide.name}
-                                fill
-                                className="object-cover"
-                                data-ai-hint={pesticide.imageHint}
-                            />
-                        </div>
                         <div className="flex items-start justify-between">
                             <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
                             <div className={`p-2 rounded-lg ${pesticide.color}`}>
@@ -411,5 +375,3 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
-
-    
