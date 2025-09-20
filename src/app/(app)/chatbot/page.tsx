@@ -122,7 +122,7 @@ export default function ChatbotPage() {
     let selectedVoice = null;
     if (targetLang === 'hi-IN') {
         selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
-                     || voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Rishi'));
+                     || voices.find(voice => voice.lang === 'hi-IN');
     } else {
         selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google') && voice.name.includes('Female')) 
                      || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Samantha'))
@@ -160,15 +160,15 @@ export default function ChatbotPage() {
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
+    if (e) {
+      e.preventDefault();
+      lastInputWasVoice.current = false;
+    }
+
     if ((!input.trim() && !imageFile) || isLoading) return;
 
     if (isRecording) {
       stopRecording();
-    }
-    
-    if (e) { // If it's a form submission event, it's a typed message
-      lastInputWasVoice.current = false;
     }
 
     const userMessage: Message = {
@@ -227,10 +227,8 @@ export default function ChatbotPage() {
           return;
       }
       
-      // Always create a new instance
       if (recognitionRef.current) {
         recognitionRef.current.stop();
-        recognitionRef.current = null;
       }
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
@@ -256,14 +254,12 @@ export default function ChatbotPage() {
                   handleSubmit();
               }
           }, 100);
-          recognitionRef.current = null; // Clean up the instance
       };
       
       recognitionRef.current.onerror = (event: any) => {
           console.error("Speech recognition error", event.error);
           toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
           setIsRecording(false);
-          recognitionRef.current = null; // Clean up on error
       };
 
       recognitionRef.current.start();
@@ -273,7 +269,6 @@ export default function ChatbotPage() {
   const stopRecording = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
-        recognitionRef.current = null;
     }
     setIsRecording(false);
   };
