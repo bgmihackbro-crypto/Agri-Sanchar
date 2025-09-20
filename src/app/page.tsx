@@ -1,20 +1,49 @@
 
 "use client";
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Languages } from 'lucide-react';
 import { useTranslation } from '@/hooks/use-translation';
+import { Spinner } from '@/components/ui/spinner';
 
-export default function LanguageSelectionPage() {
+export default function WelcomePage() {
     const router = useRouter();
     const { t, setLanguage } = useTranslation();
+    const [isChecking, setIsChecking] = useState(true);
+
+    useEffect(() => {
+        const storedLang = localStorage.getItem('selectedLanguage');
+        if (storedLang) {
+            // If language is already set, redirect to login
+            router.push('/login');
+        } else {
+            // Otherwise, show the language selection
+            setIsChecking(false);
+        }
+    }, [router]);
 
     const handleLanguageSelect = (language: 'English' | 'Hindi') => {
         setLanguage(language);
         router.push('/login');
     };
+
+    if (isChecking) {
+        return (
+             <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden"
+                 style={{
+                    backgroundImage: "url('https://cdn.pixabay.com/photo/2017/07/06/12/56/morning-2477957_1280.jpg')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                 }}
+            >
+                <div className="absolute inset-0 bg-black/50 -z-10" />
+                <Spinner className="h-12 w-12 text-white" />
+            </div>
+        );
+    }
 
     return (
         <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden"
