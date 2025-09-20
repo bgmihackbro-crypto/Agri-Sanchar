@@ -50,6 +50,7 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
     useEffect(() => {
         if(userProfile) {
             setContact(userProfile.phone.replace('+91', ''));
+            setAddress(userProfile.city);
         }
     }, [userProfile]);
 
@@ -60,7 +61,7 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
         setPrice("");
         setPriceUnit("per_day");
         setDescription("");
-        setAddress("");
+        setAddress(userProfile.city);
         setContact(userProfile.phone.replace('+91', ''));
         setImageFile(null);
         setImagePreview(null);
@@ -219,13 +220,13 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
                     <Info className="mr-2 h-4 w-4" /> {t.rental.viewDetails}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="w-full max-w-md sm:max-w-sm">
                 <DialogHeader>
                     <div className="relative aspect-video mb-4">
                         <Image src={rental.imageUrl} alt={rental.name} fill className="rounded-md object-cover" />
                     </div>
                     <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
-                    <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
+                     <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
                         <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
                     </div>
@@ -322,8 +323,16 @@ export default function RentalEquipmentPage() {
         if (profile) {
             const parsed = JSON.parse(profile) as UserProfile;
             setUserProfile(parsed);
+        } else {
+             // If no profile, we still show the page but they can't add equipment.
         }
+        setFilterCity('all'); // Set default to 'all'
         fetchRentals();
+
+        window.addEventListener('storage', fetchRentals);
+        return () => {
+            window.removeEventListener('storage', fetchRentals);
+        }
     }, []);
 
     const myRentals = allRentals.filter(r => r.ownerId === userProfile?.farmerId);
@@ -399,7 +408,11 @@ export default function RentalEquipmentPage() {
             </TabsContent>
             <TabsContent value="my-equipment" className="pt-4">
                 <div className="flex justify-end mb-4">
-                   {userProfile && <AddEquipmentDialog userProfile={userProfile} onEquipmentAdded={fetchRentals} />}
+                   {userProfile ? (
+                     <AddEquipmentDialog userProfile={userProfile} onEquipmentAdded={fetchRentals} />
+                   ) : (
+                     <p className="text-sm text-muted-foreground text-right">{t.rental.noMyEquipmentDesc}</p>
+                   )}
                 </div>
 
                  {isLoading ? (
@@ -420,3 +433,5 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
+
+    
