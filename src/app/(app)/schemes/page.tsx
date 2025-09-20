@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -211,16 +212,34 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                     </div>
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-3">
-                     <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full">
-                            <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
-                        </Button>
-                    </DialogTrigger>
+                    <div className="flex w-full gap-2">
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="w-full">
+                                <Info className="mr-2 h-4 w-4" /> {t.schemes.viewDetails}
+                            </Button>
+                        </DialogTrigger>
+                        {scheme.id === 'pmfby' && (
+                             <DialogTrigger asChild>
+                                <Button variant="secondary" className="w-full">
+                                    <Calculator className="mr-2 h-4 w-4"/> {t.schemes.calculator.title}
+                                </Button>
+                             </DialogTrigger>
+                        )}
+                    </div>
                 </CardFooter>
             </Card>
 
             <DialogContent className="sm:max-w-sm p-0">
                 <ScrollArea className="max-h-[90vh]">
+                     <div className="relative aspect-video">
+                        {scheme.imageUrl ? (
+                           <Image src={scheme.imageUrl} alt={scheme.name} fill className="object-cover" />
+                        ) : (
+                           <div className="h-full w-full bg-muted flex items-center justify-center">
+                             <Landmark className="h-16 w-16 text-muted-foreground/30"/>
+                           </div>
+                        )}
+                    </div>
                     <div className="p-6 space-y-4">
                         <DialogTitle className="text-2xl font-headline mb-2">{scheme.name}</DialogTitle>
                         <DialogDescription>{scheme.description}</DialogDescription>
@@ -294,3 +313,5 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
         </Dialog>
     );
 }
+
+    
