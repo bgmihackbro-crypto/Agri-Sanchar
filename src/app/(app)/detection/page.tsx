@@ -144,19 +144,17 @@ export default function DetectionPage() {
                 {capturedImage ? (
                   <img src={capturedImage} alt="Captured crop" className="w-full h-full object-cover" />
                 ) : (
-                  <>
-                    <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
-                    { hasCameraPermission === false && (
-                        <div className="absolute inset-0 flex items-center justify-center p-4">
-                            <Alert variant="destructive">
-                            <AlertTitle>{t.detection.cameraRequired}</AlertTitle>
-                            <AlertDescription>
-                                {t.detection.cameraRequiredDesc}
-                            </AlertDescription>
-                            </Alert>
-                        </div>
-                    )}
-                  </>
+                  <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                )}
+                 { hasCameraPermission === false && !capturedImage && (
+                    <div className="absolute inset-0 flex items-center justify-center p-4">
+                        <Alert variant="destructive">
+                        <AlertTitle>{t.detection.cameraRequired}</AlertTitle>
+                        <AlertDescription>
+                            {t.detection.cameraRequiredDesc}
+                        </AlertDescription>
+                        </Alert>
+                    </div>
                 )}
               </div>
               <canvas ref={canvasRef} className="hidden" />
