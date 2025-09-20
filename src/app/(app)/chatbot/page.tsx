@@ -307,6 +307,10 @@ export default function ChatbotPage() {
             <CardTitle className="flex items-center gap-2 font-headline">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
             </CardTitle>
+            <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
+                <Mic className="h-5 w-5" />
+                <span className="sr-only">{t.chatbot.recordVoice}</span>
+            </Button>
         </CardHeader>
         <CardContent 
           className="flex-1 overflow-hidden relative"
@@ -436,10 +440,6 @@ export default function ChatbotPage() {
               placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
               disabled={isLoading}
             />
-            <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
-                <Mic className="h-4 w-4" />
-                <span className="sr-only">{t.chatbot.recordVoice}</span>
-            </Button>
             <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
               <Send className="h-4 w-4" />
               <span className="sr-only">{t.chatbot.send}</span>
@@ -449,5 +449,4 @@ export default function ChatbotPage() {
       </Card>
     </div>
   );
-
-    
+}

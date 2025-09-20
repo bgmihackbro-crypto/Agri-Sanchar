@@ -48,7 +48,7 @@ const getMandiPrices = ai.defineTool(
   {
     name: 'getMandiPrices',
     description: 'Provides a list of mandi (market) prices for various crops. Can be filtered by city.',
-    inputSchema: z.object({ city: z.string().optional().describe("The city to find mandi prices for. If omitted, returns prices from across India.") }),
+    inputSchema: z.object({ city: z.string().optional().describe("The city to find mandi prices for. If omitted, returns prices from across India."), returnJson: z.boolean().optional().describe("Set to true if the user wants raw JSON data.") }),
     outputSchema: MandiPriceOutputSchema,
   },
   async ({ city }) => {
@@ -133,7 +133,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 
 **CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language. If the question is in Hindi, you MUST reply in Devanagari script. If it's in English, reply in English.
 
-When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON. If the data includes the market, include that in the table.
+When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
 If asked for the current date or day, use this: {{{currentDate}}}.
 
@@ -231,7 +231,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
   async (input) => {
     // If the request is for JSON price data, call the tool directly and return.
     if (input.returnJson) {
-      const priceData = await getMandiPrices({ city: input.city });
+      const priceData = await getMandiPrices({ city: input.city, returnJson: true });
       if (priceData.error) {
         return { answer: priceData.error };
       }
@@ -260,5 +260,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
-
-    
