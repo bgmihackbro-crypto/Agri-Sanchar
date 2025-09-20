@@ -96,10 +96,10 @@ export const translations = {
                 detection: { title: "Pest/Disease Detection", description: "Upload crop photos and get instant AI-powered pest or disease identification." },
                 weather: { title: "Weather Forecast", description: "7-day weather forecast, rainfall warnings, and farming-suitable weather conditions." },
                 market: { title: "Market Prices", description: "Fresh daily market rates, price trends, and better selling suggestions." },
+                community: { title: "Community Forum", description: "Connect with farmers, ask questions, share knowledge, and build your network." },
+                soil: { title: "Soil Testing Center", description: "Upload soil reports, get AI analysis, and calculate fertilizer needs." },
                 schemes: { title: "Government Schemes", description: "Get information and updates on schemes like PM-KISAN.", badge: "New" },
                 pesticide: { title: "Pesticide Guide", description: "Accurate information and usage methods for organic and chemical pesticides." },
-                community: { title: "Community Forum", description: "Connect with farmers, ask questions, share knowledge, and build your network." },
-                soil: { title: "Soil Testing", description: "Upload soil reports, get AI analysis, and calculate fertilizer needs." },
                 rental: { title: "Rental Equipment", description: "Find and rent farming equipment like tractors and harvesters from nearby owners." },
             },
             schemeNotification: {
@@ -150,7 +150,7 @@ export const translations = {
             title: "Weather Forecast",
             subtitle: (city: string, state: string) => `For ${city}, ${state}`,
             loading: "Fetching live weather data...",
-            aiSuggestion: "AI Suggestion",
+            aiSuggestion: "AI Farming Tips",
             error: {
                 title: "Error Fetching Weather",
                 fetchFailed: "Failed to fetch weather data. Please try again later.",
@@ -536,7 +536,6 @@ export const translations = {
             usage: "Usage Instructions",
             disclaimer: "This is an AI-generated recommendation. Always verify with a local expert and read the product label before use.",
             dialog: {
-                details: "Details",
                 precautions: "Safety Precautions",
                 phi: "Pre-Harvest Interval (PHI)",
                 advantages: "Advantages",
@@ -549,6 +548,49 @@ export const translations = {
             toast: {
                 missingInfo: "Missing Information",
                 missingInfoDesc: "Please enter both a crop and a problem description.",
+            }
+        },
+        rental: {
+            description: "Find and rent farming equipment from other farmers in your area.",
+            tabs: {
+                browse: "Browse Equipment",
+                myEquipment: "My Equipment",
+            },
+            searchPlaceholder: "Search for tractors, harvesters, etc.",
+            filterCategory: "Filter by Category",
+            allCategories: "All Categories",
+            filterLocation: "Filter by Location",
+            noEquipmentFound: "No equipment found for the selected filters.",
+            noMyEquipment: "You have not listed any equipment for rent.",
+            noMyEquipmentDesc: "Click the button above to add your first piece of equipment.",
+            perDay: "day",
+            perHour: "hour",
+            day: "day",
+            hour: "hour",
+            callOwner: "Call Owner",
+            bookNow: "Book Now",
+            addDialog: {
+                button: "List Your Equipment",
+                title: "List Your Equipment for Rent",
+                description: "Fill out the details below to make your equipment available to others.",
+                nameLabel: "Equipment Name",
+                namePlaceholder: "e.g., Sonalika Tractor 50HP",
+                categoryLabel: "Category",
+                categoryPlaceholder: "Select a category",
+                priceLabel: "Rental Price (₹)",
+                descriptionLabel: "Description",
+                descriptionPlaceholder: "Mention the condition, model year, and any special features.",
+                imageLabel: "Equipment Photo",
+                imagePlaceholder: "Click to upload an image",
+                submit: "Add Equipment",
+                fileTooLarge: "File Too Large",
+                fileTooLargeDesc: "Please upload an image smaller than 2MB.",
+                incompleteTitle: "Incomplete Details",
+                incompleteDesc: "Please fill out the name, category, price, and upload an image.",
+                successTitle: "Equipment Listed!",
+                successDesc: (name: string) => `Your "${name}" is now available for rent.`,
+                errorTitle: "Error",
+                errorDesc: "Could not list your equipment. Please try again.",
             }
         }
     },
@@ -647,10 +689,10 @@ export const translations = {
                 detection: { title: "कीट/रोग का पता लगाना", description: "फसल की तस्वीरें अपलोड करें और तुरंत एआई-संचालित कीट या रोग की पहचान प्राप्त करें।" },
                 weather: { title: "मौसम पूर्वानुमान", description: "7-दिन का मौसम पूर्वानुमान, वर्षा की चेतावनी, और खेती के लिए उपयुक्त मौसम की स्थिति।" },
                 market: { title: "बाजार मूल्य", description: "ताज़ा दैनिक बाजार दरें, मूल्य रुझान, और बेहतर बिक्री के सुझाव।" },
+                community: { title: "सामुदायिक मंच", description: "किसानों से जुड़ें, प्रश्न पूछें, ज्ञान साझा करें और अपना नेटवर्क बनाएं।" },
+                soil: { title: "मिट्टी परीक्षण केंद्र", description: "मिट्टी की रिपोर्ट अपलोड करें, एआई विश्लेषण प्राप्त करें और उर्वरक की जरूरतों की गणना करें।" },
                 schemes: { title: "सरकारी योजनाएं", description: "पीएम-किसान जैसी योजनाओं पर जानकारी और अपडेट प्राप्त करें।", badge: "नया" },
                 pesticide: { title: "कीटनाशक गाइड", description: "जैविक और रासायनिक कीटनाशकों के लिए सटीक जानकारी और उपयोग के तरीके।" },
-                community: { title: "सामुदायिक मंच", description: "किसानों से जुड़ें, प्रश्न पूछें, ज्ञान साझा करें और अपना नेटवर्क बनाएं।" },
-                soil: { title: "मिट्टी परीक्षण", description: "मिट्टी की रिपोर्ट अपलोड करें, एआई विश्लेषण प्राप्त करें और उर्वरक की जरूरतों की गणना करें।" },
                 rental: { title: "किराये के उपकरण", description: "आस-पास के मालिकों से ट्रैक्टर और हार्वेस्टर जैसे खेती के उपकरण खोजें और किराए पर लें।" },
             },
              schemeNotification: {
@@ -701,7 +743,7 @@ export const translations = {
             title: "मौसम पूर्वानुमान",
             subtitle: (city: string, state: string) => `${city}, ${state} के लिए`,
             loading: "लाइव मौसम डेटा प्राप्त किया जा रहा है...",
-            aiSuggestion: "एआई सुझाव",
+            aiSuggestion: "एआई कृषि सुझाव",
             error: {
                 title: "मौसम डेटा प्राप्त करने में त्रुटि",
                 fetchFailed: "मौसम डेटा प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।",
@@ -1087,7 +1129,6 @@ export const translations = {
             usage: "उपयोग निर्देश",
             disclaimer: "यह एक एआई-जनित सिफारिश है। उपयोग करने से पहले हमेशा एक स्थानीय विशेषज्ञ से सत्यापित करें और उत्पाद लेबल पढ़ें।",
             dialog: {
-                details: "विवरण",
                 precautions: "सुरक्षा सावधानियां",
                 phi: "कटाई-पूर्व अंतराल (PHI)",
                 advantages: "लाभ",
@@ -1101,8 +1142,53 @@ export const translations = {
                 missingInfo: "अधूरी जानकारी",
                 missingInfoDesc: "कृपया फसल और समस्या का विवरण दोनों दर्ज करें।",
             }
+        },
+        rental: {
+            description: "अपने क्षेत्र के अन्य किसानों से खेती के उपकरण खोजें और किराए पर लें।",
+            tabs: {
+                browse: "उपकरण ब्राउज़ करें",
+                myEquipment: "मेरे उपकरण",
+            },
+            searchPlaceholder: "ट्रैक्टर, हार्वेस्टर, आदि खोजें।",
+            filterCategory: "श्रेणी के अनुसार फ़िल्टर करें",
+            allCategories: "सभी श्रेणियाँ",
+            filterLocation: "स्थान के अनुसार फ़िल्टर करें",
+            noEquipmentFound: "चयनित फ़िल्टर के लिए कोई उपकरण नहीं मिला।",
+            noMyEquipment: "आपने किराए के लिए कोई उपकरण सूचीबद्ध नहीं किया है।",
+            noMyEquipmentDesc: "अपना पहला उपकरण जोड़ने के लिए ऊपर दिए गए बटन पर क्लिक करें।",
+            perDay: "दिन",
+            perHour: "घंटा",
+            day: "दिन",
+            hour: "घंटा",
+            callOwner: "मालिक को कॉल करें",
+            bookNow: "अभी बुक करें",
+            addDialog: {
+                button: "अपना उपकरण सूचीबद्ध करें",
+                title: "किराए के लिए अपना उपकरण सूचीबद्ध करें",
+                description: "अपने उपकरण को दूसरों के लिए उपलब्ध कराने के लिए नीचे दिए गए विवरण भरें।",
+                nameLabel: "उपकरण का नाम",
+                namePlaceholder: "उदा., सोनालिका ट्रैक्टर 50HP",
+                categoryLabel: "श्रेणी",
+                categoryPlaceholder: "एक श्रेणी चुनें",
+                priceLabel: "किराया मूल्य (₹)",
+                descriptionLabel: "विवरण",
+                descriptionPlaceholder: "स्थिति, मॉडल वर्ष और किसी भी विशेष सुविधाओं का उल्लेख करें।",
+                imageLabel: "उपकरण का फोटो",
+                imagePlaceholder: "एक छवि अपलोड करने के लिए क्लिक करें",
+                submit: "उपकरण जोड़ें",
+                fileTooLarge: "फ़ाइल बहुत बड़ी है",
+                fileTooLargeDesc: "कृपया 2MB से छोटी छवि अपलोड करें।",
+                incompleteTitle: "अधूरा विवरण",
+                incompleteDesc: "कृपया नाम, श्रेणी, मूल्य भरें और एक छवि अपलोड करें।",
+                successTitle: "उपकरण सूचीबद्ध!",
+                successDesc: (name: string) => `आपका "${name}" अब किराए के लिए उपलब्ध है।`,
+                errorTitle: "त्रुटि",
+                errorDesc: "आपका उपकरण सूचीबद्ध नहीं किया जा सका। कृपया पुनः प्रयास करें।",
+            }
         }
     }
 };
 
 export type Translations = typeof translations.English;
+
+    
