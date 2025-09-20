@@ -25,6 +25,7 @@ import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/use-translation";
 
 type UserProfile = {
   name: string;
@@ -37,6 +38,7 @@ export function UserNav() {
   const router = useRouter();
   const { toast } = useToast();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const { t } = useTranslation();
 
   const updateUserProfile = () => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -57,15 +59,16 @@ export function UserNav() {
   }, []);
 
   const handleLanguageChange = (lang: string) => {
-    if (userProfile) {
+    if (userProfile && (lang === 'English' || lang === 'Hindi')) {
       const updatedProfile = { ...userProfile, language: lang };
       setUserProfile(updatedProfile);
       localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+      localStorage.setItem("selectedLanguage", lang); // Also update the global selector
       toast({
-        title: "Language Updated",
-        description: `Language has been set to ${lang}.`,
+        title: t.userNav.languageUpdated,
+        description: t.userNav.languageUpdatedDesc(lang),
       });
-      // A full reload might be necessary for all components to pick up the new language context
+      // A full reload is necessary for all components to pick up the new language context
       window.location.reload();
     }
   };
@@ -109,13 +112,13 @@ export function UserNav() {
           <DropdownMenuItem asChild>
             <Link href="/profile">
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <span>{t.userNav.profile}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Languages className="mr-2 h-4 w-4" />
-              <span>Language</span>
+              <span>{t.userNav.language}</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
@@ -130,9 +133,11 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>{t.userNav.logout}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
+    

@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Languages } from 'lucide-react';
+import { useTranslation } from '@/hooks/use-translation';
 
 export default function LanguageSelectionPage() {
     const router = useRouter();
+    const { t, setLanguage } = useTranslation();
 
     const handleLanguageSelect = (language: 'English' | 'Hindi') => {
-        // We'll store this in a generic key first, then the profile page can pick it up.
-        localStorage.setItem('selectedLanguage', language);
+        setLanguage(language);
         router.push('/login');
     };
 
@@ -28,10 +29,10 @@ export default function LanguageSelectionPage() {
             <Card className="w-full max-w-sm animate-fade-in bg-white/10 backdrop-blur-sm border-white/20 text-white">
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-headline flex items-center justify-center gap-2">
-                        <Languages className="h-6 w-6"/> Select Language
+                        <Languages className="h-6 w-6"/> {t.languageSelection.title}
                     </CardTitle>
                     <CardDescription className="text-white/80">
-                        Choose your preferred language to continue.
+                        {t.languageSelection.description}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 gap-4">
@@ -54,3 +55,5 @@ export default function LanguageSelectionPage() {
         </div>
     );
 }
+
+    

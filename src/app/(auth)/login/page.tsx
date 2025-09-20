@@ -16,61 +16,9 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "@/hooks/use-translation";
 
 const SIMULATED_OTP = "123456";
-
-const translations = {
-    'English': {
-        login: "Login",
-        enterPhone: "Enter your phone number to login (Simulated).",
-        enterOtp: "Enter the simulated OTP to continue.",
-        phoneLabel: "Phone Number",
-        phonePlaceholder: "9876543210",
-        sendOtp: "Send OTP",
-        sendingOtp: "Sending OTP...",
-        otpLabel: "One-Time Password",
-        otpPlaceholder: "123456",
-        verifyAndLogin: "Verify OTP & Login",
-        verifying: "Verifying...",
-        noAccount: "Don't have an account?",
-        signUp: "Sign up",
-        otpSentTitle: "OTP Sent (Simulated)",
-        otpSentDesc: "Enter 123456 to log in.",
-        invalidOtpTitle: "Invalid OTP",
-        invalidOtpDesc: "The OTP you entered is incorrect.",
-        loginFailedTitle: "Login Failed",
-        loginFailedDesc: "This phone number is not registered. Please sign up.",
-        welcomeBack: "Welcome back to Agri-Sanchar!",
-        loginSuccess: "Login Successful",
-        errorTitle: "Error",
-        errorDesc: "An unexpected error occurred during login."
-    },
-    'Hindi': {
-        login: "लॉग इन करें",
-        enterPhone: "लॉग इन करने के लिए अपना फ़ोन नंबर दर्ज करें (नकली)।",
-        enterOtp: "जारी रखने के लिए नकली ओटीपी दर्ज करें।",
-        phoneLabel: "फ़ोन नंबर",
-        phonePlaceholder: "9876543210",
-        sendOtp: "ओटीपी भेजें",
-        sendingOtp: "ओटीपी भेजा जा रहा है...",
-        otpLabel: "वन-टाइम पासवर्ड",
-        otpPlaceholder: "123456",
-        verifyAndLogin: "ओटीपी सत्यापित करें और लॉग इन करें",
-        verifying: "सत्यापित हो रहा है...",
-        noAccount: "खाता नहीं है?",
-        signUp: "साइन अप करें",
-        otpSentTitle: "ओटीपी भेजा गया (नकली)",
-        otpSentDesc: "लॉग इन करने के लिए 123456 दर्ज करें।",
-        invalidOtpTitle: "अमान्य ओटीपी",
-        invalidOtpDesc: "आपके द्वारा दर्ज किया गया ओटीपी गलत है।",
-        loginFailedTitle: "लॉगिन विफल",
-        loginFailedDesc: "यह फ़ोन नंबर पंजीकृत नहीं है। कृपया साइन अप करें।",
-        welcomeBack: "कृषि-संचार में आपका स्वागत है!",
-        loginSuccess: "लॉगिन सफल",
-        errorTitle: "त्रुटि",
-        errorDesc: "लॉगिन के दौरान एक अप्रत्याशित त्रुटि हुई।"
-    }
-};
 
 const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     const newNotification = {
@@ -99,17 +47,16 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [language, setLanguage] = useState<'English' | 'Hindi'>('English');
+  const { t, language, setLanguage } = useTranslation();
 
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
     if (lang === 'Hindi') {
         setLanguage('Hindi');
+    } else {
+        setLanguage('English');
     }
-  }, []);
-
-  const t = translations[language];
-
+  }, [setLanguage]);
 
   const handleSendOtp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -121,8 +68,8 @@ export default function LoginPage() {
       setLoading(false);
       setOtpSent(true);
       toast({
-        title: t.otpSentTitle,
-        description: t.otpSentDesc,
+        title: t.login.otpSentTitle,
+        description: t.login.otpSentDesc,
       });
     }, 1000);
   };
@@ -134,8 +81,8 @@ export default function LoginPage() {
     if (otp !== SIMULATED_OTP) {
       toast({
         variant: "destructive",
-        title: t.invalidOtpTitle,
-        description: t.invalidOtpDesc,
+        title: t.login.invalidOtpTitle,
+        description: t.login.invalidOtpDesc,
       });
       return;
     }
@@ -159,8 +106,8 @@ export default function LoginPage() {
         if (!profileFound || !userProfile) {
             toast({ 
                 variant: "destructive", 
-                title: t.loginFailedTitle, 
-                description: t.loginFailedDesc
+                title: t.login.loginFailedTitle, 
+                description: t.login.loginFailedDesc
             });
             setLoading(false);
             router.push('/signup');
@@ -174,8 +121,8 @@ export default function LoginPage() {
         addWelcomeNotification(userProfile.name, language);
 
         toast({
-          title: t.loginSuccess,
-          description: t.welcomeBack,
+          title: t.login.loginSuccess,
+          description: t.login.welcomeBack,
         });
 
         const redirectUrl = searchParams.get('redirect');
@@ -192,8 +139,8 @@ export default function LoginPage() {
         console.error("Simulated login error:", error);
         toast({
           variant: "destructive",
-          title: t.errorTitle,
-          description: t.errorDesc,
+          title: t.login.errorTitle,
+          description: t.login.errorDesc,
         });
       } finally {
         setLoading(false);
@@ -204,16 +151,16 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-white/90 backdrop-blur-sm border-gray-200/50">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-headline text-foreground">{t.login}</CardTitle>
+        <CardTitle className="text-2xl font-headline text-foreground">{t.login.title}</CardTitle>
         <CardDescription className="text-muted-foreground">
-          {otpSent ? t.enterOtp : t.enterPhone}
+          {otpSent ? t.login.enterOtp : t.login.enterPhone}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="phone" className="text-foreground text-left">{t.phoneLabel}</Label>
+              <Label htmlFor="phone" className="text-foreground text-left">{t.login.phoneLabel}</Label>
               <div className="flex items-center gap-2">
                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm">
                   +91
@@ -221,7 +168,7 @@ export default function LoginPage() {
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder={t.phonePlaceholder}
+                  placeholder={t.login.phonePlaceholder}
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').substring(0, 10))}
@@ -231,17 +178,17 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full" disabled={loading || phone.length < 10}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? t.sendingOtp : t.sendOtp}
+              {loading ? t.login.sendingOtp : t.login.sendOtp}
             </Button>
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="otp" className="text-foreground text-left">{t.otpLabel}</Label>
+              <Label htmlFor="otp" className="text-foreground text-left">{t.login.otpLabel}</Label>
               <Input
                 id="otp"
                 type="tel"
-                placeholder={t.otpPlaceholder}
+                placeholder={t.login.otpPlaceholder}
                 required
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
@@ -251,17 +198,19 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full" disabled={loading || otp.length < 6}>
               {loading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
-              {loading ? t.verifying : t.verifyAndLogin}
+              {loading ? t.login.verifying : t.login.verifyAndLogin}
             </Button>
           </form>
         )}
         <div className="mt-4 text-center text-sm text-foreground">
-          {t.noAccount}{" "}
+          {t.login.noAccount}{" "}
           <Link href="/signup" className="underline text-primary font-semibold">
-            {t.signUp}
+            {t.login.signUp}
           </Link>
         </div>
       </CardContent>
     </Card>
   );
 }
+
+    

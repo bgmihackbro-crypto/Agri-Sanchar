@@ -13,10 +13,12 @@ import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark } from "
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
+import { useTranslation } from "@/hooks/use-translation";
 
 export default function DashboardPage() {
   
   const { addNotification } = useNotifications();
+  const { t } = useTranslation();
 
   const handleSchemeClick = (e: React.MouseEvent, title: string) => {
       addNotification({
@@ -27,8 +29,8 @@ export default function DashboardPage() {
 
   const serviceLinks = [
     {
-      title: "AI Advisory Chatbot",
-      description: "AI-powered advice for crop, soil and pest problems. Communicate with voice support.",
+      title: t.dashboard.services.chatbot.title,
+      description: t.dashboard.services.chatbot.description,
       href: "/chatbot",
       icon: Bot,
       badge: null,
@@ -36,8 +38,8 @@ export default function DashboardPage() {
       onClick: undefined
     },
     {
-      title: "Pest/Disease Detection",
-      description: "Upload crop photos and get instant AI-powered pest or disease identification.",
+      title: t.dashboard.services.detection.title,
+      description: t.dashboard.services.detection.description,
       href: "/detection",
       icon: Search,
       badge: null,
@@ -45,8 +47,8 @@ export default function DashboardPage() {
       onClick: undefined
     },
     {
-      title: "Weather Forecast",
-      description: "7-day weather forecast, rainfall warnings, and farming-suitable weather conditions.",
+      title: t.dashboard.services.weather.title,
+      description: t.dashboard.services.weather.description,
       href: "/weather",
       icon: CloudSun,
       badge: null,
@@ -54,8 +56,8 @@ export default function DashboardPage() {
       onClick: undefined
     },
     {
-      title: "Market Prices",
-      description: "Fresh daily market rates, price trends, and better selling suggestions.",
+      title: t.dashboard.services.market.title,
+      description: t.dashboard.services.market.description,
       href: "/market",
       icon: TrendingUp,
       badge: null,
@@ -63,17 +65,17 @@ export default function DashboardPage() {
       onClick: undefined
     },
     {
-      title: "Government Schemes",
-      description: "Get information and updates on schemes like PM-KISAN.",
+      title: t.dashboard.services.schemes.title,
+      description: t.dashboard.services.schemes.description,
       href: "#",
       icon: Landmark,
-      badge: "नया",
+      badge: t.dashboard.services.schemes.badge,
       badgeColor: "bg-green-500",
       onClick: (e: React.MouseEvent) => handleSchemeClick(e, "Government Schemes")
     },
     {
-      title: "Pesticide Guide",
-      description: "Accurate information and usage methods for organic and chemical pesticides.",
+      title: t.dashboard.services.pesticide.title,
+      description: t.dashboard.services.pesticide.description,
       href: "/pesticide-guide",
       icon: Bug,
       badge: null,
@@ -94,16 +96,16 @@ export default function DashboardPage() {
         />
         <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-4">
           <h1 className="text-4xl md:text-6xl font-bold text-white font-headline">Agri-Sanchar</h1>
-          <p className="mt-2 text-lg md:text-xl text-white/90">Your Digital Partner for Smart Farming</p>
+          <p className="mt-2 text-lg md:text-xl text-white/90">{t.dashboard.tagline}</p>
           <p className="mt-4 max-w-2xl text-base text-white">
-            AI-powered crop advisory, pest detection, weather alerts, and market prices - all in your language to help small farmers grow better.
+            {t.dashboard.description}
           </p>
         </div>
       </div>
 
       <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <h2 className="text-3xl font-bold font-headline">Agricultural Services</h2>
-          <p className="text-muted-foreground mt-2">All essential tools in one place to improve traditional farming with modern technology.</p>
+          <h2 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h2>
+          <p className="text-muted-foreground mt-2">{t.dashboard.servicesDescription}</p>
       </div>
 
       <div>
@@ -131,3 +133,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
