@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -23,7 +23,6 @@ import {
   FileClock,
   Calculator,
   Building,
-  CircleHelp,
   Combine,
   Tractor,
   Map,
@@ -31,8 +30,6 @@ import {
   Box,
   Tag,
   PlayCircle,
-  Phone,
-  MapPin,
   ExternalLink,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -93,10 +90,19 @@ export default function SoilTestingPage() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [calculationResult, setCalculationResult] = useState<FertilizerCalculationOutput | null>(null);
   const [calculationError, setCalculationError] = useState<string | null>(null);
+  
+  const [userProfile, setUserProfile] = useState<{state?: string; city?: string} | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
+  useEffect(() => {
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+      setUserProfile(JSON.parse(profile));
+    }
+  }, []);
+
   const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -298,20 +304,6 @@ export default function SoilTestingPage() {
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
-                         <AccordionItem value="subsidies">
-                             <AccordionTrigger><CircleHelp className="h-4 w-4 mr-2" />Government Schemes</AccordionTrigger>
-                             <AccordionContent className="space-y-3 pt-2">
-                                 <p className="text-sm text-muted-foreground">
-                                     Under the Soil Health Card Scheme, the government provides assistance to farmers for soil testing at subsidized rates.
-                                 </p>
-                                  <Button variant="outline" size="sm" asChild>
-                                      <Link href="https://soilhealth.dac.gov.in/" target="_blank" rel="noopener noreferrer">
-                                        <ExternalLink className="mr-2 h-4 w-4" />
-                                        Visit Soil Health Card Portal
-                                    </Link>
-                                 </Button>
-                             </AccordionContent>
-                         </AccordionItem>
                     </Accordion>
                 </CardContent>
             </Card>
