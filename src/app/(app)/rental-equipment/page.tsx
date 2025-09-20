@@ -40,9 +40,18 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
     const [price, setPrice] = useState("");
     const [priceUnit, setPriceUnit] = useState<"per_hour" | "per_day">("per_day");
     const [description, setDescription] = useState("");
+    const [contact, setContact] = useState(userProfile.phone);
+    const [address, setAddress] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if(userProfile) {
+            setContact(userProfile.phone.replace('+91', ''));
+        }
+    }, [userProfile]);
+
 
     const resetForm = () => {
         setName("");
@@ -50,6 +59,8 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
         setPrice("");
         setPriceUnit("per_day");
         setDescription("");
+        setAddress("");
+        setContact(userProfile.phone.replace('+91', ''));
         setImageFile(null);
         setImagePreview(null);
     };
@@ -67,7 +78,7 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
     };
 
     const handleSubmit = async () => {
-        if (!name || !category || !price || !imageFile) {
+        if (!name || !category || !price || !imageFile || !contact) {
             toast({ variant: 'destructive', title: t.rental.addDialog.incompleteTitle, description: t.rental.addDialog.incompleteDesc });
             return;
         }
@@ -83,12 +94,13 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                     price: parseFloat(price),
                     priceUnit,
                     description,
+                    address,
                     imageUrl: reader.result as string,
                     ownerId: userProfile.farmerId,
                     ownerName: userProfile.name,
                     ownerAvatar: userProfile.avatar,
                     location: userProfile.city,
-                    contact: userProfile.phone,
+                    contact: `+91${contact}`,
                 };
                 createRental(newRental);
                 toast({ title: t.rental.addDialog.successTitle, description: t.rental.addDialog.successDesc(name) });
@@ -138,6 +150,10 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                             <Input id="location" value={userProfile.city} readOnly disabled />
                         </div>
                      </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="address">{t.rental.addDialog.addressLabel}</Label>
+                        <Textarea id="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder={t.rental.addDialog.addressPlaceholder} />
+                    </div>
                       <div className="space-y-2">
                             <Label htmlFor="price">{t.rental.addDialog.priceLabel}</Label>
                             <div className="flex gap-2">
@@ -153,6 +169,13 @@ const AddEquipmentDialog = ({ userProfile, onEquipmentAdded }: { userProfile: Us
                                 </Select>
                             </div>
                         </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="contact">{t.rental.addDialog.contactLabel}</Label>
+                        <div className="flex items-center">
+                            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-sm text-muted-foreground">+91</span>
+                            <Input id="contact" type="tel" value={contact} onChange={(e) => setContact(e.target.value.replace(/\D/g, '').substring(0, 10))} placeholder="9876543210" className="rounded-l-none" />
+                        </div>
+                    </div>
                      <div className="space-y-2">
                         <Label htmlFor="description">{t.rental.addDialog.descriptionLabel}</Label>
                         <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t.rental.addDialog.descriptionPlaceholder} />
@@ -354,7 +377,3 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
-
-    
-
-    

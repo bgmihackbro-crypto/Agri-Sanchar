@@ -10,7 +10,8 @@ export interface Rental {
     imageUrl: string;
     price: number;
     priceUnit: 'per_hour' | 'per_day';
-    location: string;
+    location: string; // City
+    address?: string; // More specific address
     ownerId: string;
     ownerName: string;
     ownerAvatar: string;
@@ -27,6 +28,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 800,
         priceUnit: "per_hour",
         location: "Ludhiana",
+        address: "Near Jagraon Bridge, Ludhiana",
         ownerId: "user-1",
         ownerName: "Balwinder Singh",
         ownerAvatar: "https://picsum.photos/seed/wheat-field/40/40",
@@ -40,6 +42,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 2500,
         priceUnit: "per_hour",
         location: "Amritsar",
+        address: "Village near Amritsar",
         ownerId: "user-2",
         ownerName: "Gurpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-2/40/40",
@@ -53,6 +56,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 600,
         priceUnit: "per_hour",
         location: "Jalandhar",
+        address: "Main road, Jalandhar",
         ownerId: "user-3",
         ownerName: "Sukhdev Singh",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-3/40/40",
@@ -66,6 +70,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 4000,
         priceUnit: "per_day",
         location: "Patiala",
+        address: "Near Patiala city center",
         ownerId: "user-4",
         ownerName: "Manpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/tractor-purchase/40/40",
@@ -79,6 +84,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 2000,
         priceUnit: "per_day",
         location: "Ludhiana",
+        address: "Near grain market, Ludhiana",
         ownerId: "user-5",
         ownerName: "Jaswinder Singh",
         ownerAvatar: "https://picsum.photos/seed/solar-pump/40/40",
@@ -92,6 +98,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 8000,
         priceUnit: "per_day",
         location: "Bathinda",
+        address: "Farm on Bathinda-Mansa road",
         ownerId: "user-6",
         ownerName: "Sandeep Kumar",
         ownerAvatar: "https://picsum.photos/seed/drip-irrigation/40/40",
@@ -167,6 +174,3 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
-
-    
-    

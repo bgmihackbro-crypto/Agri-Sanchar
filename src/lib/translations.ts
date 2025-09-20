@@ -587,11 +587,14 @@ export const translations = {
                 fileTooLarge: "File Too Large",
                 fileTooLargeDesc: "Please upload an image smaller than 2MB.",
                 incompleteTitle: "Incomplete Details",
-                incompleteDesc: "Please fill out the name, category, price, and upload an image.",
+                incompleteDesc: "Please fill out the name, category, price, contact, and upload an image.",
                 successTitle: "Equipment Listed!",
                 successDesc: (name: string) => `Your "${name}" is now available for rent.`,
                 errorTitle: "Error",
                 errorDesc: "Could not list your equipment. Please try again.",
+                contactLabel: "Contact Number",
+                addressLabel: "Address / Pickup Location",
+                addressPlaceholder: "Enter a brief address or landmark for pickup.",
             }
         }
     },
@@ -1181,16 +1184,17 @@ export const translations = {
                 fileTooLarge: "फ़ाइल बहुत बड़ी है",
                 fileTooLargeDesc: "कृपया 2MB से छोटी छवि अपलोड करें।",
                 incompleteTitle: "अधूरा विवरण",
-                incompleteDesc: "कृपया नाम, श्रेणी, मूल्य भरें और एक छवि अपलोड करें।",
+                incompleteDesc: "कृपया नाम, श्रेणी, मूल्य, संपर्क भरें और एक छवि अपलोड करें।",
                 successTitle: "उपकरण सूचीबद्ध!",
                 successDesc: (name: string) => `आपका "${name}" अब किराए के लिए उपलब्ध है।`,
                 errorTitle: "त्रुटि",
                 errorDesc: "आपका उपकरण सूचीबद्ध नहीं किया जा सका। कृपया पुनः प्रयास करें।",
+                contactLabel: "संपर्क नंबर",
+                addressLabel: "पता / पिकअप स्थान",
+                addressPlaceholder: "पिकअप के लिए एक संक्षिप्त पता या लैंडमार्क दर्ज करें।",
             }
         }
     }
 };
 
 export type Translations = typeof translations.English;
-
-    
