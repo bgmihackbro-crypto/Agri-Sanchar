@@ -371,16 +371,25 @@ export default function PesticideGuidePage() {
                 {filteredPesticides.map((pesticide) => (
                 <Card key={pesticide.name} className="flex flex-col">
                     <CardHeader>
-                    <div className="flex items-start justify-between">
-                         <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
-                         <div className={`p-2 rounded-lg ${pesticide.color}`}>
-                            {getIcon(pesticide.type)}
-                         </div>
-                    </div>
-                    <CardDescription className="flex gap-2 pt-1">
-                        <Badge variant="outline">{pesticide.type}</Badge>
-                        <Badge variant="secondary">{pesticide.target}</Badge>
-                    </CardDescription>
+                        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mb-4 border">
+                            <Image 
+                                src={pesticide.image}
+                                alt={pesticide.name}
+                                fill
+                                className="object-cover"
+                                data-ai-hint={pesticide.imageHint}
+                            />
+                        </div>
+                        <div className="flex items-start justify-between">
+                            <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
+                            <div className={`p-2 rounded-lg ${pesticide.color}`}>
+                                {getIcon(pesticide.type)}
+                            </div>
+                        </div>
+                        <CardDescription className="flex gap-2 pt-1">
+                            <Badge variant="outline">{pesticide.type}</Badge>
+                            <Badge variant="secondary">{pesticide.target}</Badge>
+                        </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground line-clamp-3">
