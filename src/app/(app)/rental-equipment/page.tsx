@@ -226,7 +226,7 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
                         <Image src={rental.imageUrl} alt={rental.name} fill className="rounded-md object-cover" />
                     </div>
                     <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
-                     <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
                         <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
                     </div>
@@ -267,10 +267,8 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
 const RentalCard = ({ rental, t }: { rental: Rental, t: any }) => {
     return (
         <Card className="flex flex-col overflow-hidden">
-            <CardHeader className="p-0">
-                <div className="relative aspect-video">
-                    <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
-                </div>
+            <CardHeader className="p-0 relative aspect-video">
+                <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
             </CardHeader>
             <CardContent className="p-4 flex-grow">
                 <div className="flex justify-between items-start">
@@ -433,5 +431,3 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
-
-    
