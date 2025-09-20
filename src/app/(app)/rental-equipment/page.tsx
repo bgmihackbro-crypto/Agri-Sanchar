@@ -225,19 +225,19 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
                         <Image src={rental.imageUrl} alt={rental.name} fill className="rounded-md object-cover" />
                     </div>
                     <DialogTitle className="text-2xl font-headline">{rental.name}</DialogTitle>
-                    <DialogDescription className="flex items-center gap-4 pt-1">
+                    <div className="flex items-center gap-4 pt-1 text-sm text-muted-foreground">
                         <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
-                        <span className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="h-4 w-4" /> {rental.location}</span>
-                    </DialogDescription>
+                        <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
+                    </div>
                 </DialogHeader>
                 <div className="py-4 space-y-4 max-h-[50vh] overflow-y-auto pr-2">
                     <div className="space-y-1">
                         <h4 className="font-semibold">{t.rental.addDialog.descriptionLabel}</h4>
-                        <p className="text-sm text-muted-foreground">{rental.description}</p>
+                        <div className="text-sm text-muted-foreground">{rental.description}</div>
                     </div>
                      <div className="space-y-1">
                         <h4 className="font-semibold">{t.rental.addDialog.addressLabel}</h4>
-                        <p className="text-sm text-muted-foreground">{rental.address || t.profile.notSet}</p>
+                        <div className="text-sm text-muted-foreground">{rental.address || t.profile.notSet}</div>
                     </div>
                     <div className="space-y-1">
                         <h4 className="font-semibold">{t.rental.ownerTitle}</h4>
