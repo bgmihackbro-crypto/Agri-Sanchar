@@ -124,12 +124,10 @@ const DetailDialog = ({ pesticide }: { pesticide: Pesticide }) => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-headline">{pesticide.name}</DialogTitle>
-                    <DialogDescription>
-                        <div className="flex flex-wrap gap-2 py-2">
-                             <Badge className={pesticide.color}>{pesticide.type}</Badge>
-                             <Badge variant="secondary">{pesticide.target}</Badge>
-                        </div>
-                    </DialogDescription>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                            <Badge className={pesticide.color}>{pesticide.type}</Badge>
+                            <Badge variant="secondary">{pesticide.target}</Badge>
+                    </div>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
                     <p className="text-sm text-muted-foreground">{pesticide.description}</p>
