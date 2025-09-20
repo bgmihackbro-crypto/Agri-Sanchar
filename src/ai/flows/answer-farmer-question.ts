@@ -217,6 +217,40 @@ You have access to the following information (RAG). Use it to answer common ques
       - General Knowledge: Access to satellite imagery from Sentinel Hub (free) and USGS Earth Explorer (Landsat data).
       - Applications: Crop health monitoring (NDVI, EVI), and drought/flood mapping.
   </REMOTE_SENSING_DATA>
+
+  <AGRI_ECONOMICS>
+    <MSP>
+      - Definition: The Minimum Support Price (MSP) is a form of market intervention by the Government of India to insure agricultural producers against any sharp fall in farm prices.
+      - Announcement: MSP is announced by the Government of India at the beginning of the sowing season for certain crops on the basis of the recommendations of the Commission for Agricultural Costs and Prices (CACP).
+      - Objective: It is to protect the farmers from distress sales and to procure food grains for public distribution. If the market price for the commodity falls below the announced minimum price, government agencies purchase the entire quantity offered by the farmers at the announced minimum price.
+    </MSP>
+    <AGRI_MARKET>
+      - e-NAM: The Electronic National Agriculture Market (e-NAM) is a pan-India electronic trading portal which networks the existing APMC mandis to create a unified national market for agricultural commodities.
+      - APMC: Agricultural Produce Market Committees (APMCs) are marketing boards established by state governments in India to ensure farmers are not exploited by large retailers. They ensure that farm-to-retail price spread does not operate at the cost of farmers.
+    </AGRI_MARKET>
+    <SUPPLY_CHAIN>
+      - Definition: The sequence of processes involved in the production and distribution of a commodity. In agriculture, it involves farmers, processors, distributors, retailers, and consumers.
+      - Challenges: Lack of storage, inefficient transportation, involvement of multiple middlemen, and information asymmetry.
+      - Improvement: Technology like blockchain is being explored for better traceability and efficiency.
+    </SUPPLY_CHAIN>
+    <AGRI_TRADING>
+      - Futures Contracts: A futures contract is a legal agreement to buy or sell a particular commodity at a predetermined price at a specified time in the future. It is used for hedging against price risk.
+      - Commodity Exchanges: In India, exchanges like the National Commodity and Derivatives Exchange (NCDEX) and Multi Commodity Exchange (MCX) facilitate trading in agricultural commodity futures.
+    </AGRI_TRADING>
+    <COLD_STORAGE>
+      - Importance: Crucial for perishable commodities like fruits, vegetables, and flowers to reduce post-harvest losses and extend market availability.
+      - Government Schemes: The government provides subsidies and support for the establishment of cold storage facilities through schemes like the Mission for Integrated Development of Horticulture (MIDH).
+    </COLD_STORAGE>
+    <EXPORT_CROPS>
+      - Major Exports: India is a major exporter of rice (especially Basmati), spices, cotton, marine products, and buffalo meat.
+      - APEDA: The Agricultural and Processed Food Products Export Development Authority (APEDA) is the apex body that promotes the export of agricultural and processed food products from India.
+    </EXPORT_CROPS>
+    <DEMAND_FORECASTING>
+      - Definition: The process of predicting the future demand for a product. In agriculture, it helps in planning production and managing inventory.
+      - Factors: Based on historical sales data, weather forecasts, market trends, and consumer behavior.
+      - Importance: Helps in preventing price volatility and ensures food security.
+    </DEMAND_FORECASTING>
+  </AGRI_ECONOMICS>
 </RAG_KNOWLEDGE>
 
 The farmer has asked the following question:
