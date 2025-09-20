@@ -32,7 +32,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-1",
         ownerName: "Balwinder Singh",
         ownerAvatar: "https://picsum.photos/seed/wheat-field/40/40",
-        imageUrl: "https://media.istockphoto.com/id/1256742117/photo/tractor-in-the-field-stock-photo.jpg?s=1024x1024&w=is&k=20&c=H2S3J8ttmJzevXet-FXfsyFLXpei_4aXao6Fqlqr2YA=",
+        imageUrl: "https://images.unsplash.com/photo-1594736937965-1715637206ae?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Well-maintained Sonalika DI 745 III tractor. Suitable for ploughing and tilling. Available with a driver.",
         contact: "+919876543210"
     },
@@ -46,7 +46,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-2",
         ownerName: "Gurpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-2/40/40",
-        imageUrl: "https://www.deere.com.mx/assets/images/region-3/products/tractors/large/8r-series/8295r/trator_8295r_campo1_large_6ad8df214da04053ad0e1c8b8c52318c15ce8a8d.jpg",
+        imageUrl: "https://images.unsplash.com/photo-1621993429285-fad2c3a5323a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity John Deere tractor, ideal for various field operations. Book in advance for the peak season.",
         contact: "+919876543211"
     },
@@ -270,7 +270,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-18",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1599719335833-273c7371a74e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
         contact: "+919876543227"
     },
@@ -370,3 +370,5 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
+
+    
