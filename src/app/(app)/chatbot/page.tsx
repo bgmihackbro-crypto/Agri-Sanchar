@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/use-translation";
 
 type Message = {
@@ -429,5 +430,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    

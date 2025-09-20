@@ -21,11 +21,11 @@ export const useTranslation = () => {
         localStorage.setItem('selectedLanguage', lang);
     }, []);
 
+    const t = translations[language] || translations.English;
+
     return {
-        t: translations[language] as Translations,
+        t,
         setLanguage,
         language,
     };
 };
-
-    

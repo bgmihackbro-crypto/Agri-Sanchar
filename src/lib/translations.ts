@@ -25,7 +25,7 @@ export const translations = {
             invalidOtpDesc: "The OTP you entered is incorrect.",
             loginFailedTitle: "Login Failed",
             loginFailedDesc: "This phone number is not registered. Please sign up.",
-            welcomeBack: "Welcome back to Agri-Sanchar!",
+            welcomeBack: (name: string) => `Welcome back, ${name}!`,
             loginSuccess: "Login Successful",
             errorTitle: "Error",
             errorDesc: "An unexpected error occurred during login."
@@ -50,7 +50,7 @@ export const translations = {
             otpSentDesc: "Enter 123456 to sign up.",
             invalidOtpTitle: "Invalid OTP",
             invalidOtpDesc: "The OTP you entered is incorrect.",
-            welcomeTitle: "Welcome to Agri-Sanchar!",
+            welcomeTitle: (name: string) => `Welcome, ${name}!`,
             welcomeDesc: "Your account has been created. Please complete your profile.",
             signupFailedTitle: "Signup Failed",
             signupFailedDesc: "There was a problem creating your profile."
@@ -61,6 +61,17 @@ export const translations = {
             logout: "Log out",
             languageUpdated: "Language Updated",
             languageUpdatedDesc: (lang: string) => `Language has been set to ${lang}.`,
+        },
+        sidebar: {
+            dashboard: "Dashboard",
+            chatbot: "AI Chatbot",
+            detection: "Detection",
+            weather: "Weather",
+            community: "Community",
+            market: "Market Prices",
+            soil: "Soil Testing",
+            pesticide: "Pesticide Guide",
+            profile: "Profile",
         },
         dashboard: {
             tagline: "Your Digital Partner for Smart Farming",
@@ -120,7 +131,7 @@ export const translations = {
             invalidOtpDesc: "आपके द्वारा दर्ज किया गया ओटीपी गलत है।",
             loginFailedTitle: "लॉगिन विफल",
             loginFailedDesc: "यह फ़ोन नंबर पंजीकृत नहीं है। कृपया साइन अप करें।",
-            welcomeBack: "कृषि-संचार में आपका स्वागत है!",
+            welcomeBack: (name: string) => `वापसी पर स्वागत है, ${name}!`,
             loginSuccess: "लॉगिन सफल",
             errorTitle: "त्रुटि",
             errorDesc: "लॉगिन के दौरान एक अप्रत्याशित त्रुटि हुई।"
@@ -145,7 +156,7 @@ export const translations = {
             otpSentDesc: "साइन अप करने के लिए 123456 दर्ज करें।",
             invalidOtpTitle: "अमान्य ओटीपी",
             invalidOtpDesc: "आपके द्वारा दर्ज किया गया ओटीपी गलत है।",
-            welcomeTitle: "कृषि-संचार में आपका स्वागत है!",
+            welcomeTitle: (name: string) => `स्वागत है, ${name}!`,
             welcomeDesc: "आपका खाता बन गया है। कृपया अपनी प्रोफ़ाइल पूरी करें।",
             signupFailedTitle: "साइनअप विफल",
             signupFailedDesc: "आपकी प्रोफ़ाइल बनाने में कोई समस्या हुई।"
@@ -156,6 +167,17 @@ export const translations = {
             logout: "लॉग आउट",
             languageUpdated: "भाषा अपडेट की गई",
             languageUpdatedDesc: (lang: string) => `भाषा ${lang} पर सेट कर दी गई है।`,
+        },
+        sidebar: {
+            dashboard: "डैशबोर्ड",
+            chatbot: "एआई चैटबॉट",
+            detection: "पहचान",
+            weather: "मौसम",
+            community: "समुदाय",
+            market: "बाजार मूल्य",
+            soil: "मिट्टी परीक्षण",
+            pesticide: "कीटनाशक गाइड",
+            profile: "प्रोफ़ाइल",
         },
         dashboard: {
             tagline: "स्मार्ट खेती के लिए आपका डिजिटल पार्टनर",
@@ -193,5 +215,3 @@ export const translations = {
 };
 
 export type Translations = typeof translations.English;
-
-    

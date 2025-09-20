@@ -20,21 +20,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
-const links = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/chatbot", label: "AI Chatbot", icon: Bot },
-  { href: "/detection", label: "Detection", icon: Search },
-  { href: "/weather", label: "Weather", icon: CloudSun },
-  { href: "/community", label: "Community", icon: Users },
-  { href: "/market", label: "Market Prices", icon: TrendingUp },
-  { href: "/soil-testing", label: "Soil Testing", icon: FlaskConical },
-  { href: "/pesticide-guide", label: "Pesticide Guide", icon: Bug },
-  { href: "/profile", label: "Profile", icon: User },
-];
+import { useTranslation } from "@/hooks/use-translation";
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const links = [
+    { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
+    { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
+    { href: "/detection", label: t.sidebar.detection, icon: Search },
+    { href: "/weather", label: t.sidebar.weather, icon: CloudSun },
+    { href: "/community", label: t.sidebar.community, icon: Users },
+    { href: "/market", label: t.sidebar.market, icon: TrendingUp },
+    { href: "/soil-testing", label: t.sidebar.soil, icon: FlaskConical },
+    { href: "/pesticide-guide", label: t.sidebar.pesticide, icon: Bug },
+    { href: "/profile", label: t.sidebar.profile, icon: User },
+  ];
 
   return (
     <>

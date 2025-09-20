@@ -109,7 +109,7 @@ export default function SignupPage() {
         addWelcomeNotification(userProfile.name, language);
 
         toast({
-          title: t.signup.welcomeTitle,
+          title: t.signup.welcomeTitle(name),
           description: t.signup.welcomeDesc,
         });
 
@@ -202,5 +202,3 @@ export default function SignupPage() {
     </Card>
   );
 }
-
-    

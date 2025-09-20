@@ -21,10 +21,13 @@ import { useTranslation } from "@/hooks/use-translation";
 const SIMULATED_OTP = "123456";
 
 const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
+    const welcomeMessage = lang === 'Hindi' ? `वापसी पर स्वागत है, ${name}!` : `Welcome back, ${name}!`;
+    const description = lang === 'Hindi' ? "आपने कृषि-संचार में सफलतापूर्वक लॉग इन कर लिया है।" : "You have successfully logged in to Agri-Sanchar.";
+    
     const newNotification = {
         id: Date.now().toString(),
-        title: lang === 'Hindi' ? `वापसी पर स्वागत है, ${name}!` : `Welcome back, ${name}!`,
-        description: lang === 'Hindi' ? "आपने कृषि-संचार में सफलतापूर्वक लॉग इन कर लिया है।" : "You have successfully logged in to Agri-Sanchar.",
+        title: welcomeMessage,
+        description: description,
         read: false,
         timestamp: Date.now(),
     };
@@ -122,7 +125,7 @@ export default function LoginPage() {
 
         toast({
           title: t.login.loginSuccess,
-          description: t.login.welcomeBack,
+          description: t.login.welcomeBack(userProfile.name),
         });
 
         const redirectUrl = searchParams.get('redirect');
@@ -212,5 +215,3 @@ export default function LoginPage() {
     </Card>
   );
 }
-
-    
