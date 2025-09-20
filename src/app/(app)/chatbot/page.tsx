@@ -34,7 +34,7 @@ type UserProfile = {
   phone: string;
   avatar: string;
   city?: string;
-  language?: 'English' | 'Hindi';
+  language?: 'English' | 'Hindi' | 'Hinglish';
 }
 
 export default function ChatbotPage() {
@@ -86,7 +86,7 @@ export default function ChatbotPage() {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(message.content);
-    utterance.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
+    utterance.lang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
@@ -181,7 +181,7 @@ export default function ChatbotPage() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
+      recognitionRef.current.lang = userProfile?.language === 'Hindi' || userProfile?.language === 'Hinglish' ? 'hi-IN' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
           const transcript = Array.from(event.results)

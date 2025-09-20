@@ -28,7 +28,7 @@ const AnswerFarmerQuestionInputSchema = z.object({
     ),
   city: z.string().optional().describe("The farmer's city, used to provide location-specific information like local market prices."),
   returnJson: z.boolean().optional().describe('Set to true to get a direct JSON output from tools if applicable.'),
-  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi')."),
+  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi', 'Hinglish')."),
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
@@ -121,6 +121,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions. Be proactive, ask clarifying questions if needed, and offer related advice.
 
 Your response MUST be in the following language: {{{language}}}.
+If the language is 'Hinglish', you must reply in a mix of Hindi and English, using Roman script (not Devanagari). For example: "Aapki fasal ko Nitrogen ki kami lag rahi hai. Aap Urea fertilizer ka istemal kar sakte hain."
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
 

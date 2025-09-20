@@ -312,6 +312,7 @@ export default function ProfilePage() {
                   <SelectContent>
                     <SelectItem value="English">English</SelectItem>
                     <SelectItem value="Hindi">हिन्दी</SelectItem>
+                    <SelectItem value="Hinglish">Hinglish</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
