@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/hooks/use-toast";
 
 type Message = {
   id: string;
@@ -44,6 +45,7 @@ export default function ChatbotPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [nowPlayingMessageId, setNowPlayingMessageId] = useState<string | null>(null);
+  const { toast } = useToast();
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -56,35 +58,11 @@ export default function ChatbotPage() {
     const profile = savedProfile ? JSON.parse(savedProfile) : null;
     setUserProfile(profile);
     
-    // Initialize SpeechRecognition
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = false;
-        recognitionRef.current.interimResults = true;
-        // Set language from profile or default
-        recognitionRef.current.lang = profile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
-
-        recognitionRef.current.onresult = (event: any) => {
-            const transcript = Array.from(event.results)
-                .map((result: any) => result[0])
-                .map((result: any) => result.transcript)
-                .join('');
-            setInput(transcript);
-        };
-
-        recognitionRef.current.onend = () => {
-            setIsRecording(false);
-        };
-        
-        recognitionRef.current.onerror = (event: any) => {
-            console.error("Speech recognition error", event.error);
-            setIsRecording(false);
-        };
-    }
-    
     // Cleanup speech synthesis on component unmount or when navigating away
     return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
       window.speechSynthesis.cancel();
     };
 
@@ -138,6 +116,12 @@ export default function ChatbotPage() {
     e?.preventDefault();
     if ((!input.trim() && !imageFile) || isLoading) return;
 
+    // Stop any active recognition
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: "user",
@@ -186,24 +170,59 @@ export default function ChatbotPage() {
     speak(assistantMessage);
   };
 
-  const toggleRecording = () => {
-    if (isRecording) {
-      recognitionRef.current?.stop();
-      setIsRecording(false);
-      // Automatically submit when recording is stopped and there is input
-      if(input.trim() || imageFile) {
-          handleSubmit();
+  const startRecording = () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+          toast({ variant: 'destructive', title: 'Not Supported', description: "Speech recognition is not supported in your browser." });
+          return;
       }
-    } else {
-      if(recognitionRef.current) {
-        recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
-        recognitionRef.current.start();
-        setIsRecording(true);
-      } else {
-        alert("Speech recognition is not supported in your browser.");
-      }
+      
+      // Re-initialize on every start for robustness
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = userProfile?.language === 'Hindi' ? 'hi-IN' : 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+          const transcript = Array.from(event.results)
+              .map((result: any) => result[0])
+              .map((result: any) => result.transcript)
+              .join('');
+          setInput(transcript);
+      };
+      
+      recognitionRef.current.onend = () => {
+          setIsRecording(false);
+          // Auto-submit if there's text after recording stops
+          if (input.trim() || imageFile) {
+            handleSubmit();
+          }
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+          console.error("Speech recognition error", event.error);
+          toast({ variant: 'destructive', title: 'Voice Error', description: `Could not start voice recognition: ${event.error}`});
+          setIsRecording(false);
+      };
+
+      recognitionRef.current.start();
+      setIsRecording(true);
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+        recognitionRef.current.stop();
     }
   };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
 
   const removeImage = () => {
     setImageFile(null);
@@ -347,7 +366,7 @@ export default function ChatbotPage() {
               placeholder={isRecording ? "Listening..." : "Ask about crops, prices, or upload a photo..."}
               disabled={isLoading}
             />
-             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading || !recognitionRef.current} variant={isRecording ? 'destructive': 'outline'}>
+             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
                 <Mic className="h-4 w-4" />
                 <span className="sr-only">Record voice message</span>
             </Button>
