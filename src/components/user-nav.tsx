@@ -38,7 +38,7 @@ export function UserNav() {
   const router = useRouter();
   const { toast } = useToast();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const { t } = useTranslation();
+  const { t, setLanguage } = useTranslation();
 
   const updateUserProfile = () => {
     const savedProfile = localStorage.getItem("userProfile");
@@ -63,13 +63,14 @@ export function UserNav() {
       const updatedProfile = { ...userProfile, language: lang };
       setUserProfile(updatedProfile);
       localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
-      localStorage.setItem("selectedLanguage", lang); // Also update the global selector
+      setLanguage(lang);
+      
       toast({
         title: t.userNav.languageUpdated,
         description: t.userNav.languageUpdatedDesc(lang),
       });
-      // A full reload is necessary for all components to pick up the new language context
-      window.location.reload();
+      // A full reload is necessary for some deep components to pick up the new language context
+       window.location.reload();
     }
   };
 
@@ -77,7 +78,8 @@ export function UserNav() {
     try {
       await signOut(auth);
       localStorage.removeItem("userProfile");
-      router.push("/login");
+      localStorage.removeItem("selectedLanguage");
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
       // Optionally, show a toast message to the user

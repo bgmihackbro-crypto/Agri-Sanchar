@@ -48,7 +48,7 @@ const getMandiPrices = ai.defineTool(
   {
     name: 'getMandiPrices',
     description: 'Provides a list of mandi (market) prices for various crops. Can be filtered by city.',
-    inputSchema: z.object({ city: z.string().optional().describe("The city to find mandi prices for. If omitted, returns prices from across India."), returnJson: z.boolean().optional().describe("Set to true if the user wants raw JSON data.") }),
+    inputSchema: z.object({ city: z.string().optional().describe("The city to find mandi prices for. If omitted, returns prices from across India.") }),
     outputSchema: MandiPriceOutputSchema,
   },
   async ({ city }) => {
@@ -231,7 +231,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
   async (input) => {
     // If the request is for JSON price data, call the tool directly and return.
     if (input.returnJson) {
-      const priceData = await getMandiPrices({ city: input.city, returnJson: true });
+      const priceData = await getMandiPrices({ city: input.city });
       if (priceData.error) {
         return { answer: priceData.error };
       }
