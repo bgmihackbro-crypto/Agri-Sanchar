@@ -155,7 +155,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/80 backdrop-blur-sm border-green-200/50 dark:bg-green-900/80 dark:border-green-800/50">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline text-foreground">{t.login.title}</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardDescription className="text-foreground">
           {otpSent ? t.login.enterOtp : t.login.enterPhone}
         </CardDescription>
       </CardHeader>
