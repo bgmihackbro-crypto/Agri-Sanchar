@@ -129,7 +129,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
-If asked for the current date or day, use this: {{{currentDate}}}.
+If asked for the current date, day, or time, use this: {{{currentDate}}}.
 
 {{#if photoDataUri}}
 A photo has been provided. You MUST analyze this photo in the context of the user's question. If the user is asking to identify a problem (like a disease or pest), perform a step-by-step diagnosis.
@@ -232,11 +232,14 @@ const answerFarmerQuestionFlow = ai.defineFlow(
       return { answer: '', priceData: priceData.records };
     }
 
-    const currentDate = new Date().toLocaleDateString('en-US', {
+    const currentDate = new Date().toLocaleString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
     });
     
     const requestData = {
