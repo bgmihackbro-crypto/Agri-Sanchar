@@ -196,7 +196,7 @@ const initialRentalsData: NewRentalData[] = [
         price: 1500,
         priceUnit: "per_day",
         location: "Jaipur",
-        address: "Near Sanganer, Jaipur",
+        address: "Vatika Road, Jaipur",
         ownerId: "user-13",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
@@ -242,7 +242,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-16",
         ownerName: "Suresh Rao",
         ownerAvatar: "https://picsum.photos/seed/orange-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Heavy-duty 3-disc plough for primary tillage in hard and dry soil. Can break up new ground effectively.",
         contact: "+919876543225"
     },
@@ -270,7 +270,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-18",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1590425447185-5c1a7c34057e?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-mounted auger for digging holes for fencing, tree plantation, and poles. 9-inch and 12-inch bits available.",
         contact: "+919876543227"
     },
@@ -370,5 +370,7 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
+
+    
 
     
