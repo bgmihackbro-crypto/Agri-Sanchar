@@ -98,6 +98,8 @@ export const translations = {
                 market: { title: "Market Prices", description: "Fresh daily market rates, price trends, and better selling suggestions." },
                 schemes: { title: "Government Schemes", description: "Get information and updates on schemes like PM-KISAN.", badge: "New" },
                 pesticide: { title: "Pesticide Guide", description: "Accurate information and usage methods for organic and chemical pesticides." },
+                community: { title: "Community Forum", description: "Connect with farmers, ask questions, share knowledge, and build your network." },
+                soil: { title: "Soil Testing", description: "Upload soil reports, get AI analysis, and calculate fertilizer needs." },
             },
             schemeNotification: {
                 title: (scheme: string) => `New Update: ${scheme}`,
@@ -646,6 +648,8 @@ export const translations = {
                 market: { title: "बाजार मूल्य", description: "ताज़ा दैनिक बाजार दरें, मूल्य रुझान, और बेहतर बिक्री के सुझाव।" },
                 schemes: { title: "सरकारी योजनाएं", description: "पीएम-किसान जैसी योजनाओं पर जानकारी और अपडेट प्राप्त करें।", badge: "नया" },
                 pesticide: { title: "कीटनाशक गाइड", description: "जैविक और रासायनिक कीटनाशकों के लिए सटीक जानकारी और उपयोग के तरीके।" },
+                community: { title: "सामुदायिक मंच", description: "किसानों से जुड़ें, प्रश्न पूछें, ज्ञान साझा करें और अपना नेटवर्क बनाएं।" },
+                soil: { title: "मिट्टी परीक्षण", description: "मिट्टी की रिपोर्ट अपलोड करें, एआई विश्लेषण प्राप्त करें और उर्वरक की जरूरतों की गणना करें।" },
             },
              schemeNotification: {
                 title: (scheme: string) => `नई अपडेट: ${scheme}`,
@@ -967,7 +971,7 @@ export const translations = {
                 welcome: "स्वागत है!",
                 joinSuccess: (name: string) => `आप सफलतापूर्वक "${name}" समूह में शामिल हो गए हैं।`,
                 failed: "शामिल होने में विफल",
-                unexpectedError: "शामिल होने का प्रयास करते समय एक अप्रत्याशित त्रुटि हुई।",
+                unexpectedError: "शामिल होने का प्रयास करते समय एक अप्रत्याशक्षित त्रुटि हुई।",
             }
         },
         soilTesting: {

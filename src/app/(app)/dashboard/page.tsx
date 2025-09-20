@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -60,6 +60,24 @@ export default function DashboardPage() {
       description: t.dashboard.services.market.description,
       href: "/market",
       icon: TrendingUp,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+    {
+      title: t.dashboard.services.community.title,
+      description: t.dashboard.services.community.description,
+      href: "/community",
+      icon: Users,
+      badge: null,
+      badgeColor: null,
+      onClick: undefined
+    },
+     {
+      title: t.dashboard.services.soil.title,
+      description: t.dashboard.services.soil.description,
+      href: "/soil-testing",
+      icon: FlaskConical,
       badge: null,
       badgeColor: null,
       onClick: undefined
