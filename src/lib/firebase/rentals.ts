@@ -32,7 +32,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-1",
         ownerName: "Balwinder Singh",
         ownerAvatar: "https://picsum.photos/seed/wheat-field/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1625803323233-252748937397?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1563724129500-2613de406a74?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Well-maintained Sonalika DI 745 III tractor. Suitable for ploughing and tilling. Available with a driver.",
         contact: "+919876543210"
     },
@@ -46,7 +46,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-2",
         ownerName: "Gurpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1518993083190-3b957a06e1ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1627553229605-22673a31c5dd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "High-capacity W70 combine harvester, ideal for wheat and paddy. Book in advance for the harvest season.",
         contact: "+919876543211"
     },
@@ -60,7 +60,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-3",
         ownerName: "Sukhdev Singh",
         ownerAvatar: "https://picsum.photos/seed/farm-avatar-3/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1678297274438-ac7135010196?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "6-feet rotavator for seedbed preparation. Works efficiently in both dry and wet soil conditions.",
         contact: "+919876543212"
     },
@@ -74,7 +74,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-4",
         ownerName: "Manpreet Kaur",
         ownerAvatar: "https://picsum.photos/seed/tractor-purchase/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1591785366623-6d09c4812d46?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1627923769935-373809623c2c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Multi-crop planter for maize, cotton, and soybeans. Ensures uniform seed placement and spacing.",
         contact: "+919876543213"
     },
@@ -88,7 +88,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-5",
         ownerName: "Jaswinder Singh",
         ownerAvatar: "https://picsum.photos/seed/solar-pump/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1622359400204-63539943542d?q=80&w=987&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1572093417388-75c6d0e81017?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "400-liter capacity tractor-mounted boom sprayer. Suitable for large fields. Covers up to 5 acres per hour.",
         contact: "+919876543214"
     },
@@ -116,7 +116,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-7",
         ownerName: "Rajesh Sharma",
         ownerAvatar: "https://picsum.photos/seed/polyhouse/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1581489694695-883c50a1d7c3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1625803323233-252748937397?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Mini tractor, perfect for vineyards, orchards, and small farms. Compact size with powerful performance.",
         contact: "+919876543216"
     },
@@ -130,7 +130,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-8",
         ownerName: "Deepak Bose",
         ownerAvatar: "https://picsum.photos/seed/canal-water/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1627923769935-373809623c2c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1560933939-142c69993297?q=80&w=1068&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "8-row paddy transplanter, reduces labor and saves time during the critical transplanting season.",
         contact: "+919876543217"
     },
@@ -158,7 +158,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-10",
         ownerName: "Arjun Reddy",
         ownerAvatar: "https://picsum.photos/seed/kcc-card/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1618774835071-6156747b8ab3?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1581489694695-883c50a1d7c3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Reliable and powerful 42 HP tractor. Excellent for haulage and all basic farming operations.",
         contact: "+919876543219"
     },
@@ -172,7 +172,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-11",
         ownerName: "Harpreet Gill",
         ownerAvatar: "https://picsum.photos/seed/potato-crop/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1628231882126-194315c54536?q=80&w=1033&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1518993083190-3b957a06e1ce?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-operated potato digger. Efficiently digs out potatoes with minimal damage. Can cover 2-3 acres a day.",
         contact: "+919876543220"
     },
@@ -200,7 +200,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-13",
         ownerName: "Priya Singh",
         ownerAvatar: "https://picsum.photos/seed/compost/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://plus.unsplash.com/premium_photo-1678297274438-ac7135010196?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Walk-behind power tiller, diesel engine. Ideal for small to medium-sized vegetable farms and inter-culture operations.",
         contact: "+919876543222"
     },
@@ -214,7 +214,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-14",
         ownerName: "Anil Patel",
         ownerAvatar: "https://picsum.photos/seed/groundnut/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1598164746079-54165682b684?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1628231882126-194315c54536?q=80&w=1033&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Efficiently harvests groundnuts from the soil. Tractor-mounted and easy to operate.",
         contact: "+919876543223"
     },
@@ -228,7 +228,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-15",
         ownerName: "Meena Kumari",
         ownerAvatar: "https://picsum.photos/seed/onion-market/40/40",
-        imageUrl: "https://plus.unsplash.com/premium_photo-1661963958963-1283a0429712?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://plus.unsplash.com/premium_photo-1661963958963-1283a0429712?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Tractor-towed water tanker for irrigation and other farm uses. Clean and well-maintained.",
         contact: "+919876543224"
     },
@@ -242,7 +242,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-16",
         ownerName: "Suresh Rao",
         ownerAvatar: "https://picsum.photos/seed/orange-farm/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1625246332213-914806a69532?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1615826914969-968602209930?q=80&w=1031&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Heavy-duty 3-disc plough for primary tillage in hard and dry soil. Can break up new ground effectively.",
         contact: "+919876543225"
     },
@@ -256,7 +256,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-17",
         ownerName: "Dr. Vijay Singh",
         ownerAvatar: "https://picsum.photos/seed/expert-4/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1695426189912-4214f4943f77?q=80&w=1074&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1695426189912-4214f4943f77?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "Precision land leveling for water conservation and improved crop yield. Comes with a trained operator.",
         contact: "+919876543226"
     },
@@ -298,7 +298,7 @@ const initialRentalsData: NewRentalData[] = [
         ownerId: "user-20",
         ownerName: "Rakesh Kumar",
         ownerAvatar: "https://picsum.photos/seed/expert-2/40/40",
-        imageUrl: "https://images.unsplash.com/photo-1560933939-142c69993297?q=80&w=1068&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        imageUrl: "https://images.unsplash.com/photo-1627553229605-22673a31c5dd?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         description: "German-engineered Claas harvester for efficient and loss-free harvesting of multiple crops. Available for booking.",
         contact: "+919876543229"
     }
@@ -370,5 +370,7 @@ export const deleteRental = (id: string): void => {
     const updatedRentals = rentals.filter(r => r.id !== id);
     setStoredRentals(updatedRentals);
 };
+
+    
 
     
