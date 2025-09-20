@@ -246,7 +246,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                         {scheme.benefits.map((benefit, i) => (
                                                 <li key={i} className="flex items-start gap-3">
                                                     <BenefitIcon benefit={benefit} t={t} />
-                                                    <span className="text-sm text-muted-foreground">{benefit}</span>
+                                                    <span className="text-sm text-foreground">{benefit}</span>
                                                 </li>
                                         ))}
                                     </ul>
@@ -261,7 +261,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                         {scheme.eligibility.criteria.map((item, i) => (
                                             <li key={i} className="flex items-start gap-3">
                                                 <CaseUpper className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                                                <span className="text-sm text-muted-foreground">{item}</span>
+                                                <span className="text-sm text-foreground">{item}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -294,7 +294,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
                                                     <span className="font-bold text-blue-800 dark:text-blue-300 text-xs">{i + 1}</span>
                                                 </span>
                                                 <p className="font-semibold text-sm">{step.step}</p>
-                                                <p className="text-xs text-muted-foreground">{step.detail}</p>
+                                                <p className="text-xs text-foreground">{step.detail}</p>
                                             </li>
                                         ))}
                                     </ol>
