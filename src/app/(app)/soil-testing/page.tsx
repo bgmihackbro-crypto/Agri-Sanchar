@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -41,8 +41,6 @@ import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
 import { analyzeSoilReport, type SoilReportAnalysisOutput } from '@/ai/flows/analyze-soil-report';
 import { calculateFertilizer, type FertilizerCalculationOutput } from '@/ai/flows/calculate-fertilizer';
-import { findSoilLabs } from '@/ai/flows/find-soil-labs';
-import { type SoilLab } from '@/ai/types';
 import {
   Accordion,
   AccordionContent,
@@ -54,8 +52,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
-import { indianStates } from '@/lib/indian-states';
-import { indianCities } from '@/lib/indian-cities';
 
 
 type SoilReport = {
@@ -67,11 +63,6 @@ type SoilReport = {
     analysis?: SoilReportAnalysisOutput;
     analysisError?: string;
 };
-
-type UserProfile = {
-    city: string;
-    state: string;
-}
 
 
 const getStatusColor = (status: string) => {
@@ -103,64 +94,8 @@ export default function SoilTestingPage() {
   const [calculationResult, setCalculationResult] = useState<FertilizerCalculationOutput | null>(null);
   const [calculationError, setCalculationError] = useState<string | null>(null);
 
-  // State for lab finder
-  const [labState, setLabState] = useState('');
-  const [labCity, setLabCity] = useState('');
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [nearbyLabs, setNearbyLabs] = useState<SoilLab[]>([]);
-  const [isFindingLabs, setIsFindingLabs] = useState(false);
-  const [labError, setLabError] = useState<string | null>(null);
-
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  // Load user location from profile
-  useEffect(() => {
-    const profile = localStorage.getItem('userProfile');
-    if (profile) {
-      const parsed = JSON.parse(profile) as UserProfile;
-      if (parsed.state) {
-        setLabState(parsed.state);
-        const cities = indianCities[parsed.state] || [];
-        setAvailableCities(cities);
-        if (parsed.city && cities.includes(parsed.city)) {
-          setLabCity(parsed.city);
-        }
-      }
-    }
-  }, []);
-
-  // Fetch labs when location changes
-  useEffect(() => {
-    const fetchLabs = async () => {
-      if (!labState) return;
-      
-      setIsFindingLabs(true);
-      setLabError(null);
-      setNearbyLabs([]);
-
-      try {
-        const result = await findSoilLabs({ state: labState, city: labCity });
-        if (result.error) {
-          setLabError(result.error);
-        } else {
-          setNearbyLabs(result.labs);
-        }
-      } catch (err: any) {
-        setLabError(err.message || "Failed to fetch lab data.");
-      } finally {
-        setIsFindingLabs(false);
-      }
-    };
-    fetchLabs();
-  }, [labState, labCity]);
-  
-  const handleLabStateChange = (state: string) => {
-    setLabState(state);
-    setLabCity('');
-    setAvailableCities(indianCities[state] || []);
-  };
   
   const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -188,6 +123,8 @@ export default function SoilTestingPage() {
     setIsLoading(true);
     setCalculationResult(null);
     setCalculationError(null);
+    setFarmArea('');
+    setCropType('');
 
     try {
       const fileUrl = await fileToDataUri(selectedFile);
@@ -262,13 +199,6 @@ export default function SoilTestingPage() {
     return reports.find(r => r.id === activeReportId);
   }, [reports, activeReportId]);
 
-  useEffect(() => {
-    // When active report changes, clear old calculation results
-    setCalculationResult(null);
-    setCalculationError(null);
-    setFarmArea('');
-    setCropType('');
-  }, [activeReport]);
 
   const instructionSteps = [
     {
@@ -355,49 +285,16 @@ export default function SoilTestingPage() {
                         <AccordionItem value="labs">
                             <AccordionTrigger><Building className="h-4 w-4 mr-2"/>Find a Lab Near You</AccordionTrigger>
                             <AccordionContent>
-                                <div className="space-y-4 pt-2">
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <Select onValueChange={handleLabStateChange} value={labState}>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select State" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        {indianStates.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                                      </SelectContent>
-                                    </Select>
-                                    <Select onValueChange={setLabCity} value={labCity} disabled={!labState}>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select City" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        {availableCities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                  <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                                     {isFindingLabs ? (
-                                          <div className="flex items-center justify-center py-6">
-                                            <Spinner className="mr-2 h-5 w-5" />
-                                            <p className="text-sm text-muted-foreground">Finding labs...</p>
-                                          </div>
-                                      ) : labError ? (
-                                        <Alert variant="destructive" className="text-xs">
-                                          <AlertTriangle className="h-4 w-4"/>
-                                          <AlertTitle>Error</AlertTitle>
-                                          <AlertDescription>{labError}</AlertDescription>
-                                        </Alert>
-                                      ) : nearbyLabs.length > 0 ? (
-                                        nearbyLabs.map(lab => (
-                                          <div key={lab.id} className="p-3 border rounded-lg">
-                                            <p className="font-semibold">{lab.name}</p>
-                                            <p className="text-sm text-muted-foreground flex items-start gap-2 mt-1"><MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" /> {lab.address}</p>
-                                            {lab.phone && <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1"><Phone className="h-4 w-4" /> {lab.phone}</p>}
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <p className="text-sm text-center text-muted-foreground py-4">{labState ? "No labs found for the selected area." : "Please select a state to find labs."}</p>
-                                      )}
-                                  </div>
+                                <div className="space-y-3 pt-2">
+                                  <p className="text-sm text-muted-foreground">
+                                    Click the button below to find an approved soil testing lab in your area using the official government portal.
+                                  </p>
+                                   <Button variant="outline" size="sm" asChild className="w-full">
+                                      <Link href="https://soilhealth.dac.gov.in/soilTestingLabs" target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink className="mr-2 h-4 w-4" />
+                                        Search Government Portal
+                                    </Link>
+                                 </Button>
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
