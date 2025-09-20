@@ -55,6 +55,7 @@ export default function ChatbotPage() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null); // For SpeechRecognition instance
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const lastInputWasVoice = useRef(false);
 
 
   useEffect(() => {
@@ -171,6 +172,9 @@ export default function ChatbotPage() {
     if (isRecording) {
       stopRecording();
     }
+    
+    const wasVoice = lastInputWasVoice.current;
+    lastInputWasVoice.current = false; // Reset for next message
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -216,8 +220,10 @@ export default function ChatbotPage() {
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
     
-    // Automatically speak the new assistant message
-    speak(assistantMessage);
+    // Automatically speak if the user's input was voice
+    if (wasVoice) {
+      speak(assistantMessage);
+    }
   };
 
   const startRecording = () => {
@@ -244,6 +250,7 @@ export default function ChatbotPage() {
           setIsRecording(false);
           // Auto-submit if there's text after recording stops
           if (input.trim() || imageFile) {
+            lastInputWasVoice.current = true; // Mark input as voice
             setTimeout(() => handleSubmit(), 100);
           }
       };
