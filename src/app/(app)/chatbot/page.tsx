@@ -162,6 +162,7 @@ export default function ChatbotPage() {
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
+      // This is a typed submission
       lastInputWasVoice.current = false;
     }
 
@@ -231,6 +232,7 @@ export default function ChatbotPage() {
         recognitionRef.current.stop();
         recognitionRef.current = null;
       }
+
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
@@ -246,7 +248,6 @@ export default function ChatbotPage() {
       
       recognitionRef.current.onend = () => {
           setIsRecording(false);
-          recognitionRef.current = null;
           // Auto-submit after recording stops and there's text
           // Using a timeout to ensure the final 'input' state is set
           setTimeout(() => {
@@ -262,7 +263,6 @@ export default function ChatbotPage() {
           console.error("Speech recognition error", event.error);
           toast({ variant: 'destructive', title: t.chatbot.voiceError, description: `${t.chatbot.voiceErrorDesc}${event.error}`});
           setIsRecording(false);
-          recognitionRef.current = null;
       };
 
       recognitionRef.current.start();
