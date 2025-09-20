@@ -267,9 +267,9 @@ const RentalDetailDialog = ({ rental, t }: { rental: Rental, t: any }) => {
 const RentalCard = ({ rental, t }: { rental: Rental, t: any }) => {
     return (
         <Card className="flex flex-col overflow-hidden">
-            <CardHeader className="p-0 relative aspect-video">
+             <div className="relative aspect-video">
                 <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
-            </CardHeader>
+            </div>
             <CardContent className="p-4 flex-grow">
                 <div className="flex justify-between items-start">
                     <Badge variant="secondary" className="flex items-center gap-1.5"><Tractor className="h-3 w-3"/>{rental.category}</Badge>
@@ -431,3 +431,5 @@ export default function RentalEquipmentPage() {
     </div>
   );
 }
+
+    
