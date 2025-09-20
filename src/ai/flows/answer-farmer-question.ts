@@ -47,8 +47,8 @@ const MandiPriceOutputSchema = z.object({
 const getMandiPrices = ai.defineTool(
   {
     name: 'getMandiPrices',
-    description: 'Provides a list of nearby mandi (market) prices for various crops for a given city.',
-    inputSchema: z.object({ city: z.string().describe("The farmer's city to find nearby mandi prices for.") }),
+    description: 'Provides a list of mandi (market) prices for various crops. Can be filtered by city.',
+    inputSchema: z.object({ city: z.string().optional().describe("The city to find mandi prices for. If omitted, returns prices from across India.") }),
     outputSchema: MandiPriceOutputSchema,
   },
   async ({ city }) => {
@@ -57,8 +57,12 @@ const getMandiPrices = ai.defineTool(
       return { error: 'Sorry, the real-time market data API is not configured. Please add the API key to the .env file.' };
     }
 
-    const encodedCity = encodeURIComponent(city);
-    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&filters[market]=${encodedCity}&limit=20`;
+    let url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${apiKey}&format=json&limit=100`;
+
+    if (city) {
+      const encodedCity = encodeURIComponent(city);
+      url += `&filters[market]=${encodedCity}`;
+    }
 
     try {
       const response = await fetch(url);
@@ -68,19 +72,26 @@ const getMandiPrices = ai.defineTool(
       const data = await response.json();
 
       if (!data.records || data.records.length === 0) {
-        return { error: `Sorry, I could not find real-time mandi prices for ${city} at the moment. Please try another nearby city.` };
+        const errorMessage = city 
+            ? `Sorry, I could not find real-time mandi prices for ${city} at the moment. Please try another nearby city.`
+            : `Sorry, I could not find any real-time mandi prices at the moment.`;
+        return { error: errorMessage };
       }
 
       const priceRecords = data.records.map((rec: any) => ({
         commodity: rec.commodity,
         modal_price: rec.modal_price,
+        market: rec.market, // Include market name in the response
       }));
 
       return { records: priceRecords };
 
     } catch (error) {
       console.error('Error fetching mandi prices:', error);
-      return { error: `Sorry, I was unable to fetch real-time market data for ${city}. There might be a connection or configuration issue.` };
+      const errorMessage = city 
+        ? `Sorry, I was unable to fetch real-time market data for ${city}. There might be a connection or configuration issue.`
+        : `Sorry, I was unable to fetch real-time market data. There might be a connection or configuration issue.`
+      return { error: errorMessage };
     }
   }
 );
@@ -123,7 +134,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
 Your response MUST be in the following language: {{{language}}}.
 If the language is 'Hindi', you must reply in Devanagari script.
 
-When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON.
+When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON. If the data includes the market, include that in the table.
 
 If asked for the current date or day, use this: {{{currentDate}}}.
 
@@ -200,6 +211,8 @@ The farmer has asked the following question:
 
 {{#if city}}
 The farmer is from '{{city}}'. If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool with the farmer's city to provide local market information. If the question is about weather, use the 'getWeather' tool.
+{{else}}
+If the question is about market prices, crop rates, or selling produce, use the 'getMandiPrices' tool to provide market information. You can ask for a city if more specific information is needed.
 {{/if}}
 
 If the question is about government schemes or general crop information, use your RAG_KNOWLEDGE first before searching online or using other tools.
@@ -218,7 +231,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
   },
   async (input) => {
     // If the request is for JSON price data, call the tool directly and return.
-    if (input.returnJson && input.city) {
+    if (input.returnJson) {
       const priceData = await getMandiPrices({ city: input.city });
       if (priceData.error) {
         return { answer: priceData.error };
@@ -249,3 +262,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
+
+    

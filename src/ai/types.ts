@@ -4,6 +4,7 @@ import {z} from 'zod';
 export const PriceRecordSchema = z.object({
     commodity: z.string(),
     modal_price: z.string(),
+    market: z.string().optional(),
 });
 export type PriceRecord = z.infer<typeof PriceRecordSchema>;
 
@@ -71,4 +72,6 @@ export const SoilLabSchema = z.object({
   phone: z.string().optional(),
 });
 export type SoilLab = z.infer<typeof SoilLabSchema>;
+    
+
     
