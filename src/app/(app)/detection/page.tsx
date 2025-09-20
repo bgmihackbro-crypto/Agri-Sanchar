@@ -60,6 +60,11 @@ export default function DetectionPage() {
       } catch (error) {
         console.error("Error accessing camera:", error);
         setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: t.detection.cameraDenied,
+          description: t.detection.cameraDeniedDesc,
+        });
       }
     };
 
