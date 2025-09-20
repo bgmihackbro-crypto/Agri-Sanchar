@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "@/hooks/use-translation";
 
 export default function DetectionPage() {
   const [question, setQuestion] = useState("");
@@ -25,6 +26,7 @@ export default function DetectionPage() {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<{name: string, avatar: string} | null>(null);
+  const { t } = useTranslation();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -43,8 +45,8 @@ export default function DetectionPage() {
         setHasCameraPermission(false);
         toast({
             variant: "destructive",
-            title: "Camera Not Supported",
-            description: "Your browser does not support camera access.",
+            title: t.detection.cameraNotSupported,
+            description: t.detection.cameraNotSupportedDesc,
         });
         return;
       }
@@ -60,8 +62,8 @@ export default function DetectionPage() {
         setHasCameraPermission(false);
         toast({
           variant: "destructive",
-          title: "Camera Access Denied",
-          description: "Please enable camera permissions in your browser settings.",
+          title: t.detection.cameraDenied,
+          description: t.detection.cameraDeniedDesc,
         });
       }
     };
@@ -74,7 +76,7 @@ export default function DetectionPage() {
             stream.getTracks().forEach(track => track.stop());
         }
     }
-  }, [toast]);
+  }, [toast, t]);
 
   const handleCapture = () => {
     if (videoRef.current && canvasRef.current) {
@@ -96,7 +98,7 @@ export default function DetectionPage() {
     setIsLoading(true);
     setAnalysis(null);
 
-    const fullQuestion = question || "What is wrong with this plant? Analyze the image.";
+    const fullQuestion = question || t.detection.defaultQuestion;
 
     try {
       const response = await answerFarmerQuestion({
@@ -109,8 +111,8 @@ export default function DetectionPage() {
       console.error("AI Error:", error);
       toast({
         variant: "destructive",
-        title: "Analysis Failed",
-        description: "An error occurred while communicating with the AI. Please try again.",
+        title: t.detection.analysisFailed,
+        description: t.detection.analysisError,
       });
     } finally {
       setIsLoading(false);
@@ -126,9 +128,9 @@ export default function DetectionPage() {
   return (
     <div className="space-y-6">
        <div>
-        <h1 className="text-3xl font-bold font-headline">Pest & Disease Detection</h1>
+        <h1 className="text-3xl font-bold font-headline">{t.detection.title}</h1>
         <p className="text-muted-foreground">
-          Use your camera to get an instant AI-powered diagnosis.
+          {t.detection.description}
         </p>
       </div>
       
@@ -147,9 +149,9 @@ export default function DetectionPage() {
                  { hasCameraPermission === false && (
                     <div className="absolute inset-0 flex items-center justify-center p-4">
                         <Alert variant="destructive">
-                        <AlertTitle>Camera Access Required</AlertTitle>
+                        <AlertTitle>{t.detection.cameraRequired}</AlertTitle>
                         <AlertDescription>
-                            Please allow camera access to use this feature.
+                            {t.detection.cameraRequiredDesc}
                         </AlertDescription>
                         </Alert>
                     </div>
@@ -164,12 +166,12 @@ export default function DetectionPage() {
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full"
                   >
                   <Camera className="mr-2 h-4 w-4" />
-                  Take a Photo
+                  {t.detection.captureButton}
                 </Button>
               ) : (
                 <Button onClick={reset} variant="outline">
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  Take New Photo
+                  {t.detection.retakeButton}
                 </Button>
               )}
             </div>
@@ -186,18 +188,18 @@ export default function DetectionPage() {
                     <Input
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="Optional: Ask a specific question..."
+                      placeholder={t.detection.inputPlaceholder}
                       disabled={isLoading || !capturedImage}
                     />
-                     <p className="text-xs text-muted-foreground mt-1">For example, "Why are the leaves yellow?"</p>
+                     <p className="text-xs text-muted-foreground mt-1">{t.detection.inputExample}</p>
                   </div>
                 </div>
                 
                 <Button type="submit" className="w-full" disabled={isLoading || !capturedImage}>
                   {isLoading ? (
-                    <><Spinner className="mr-2 h-4 w-4 animate-spin" /> Analyzing...</>
+                    <><Spinner className="mr-2 h-4 w-4 animate-spin" /> {t.detection.analyzing}</>
                   ) : (
-                    <><Send className="mr-2 h-4 w-4" /> Get AI Analysis</>
+                    <><Send className="mr-2 h-4 w-4" /> {t.detection.submitButton}</>
                   )}
                 </Button>
               </form>
@@ -211,11 +213,11 @@ export default function DetectionPage() {
                       </div>
                     </Avatar>
                     <div className="flex-1 space-y-2">
-                        <p className="font-semibold text-primary">AI Expert Analysis</p>
+                        <p className="font-semibold text-primary">{t.detection.aiAnalysisTitle}</p>
                         {isLoading && !analysis ? (
                              <div className="flex items-center gap-2 text-muted-foreground">
                                 <Spinner className="h-4 w-4 animate-spin" />
-                                <span>Thinking...</span>
+                                <span>{t.detection.aiThinking}</span>
                             </div>
                         ) : (
                             <div className="prose prose-sm max-w-none text-foreground/90 whitespace-pre-wrap">{analysis}</div>
