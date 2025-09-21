@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,8 +43,7 @@ const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     }
 };
 
-
-export default function LoginPage() {
+function LoginFormComponent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -215,5 +214,13 @@ export default function LoginPage() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="w-full max-w-sm h-[420px] flex items-center justify-center"><Spinner className="h-8 w-8 text-white"/></div>}>
+            <LoginFormComponent />
+        </Suspense>
+    )
 }

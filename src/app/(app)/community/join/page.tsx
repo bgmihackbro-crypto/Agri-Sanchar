@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,9 +19,9 @@ type UserProfile = {
     avatar: string;
 };
 
-// The page now accepts searchParams as a prop, which is the standard way in the App Router.
-export default function JoinPage({ searchParams }: { searchParams: { group: string } }) {
+function JoinGroupComponent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { toast } = useToast();
     const { t } = useTranslation();
 
@@ -31,7 +31,7 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
     const [isJoining, setIsJoining] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const groupId = searchParams.group;
+    const groupId = searchParams.get('group');
 
     useEffect(() => {
         const profile = localStorage.getItem("userProfile");
@@ -150,4 +150,11 @@ export default function JoinPage({ searchParams }: { searchParams: { group: stri
     );
 }
 
-    
+// The default export now wraps the main component in Suspense
+export default function JoinPage() {
+    return (
+        <Suspense fallback={<div className="flex h-full items-center justify-center"><Spinner className="h-8 w-8" /></div>}>
+            <JoinGroupComponent />
+        </Suspense>
+    );
+}
