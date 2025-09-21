@@ -236,7 +236,7 @@ export default function ProfilePage() {
                   id="farmerId"
                   value={profile.farmerId}
                   readOnly
-                  className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none bg-muted font-mono"
+                  className="bg-muted text-muted-foreground font-mono"
                 />
               </div>
             </div>
@@ -351,7 +351,7 @@ export default function ProfilePage() {
                   id="phone"
                   value={profile.phone.replace('+91','')}
                   readOnly
-                  className="text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 border-0 shadow-none bg-muted"
+                  className="bg-muted text-muted-foreground"
                 />
               </div>
             </div>

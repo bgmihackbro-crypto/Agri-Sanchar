@@ -38,6 +38,13 @@ const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     }
 };
 
+const generateFarmerId = () => {
+    const part1 = Math.floor(1000 + Math.random() * 9000).toString();
+    const part2 = Math.floor(1000 + Math.random() * 9000).toString();
+    return `AS-${part1}-${part2}`;
+};
+
+
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -91,12 +98,14 @@ export default function SignupPage() {
     try {
       // Simulate creating a user. Use phone number to create a unique-ish ID for demo purposes.
       const mockUserId = `sim-${phone}`;
+      const farmerId = generateFarmerId();
+
 
       const userProfile: UserProfile = {
-        farmerId: mockUserId,
+        farmerId: farmerId,
         name: name,
         phone: `+91${phone}`,
-        avatar: `https://picsum.photos/seed/${mockUserId}/100/100`,
+        avatar: `https://picsum.photos/seed/${farmerId}/100/100`,
         farmSize: "",
         city: "",
         state: "",
