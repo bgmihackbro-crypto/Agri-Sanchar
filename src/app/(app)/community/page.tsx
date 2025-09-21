@@ -54,7 +54,7 @@ const initialPostsData = [
     title: "What is this on my wheat crop?",
     content:
       "My wheat crop is showing yellow spots on the leaves. What could be the issue? I've attached a photo.",
-    image: "https://images.unsplash.com/photo-1616896221413-03a27a1572c6?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1437252611977-07f74518abd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3aGVhdHxlbnwwfHx8fDE3NTg0NjMyMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "wheat disease",
     mediaType: 'image',
     likes: 12,
@@ -74,7 +74,7 @@ const initialPostsData = [
     time: "5 hours ago",
     title: "Healthy rice paddy this season!",
     content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
-    image: "https://images.unsplash.com/photo-1536365113745-a73e6e873d60?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1562918105-15a13eef89ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyaWNlJTIwcGFkZHl8ZW58MHx8fHwxNzU4NDY2OTE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "rice paddy",
     mediaType: 'image',
     likes: 28,
@@ -93,7 +93,7 @@ const initialPostsData = [
     time: "1 day ago",
     title: "Advice on buying a new tractor?",
     content: "I'm planning to buy a new tractor for my 15-acre farm. Any recommendations on brands or models? My budget is around \u20B96 lakh.",
-    image: 'https://images.unsplash.com/photo-1563724129500-2613de406a74?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    image: 'https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0cmFjdG9yfGVufDB8fHx8MTc1ODM3Njk0NHww&ixlib=rb-4.1.0&q=80&w=1080',
     mediaType: 'image',
     imageHint: 'new tractor',
     likes: 18,
@@ -127,7 +127,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Has anyone used the PM-KUSUM scheme for solar pumps?",
     content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
-    image: "https://images.unsplash.com/photo-1620548103387-a253a65a7f92?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1650530224334-476083f65bdd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNnx8c29sYXIlMjBwdW1wfGVufDB8fHx8MTc1ODQ2OTQyNHww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "solar water pump",
     mediaType: 'image',
     likes: 31,
@@ -144,7 +144,7 @@ const initialPostsData = [
     time: "4 days ago",
     title: "New potato variety showing good results.",
     content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
-    image: "https://images.unsplash.com/photo-1596421327113-a421b44b826b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1675501344642-92d35d90fe51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb3RhdG98ZW58MHx8fHwxNzU4MzU5Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "potato harvest",
     mediaType: 'image',
     likes: 52,
@@ -179,7 +179,7 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Drip irrigation saved my cotton crop",
     content: "With the low rainfall this year, the drip irrigation system I installed was a lifesaver for my cotton crop. It used much less water and the yield was not affected. Highly recommend it.",
-    image: "https://images.unsplash.com/photo-1617833419017-2195e282572b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1502395809857-fd80069897d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3R0b258ZW58MHx8fHwxNzU4NDY4ODcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "cotton crop",
     mediaType: 'image',
     likes: 68,
@@ -196,7 +196,7 @@ const initialPostsData = [
     time: "1 day ago",
     title: "Whitefly problem in my cotton crop",
     content: "My cotton plants are infested with whiteflies. They are causing the leaves to turn yellow and sticky. What is the best way to control them organically?",
-    image: "https://images.unsplash.com/photo-1620138343118-d75b8e93f615?q=80&w=1067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1712471010183-8c30c4511467?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3R0b24lMjBjcm9wfGVufDB8fHx8MTc1ODQ2OTUyMHww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "cotton pest",
     mediaType: 'image',
     likes: 22,
@@ -213,7 +213,7 @@ const initialPostsData = [
     time: "2 days ago",
     title: "Thinking of switching to floriculture. Good idea?",
     content: "I have a 2-acre plot and I am considering growing marigolds instead of vegetables. Is the market good for flowers in Bengaluru? What are the risks?",
-    image: "https://images.unsplash.com/photo-1596837782637-238d6414778c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1672164977194-670e6a25cca7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHwlMjBmbG9yaWN1bHR1cmV8ZW58MHx8fHwxNzU4NDY5NTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "marigold farm",
     mediaType: 'image',
     likes: 35,
@@ -230,7 +230,7 @@ const initialPostsData = [
     time: "3 days ago",
     title: "Subsidy on polyhouse construction?",
     content: "Does anyone know if there is a government subsidy available for constructing a polyhouse in Maharashtra? I want to grow high-value vegetables.",
-    image: "https://plus.unsplash.com/premium_photo-1678297274438-ac7135010196?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1612682039455-48c7c1d5192e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxM3x8cG9seSUyMGhvdXNlfGVufDB8fHx8MTc1ODQ2OTU5Mnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "polyhouse farming",
     mediaType: 'image',
     likes: 41,
@@ -282,7 +282,7 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Is vermicompost better than cow dung manure?",
     content: "I have been using cow dung manure for a long time. I hear a lot about vermicompost now. Is it really better? What are the benefits and costs?",
-    image: "https://images.unsplash.com/photo-1601758123926-4cf3398cde8a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODQ2OTY4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "vermicompost",
     mediaType: 'image',
     likes: 33,
@@ -299,7 +299,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "Canal water schedule for this month?",
     content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1620138343118-d75b8e93f615?q=80&w=1067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1688987742688-d32fde871a25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "jute irrigation",
     mediaType: 'image',
     likes: 15,
@@ -316,7 +316,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "How to control stem borer in sugarcane?",
     content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1550983649-654e22464150?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1585155113372-6c1808141bf3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdWdhciUyMGNhbmV8ZW58MHx8fHwxNzU4NDY5Nzc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "sugarcane pest",
     mediaType: 'image',
     likes: 29,
@@ -1265,7 +1265,7 @@ export default function CommunityPage() {
 
 
        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto pb-1">
                 <TabsList className="grid w-full grid-cols-4 min-w-[500px]">
                     <TabsTrigger value="home">{t.community.tabs.home}</TabsTrigger>
                     <TabsTrigger value="myposts">{t.community.tabs.myPosts} ({myPosts.length})</TabsTrigger>
@@ -1406,5 +1406,6 @@ export default function CommunityPage() {
     
 
     
+
 
 
