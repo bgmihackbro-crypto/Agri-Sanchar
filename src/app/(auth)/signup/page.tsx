@@ -56,11 +56,13 @@ export default function SignupPage() {
   const { t, language, setLanguage } = useTranslation();
 
   useEffect(() => {
-    const lang = localStorage.getItem('selectedLanguage');
-    if (lang === 'Hindi') {
-        setLanguage('Hindi');
-    } else {
-        setLanguage('English');
+    if (typeof window !== 'undefined') {
+        const lang = localStorage.getItem('selectedLanguage');
+        if (lang === 'Hindi') {
+            setLanguage('Hindi');
+        } else {
+            setLanguage('English');
+        }
     }
   }, [setLanguage]);
 
@@ -216,4 +218,3 @@ export default function SignupPage() {
     </Card>
   );
 }
-

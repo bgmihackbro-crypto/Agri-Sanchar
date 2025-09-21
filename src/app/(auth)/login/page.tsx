@@ -55,11 +55,13 @@ export default function LoginPage() {
   const { t, language, setLanguage } = useTranslation();
   
   useEffect(() => {
-    const lang = localStorage.getItem('selectedLanguage');
-    if (lang === 'Hindi') {
-        setLanguage('Hindi');
-    } else {
-        setLanguage('English');
+    if (typeof window !== 'undefined') {
+        const lang = localStorage.getItem('selectedLanguage');
+        if (lang === 'Hindi') {
+            setLanguage('Hindi');
+        } else {
+            setLanguage('English');
+        }
     }
   }, [setLanguage]);
 
