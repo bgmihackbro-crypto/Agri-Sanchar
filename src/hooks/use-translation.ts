@@ -6,6 +6,7 @@ import { translations, type Translations } from '@/lib/translations';
 
 export const useTranslation = () => {
     const [language, setLanguageState] = useState<'English' | 'Hindi'>('English');
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         const storedLang = localStorage.getItem('selectedLanguage');
@@ -14,6 +15,7 @@ export const useTranslation = () => {
         } else {
             setLanguageState('English');
         }
+        setIsLoaded(true);
     }, []);
 
     const setLanguage = useCallback((lang: 'English' | 'Hindi') => {
@@ -21,7 +23,8 @@ export const useTranslation = () => {
         localStorage.setItem('selectedLanguage', lang);
     }, []);
 
-    const t = translations[language] || translations.English;
+    // Return default translations until the language is loaded from localStorage
+    const t = isLoaded ? (translations[language] || translations.English) : translations.English;
 
     return {
         t,
