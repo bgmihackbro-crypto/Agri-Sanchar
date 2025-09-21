@@ -74,7 +74,7 @@ const initialPostsData = [
     time: "5 hours ago",
     title: "Healthy rice paddy this season!",
     content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
-    image: "https://images.unsplash.com/photo-1536365113745-a73e6e873d60?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1536365113745-a73e6e873d60?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     imageHint: "rice paddy",
     mediaType: 'image',
     likes: 28,
@@ -1410,3 +1410,6 @@ export default function CommunityPage() {
 
 
 
+
+
+    
