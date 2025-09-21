@@ -1067,7 +1067,7 @@ export default function CommunityPage() {
                 id: userProfile.farmerId,
                 name: userProfile.name,
                 avatar: userProfile.avatar,
-                specialization: "User Provided Expert/NGO", // Or a more specific field if you add it to the profile
+                specialization: userProfile.specialization || "User Provided Expert/NGO",
                 location: userProfile.city,
                 contact: userProfile.phone,
                 type: userProfile.userType,
@@ -1265,12 +1265,14 @@ export default function CommunityPage() {
 
 
        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="home">{t.community.tabs.home}</TabsTrigger>
-                <TabsTrigger value="myposts">{t.community.tabs.myPosts} ({myPosts.length})</TabsTrigger>
-                <TabsTrigger value="local">{t.community.tabs.groups}</TabsTrigger>
-                <TabsTrigger value="experts">{t.community.tabs.experts}</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto">
+                <TabsList className="grid w-full grid-cols-4 min-w-[500px]">
+                    <TabsTrigger value="home">{t.community.tabs.home}</TabsTrigger>
+                    <TabsTrigger value="myposts">{t.community.tabs.myPosts} ({myPosts.length})</TabsTrigger>
+                    <TabsTrigger value="local">{t.community.tabs.groups}</TabsTrigger>
+                    <TabsTrigger value="experts">{t.community.tabs.experts}</TabsTrigger>
+                </TabsList>
+            </div>
             <TabsContent value="home" className="pt-4">
                 {filteredPosts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1404,4 +1406,5 @@ export default function CommunityPage() {
     
 
     
+
 
