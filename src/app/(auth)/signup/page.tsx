@@ -105,6 +105,7 @@ export default function SignupPage() {
         age: "",
         dob: "",
         gender: "",
+        userType: 'farmer',
       };
 
       await setUserProfile(mockUserId, userProfile);

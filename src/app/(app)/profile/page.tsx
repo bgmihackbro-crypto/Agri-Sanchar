@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, Save, Check, Upload, Hash, CalendarIcon, Languages } from "lucide-react";
+import { Edit, Save, Check, Upload, Hash, CalendarIcon, Languages, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -55,6 +55,7 @@ export default function ProfilePage() {
     age: "",
     dob: "",
     language: "English",
+    userType: "farmer",
   });
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
@@ -106,6 +107,10 @@ export default function ProfilePage() {
   
    const handleLanguageChange = (value: 'English' | 'Hindi') => {
     setProfile((prev) => ({ ...prev, language: value }));
+  };
+
+  const handleUserTypeChange = (value: 'farmer' | 'expert' | 'ngo') => {
+    setProfile((prev) => ({ ...prev, userType: value }));
   };
   
   const handleDobChange = (date: Date | undefined) => {
@@ -246,6 +251,23 @@ export default function ProfilePage() {
               />
             </div>
              <div className="space-y-2">
+              <Label htmlFor="userType">I am a...</Label>
+              {isEditing ? (
+                 <Select onValueChange={(v) => handleUserTypeChange(v as any)} value={profile.userType}>
+                  <SelectTrigger id="userType" className="capitalize">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="farmer">Farmer</SelectItem>
+                    <SelectItem value="expert">Expert</SelectItem>
+                    <SelectItem value="ngo">NGO</SelectItem>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input id="userType" value={profile.userType} readOnly={true} className="capitalize" />
+              )}
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="dob">{t.profile.dob}</Label>
                {isEditing ? (
                   <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>

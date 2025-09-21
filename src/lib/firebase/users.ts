@@ -15,6 +15,7 @@ export interface UserProfile {
     age: string;
     dob: string;
     language: 'English' | 'Hindi';
+    userType: 'farmer' | 'expert' | 'ngo';
 }
 
 // In-memory/localStorage cache for user profiles to support simulation
@@ -70,7 +71,7 @@ export const updateUserProfile = async (userId: string, updates: Partial<UserPro
     } else {
         // In a real app, you might throw an error or handle this case differently.
         // For simulation, we can just create it if it doesn't exist.
-        const newProfileData = {
+        const newProfileData: UserProfile = {
              farmerId: userId,
              name: '',
              phone: '',
@@ -83,6 +84,7 @@ export const updateUserProfile = async (userId: string, updates: Partial<UserPro
              age: '',
              dob: '',
              language: 'English' as const,
+             userType: 'farmer' as const,
              ...updates,
         };
         await setUserProfile(userId, newProfileData);
