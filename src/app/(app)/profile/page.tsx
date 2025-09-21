@@ -56,6 +56,8 @@ export default function ProfilePage() {
     dob: "",
     language: "English",
     userType: "farmer",
+    specialization: "",
+    organization: "",
   });
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
@@ -149,7 +151,7 @@ export default function ProfilePage() {
     setIsEditing(false);
     
     try {
-      // Use the farmerId from the profile state directly
+      // Use the farmerId to find the mock user ID
       const mockUserId = `sim-${profile.phone.replace('+91', '')}`;
       await updateUserProfile(mockUserId, profile);
       localStorage.setItem("userProfile", JSON.stringify(profile));
@@ -369,16 +371,61 @@ export default function ProfilePage() {
                 <Input id="language" value={profile.language === 'Hindi' ? t.profile.hindi : t.profile.english} readOnly={true} />
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="farmSize">{t.profile.farmSize}</Label>
-              <Input
-                id="farmSize"
-                value={profile.farmSize}
-                readOnly={!isEditing}
-                onChange={handleInputChange}
-                placeholder={t.profile.farmSizePlaceholder}
-              />
-            </div>
+
+            {profile.userType === 'farmer' ? (
+                <>
+                    <div className="space-y-2">
+                    <Label htmlFor="farmSize">{t.profile.farmSize}</Label>
+                    <Input
+                        id="farmSize"
+                        value={profile.farmSize}
+                        readOnly={!isEditing}
+                        onChange={handleInputChange}
+                        placeholder={t.profile.farmSizePlaceholder}
+                    />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="annualIncome">{t.profile.income}</Label>
+                    <div className="flex items-center gap-2">
+                        <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+                        ₹
+                        </span>
+                        <Input
+                        id="annualIncome"
+                        value={profile.annualIncome}
+                        readOnly={!isEditing}
+                        onChange={handleInputChange}
+                        placeholder={t.profile.incomePlaceholder}
+                        />
+                    </div>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className="space-y-2">
+                        <Label htmlFor="specialization">Specialization</Label>
+                        <Input
+                            id="specialization"
+                            value={profile.specialization}
+                            readOnly={!isEditing}
+                            onChange={handleInputChange}
+                            placeholder={profile.userType === 'expert' ? "e.g., Agronomy" : "e.g., Water Conservation"}
+                        />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="organization">Organization</Label>
+                        <Input
+                            id="organization"
+                            value={profile.organization}
+                            readOnly={!isEditing}
+                            onChange={handleInputChange}
+                            placeholder={profile.userType === 'expert' ? "e.g., Punjab Agricultural University" : "e.g., My NGO Name"}
+                        />
+                    </div>
+                </>
+            )}
+
+
             <div className="space-y-2">
               <Label htmlFor="state">{t.profile.state}</Label>
               {isEditing ? (
@@ -432,21 +479,7 @@ export default function ProfilePage() {
                 />
               )}
             </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="annualIncome">{t.profile.income}</Label>
-               <div className="flex items-center gap-2">
-                <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
-                  ₹
-                </span>
-                <Input
-                  id="annualIncome"
-                  value={profile.annualIncome}
-                  readOnly={!isEditing}
-                  onChange={handleInputChange}
-                  placeholder={t.profile.incomePlaceholder}
-                />
-              </div>
-            </div>
+            
           </div>
         </CardContent>
         {isEditing && (
@@ -465,4 +498,3 @@ export default function ProfilePage() {
   );
 }
 
-    

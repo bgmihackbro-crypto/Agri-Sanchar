@@ -16,6 +16,8 @@ export interface UserProfile {
     dob: string;
     language: 'English' | 'Hindi';
     userType: 'farmer' | 'expert' | 'ngo';
+    specialization?: string;
+    organization?: string;
 }
 
 // In-memory/localStorage cache for user profiles to support simulation
