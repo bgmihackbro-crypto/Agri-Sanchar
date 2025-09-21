@@ -66,9 +66,6 @@ export default function MarketPricesPage() {
           fetchPrices(userCity);
         }
       }
-    } else {
-        // Default to all India if no profile
-        fetchPrices(null);
     }
   }, []);
 
@@ -79,13 +76,17 @@ export default function MarketPricesPage() {
     setError(null);
     setIsAllIndia(city === null);
 
-    const locationForRequest = city === 'all' ? null : city;
-    const locationName = locationForRequest || t.market.allIndia;
+    const locationForRequest = city;
+    if (!locationForRequest) {
+        setIsLoading(false);
+        return;
+    }
+    const locationName = locationForRequest;
 
     try {
       // 1. Fetch current prices
       const response = await answerFarmerQuestion({
-        question: `Get prices for ${locationForRequest || 'India'}`,
+        question: `Get prices for ${locationForRequest}`,
         city: locationForRequest || undefined,
         returnJson: true,
       });
@@ -160,11 +161,7 @@ export default function MarketPricesPage() {
 
   const handleCityChange = (value: string) => {
     setSelectedCity(value);
-    if (value === 'all') {
-        fetchPrices(null);
-    } else {
-        fetchPrices(value);
-    }
+    fetchPrices(value);
   };
   
   const getSuggestionBadge = (suggestion?: string) => {
@@ -220,7 +217,6 @@ export default function MarketPricesPage() {
               <SelectValue placeholder={t.market.cityPlaceholder} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t.market.allIndia}</SelectItem>
               {availableCities.map((city) => (
                 <SelectItem key={city} value={city}>
                   {city}
@@ -231,11 +227,11 @@ export default function MarketPricesPage() {
         </CardContent>
       </Card>
 
-      {(selectedCity || isAllIndia) && (
+      {(selectedCity) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
-              <TrendingUp className="h-6 w-6 text-primary" /> {t.market.pricesFor(selectedCity === 'all' || isAllIndia ? t.market.allIndia : selectedCity)}
+              <TrendingUp className="h-6 w-6 text-primary" /> {t.market.pricesFor(selectedCity)}
             </CardTitle>
             <CardDescription>
               {t.market.pricesDescription}
@@ -267,21 +263,19 @@ export default function MarketPricesPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t.market.table.crop}</TableHead>
-                    {isAllIndia && <TableHead>{t.market.table.market}</TableHead>}
                     <TableHead className="text-right">{t.market.table.currentPrice}</TableHead>
-                    {!isAllIndia && <TableHead className="text-right">{t.market.table.next2Weeks}</TableHead>}
-                    {!isAllIndia && <TableHead className="text-right">{t.market.table.aiSuggestion}</TableHead>}
+                    <TableHead className="text-right">{t.market.table.next2Weeks}</TableHead>
+                    <TableHead className="text-right">{t.market.table.aiSuggestion}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {prices.map((crop, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">{crop.commodity}</TableCell>
-                      {isAllIndia && <TableCell><div className="flex items-center gap-1.5 text-muted-foreground"><MapPin className="h-3 w-3"/>{crop.market}</div></TableCell>}
                       <TableCell className="text-right font-bold">
                         {parseInt(crop.modal_price).toLocaleString("en-IN")}
                       </TableCell>
-                      {!isAllIndia && (
+                      
                         <>
                            <TableCell className="text-right">
                             {crop.nextTwoWeeksPrice ? (
@@ -294,7 +288,7 @@ export default function MarketPricesPage() {
                             {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : <span className="text-muted-foreground">-</span> }
                           </TableCell>
                         </>
-                      )}
+                      
                     </TableRow>
                   ))}
                 </TableBody>
@@ -302,7 +296,7 @@ export default function MarketPricesPage() {
             )}
              {!isLoading && !error && prices?.length === 0 && (
                <div className="text-center py-8 text-muted-foreground">
-                <p>{t.market.error.noPriceData(selectedCity === 'all' || isAllIndia ? t.market.allIndia : selectedCity)}</p>
+                <p>{t.market.error.noPriceData(selectedCity)}</p>
               </div>
             )}
              {!isLoading && !error && !prices && !isLoading && (
