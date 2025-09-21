@@ -221,6 +221,8 @@ export const translations = {
             description: "Manage your personal and farm details.",
             descriptionIncomplete: "Please complete your details to continue.",
             farmerId: "Farmer ID",
+            expertId: "Expert ID",
+            ngoId: "NGO ID",
             name: "Full Name",
             namePlaceholder: "e.g., Ram Singh",
             dob: "Date of Birth",
@@ -959,6 +961,8 @@ aiThinking: "AI is thinking...",
             description: "अपने व्यक्तिगत और खेत के विवरण प्रबंधित करें।",
             descriptionIncomplete: "जारी रखने के लिए कृपया अपना विवरण पूरा करें।",
             farmerId: "किसान आईडी",
+            expertId: "विशेषज्ञ आईडी",
+            ngoId: "एनजीओ आईडी",
             name: "पूरा नाम",
             namePlaceholder: "उदा., राम सिंह",
             dob: "जन्म की तारीख",
@@ -1480,5 +1484,7 @@ aiThinking: "एआई सोच रहा है...",
 };
 
 export type Translations = typeof translations.English;
+
+    
 
     

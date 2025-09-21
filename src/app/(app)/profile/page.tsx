@@ -198,6 +198,18 @@ export default function ProfilePage() {
     }
   };
 
+  const getIdLabel = () => {
+    switch (profile.userType) {
+        case 'expert':
+            return t.profile.expertId;
+        case 'ngo':
+            return t.profile.ngoId;
+        default:
+            return t.profile.farmerId;
+    }
+  };
+
+
   return (
     <div className="flex justify-center items-start py-8">
       <Card className="w-full max-w-2xl">
@@ -253,7 +265,7 @@ export default function ProfilePage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="space-y-2">
-              <Label htmlFor="farmerId">{t.profile.farmerId}</Label>
+              <Label htmlFor="farmerId">{getIdLabel()}</Label>
                <div className="flex items-center gap-2">
                 <Input
                   id="farmerId"
@@ -521,3 +533,4 @@ export default function ProfilePage() {
   );
 }
 
+    
