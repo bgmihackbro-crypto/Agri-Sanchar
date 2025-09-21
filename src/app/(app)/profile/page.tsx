@@ -229,9 +229,6 @@ export default function ProfilePage() {
              <div className="space-y-2">
               <Label htmlFor="farmerId">{t.profile.farmerId}</Label>
                <div className="flex items-center gap-2">
-                 <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
-                    <Hash className="h-4 w-4" />
-                 </span>
                 <Input
                   id="farmerId"
                   value={profile.farmerId}
