@@ -1,5 +1,7 @@
 import { genkit } from "genkit";
 import { googleAI, gemini } from "@genkit-ai/googleai";
+import { config } from 'dotenv';
+config();
 
 // Initialize Genkit and export the 'ai' object
 export const ai = genkit({
