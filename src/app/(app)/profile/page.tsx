@@ -34,6 +34,17 @@ import { useTranslation } from "@/hooks/use-translation";
 import { auth } from "@/lib/firebase";
 import { updateUserProfile, type UserProfile } from "@/lib/firebase/users";
 
+const generateId = (type: 'farmer' | 'expert' | 'ngo' = 'farmer') => {
+    const prefix = {
+        farmer: 'AS',
+        expert: 'EX',
+        ngo: 'NG'
+    }[type];
+    const part1 = Math.floor(1000 + Math.random() * 9000).toString();
+    const part2 = Math.floor(1000 + Math.random() * 9000).toString();
+    return `${prefix}-${part1}-${part2}`;
+};
+
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -112,7 +123,19 @@ export default function ProfilePage() {
   };
 
   const handleUserTypeChange = (value: 'farmer' | 'expert' | 'ngo') => {
-    setProfile((prev) => ({ ...prev, userType: value }));
+    const originalId = profile.farmerId;
+    const originalType = profile.userType;
+    let newId = originalId;
+
+    if (originalType !== value) {
+        newId = generateId(value);
+    }
+    
+    setProfile((prev) => ({ 
+        ...prev, 
+        userType: value,
+        farmerId: newId,
+     }));
   };
   
   const handleDobChange = (date: Date | undefined) => {
@@ -133,8 +156,8 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    if (!profile.farmerId) {
-      toast({ variant: "destructive", title: "Not Authenticated", description: "Your user ID is missing. Please log in again." });
+    if (!profile.phone) {
+      toast({ variant: "destructive", title: "Not Authenticated", description: "Your phone number is missing. Please log in again." });
       router.push('/login');
       return;
     }
@@ -151,7 +174,7 @@ export default function ProfilePage() {
     setIsEditing(false);
     
     try {
-      // Use the farmerId to find the mock user ID
+      // Use the phone number to find the mock user ID
       const mockUserId = `sim-${profile.phone.replace('+91', '')}`;
       await updateUserProfile(mockUserId, profile);
       localStorage.setItem("userProfile", JSON.stringify(profile));

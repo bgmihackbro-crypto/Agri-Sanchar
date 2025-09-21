@@ -38,7 +38,7 @@ const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     }
 };
 
-const generateFarmerId = () => {
+const generateId = () => {
     const part1 = Math.floor(1000 + Math.random() * 9000).toString();
     const part2 = Math.floor(1000 + Math.random() * 9000).toString();
     return `AS-${part1}-${part2}`;
@@ -98,7 +98,7 @@ export default function SignupPage() {
     try {
       // Simulate creating a user. Use phone number to create a unique-ish ID for demo purposes.
       const mockUserId = `sim-${phone}`;
-      const farmerId = generateFarmerId();
+      const farmerId = generateId();
 
 
       const userProfile: UserProfile = {
@@ -216,3 +216,4 @@ export default function SignupPage() {
     </Card>
   );
 }
+
