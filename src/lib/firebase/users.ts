@@ -60,7 +60,7 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
 /**
  * Updates a user's profile.
  * Simulates Firestore 'update' but uses localStorage.
- * @param userId The user's authentication ID.
+ * @param userId The user's simulated authentication ID (e.g., sim-9876543210).
  * @param updates The fields to update.
  */
 export const updateUserProfile = async (userId: string, updates: Partial<UserProfile>): Promise<void> => {
@@ -90,3 +90,5 @@ export const updateUserProfile = async (userId: string, updates: Partial<UserPro
         await setUserProfile(userId, newProfileData);
     }
 };
+
+    

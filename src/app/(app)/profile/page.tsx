@@ -131,9 +131,8 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      toast({ variant: "destructive", title: "Not Authenticated", description: "Please log in again." });
+    if (!profile.farmerId) {
+      toast({ variant: "destructive", title: "Not Authenticated", description: "Your user ID is missing. Please log in again." });
       router.push('/login');
       return;
     }
@@ -150,7 +149,9 @@ export default function ProfilePage() {
     setIsEditing(false);
     
     try {
-      await updateUserProfile(currentUser.uid, profile);
+      // Use the farmerId from the profile state directly
+      const mockUserId = `sim-${profile.phone.replace('+91', '')}`;
+      await updateUserProfile(mockUserId, profile);
       localStorage.setItem("userProfile", JSON.stringify(profile));
       
       // We can now remove the temporary language selection
@@ -341,7 +342,7 @@ export default function ProfilePage() {
             <div className="space-y-2">
               <Label htmlFor="phone">{t.profile.phone}</Label>
                <div className="flex items-center gap-2">
-                <span className="flex h-10 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground">
+                <span className="flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
                   +91
                 </span>
                 <Input
@@ -463,3 +464,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    
