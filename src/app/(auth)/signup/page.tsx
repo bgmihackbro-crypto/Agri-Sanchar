@@ -135,7 +135,7 @@ export default function SignupPage() {
       <div id="recaptcha-container"></div>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">{t.signup.title}</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardDescription className="text-foreground">
           {otpSent ? t.signup.enterOtp : t.signup.createAccount}
         </CardDescription>
       </CardHeader>
