@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,6 +35,8 @@ import { indianCities } from "@/lib/indian-cities";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
+import type { UserProfile as AppUserProfile } from "@/lib/firebase/users";
+
 
 const allCitiesList = Object.values(indianCities).flat();
 
@@ -322,7 +324,7 @@ const initialPostsData = [
   },
 ];
 
-const expertData = [
+const staticExpertData = [
   {
     id: EXPERT_BOT_USER.id,
     name: "Dr. Anjali Verma",
@@ -416,13 +418,7 @@ const initialGroupsData = [
   { id: 'group-6', name: 'Hyderabad Cotton & Chilli', city: 'Hyderabad', description: 'Market trends and farming techniques for cotton and chilli.', createdBy: 'Admin', members: ['user-6'] },
 ];
 
-type UserProfile = {
-    farmerId: string;
-    name: string;
-    city: string;
-    avatar: string;
-    state: string;
-};
+type UserProfile = AppUserProfile;
 
 type Comment = {
     author: string;
@@ -1061,6 +1057,26 @@ export default function CommunityPage() {
 
   }, []);
   
+  const expertData = useMemo(() => {
+    let allExperts = [...staticExpertData];
+    if (userProfile && (userProfile.userType === 'expert' || userProfile.userType === 'ngo')) {
+        // Check if user is already in the list
+        const userAsExpert = allExperts.find(e => e.id === userProfile.farmerId);
+        if (!userAsExpert) {
+            allExperts.unshift({
+                id: userProfile.farmerId,
+                name: userProfile.name,
+                avatar: userProfile.avatar,
+                specialization: "User Provided Expert/NGO", // Or a more specific field if you add it to the profile
+                location: userProfile.city,
+                contact: userProfile.phone,
+                type: userProfile.userType,
+            });
+        }
+    }
+    return allExperts;
+  }, [userProfile]);
+
   const handleGroupCreated = () => {
       fetchGroups();
   }
@@ -1388,3 +1404,4 @@ export default function CommunityPage() {
     
 
     
+
