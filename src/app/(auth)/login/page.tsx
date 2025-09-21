@@ -53,19 +53,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const { t, language, setLanguage } = useTranslation();
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   
-  const auth = getAuth();
-
-  useEffect(() => {
-    // Make sure recaptcha is only rendered once
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible'
-      });
-    }
-  }, [auth]);
-
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
     if (lang === 'Hindi') {
@@ -80,83 +68,76 @@ export default function LoginPage() {
     if (loading) return;
     setLoading(true);
 
-    try {
-      const phoneNumber = `+91${phone}`;
-      const appVerifier = window.recaptchaVerifier;
-      const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      setConfirmationResult(result);
+    // Simulate sending OTP
+    setTimeout(() => {
       setOtpSent(true);
       toast({
         title: t.login.otpSentTitle,
         description: t.login.otpSentDesc,
       });
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      toast({
-        variant: "destructive",
-        title: "Error Sending OTP",
-        description: "Could not send OTP. Please check the phone number or try again later.",
-      });
-    } finally {
-        setLoading(false);
-    }
+      setLoading(false);
+    }, 1000);
   };
 
   const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading || !confirmationResult) return;
+    if (loading) return;
     setLoading(true);
 
+    if (otp !== SIMULATED_OTP) {
+        toast({
+            variant: "destructive",
+            title: t.login.invalidOtpTitle,
+            description: t.login.invalidOtpDesc,
+        });
+        setLoading(false);
+        return;
+    }
+
     try {
-      const userCredential = await confirmationResult.confirm(otp);
-      const user = userCredential.user;
+        // In a real app, we'd already have the user from confirmationResult.
+        // Here, we simulate finding the user profile based on the phone number.
+        // This is a simplification and assumes phone numbers are unique identifiers.
+        // We'll construct a mock user ID from the phone number for the demo.
+        const mockUserId = `sim-${phone}`; 
+        const userProfile = await getUserProfile(mockUserId);
+        
+        if (!userProfile) {
+            toast({
+                variant: "destructive",
+                title: t.login.loginFailedTitle,
+                description: t.login.loginFailedDesc
+            });
+            setLoading(false);
+            router.push('/signup');
+            return;
+        }
 
-      if (user) {
-          const userProfile = await getUserProfile(user.uid);
+        userProfile.language = language;
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
 
-          if (!userProfile) {
-              toast({ 
-                  variant: "destructive", 
-                  title: t.login.loginFailedTitle, 
-                  description: t.login.loginFailedDesc
-              });
-              setLoading(false);
-              // Consider signing out the user before redirecting
-              await auth.signOut();
-              router.push('/signup');
-              return;
-          }
+        addWelcomeNotification(userProfile.name, language);
 
-          // Set the language in the user's profile upon successful login
-          userProfile.language = language;
-          localStorage.setItem('userProfile', JSON.stringify(userProfile));
-
-          addWelcomeNotification(userProfile.name, language);
-
-          toast({
+        toast({
             title: t.login.loginSuccess,
             description: t.login.welcomeBack(userProfile.name),
-          });
+        });
 
-          const redirectUrl = searchParams.get('redirect');
+        const redirectUrl = searchParams.get('redirect');
 
-          if (redirectUrl) {
-              router.push(redirectUrl);
-          } else if (userProfile.state && userProfile.city) {
-              router.push("/dashboard");
-          } else {
-              router.push("/profile");
-          }
-      } else {
-          throw new Error("User not found after OTP verification.");
-      }
-
+        if (redirectUrl) {
+            router.push(redirectUrl);
+        } else if (userProfile.state && userProfile.city) {
+            router.push("/dashboard");
+        } else {
+            router.push("/profile");
+        }
     } catch (error) {
-        console.error("OTP Verification error:", error);
+        console.error("Login error:", error);
         toast({
           variant: "destructive",
-          title: t.login.invalidOtpTitle,
-          description: t.login.invalidOtpDesc,
+          title: t.login.errorTitle,
+          description: t.login.errorDesc,
         });
         setLoading(false);
     }
