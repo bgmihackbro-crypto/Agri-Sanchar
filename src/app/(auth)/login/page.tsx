@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,7 +17,6 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "@/hooks/use-translation";
-import { getAuth, signInWithPhoneNumber, RecaptchaVerifier, ConfirmationResult } from "firebase/auth";
 import { getUserProfile } from "@/lib/firebase/users";
 
 const SIMULATED_OTP = "123456";
@@ -43,9 +42,12 @@ const addWelcomeNotification = (name: string, lang: 'English' | 'Hindi') => {
     }
 };
 
-function LoginFormComponent() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -96,10 +98,6 @@ function LoginFormComponent() {
     }
 
     try {
-        // In a real app, we'd already have the user from confirmationResult.
-        // Here, we simulate finding the user profile based on the phone number.
-        // This is a simplification and assumes phone numbers are unique identifiers.
-        // We'll construct a mock user ID from the phone number for the demo.
         const mockUserId = `sim-${phone}`; 
         const userProfile = await getUserProfile(mockUserId);
         
@@ -124,9 +122,9 @@ function LoginFormComponent() {
             description: t.login.welcomeBack(userProfile.name),
         });
 
-        const redirectUrl = searchParams.get('redirect');
+        const redirectUrl = searchParams.redirect;
 
-        if (redirectUrl) {
+        if (redirectUrl && typeof redirectUrl === 'string') {
             router.push(redirectUrl);
         } else if (userProfile.state && userProfile.city) {
             router.push("/dashboard");
@@ -215,12 +213,4 @@ function LoginFormComponent() {
       </CardContent>
     </Card>
   )
-}
-
-export default function LoginPage() {
-    return (
-        <Suspense fallback={<div className="w-full max-w-sm h-[420px] flex items-center justify-center"><Spinner className="h-8 w-8 text-white"/></div>}>
-            <LoginFormComponent />
-        </Suspense>
-    )
 }
