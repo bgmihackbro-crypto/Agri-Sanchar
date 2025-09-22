@@ -11,7 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface CalculatorInput {
     area: string;
-    yieldPerHectare: string;
+    yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
     fixedCosts: string;
@@ -31,7 +31,7 @@ interface CalculationResult {
 export default function YieldCalculatorPage() {
     const [inputs, setInputs] = useState<CalculatorInput>({
         area: '',
-        yieldPerHectare: '',
+        yieldPerAcre: '',
         sellingPrice: '',
         productionCost: '',
         fixedCosts: '0',
@@ -47,23 +47,23 @@ export default function YieldCalculatorPage() {
 
     const handleCalculate = () => {
         const area = parseFloat(inputs.area);
-        const yieldPerHectare = parseFloat(inputs.yieldPerHectare);
+        const yieldPerAcre = parseFloat(inputs.yieldPerAcre);
         const sellingPrice = parseFloat(inputs.sellingPrice);
-        const productionCost = parseFloat(inputs.productionCost);
+        const productionCostPerAcre = parseFloat(inputs.productionCost);
         const fixedCosts = parseFloat(inputs.fixedCosts);
         const otherIncome = parseFloat(inputs.otherIncome);
         const lossPercentage = parseFloat(inputs.lossPercentage);
 
-        if (isNaN(area) || isNaN(yieldPerHectare) || isNaN(sellingPrice) || isNaN(productionCost)) {
+        if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
             setResult(null);
             return;
         }
 
-        const grossYield = area * yieldPerHectare;
+        const grossYield = area * yieldPerAcre;
         const loss = grossYield * (lossPercentage / 100);
         const netYield = grossYield - loss;
         const revenue = netYield * sellingPrice;
-        const variableCosts = productionCost * area;
+        const variableCosts = productionCostPerAcre * area;
         const totalCosts = variableCosts + fixedCosts;
         const profit = revenue + otherIncome - totalCosts;
         const roi = totalCosts > 0 ? (profit / totalCosts) * 100 : 0;
@@ -102,20 +102,20 @@ export default function YieldCalculatorPage() {
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="area">Area Under Cultivation (hectares)</Label>
-                            <Input id="area" type="number" placeholder="e.g., 2" value={inputs.area} onChange={handleInputChange} />
+                            <Label htmlFor="area">Area Under Cultivation (acres)</Label>
+                            <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="yieldPerHectare">Expected Yield per Hectare (kg/ha)</Label>
-                            <Input id="yieldPerHectare" type="number" placeholder="e.g., 5000" value={inputs.yieldPerHectare} onChange={handleInputChange} />
+                            <Label htmlFor="yieldPerAcre">Expected Yield per Acre (kg/acre)</Label>
+                            <Input id="yieldPerAcre" type="number" placeholder="e.g., 2000" value={inputs.yieldPerAcre} onChange={handleInputChange} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="sellingPrice">Market Selling Price (₹ per kg)</Label>
                             <Input id="sellingPrice" type="number" placeholder="e.g., 20" value={inputs.sellingPrice} onChange={handleInputChange} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="productionCost">Production Cost per Hectare (₹)</Label>
-                            <Input id="productionCost" type="number" placeholder="e.g., 30000" value={inputs.productionCost} onChange={handleInputChange} />
+                            <Label htmlFor="productionCost">Production Cost per Acre (₹)</Label>
+                            <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
