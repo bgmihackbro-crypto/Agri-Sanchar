@@ -129,8 +129,10 @@ export default function ChatbotPage() {
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
-        console.error("Speech synthesis error", e);
-        toast({ variant: 'destructive', title: t.chatbot.speechError, description: t.chatbot.speechErrorDesc });
+        if (e.error !== 'canceled') {
+            console.error("Speech synthesis error", e);
+            toast({ variant: 'destructive', title: t.chatbot.speechError, description: t.chatbot.speechErrorDesc });
+        }
         setNowPlayingMessageId(null);
     }
     utteranceRef.current = utterance;
@@ -430,3 +432,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
