@@ -730,7 +730,7 @@ aiThinking: "AI is thinking...",
                 fileTooLarge: "File Too Large",
                 fileTooLargeDesc: "Please upload an image smaller than 2MB.",
                 incompleteTitle: "Incomplete Details",
-                incompleteDesc: "Please fill out the name, category, price, contact, and upload an image.",
+                incompleteDesc: "Please fill out the name, category, price, and contact information.",
                 successTitle: "Equipment Listed!",
                 successDesc: (name: string) => `Your "${name}" is now available for rent.`,
                 errorTitle: "Error",
@@ -1470,7 +1470,7 @@ aiThinking: "एआई सोच रहा है...",
                 fileTooLarge: "फ़ाइल बहुत बड़ी है",
                 fileTooLargeDesc: "कृपया 2MB से छोटी छवि अपलोड करें।",
                 incompleteTitle: "अधूरा विवरण",
-                incompleteDesc: "कृपया नाम, श्रेणी, मूल्य, संपर्क भरें और एक छवि अपलोड करें।",
+                incompleteDesc: "कृपया नाम, श्रेणी, मूल्य और संपर्क जानकारी भरें।",
                 successTitle: "उपकरण सूचीबद्ध!",
                 successDesc: (name: string) => `आपका "${name}" अब किराए के लिए उपलब्ध है।`,
                 errorTitle: "त्रुटि",
@@ -1486,5 +1486,8 @@ aiThinking: "एआई सोच रहा है...",
 export type Translations = typeof translations.English;
 
     
+
+    
+
 
     

@@ -26,12 +26,9 @@ const AddEquipmentDialog = ({ onRentalAdded, t }: { onRentalAdded: () => void, t
     const [price, setPrice] = useState('');
     const [priceType, setPriceType] = useState<'day' | 'hour'>('day');
     const [description, setDescription] = useState('');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [contact, setContact] = useState('');
     const [address, setAddress] = useState('');
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
@@ -45,30 +42,15 @@ const AddEquipmentDialog = ({ onRentalAdded, t }: { onRentalAdded: () => void, t
         }
     }, []);
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
-                toast({ variant: 'destructive', title: t.rental.addDialog.fileTooLarge, description: t.rental.addDialog.fileTooLargeDesc });
-                return;
-            }
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-
     const resetForm = () => {
         setName('');
         setCategory('');
         setPrice('');
         setDescription('');
-        setImageFile(null);
-        setImagePreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
     const handleSubmit = async () => {
-        if (!name || !category || !price || !contact || !imageFile || !imagePreview || !userProfile) {
+        if (!name || !category || !price || !contact || !userProfile) {
             toast({ variant: 'destructive', title: t.rental.addDialog.incompleteTitle, description: t.rental.addDialog.incompleteDesc });
             return;
         }
@@ -81,7 +63,6 @@ const AddEquipmentDialog = ({ onRentalAdded, t }: { onRentalAdded: () => void, t
                 price: parseFloat(price),
                 priceType,
                 description,
-                imageUrl: imagePreview,
                 contact,
                 location: address,
                 ownerId: userProfile.farmerId,
@@ -152,27 +133,6 @@ const AddEquipmentDialog = ({ onRentalAdded, t }: { onRentalAdded: () => void, t
                      <div className="space-y-2">
                         <Label htmlFor="description">{t.rental.addDialog.descriptionLabel}</Label>
                         <Textarea id="description" placeholder={t.rental.addDialog.descriptionPlaceholder} value={description} onChange={e => setDescription(e.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label>{t.rental.addDialog.imageLabel}</Label>
-                        <div className="flex items-center justify-center w-full">
-                            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted">
-                                {imagePreview ? (
-                                    <div className="relative w-full h-full">
-                                        <Image src={imagePreview} alt="Preview" fill className="object-contain rounded-lg p-2" />
-                                        <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={(e) => {e.preventDefault(); setImagePreview(null); setImageFile(null)}}>
-                                            <X className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <ImageIcon className="w-8 h-8 mb-4 text-gray-500" />
-                                        <p className="mb-2 text-sm text-gray-500">{t.rental.addDialog.imagePlaceholder}</p>
-                                    </div>
-                                )}
-                                <Input id="dropzone-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*" />
-                            </label>
-                        </div> 
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="contact">{t.rental.addDialog.contactLabel}</Label>
@@ -287,9 +247,6 @@ export default function RentalPage() {
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {filteredRentals.map(rental => (
                                 <Card key={rental.id} className="flex flex-col overflow-hidden">
-                                    <div className="aspect-video relative">
-                                        <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
-                                    </div>
                                     <CardHeader>
                                         <CardTitle>{rental.name}</CardTitle>
                                         <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
@@ -332,9 +289,6 @@ export default function RentalPage() {
                          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {myRentals.map(rental => (
                                 <Card key={rental.id} className="flex flex-col overflow-hidden">
-                                     <div className="aspect-video relative">
-                                        <Image src={rental.imageUrl} alt={rental.name} fill className="object-cover" />
-                                    </div>
                                     <CardHeader>
                                         <CardTitle>{rental.name}</CardTitle>
                                          <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
@@ -363,3 +317,4 @@ export default function RentalPage() {
     );
 }
 
+    
