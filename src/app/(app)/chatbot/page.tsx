@@ -553,6 +553,10 @@ export default function ChatbotPage() {
                 <Mic className="h-5 w-5" />
                 <span className="sr-only">{t.chatbot.recordVoice}</span>
             </Button>
+            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
+              <Send className="h-4 w-4" />
+              <span className="sr-only">{t.chatbot.send}</span>
+            </Button>
             <Input
               type="file"
               ref={fileInputRef}
