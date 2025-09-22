@@ -71,8 +71,6 @@ export default function GroupChatPage() {
             const details = getGroup(groupId);
             if (details) {
                 setGroupDetails(details);
-            } else {
-                toast({ variant: 'destructive', title: t.community.group.error, description: t.community.group.notFound});
             }
         }
     };
@@ -93,7 +91,13 @@ export default function GroupChatPage() {
           window.removeEventListener('storage', loadGroupData);
       };
     }
-  }, [groupId, router, toast, t]);
+  }, [groupId, router]);
+
+  useEffect(() => {
+    if (!isLoading && !groupDetails && groupId) {
+        toast({ variant: 'destructive', title: t.community.group.error, description: t.community.group.notFound});
+    }
+  }, [isLoading, groupDetails, groupId, toast, t]);
 
   useEffect(() => {
     // Scroll to bottom when new messages are added
@@ -329,3 +333,5 @@ export default function GroupChatPage() {
     </div>
   );
 }
+
+    
