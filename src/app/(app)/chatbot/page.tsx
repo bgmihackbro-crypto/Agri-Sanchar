@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw } from "lucide-react";
+import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw, Folder } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -424,8 +424,8 @@ export default function ChatbotPage() {
           }}
         >
           <div className="absolute inset-0 bg-white/80 dark:bg-black/80" />
-          <ScrollArea className="h-full pr-4">
-            <div className="space-y-4" ref={scrollAreaRef}>
+          <div className="h-full pr-4 overflow-y-auto" ref={scrollAreaRef}>
+            <div className="space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -493,7 +493,7 @@ export default function ChatbotPage() {
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
         </CardContent>
         <CardFooter className="border-t pt-4 flex flex-col items-start gap-2">
            {imageFile && (
@@ -517,27 +517,52 @@ export default function ChatbotPage() {
           )}
           <form
             onSubmit={handleSubmit}
-            className="flex w-full items-center space-x-2"
+            className="flex w-full items-center space-x-2 bg-muted/50 p-2 rounded-lg"
           >
              <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={() => setIsCameraOpen(true)}
               disabled={isLoading}
+              className="text-muted-foreground"
             >
-              <Camera className="h-4 w-4" />
+              <Camera className="h-5 w-5" />
               <span className="sr-only">Use Camera</span>
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
               disabled={isLoading}
+               className="text-muted-foreground"
             >
-              <ImageIcon className="h-4 w-4" />
+              <ImageIcon className="h-5 w-5" />
               <span className="sr-only">{t.chatbot.uploadImage}</span>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => { /* Folder logic */ }}
+              disabled={isLoading}
+               className="text-muted-foreground"
+            >
+              <Folder className="h-5 w-5" />
+              <span className="sr-only">Browse files</span>
+            </Button>
+            <Input
+              id="chatbot-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={isRecording ? t.chatbot.listening : "Ask Anything..."}
+              disabled={isLoading}
+              className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base"
+            />
+             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-muted-foreground">
+                <Mic className="h-5 w-5" />
+                <span className="sr-only">{t.chatbot.recordVoice}</span>
             </Button>
             <Input
               type="file"
@@ -546,21 +571,6 @@ export default function ChatbotPage() {
               className="hidden"
               accept="image/*"
             />
-            <Input
-              id="chatbot-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
-              disabled={isLoading}
-            />
-             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'outline'}>
-                <Mic className="h-4 w-4" />
-                <span className="sr-only">{t.chatbot.recordVoice}</span>
-            </Button>
-            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
-              <Send className="h-4 w-4" />
-              <span className="sr-only">{t.chatbot.send}</span>
-            </Button>
           </form>
         </CardFooter>
       </Card>
