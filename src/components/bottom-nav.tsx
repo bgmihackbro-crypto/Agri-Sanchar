@@ -14,7 +14,6 @@ export function BottomNav() {
   const navLinks = [
     { href: "/dashboard", label: t.bottomNav.home, icon: Home },
     { href: "/community", label: t.bottomNav.community, icon: Users },
-    { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
     { href: "/rental", label: t.sidebar.rental, icon: Tractor },
     { href: "/profile", label: t.bottomNav.profile, icon: User },
   ];
@@ -22,7 +21,7 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t">
-      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
         {navLinks.map((link) => {
           const isActive = pathname.startsWith(link.href);
           return (
