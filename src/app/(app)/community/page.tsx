@@ -282,7 +282,7 @@ const initialPostsData = [
     time: "6 days ago",
     title: "Is vermicompost better than cow dung manure?",
     content: "I have been using cow dung manure for a long time. I hear a lot about vermicompost now. Is it really better? What are the benefits and costs?",
-    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODQ2OTY4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODQ2OTY4N3ww&ixlibrb-4.1.0&q=80&w=1080",
     imageHint: "vermicompost",
     mediaType: 'image',
     likes: 33,
@@ -299,7 +299,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "Canal water schedule for this month?",
     content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1588278367597-c97ecadadfec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1588278367597-c97ecadadfec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib-rb-4.1.0&q=80&w=1080",
     imageHint: "jute irrigation",
     mediaType: 'image',
     likes: 15,
@@ -316,7 +316,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "How to control stem borer in sugarcane?",
     content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1679543321530-4378c81af100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdWdhcmNhbmV8ZW58MHx8fHwxNzU4NDY5MTI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1679543321530-4378c81af100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdWdhcmNhbmV8ZW58MHx8fHwxNzU4NDY5MTI3fDA&ixlib-rb-4.1.0&q=80&w=1080",
     imageHint: "sugarcane pest",
     mediaType: 'image',
     likes: 29,
@@ -601,13 +601,13 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
       const mediaType = p.mediaType || 'image';
 
       return (
-         <div className={cn("mt-2 rounded-lg overflow-hidden border max-h-[50vh]")}>
+         <div className={cn("mt-2 rounded-lg overflow-hidden border max-h-[300px]")}>
            {mediaType.startsWith('image') ? (
               <Image
                 src={p.image}
                 alt={p.title || t.community.post.postImageAlt}
                 width={600}
-                height={600}
+                height={300}
                 className="w-full h-full object-cover"
                 data-ai-hint={p.imageHint}
               />
@@ -1275,7 +1275,7 @@ export default function CommunityPage() {
             </div>
             <TabsContent value="home" className="pt-4">
                 {filteredPosts.length > 0 ? (
-                    <div className="space-y-4 max-w-2xl mx-auto">
+                    <div className="space-y-4 max-w-xl mx-auto">
                         {filteredPosts.map((post) => (
                            <PostCard 
                                 key={post.id} 
@@ -1424,3 +1424,6 @@ export default function CommunityPage() {
 
     
 
+
+
+    
