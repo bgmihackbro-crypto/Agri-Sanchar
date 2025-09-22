@@ -99,16 +99,10 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="space-y-4 rounded-xl p-4"
-      style={{
-        backgroundImage: "url('https://cdn.wallpaperdirect.com/asset/img/product/194878/tiled/albany-dream-plain-dark-green-wallpaper-tiled-194878.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      className="space-y-4"
     >
       <div
-        className="space-y-4 rounded-xl p-4 backdrop-blur-sm"
-        style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
+        className="space-y-4"
       >
         <div className="text-center">
           <h1 className="text-2xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
@@ -117,7 +111,7 @@ export default function DashboardPage() {
           {serviceLinks.map((link, i) => (
             <Card
               key={link.title}
-              className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1 rounded-xl", link.color)}
+              className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1 rounded-2xl", link.color)}
               style={{ animationDelay: `${0.3 + i * 0.05}s` }}
             >
               <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-2 sm:p-3 text-center">
