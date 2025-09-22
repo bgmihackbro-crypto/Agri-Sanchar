@@ -1,19 +1,21 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown, ShieldAlert, Timer, Bot, Wand2 } from "lucide-react";
+import { Search, Bug, Leaf, TestTube, Target, Info, ThumbsUp, ThumbsDown, ShieldAlert, Timer, Bot, Wand2, Share } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
+  DialogFooter
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +24,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { recommendPesticide, type PesticideRecommendationOutput } from "@/ai/flows/recommend-pesticide";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
+import { getGroups, type Group } from '@/lib/firebase/groups';
+import type { UserProfile } from '@/lib/firebase/users';
+import { sendMessage } from '@/lib/firebase/chat';
+import { Label } from "@/components/ui/label";
 
 
 const pesticideData = [
@@ -417,6 +423,106 @@ const DetailDialog = ({ pesticide, t }: { pesticide: Pesticide, t: any }) => {
     )
 }
 
+const ShareDialog = ({ recommendation, wizardCrop, wizardProblem, userProfile, t }: { recommendation: PesticideRecommendationOutput, wizardCrop: string, wizardProblem: string, userProfile: UserProfile | null, t: any }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [userGroups, setUserGroups] = useState<Group[]>([]);
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [isSharing, setIsSharing] = useState(false);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        if (isOpen && userProfile) {
+            const allGroups = getGroups();
+            const memberOf = allGroups.filter(g => g.members.includes(userProfile.farmerId));
+            setUserGroups(memberOf);
+        }
+    }, [isOpen, userProfile]);
+
+    const handleShare = async () => {
+        if (!selectedGroup || !userProfile) {
+            toast({ variant: 'destructive', title: t.community.share.selectionRequired });
+            return;
+        }
+
+        setIsSharing(true);
+
+        const messageText = `
+**AI Pesticide Recommendation**
+
+**Crop:** ${wizardCrop}
+**Problem:** ${wizardProblem}
+
+**Recommendation:** ${recommendation.recommendation}
+**Reasoning:** ${recommendation.reasoning}
+**Usage:** ${recommendation.usage}
+
+*Disclaimer: This is an AI-generated recommendation. Always verify with an expert.*
+        `.trim();
+
+        try {
+            await sendMessage({
+                groupId: selectedGroup,
+                author: {
+                    id: userProfile.farmerId,
+                    name: userProfile.name,
+                    avatar: userProfile.avatar,
+                },
+                text: messageText,
+                file: null,
+                onProgress: () => {},
+            });
+            toast({ title: t.community.share.postShared });
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Failed to share recommendation", error);
+            toast({ variant: 'destructive', title: t.community.share.error });
+        } finally {
+            setIsSharing(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                    <Share className="mr-2 h-4 w-4" /> Share
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t.community.share.shareToGroup}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                    <div>
+                        <Label htmlFor="group-select">{t.community.share.selectGroupPlaceholder}</Label>
+                        <Select onValueChange={setSelectedGroup} value={selectedGroup}>
+                            <SelectTrigger id="group-select">
+                                <SelectValue placeholder={t.community.share.selectGroupPlaceholder} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {userGroups.length > 0 ? (
+                                    userGroups.map(group => (
+                                        <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
+                                    ))
+                                ) : (
+                                    <div className="p-4 text-sm text-muted-foreground">{t.community.share.noGroups}</div>
+                                )}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>{t.community.group.cancel}</Button>
+                    <Button onClick={handleShare} disabled={isSharing || !selectedGroup}>
+                        {isSharing && <Spinner className="mr-2 h-4 w-4" />}
+                        {t.community.post.share}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 
 export default function PesticideGuidePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -429,8 +535,16 @@ export default function PesticideGuidePage() {
   const [isRecommending, setIsRecommending] = useState(false);
   const [recommendation, setRecommendation] = useState<PesticideRecommendationOutput | null>(null);
   const [recommendationError, setRecommendationError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { toast } = useToast();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+      setUserProfile(JSON.parse(profile));
+    }
+  }, []);
 
   const allCrops = ["all", ...Array.from(new Set(pesticideData.flatMap(p => p.crops)))].sort();
 
@@ -615,8 +729,15 @@ export default function PesticideGuidePage() {
 
                 {recommendation && (
                     <Card className="mt-6 animate-fade-in">
-                        <CardHeader>
+                        <CardHeader className="flex flex-row justify-between items-start">
                             <CardTitle>{t.pesticideGuide.aiRecommendation}</CardTitle>
+                            <ShareDialog 
+                                recommendation={recommendation}
+                                wizardCrop={wizardCrop}
+                                wizardProblem={wizardProblem}
+                                userProfile={userProfile}
+                                t={t}
+                            />
                         </CardHeader>
                         <CardContent className="space-y-4">
                              <Alert className="bg-primary/5">
@@ -645,3 +766,5 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
+
+    
