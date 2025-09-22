@@ -10,8 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, PlusCircle, Tractor, Phone, MapPin, IndianRupee, Image as ImageIcon, X } from 'lucide-react';
-import Image from 'next/image';
+import { Search, PlusCircle, Tractor, Phone, MapPin, IndianRupee, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslation } from '@/hooks/use-translation';
@@ -154,6 +153,51 @@ const AddEquipmentDialog = ({ onRentalAdded, t }: { onRentalAdded: () => void, t
     );
 };
 
+const RentalDetailDialog = ({ rental, t }: { rental: Rental; t: any }) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="w-full">
+            <Info className="mr-2 h-4 w-4" />
+            {t.rental.viewDetails}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-headline text-2xl">{rental.name}</DialogTitle>
+          <DialogDescription className="flex items-center gap-4 pt-1">
+            <span className="flex items-center gap-1.5"><Tractor className="h-4 w-4" /> {rental.category}</span>
+            <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {rental.location}</span>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+            <div className="p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">{t.rental.addDialog.descriptionLabel}</p>
+                <p>{rental.description || "No description provided."}</p>
+            </div>
+            <div>
+                <p className="text-sm text-muted-foreground">{t.rental.ownerTitle}</p>
+                <p className="font-semibold">{rental.ownerName}</p>
+            </div>
+            <div>
+                <p className="text-sm text-muted-foreground">{t.rental.addDialog.priceLabel}</p>
+                <p className="font-bold text-lg flex items-center">
+                    <IndianRupee className="h-5 w-5 mr-1"/>
+                    {rental.price}
+                    <span className="text-xs font-normal text-muted-foreground ml-1">/ {rental.priceType === 'day' ? t.rental.day : t.rental.hour}</span>
+                </p>
+            </div>
+        </div>
+        <DialogFooter>
+            <Button asChild className="w-full">
+                <a href={`tel:${rental.contact}`}><Phone className="mr-2 h-4 w-4" />{t.rental.callOwner}</a>
+            </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 
 export default function RentalPage() {
     const { t } = useTranslation();
@@ -255,19 +299,14 @@ export default function RentalPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent className="flex-grow">
-                                        <p className="text-sm text-muted-foreground line-clamp-2">{rental.description}</p>
+                                        <p className="font-bold text-lg flex items-center">
+                                            <IndianRupee className="h-5 w-5 mr-1"/>
+                                            {rental.price}
+                                            <span className="text-xs font-normal text-muted-foreground ml-1">/ {rental.priceType === 'day' ? t.rental.day : t.rental.hour}</span>
+                                        </p>
                                     </CardContent>
-                                    <CardFooter className="flex-col items-stretch gap-3 bg-muted/50 p-4">
-                                        <div className="flex justify-between items-center">
-                                            <p className="font-bold text-lg flex items-center">
-                                                <IndianRupee className="h-5 w-5 mr-1"/>
-                                                {rental.price}
-                                                <span className="text-xs font-normal text-muted-foreground ml-1">/ {rental.priceType === 'day' ? t.rental.day : t.rental.hour}</span>
-                                            </p>
-                                            <Button variant="outline" size="sm" asChild>
-                                                <a href={`tel:${rental.contact}`}><Phone className="mr-2 h-4 w-4" />{t.rental.callOwner}</a>
-                                            </Button>
-                                        </div>
+                                    <CardFooter className="bg-muted/50 p-4">
+                                        <RentalDetailDialog rental={rental} t={t} />
                                     </CardFooter>
                                 </Card>
                             ))}
@@ -316,5 +355,3 @@ export default function RentalPage() {
         </div>
     );
 }
-
-    
