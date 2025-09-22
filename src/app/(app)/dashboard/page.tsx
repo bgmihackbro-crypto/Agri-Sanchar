@@ -59,8 +59,8 @@ export default function DashboardPage() {
       href: "/market",
       icon: TrendingUp,
       badge: null,
-      color: "bg-amber-100 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800/50",
-      iconColor: "text-amber-600 dark:text-amber-400",
+      color: "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800/50",
+      iconColor: "text-green-600 dark:text-green-400",
     },
     {
       title: t.dashboard.services.community.title,
