@@ -92,7 +92,7 @@ export default function ChatbotPage() {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
   
@@ -297,8 +297,8 @@ export default function ChatbotPage() {
           }}
         >
           <div className="absolute inset-0 bg-white/80 dark:bg-black/80" />
-          <ScrollArea className="h-full pr-4 relative" ref={scrollAreaRef}>
-            <div className="space-y-4">
+          <ScrollArea className="h-full pr-4 relative">
+            <div className="space-y-4" ref={scrollAreaRef}>
               {messages.map((message) => (
                 <div
                   key={message.id}

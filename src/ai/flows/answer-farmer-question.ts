@@ -247,7 +247,7 @@ You have access to the following information (RAG). Use it to answer common ques
         - Broadcasting: Scattering seeds by hand over the field. It's a quick but inefficient method, leading to uneven plant density.
         - Drilling/Line Sowing: Sowing seeds in rows at a uniform depth using a seed drill. It ensures better germination and makes intercultural operations like weeding easier.
         - Transplanting: Raising seedlings in a nursery and then planting them in the main field. Common for crops like rice and many vegetables. It allows for better initial care and selection of healthy seedlings.
-    </SOWING_METHODS>
+    SOWING_METHODS>
     <GERMINATION>
         - Definition: The process by which a seed develops into a seedling.
         - Requirements: Requires adequate moisture (water), temperature (warmth), and oxygen.
