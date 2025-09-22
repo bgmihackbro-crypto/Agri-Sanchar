@@ -75,9 +75,9 @@ export default function DashboardPage() {
       href: "/schemes", // Updated href to point to the new page
       icon: Landmark,
       badge: t.dashboard.services.schemes.badge,
-      badgeColor: "bg-green-500",
-      color: "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800/50",
-      iconColor: "text-green-600 dark:text-green-400",
+      badgeColor: "bg-pink-500",
+      color: "bg-pink-100 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800/50",
+      iconColor: "text-pink-600 dark:text-pink-400",
     },
     {
       title: t.dashboard.services.pesticide.title,
