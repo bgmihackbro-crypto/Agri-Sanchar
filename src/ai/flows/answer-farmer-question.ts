@@ -28,7 +28,7 @@ const AnswerFarmerQuestionInputSchema = z.object({
     ),
   city: z.string().optional().describe("The farmer's city, used to provide location-specific information like local market prices."),
   returnJson: z.boolean().optional().describe('Set to true to get a direct JSON output from tools if applicable.'),
-  language: z.string().optional().describe("The language for the AI to respond in (e.g., 'English', 'Hindi'). This is a hint, but the AI should prioritize the user's question language."),
+  language: z.string().optional().describe("The user's preferred language setting (e.g., 'English', 'Hindi'). The AI should prioritize the language of the user's actual question over this setting."),
 });
 export type AnswerFarmerQuestionInput = z.infer<typeof AnswerFarmerQuestionInputSchema>;
 
@@ -125,7 +125,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like ChatGPT. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions.
 
-**CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language. If the question is in Hindi, you MUST reply in Devanagari script. If it's in English, reply in English.
+**CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language. If the user asks in Hindi, reply entirely in Devanagari script. If they ask in English, reply entirely in English. The user's profile language setting is '{{language}}', but you must prioritize the language of the question itself.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
@@ -446,6 +446,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     
 
     
+
 
 
 
