@@ -107,20 +107,10 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4">
-      <Card 
-        className="relative overflow-hidden"
-        style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="relative p-6 text-center text-white space-y-2">
-            <h2 className="text-2xl md:text-3xl font-bold font-headline drop-shadow-md">{t.dashboard.servicesTitle}</h2>
-            <p className="text-sm md:text-base drop-shadow-sm">{t.dashboard.servicesDescription}</p>
-        </div>
-      </Card>
+      <div>
+        <h1 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
+        <p className="text-muted-foreground">{t.dashboard.servicesDescription}</p>
+      </div>
       
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
         {serviceLinks.map((link, i) => (
