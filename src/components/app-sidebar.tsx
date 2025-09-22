@@ -49,7 +49,6 @@ export function AppSidebar() {
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
     { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
     { href: "/schemes", label: t.sidebar.schemes, icon: Landmark },
-    { href: "/rental-equipment", label: t.sidebar.rental, icon: Tractor },
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
     { href: "/soil-testing", label: t.sidebar.soil, icon: FlaskConical },

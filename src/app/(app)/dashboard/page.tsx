@@ -88,12 +88,12 @@ export default function DashboardPage() {
       iconColor: "text-red-600 dark:text-red-400",
     },
     {
-      title: t.dashboard.services.rental.title,
-      href: "/rental-equipment",
-      icon: Tractor,
+      title: t.sidebar.community,
+      href: "/community",
+      icon: Users,
       badge: null,
-      color: "bg-indigo-100 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800/50",
-      iconColor: "text-indigo-600 dark:text-indigo-400",
+      color: "bg-teal-100 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800/50",
+      iconColor: "text-teal-600 dark:text-teal-400",
     },
   ];
 
