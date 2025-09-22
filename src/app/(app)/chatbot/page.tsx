@@ -517,44 +517,46 @@ export default function ChatbotPage() {
           )}
           <form
             onSubmit={handleSubmit}
-            className="flex w-full items-center space-x-2 bg-muted/50 p-2 rounded-lg"
+            className="flex w-full items-start space-x-2"
           >
-             <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCameraOpen(true)}
-              disabled={isLoading}
-              className="text-muted-foreground"
-            >
-              <Camera className="h-5 w-5" />
-              <span className="sr-only">Use Camera</span>
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-               className="text-muted-foreground"
-            >
-              <ImageIcon className="h-5 w-5" />
-              <span className="sr-only">{t.chatbot.uploadImage}</span>
-            </Button>
-            <Input
-              id="chatbot-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={isRecording ? t.chatbot.listening : "Ask Anything..."}
-              disabled={isLoading}
-              className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base"
-            />
-             <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-muted-foreground">
-                <Mic className="h-5 w-5" />
-                <span className="sr-only">{t.chatbot.recordVoice}</span>
-            </Button>
-            <Button type="submit" disabled={isLoading || (!input.trim() && !imageFile)}>
-              <Send className="h-4 w-4" />
+            <div className="flex-1 flex items-center space-x-2 bg-muted/50 p-2 rounded-lg">
+                <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsCameraOpen(true)}
+                disabled={isLoading}
+                className="text-muted-foreground"
+                >
+                <Camera className="h-5 w-5" />
+                <span className="sr-only">Use Camera</span>
+                </Button>
+                <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+                className="text-muted-foreground"
+                >
+                <ImageIcon className="h-5 w-5" />
+                <span className="sr-only">{t.chatbot.uploadImage}</span>
+                </Button>
+                <Input
+                id="chatbot-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={isRecording ? t.chatbot.listening : "Ask Anything..."}
+                disabled={isLoading}
+                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base font-medium"
+                />
+                <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-muted-foreground">
+                    <Mic className="h-5 w-5" />
+                    <span className="sr-only">{t.chatbot.recordVoice}</span>
+                </Button>
+            </div>
+            <Button type="submit" size="icon" className="h-full px-4" disabled={isLoading || (!input.trim() && !imageFile)}>
+              <Send className="h-5 w-5" />
               <span className="sr-only">{t.chatbot.send}</span>
             </Button>
             <Input
