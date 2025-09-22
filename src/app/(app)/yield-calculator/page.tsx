@@ -15,9 +15,6 @@ interface CalculatorInput {
     yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
-    fixedCosts: string;
-    otherIncome: string;
-    lossPercentage: string;
 }
 
 interface CalculationResult {
@@ -34,9 +31,6 @@ const initialInputs: CalculatorInput = {
     yieldPerAcre: '',
     sellingPrice: '',
     productionCost: '',
-    fixedCosts: '0',
-    otherIncome: '0',
-    lossPercentage: '0',
 };
 
 export default function YieldCalculatorPage() {
@@ -58,9 +52,9 @@ export default function YieldCalculatorPage() {
         const yieldPerAcre = parseFloat(inputs.yieldPerAcre);
         const sellingPrice = parseFloat(inputs.sellingPrice);
         const productionCostPerAcre = parseFloat(inputs.productionCost);
-        const fixedCosts = parseFloat(inputs.fixedCosts) || 0;
-        const otherIncome = parseFloat(inputs.otherIncome) || 0;
-        const lossPercentage = parseFloat(inputs.lossPercentage) || 0;
+        const fixedCosts = 0;
+        const otherIncome = 0;
+        const lossPercentage = 0;
 
         if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
             setResult(null);
@@ -110,7 +104,6 @@ export default function YieldCalculatorPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div>
-                        <h3 className="font-semibold mb-2">Primary Inputs</h3>
                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="area">Area (acres)</Label>
@@ -130,24 +123,6 @@ export default function YieldCalculatorPage() {
                             </div>
                         </div>
                     </div>
-                     <div>
-                        <h3 className="font-semibold mb-2">Additional Factors (Optional)</h3>
-                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                             <div className="space-y-2">
-                                <Label htmlFor="lossPercentage">Post-harvest Loss (%)</Label>
-                                <Input id="lossPercentage" type="number" value={inputs.lossPercentage} onChange={handleInputChange} />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
-                                <Input id="fixedCosts" type="number" value={inputs.fixedCosts} onChange={handleInputChange} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="otherIncome">Other Income (₹)</Label>
-                                <Input id="otherIncome" type="number" value={inputs.otherIncome} onChange={handleInputChange} />
-                            </div>
-                        </div>
-                    </div>
-
                 </CardContent>
                 <CardFooter className="flex-col sm:flex-row justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
                     <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
@@ -204,4 +179,3 @@ export default function YieldCalculatorPage() {
         </div>
     );
 }
-
