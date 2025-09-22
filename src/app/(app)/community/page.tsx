@@ -1275,11 +1275,19 @@ export default function CommunityPage() {
             </div>
             <TabsContent value="home" className="pt-4">
                 {filteredPosts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="space-y-4 max-w-2xl mx-auto">
                         {filteredPosts.map((post) => (
-                           <div key={post.id} onClick={() => setSelectedPost(post)}>
-                             <PostCard post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} isGrid={true} />
-                           </div>
+                           <PostCard 
+                                key={post.id} 
+                                post={post} 
+                                onLike={handleLike} 
+                                onComment={handleComment} 
+                                userProfile={userProfile} 
+                                groups={userGroups} 
+                                onPostCreated={handleNewPost} 
+                                t={t} 
+                                isGrid={false}
+                            />
                         ))}
                     </div>
                 ) : (
