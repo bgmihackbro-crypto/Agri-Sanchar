@@ -77,12 +77,13 @@ export default function ChatbotPage() {
     }
     
     return () => {
+      // Cleanup when component unmounts
       if (recognitionRef.current) {
         recognitionRef.current.stop();
         recognitionRef.current = null;
       }
       if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+        window.speechSynthesis.cancel(); // This will stop any ongoing speech
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
@@ -429,5 +430,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
