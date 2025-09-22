@@ -109,7 +109,7 @@ export default function DashboardPage() {
     <div className="space-y-4">
       <div className="text-center">
         <h1 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
-        <p className="text-muted-foreground">{t.dashboard.servicesDescription}</p>
+        
       </div>
       
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
