@@ -107,25 +107,33 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4">
-      <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <h2 className="text-2xl md:text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h2>
-          <p className="text-muted-foreground mt-1 text-sm md:text-base">{t.dashboard.servicesDescription}</p>
-      </div>
-
-      <div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
-          {serviceLinks.map((link, i) => (
-            <Card key={link.title} className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1", link.color)} style={{ animationDelay: `${0.3 + i * 0.05}s` }}>
-                <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-2 sm:p-3 text-center">
-                    <div className="p-2 sm:p-3 bg-background/50 rounded-lg mb-2">
-                        <link.icon className={cn("w-5 h-5 sm:w-6 sm:h-6", link.iconColor)} />
-                    </div>
-                    <CardTitle className="font-headline text-[11px] sm:text-xs leading-tight">{link.title}</CardTitle>
-                     {link.badge && <Badge className={`text-white text-[10px] ${link.badgeColor} absolute top-1.5 right-1.5`}>{link.badge}</Badge>}
-              </Link>
-            </Card>
-          ))}
+      <Card 
+        className="relative overflow-hidden"
+        style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative p-6 text-center text-white space-y-2">
+            <h2 className="text-2xl md:text-3xl font-bold font-headline drop-shadow-md">{t.dashboard.servicesTitle}</h2>
+            <p className="text-sm md:text-base drop-shadow-sm">{t.dashboard.servicesDescription}</p>
         </div>
+      </Card>
+      
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
+        {serviceLinks.map((link, i) => (
+          <Card key={link.title} className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1", link.color)} style={{ animationDelay: `${0.3 + i * 0.05}s` }}>
+              <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-2 sm:p-3 text-center">
+                  <div className="p-2 sm:p-3 bg-background/50 rounded-lg mb-2">
+                      <link.icon className={cn("w-5 h-5 sm:w-6 sm:h-6", link.iconColor)} />
+                  </div>
+                  <CardTitle className="font-headline text-[11px] sm:text-xs leading-tight">{link.title}</CardTitle>
+                    {link.badge && <Badge className={`text-white text-[10px] ${link.badgeColor} absolute top-1.5 right-1.5`}>{link.badge}</Badge>}
+            </Link>
+          </Card>
+        ))}
       </div>
     </div>
   );
