@@ -131,6 +131,11 @@ Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engag
 - If the user asks in **English**, reply entirely in **English**.
 - The user's profile language is set to '{{language}}', but you must **always prioritize the language of the question itself**.
 
+**FORMATTING INSTRUCTIONS**:
+- Use **bold headings** using Markdown (e.g., "**My Heading**").
+- Use numbered lists for steps or points (e.g., "1. First point.").
+- **Do not use asterisks (*) or dashes (-) for lists.**
+
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
 If asked for the current date, day, or time, use this: {{{currentDate}}}.
@@ -147,7 +152,6 @@ Format your diagnosis using Markdown. If the question is not about a problem, us
 {{/if}}
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
-When presenting information, use bold headings and numbered lists for clarity, not asterisks or dashes.
 
 <RAG_KNOWLEDGE>
   <GOVERNMENT_SCHEMES>
@@ -447,4 +451,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
-
