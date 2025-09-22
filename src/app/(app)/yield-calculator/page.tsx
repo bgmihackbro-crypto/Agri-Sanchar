@@ -6,15 +6,19 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, Check, IndianRupee, X as XIcon, Trash2 } from 'lucide-react';
+import { Calculator, Check, IndianRupee, X as XIcon, Trash2, ChevronDown } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface CalculatorInput {
     area: string;
     yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
+    lossPercentage: string;
+    fixedCosts: string;
+    otherIncome: string;
 }
 
 interface CalculationResult {
@@ -31,6 +35,9 @@ const initialInputs: CalculatorInput = {
     yieldPerAcre: '',
     sellingPrice: '',
     productionCost: '',
+    lossPercentage: '0',
+    fixedCosts: '0',
+    otherIncome: '0',
 };
 
 export default function YieldCalculatorPage() {
@@ -52,9 +59,9 @@ export default function YieldCalculatorPage() {
         const yieldPerAcre = parseFloat(inputs.yieldPerAcre);
         const sellingPrice = parseFloat(inputs.sellingPrice);
         const productionCostPerAcre = parseFloat(inputs.productionCost);
-        const fixedCosts = 0;
-        const otherIncome = 0;
-        const lossPercentage = 0;
+        const fixedCosts = parseFloat(inputs.fixedCosts) || 0;
+        const otherIncome = parseFloat(inputs.otherIncome) || 0;
+        const lossPercentage = parseFloat(inputs.lossPercentage) || 0;
 
         if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
             setResult(null);
@@ -89,7 +96,7 @@ export default function YieldCalculatorPage() {
         return new Intl.NumberFormat('en-IN').format(value);
     }
 
-    const hasInputs = inputs.area || inputs.yieldPerAcre || inputs.sellingPrice || inputs.productionCost;
+    const hasInputs = Object.values(inputs).some(v => v !== '' && v !== '0');
 
     return (
         <div className="space-y-6">
@@ -102,7 +109,7 @@ export default function YieldCalculatorPage() {
                 <CardHeader>
                     <CardTitle>Enter Crop Details</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="area">Area (acres)</Label>
@@ -121,12 +128,37 @@ export default function YieldCalculatorPage() {
                             <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
+                     <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>
+                                <div className="flex items-center gap-2">
+                                     Additional Factors (Optional)
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                     <div className="space-y-2">
+                                        <Label htmlFor="lossPercentage">Post-harvest Loss (%)</Label>
+                                        <Input id="lossPercentage" type="number" placeholder="e.g., 5" value={inputs.lossPercentage} onChange={handleInputChange} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
+                                        <Input id="fixedCosts" type="number" placeholder="e.g., 10000" value={inputs.fixedCosts} onChange={handleInputChange} />
+                                    </div>
+                                     <div className="space-y-2 sm:col-span-2">
+                                        <Label htmlFor="otherIncome">Other Income (₹)</Label>
+                                        <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
+                                    </div>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </CardContent>
                 <CardFooter className="flex-col sm:flex-row justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
                     <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
                         <Trash2 className="mr-2 h-4 w-4" /> Clear
                     </Button>
-                    <Button onClick={handleCalculate} disabled={!Object.values(inputs).some(v => v !== '')}>
+                    <Button onClick={handleCalculate} disabled={!inputs.area || !inputs.yieldPerAcre || !inputs.sellingPrice || !inputs.productionCost}>
                         <Calculator className="mr-2 h-4 w-4" /> Calculate
                     </Button>
                 </CardFooter>
@@ -177,3 +209,5 @@ export default function YieldCalculatorPage() {
         </div>
     );
 }
+
+    
