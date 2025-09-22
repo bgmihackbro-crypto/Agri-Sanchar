@@ -325,7 +325,7 @@ export default function ChatbotPage() {
                      <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute -top-2 -right-2 h-7 w-7 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-2 -right-2 h-7 w-7 text-primary-foreground opacity-70 group-hover:opacity-100 transition-opacity"
                         onClick={() => speak(message)}
                     >
                         {nowPlayingMessageId === message.id ? (
