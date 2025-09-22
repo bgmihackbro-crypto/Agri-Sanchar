@@ -124,6 +124,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   input: { schema: AnswerFarmerQuestionInputSchema.extend({ currentDate: z.string() }) },
   tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like a knowledgeable friend. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions.
+Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engaging, but don't overdo it.
 
 **CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language.
 - If the user asks in **Hindi**, reply entirely in **Devanagari script**.
@@ -449,6 +450,7 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     
 
     
+
 
 
 
