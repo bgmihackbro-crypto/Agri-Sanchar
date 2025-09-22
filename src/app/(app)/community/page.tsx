@@ -299,7 +299,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "Canal water schedule for this month?",
     content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1588278367597-c97ecadadfec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib-rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1588278367597-c97ecadadfec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "jute irrigation",
     mediaType: 'image',
     likes: 15,
@@ -316,7 +316,7 @@ const initialPostsData = [
     time: "1 week ago",
     title: "How to control stem borer in sugarcane?",
     content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1679543321530-4378c81af100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdWdhcmNhbmV8ZW58MHx8fHwxNzU4NDY5MTI3fDA&ixlib-rb-4.1.0&q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1679543321530-4378c81af100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdWdhcmNhbmV8ZW58MHx8fHwxNzU4NDY5MTI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
     imageHint: "sugarcane pest",
     mediaType: 'image',
     likes: 29,
@@ -1216,6 +1216,30 @@ export default function CommunityPage() {
             </div>
             <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} t={t} />
         </div>
+        
+        <Card>
+            <CardContent className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select onValueChange={setFilterCategory} value={filterCategory}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={t.community.filterTopic} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {allCategories.map(cat => <SelectItem key={cat} value={cat}>{cat === 'all' ? t.community.allTopics : cat}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                    <Select onValueChange={setFilterCity} value={filterCity}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={t.community.filterLocation} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {allCities.map(city => <SelectItem key={city} value={city}>{city === 'all' ? t.community.allLocations : city}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </CardContent>
+        </Card>
+
 
       <PostDetailDialog 
         post={selectedPost}
