@@ -83,7 +83,7 @@ export const translations = {
         bottomNav: {
             home: "Home",
             community: "Community",
-            rentals: "Rentals",
+            calculator: "Calculator",
             market: "Market",
             profile: "Profile",
         },
@@ -823,7 +823,7 @@ aiThinking: "AI is thinking...",
         bottomNav: {
             home: "होम",
             community: "समुदाय",
-            rentals: "किराए पर",
+            calculator: "कैलकुलेटर",
             market: "बाजार",
             profile: "प्रोफ़ाइल",
         },
@@ -1198,7 +1198,7 @@ aiThinking: "AI is thinking...",
                 resultTitle: "अनुमानित किसान प्रीमियम",
                 resultDescription: (amount: string) => `आपको लगभग ₹${amount} का भुगतान करना होगा। शेष राशि सरकार द्वारा भुगतान की जाती है।`,
             },
-            keywords: {
+            keywords: { // For icon selection
                 subsidy: "सब्सिडी",
                 financial: "वित्तीय",
                 equipment: "उपकरण",
