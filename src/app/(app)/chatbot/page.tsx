@@ -526,7 +526,7 @@ export default function ChatbotPage() {
                 size="icon"
                 onClick={() => setIsCameraOpen(true)}
                 disabled={isLoading}
-                className="text-muted-foreground"
+                className="text-foreground"
                 >
                 <Camera className="h-5 w-5" />
                 <span className="sr-only">Use Camera</span>
@@ -537,7 +537,7 @@ export default function ChatbotPage() {
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
-                className="text-muted-foreground"
+                className="text-foreground"
                 >
                 <ImageIcon className="h-5 w-5" />
                 <span className="sr-only">{t.chatbot.uploadImage}</span>
@@ -548,9 +548,9 @@ export default function ChatbotPage() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={isRecording ? t.chatbot.listening : "Ask Anything..."}
                 disabled={isLoading}
-                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base font-medium"
+                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base font-bold"
                 />
-                <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-muted-foreground">
+                <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-foreground">
                     <Mic className="h-5 w-5" />
                     <span className="sr-only">{t.chatbot.recordVoice}</span>
                 </Button>
@@ -571,6 +571,8 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
 
