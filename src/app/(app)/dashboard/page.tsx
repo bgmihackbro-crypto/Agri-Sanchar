@@ -102,15 +102,15 @@ export default function DashboardPage() {
       </div>
 
       <div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {serviceLinks.map((link, i) => (
-            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
-                <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-4 text-center">
-                    <div className="p-3 md:p-4 bg-primary/10 rounded-lg md:rounded-xl mb-3">
-                        <link.icon className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+            <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.05}s` }}>
+                <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-3 text-center">
+                    <div className="p-3 bg-primary/10 rounded-lg mb-2">
+                        <link.icon className="w-5 h-5 text-primary" />
                     </div>
-                    <CardTitle className="font-headline text-sm md:text-base leading-tight">{link.title}</CardTitle>
-                     {link.badge && <Badge className={`text-white text-xs ${link.badgeColor} absolute top-2 right-2`}>{link.badge}</Badge>}
+                    <CardTitle className="font-headline text-xs leading-tight">{link.title}</CardTitle>
+                     {link.badge && <Badge className={`text-white text-[10px] ${link.badgeColor} absolute top-1.5 right-1.5`}>{link.badge}</Badge>}
               </Link>
             </Card>
           ))}
