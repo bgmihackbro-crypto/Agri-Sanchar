@@ -42,7 +42,7 @@ export default function GroupChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -58,46 +58,56 @@ export default function GroupChatPage() {
   const groupId = typeof params.groupId === "string" ? params.groupId : "";
 
   useEffect(() => {
+    let unsubscribe: () => void = () => {};
+
     const profile = localStorage.getItem("userProfile");
-    if (profile) {
-      setUserProfile(JSON.parse(profile));
+    if (profile) {      setUserProfile(JSON.parse(profile));
     } else {
         router.push('/login');
+        return;
     }
 
-    const loadGroupData = () => {
-        if (groupId) {
-            setIsLoading(true);
-            const details = getGroup(groupId);
-            if (details) {
-                setGroupDetails(details);
-            }
+    const loadInitialData = () => {
+        if (!groupId) {
+            setIsLoading(false);
+            return;
+        }
+
+        const details = getGroup(groupId);
+        if (details) {
+            setGroupDetails(details);
+            // Now that we have details, listen for messages
+            unsubscribe = listenToMessages(groupId, (newMessages) => {
+                setMessages(newMessages);
+                setIsLoading(false); // Loading is done once we have messages
+            });
+        } else {
+            // If group doesn't exist at all, show error and stop loading
+            toast({ variant: 'destructive', title: t.community.group.error, description: t.community.group.notFound });
+            setIsLoading(false);
         }
     };
     
-    loadGroupData();
-    
-    if (groupId) {
-      const unsubscribe = listenToMessages(groupId, (newMessages) => {
-          setMessages(newMessages);
-          setIsLoading(false);
-      });
+    loadInitialData();
 
-      // Also listen for general storage events to update group details
-      window.addEventListener('storage', loadGroupData);
-
-      return () => {
-          unsubscribe();
-          window.removeEventListener('storage', loadGroupData);
-      };
+    // Listen for storage events to update group details if they change elsewhere
+    const handleStorageChange = () => {
+        if (groupId) {
+            const updatedDetails = getGroup(groupId);
+            if (updatedDetails) {
+                setGroupDetails(updatedDetails);
+            }
+        }
     }
-  }, [groupId, router]);
+    window.addEventListener('storage', handleStorageChange);
 
-  useEffect(() => {
-    if (!isLoading && !groupDetails && groupId) {
-        toast({ variant: 'destructive', title: t.community.group.error, description: t.community.group.notFound});
-    }
-  }, [isLoading, groupDetails, groupId, toast, t]);
+    return () => {
+      if (unsubscribe) unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
+    };
+
+  }, [groupId, router, toast, t]);
+
 
   useEffect(() => {
     // Scroll to bottom when new messages are added
@@ -171,8 +181,16 @@ export default function GroupChatPage() {
   
   const isOwner = userProfile?.farmerId === groupDetails?.ownerId;
 
-  if (isLoading && messages.length === 0) {
+  if (isLoading) {
       return <div className="h-full flex items-center justify-center"><Spinner className="h-8 w-8" /></div>
+  }
+  
+   if (!groupDetails) {
+     return (
+        <div className="h-full flex items-center justify-center">
+            <p className="text-muted-foreground">{t.community.group.notFound}</p>
+        </div>
+     );
   }
 
   return (
@@ -274,6 +292,11 @@ export default function GroupChatPage() {
                             )}
                         </div>
                         ))}
+                         {messages.length === 0 && !isLoading && (
+                            <div className="text-center text-muted-foreground pt-16">
+                                <p>No messages yet. Start the conversation!</p>
+                            </div>
+                        )}
                     </div>
                 </ScrollArea>
             </CardContent>
