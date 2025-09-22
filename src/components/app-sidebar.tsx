@@ -52,6 +52,7 @@ export function AppSidebar() {
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
     { href: "/soil-testing", label: t.sidebar.soil, icon: FlaskConical },
+    { href: "/rental", label: t.sidebar.rental, icon: Tractor },
     { href: "/yield-calculator", label: "Yield Calculator", icon: Calculator },
     { href: "/profile", label: t.sidebar.profile, icon: User },
   ];

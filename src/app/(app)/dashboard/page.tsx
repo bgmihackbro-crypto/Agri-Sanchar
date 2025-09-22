@@ -70,6 +70,14 @@ export default function DashboardPage() {
       color: "bg-amber-100 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800/50",
       iconColor: "text-amber-600 dark:text-amber-400",
     },
+     {
+      title: t.dashboard.services.rental.title,
+      href: "/rental",
+      icon: Tractor,
+      badge: null,
+      color: "bg-lime-100 dark:bg-lime-900/30 border-lime-200 dark:border-lime-800/50",
+      iconColor: "text-lime-600 dark:text-lime-400",
+    },
     {
       title: t.dashboard.services.schemes.title,
       href: "/schemes", // Updated href to point to the new page
