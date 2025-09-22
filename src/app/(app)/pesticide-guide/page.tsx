@@ -604,8 +604,8 @@ export default function PesticideGuidePage() {
             <TabsContent value="directory" className="pt-4">
                  <Card>
                     <CardContent className="p-2 bg-primary/5">
-                        <div className="flex flex-col md:flex-row gap-2">
-                            <div className="relative flex-grow">
+                        <div className="flex flex-col md:flex-row gap-2 flex-wrap">
+                            <div className="relative flex-grow min-w-[200px]">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/70" />
                                 <Input
                                     placeholder={t.pesticideGuide.searchPlaceholder}
@@ -614,7 +614,7 @@ export default function PesticideGuidePage() {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div className="flex-grow grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <Select onValueChange={setFilterType} value={filterType}>
                                     <SelectTrigger className="bg-background/70 border-primary/20">
                                         <SelectValue placeholder={t.pesticideGuide.filterType} />
@@ -658,7 +658,7 @@ export default function PesticideGuidePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
                         {filteredPesticides.map((pesticide) => (
                         <Card key={pesticide.name} className="flex flex-col">
-                            <CardHeader className="p-4">
+                            <CardHeader className="p-3">
                                 <div className="flex items-start justify-between">
                                     <CardTitle className="font-headline text-base">{pesticide.name}</CardTitle>
                                     <div className={`p-1.5 rounded-md ${pesticide.color}`}>
@@ -670,12 +670,12 @@ export default function PesticideGuidePage() {
                                     <Badge variant="secondary">{pesticide.target}</Badge>
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="flex-grow p-4 pt-0">
+                            <CardContent className="flex-grow p-3 pt-0">
                             <p className="text-xs text-muted-foreground line-clamp-2">
                                 {pesticide.description}
                             </p>
                             </CardContent>
-                            <CardFooter className="p-4 pt-0">
+                            <CardFooter className="p-3 pt-0">
                             <DetailDialog pesticide={pesticide} t={t} />
                             </CardFooter>
                         </Card>
@@ -731,7 +731,9 @@ export default function PesticideGuidePage() {
                 {recommendation && (
                     <Card className="mt-6 animate-fade-in">
                         <CardHeader className="flex flex-row justify-between items-start">
-                            <CardTitle>{t.pesticideGuide.aiRecommendation}</CardTitle>
+                            <div>
+                                <CardTitle>{t.pesticideGuide.aiRecommendation}</CardTitle>
+                            </div>
                             <ShareDialog 
                                 recommendation={recommendation}
                                 wizardCrop={wizardCrop}
@@ -747,12 +749,12 @@ export default function PesticideGuidePage() {
                             
                             <div>
                                 <h4 className="font-semibold">{t.pesticideGuide.reasoning}</h4>
-                                <p className="text-foreground text-sm">{recommendation.reasoning}</p>
+                                <p className="text-foreground/80 text-sm">{recommendation.reasoning}</p>
                             </div>
                             
                              <div>
                                 <h4 className="font-semibold">{t.pesticideGuide.usage}</h4>
-                                <p className="text-foreground text-sm">{recommendation.usage}</p>
+                                <p className="text-foreground/80 text-sm">{recommendation.usage}</p>
                             </div>
                              <p className="text-xs text-muted-foreground pt-4">
                                 {t.pesticideGuide.disclaimer}
