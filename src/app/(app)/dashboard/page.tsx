@@ -108,7 +108,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h1 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
+        <h1 className="text-2xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
         
       </div>
       
