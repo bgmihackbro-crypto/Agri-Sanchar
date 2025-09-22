@@ -491,52 +491,54 @@ export default function PesticideGuidePage() {
             </TabsList>
             <TabsContent value="directory" className="pt-4">
                  <Card>
-                    <CardContent className="p-4 space-y-4">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                        placeholder={t.pesticideGuide.searchPlaceholder}
-                        className="pl-9"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Select onValueChange={setFilterType} value={filterType}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t.pesticideGuide.filterType} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">{t.pesticideGuide.allTypes}</SelectItem>
-                            <SelectItem value="Organic">{t.pesticideGuide.organic}</SelectItem>
-                            <SelectItem value="Chemical">{t.pesticideGuide.chemical}</SelectItem>
-                        </SelectContent>
-                        </Select>
-                        <Select onValueChange={setFilterTarget} value={filterTarget}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t.pesticideGuide.filterTarget} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">{t.pesticideGuide.allTargets}</SelectItem>
-                            <SelectItem value="Insecticide">{t.pesticideGuide.insecticide}</SelectItem>
-                            <SelectItem value="Fungicide">{t.pesticideGuide.fungicide}</SelectItem>
-                            <SelectItem value="Herbicide">{t.pesticideGuide.herbicide}</SelectItem>
-                            <SelectItem value="Insect Monitoring">{t.pesticideGuide.monitoring}</SelectItem>
-                            <SelectItem value="Bactericide">{t.pesticideGuide.bactericide}</SelectItem>
-                            <SelectItem value="Acaricide">{t.pesticideGuide.acaricide}</SelectItem>
-                        </SelectContent>
-                        </Select>
-                        <Select onValueChange={setFilterCrop} value={filterCrop}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t.pesticideGuide.filterCrop} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {allCrops.map(crop => (
-                                <SelectItem key={crop} value={crop}>{crop === 'all' ? t.pesticideGuide.allCrops : crop}</SelectItem>
-                            ))}
-                        </SelectContent>
-                        </Select>
-                    </div>
+                    <CardContent className="p-4">
+                        <div className="flex flex-col md:flex-row gap-2">
+                            <div className="relative flex-grow">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                placeholder={t.pesticideGuide.searchPlaceholder}
+                                className="pl-9"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 md:flex-grow-0 md:w-auto md:flex md:gap-2 gap-2">
+                                <Select onValueChange={setFilterType} value={filterType}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t.pesticideGuide.filterType} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">{t.pesticideGuide.allTypes}</SelectItem>
+                                    <SelectItem value="Organic">{t.pesticideGuide.organic}</SelectItem>
+                                    <SelectItem value="Chemical">{t.pesticideGuide.chemical}</SelectItem>
+                                </SelectContent>
+                                </Select>
+                                <Select onValueChange={setFilterTarget} value={filterTarget}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t.pesticideGuide.filterTarget} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">{t.pesticideGuide.allTargets}</SelectItem>
+                                    <SelectItem value="Insecticide">{t.pesticideGuide.insecticide}</SelectItem>
+                                    <SelectItem value="Fungicide">{t.pesticideGuide.fungicide}</SelectItem>
+                                    <SelectItem value="Herbicide">{t.pesticideGuide.herbicide}</SelectItem>
+                                    <SelectItem value="Insect Monitoring">{t.pesticideGuide.monitoring}</SelectItem>
+                                    <SelectItem value="Bactericide">{t.pesticideGuide.bactericide}</SelectItem>
+                                    <SelectItem value="Acaricide">{t.pesticideGuide.acaricide}</SelectItem>
+                                </SelectContent>
+                                </Select>
+                                <Select onValueChange={setFilterCrop} value={filterCrop}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t.pesticideGuide.filterCrop} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {allCrops.map(crop => (
+                                        <SelectItem key={crop} value={crop}>{crop === 'all' ? t.pesticideGuide.allCrops : crop}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
 
