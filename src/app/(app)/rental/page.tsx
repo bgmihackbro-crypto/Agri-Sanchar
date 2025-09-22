@@ -246,7 +246,7 @@ export default function RentalPage() {
                     ) : filteredRentals.length > 0 ? (
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {filteredRentals.map(rental => (
-                                <Card key={rental.id} className="flex flex-col overflow-hidden">
+                                <Card key={rental.id} className="flex flex-col overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
                                     <CardHeader>
                                         <CardTitle>{rental.name}</CardTitle>
                                         <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
@@ -288,7 +288,7 @@ export default function RentalPage() {
                     ) : myRentals.length > 0 ? (
                          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {myRentals.map(rental => (
-                                <Card key={rental.id} className="flex flex-col overflow-hidden">
+                                <Card key={rental.id} className="flex flex-col overflow-hidden bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20">
                                     <CardHeader>
                                         <CardTitle>{rental.name}</CardTitle>
                                          <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
