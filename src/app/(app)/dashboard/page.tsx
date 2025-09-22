@@ -51,8 +51,8 @@ export default function DashboardPage() {
       href: "/weather",
       icon: CloudSun,
       badge: null,
-      color: "bg-cyan-100 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800/50",
-      iconColor: "text-cyan-600 dark:text-cyan-400",
+      color: "bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-800/50",
+      iconColor: "text-orange-600 dark:text-orange-400",
     },
     {
       title: t.dashboard.services.market.title,
