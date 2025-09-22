@@ -98,29 +98,27 @@ export default function YieldCalculatorPage() {
                 <p className="text-muted-foreground">Estimate your potential profit or loss for a crop.</p>
             </div>
 
-            <Card className="w-full max-w-3xl mx-auto">
+            <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
                     <CardTitle>Enter Crop Details</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                    <div>
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="area">Area (acres)</Label>
-                                <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="yieldPerAcre">Expected Yield (kg/acre)</Label>
-                                <Input id="yieldPerAcre" type="number" placeholder="e.g., 2000" value={inputs.yieldPerAcre} onChange={handleInputChange} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="sellingPrice">Market Price (₹/kg)</Label>
-                                <Input id="sellingPrice" type="number" placeholder="e.g., 20" value={inputs.sellingPrice} onChange={handleInputChange} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="productionCost">Production Cost (₹/acre)</Label>
-                                <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
-                            </div>
+                <CardContent>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="area">Area (acres)</Label>
+                            <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="yieldPerAcre">Expected Yield (kg/acre)</Label>
+                            <Input id="yieldPerAcre" type="number" placeholder="e.g., 2000" value={inputs.yieldPerAcre} onChange={handleInputChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="sellingPrice">Market Price (₹/kg)</Label>
+                            <Input id="sellingPrice" type="number" placeholder="e.g., 20" value={inputs.sellingPrice} onChange={handleInputChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="productionCost">Production Cost (₹/acre)</Label>
+                            <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
                 </CardContent>
@@ -128,7 +126,7 @@ export default function YieldCalculatorPage() {
                     <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
                         <Trash2 className="mr-2 h-4 w-4" /> Clear
                     </Button>
-                    <Button onClick={handleCalculate} disabled={!hasInputs}>
+                    <Button onClick={handleCalculate} disabled={!Object.values(inputs).some(v => v !== '')}>
                         <Calculator className="mr-2 h-4 w-4" /> Calculate
                     </Button>
                 </CardFooter>
