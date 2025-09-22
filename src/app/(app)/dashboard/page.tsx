@@ -107,7 +107,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4">
-      <div>
+      <div className="text-center">
         <h1 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
         <p className="text-muted-foreground">{t.dashboard.servicesDescription}</p>
       </div>
