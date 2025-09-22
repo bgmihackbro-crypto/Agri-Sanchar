@@ -51,10 +51,10 @@ const prompt = ai.definePrompt({
 **Your Task:**
 1.  Analyze the farmer's problem and the list of available pesticides.
 2.  Choose the single BEST pesticide from the list to solve the problem. Consider the crop, the type of problem (pest, fungus, etc.), and whether an organic or chemical solution is more appropriate. Prioritize organic options if they are effective.
-3.  Provide a clear and **brief** recommendation in the required JSON format.
+3.  Provide a clear and **extremely brief** recommendation in the required JSON format.
     - For 'recommendation', provide only the exact name of the pesticide.
-    - For 'reasoning', provide a concise, 1-2 sentence explanation.
-    - For 'usage', briefly explain how to apply it, including dosage. Keep it short.
+    - For 'reasoning', provide a very concise, 1-sentence explanation.
+    - For 'usage', very briefly explain how to apply it, including dosage. Keep it as short as possible.
 `,
 });
 
