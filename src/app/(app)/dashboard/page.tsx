@@ -75,8 +75,8 @@ export default function DashboardPage() {
       href: "/soil-testing",
       icon: FlaskConical,
       badge: null,
-      color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800/50",
-      iconColor: "text-yellow-600 dark:text-yellow-400",
+      color: "bg-amber-100 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800/50",
+      iconColor: "text-amber-600 dark:text-amber-400",
     },
     {
       title: t.dashboard.services.schemes.title,
