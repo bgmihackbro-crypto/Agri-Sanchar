@@ -6,16 +6,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, Check, IndianRupee, X as XIcon, Trash2, ChevronDown } from 'lucide-react';
+import { Calculator, Check, IndianRupee, X as XIcon, Trash2, ChevronDown, PlusCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface CalculatorInput {
     area: string;
     yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
-    fixedCosts: string;
     otherIncome: string;
 }
 
@@ -33,7 +33,6 @@ const initialInputs: CalculatorInput = {
     yieldPerAcre: '',
     sellingPrice: '',
     productionCost: '',
-    fixedCosts: '0',
     otherIncome: '0',
 };
 
@@ -56,7 +55,6 @@ export default function YieldCalculatorPage() {
         const yieldPerAcre = parseFloat(inputs.yieldPerAcre);
         const sellingPrice = parseFloat(inputs.sellingPrice);
         const productionCostPerAcre = parseFloat(inputs.productionCost);
-        const fixedCosts = parseFloat(inputs.fixedCosts) || 0;
         const otherIncome = parseFloat(inputs.otherIncome) || 0;
 
         if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
@@ -66,8 +64,7 @@ export default function YieldCalculatorPage() {
 
         const netYield = area * yieldPerAcre;
         const revenue = netYield * sellingPrice;
-        const variableCosts = productionCostPerAcre * area;
-        const totalCosts = variableCosts + fixedCosts;
+        const totalCosts = productionCostPerAcre * area;
         const profit = revenue + otherIncome - totalCosts;
         const roi = totalCosts > 0 ? (profit / totalCosts) * 100 : 0;
         const breakevenPrice = netYield > 0 ? (totalCosts - otherIncome) / netYield : 0;
@@ -122,12 +119,8 @@ export default function YieldCalculatorPage() {
                             <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
-                    <Separator />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
-                            <Input id="fixedCosts" type="number" placeholder="e.g., 10000" value={inputs.fixedCosts} onChange={handleInputChange} />
-                        </div>
+                     <Separator />
+                     <div className="space-y-4 pt-2">
                         <div className="space-y-2">
                             <Label htmlFor="otherIncome">Other Income (₹)</Label>
                             <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
