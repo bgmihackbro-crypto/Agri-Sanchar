@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, Users, TrendingUp, Calculator } from "lucide-react";
+import { Home, User, Users, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -15,14 +15,13 @@ export function BottomNav() {
     { href: "/dashboard", label: t.bottomNav.home, icon: Home },
     { href: "/community", label: t.bottomNav.community, icon: Users },
     { href: "/yield-calculator", label: t.bottomNav.calculator, icon: Calculator },
-    { href: "/market", label: t.bottomNav.market, icon: TrendingUp },
     { href: "/profile", label: t.bottomNav.profile, icon: User },
   ];
 
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t">
-      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
         {navLinks.map((link) => {
           const isActive = pathname.startsWith(link.href);
           return (
