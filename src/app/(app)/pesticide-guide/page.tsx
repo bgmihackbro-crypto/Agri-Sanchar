@@ -578,7 +578,6 @@ export default function PesticideGuidePage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>{t.pesticideGuide.wizardTitle}</CardTitle>
-                        <CardDescription>{t.pesticideGuide.wizardDesc}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
