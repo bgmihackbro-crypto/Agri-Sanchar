@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -537,7 +537,7 @@ export default function PesticideGuidePage() {
   const [recommendationError, setRecommendationError] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     const profile = localStorage.getItem('userProfile');
@@ -580,6 +580,7 @@ export default function PesticideGuidePage() {
             crop: wizardCrop,
             problem: wizardProblem,
             pesticideData: JSON.stringify(pesticideData),
+            language: language,
         });
         setRecommendation(result);
     } catch (e: any) {
@@ -746,12 +747,12 @@ export default function PesticideGuidePage() {
                             
                             <div>
                                 <h4 className="font-semibold">{t.pesticideGuide.reasoning}</h4>
-                                <p className="text-muted-foreground text-sm">{recommendation.reasoning}</p>
+                                <p className="text-foreground text-sm">{recommendation.reasoning}</p>
                             </div>
                             
                              <div>
                                 <h4 className="font-semibold">{t.pesticideGuide.usage}</h4>
-                                <p className="text-muted-foreground text-sm">{recommendation.usage}</p>
+                                <p className="text-foreground text-sm">{recommendation.usage}</p>
                             </div>
                              <p className="text-xs text-muted-foreground pt-4">
                                 {t.pesticideGuide.disclaimer}
@@ -766,5 +767,3 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
-
-    

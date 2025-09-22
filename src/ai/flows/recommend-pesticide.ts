@@ -12,6 +12,7 @@ const PesticideRecommendationInputSchema = z.object({
   crop: z.string().describe('The crop that has the problem (e.g., "Cotton", "Rice").'),
   problem: z.string().describe('A description of the pest, disease, or problem observed.'),
   pesticideData: z.string().describe('A JSON string of available pesticide data to use as context.'),
+  language: z.string().optional().describe("The user's preferred language (e.g., 'English', 'Hindi'). The AI should prioritize the language of the problem description itself."),
 });
 
 const PesticideRecommendationOutputSchema = z.object({
@@ -32,6 +33,11 @@ const prompt = ai.definePrompt({
   input: { schema: PesticideRecommendationInputSchema },
   output: { schema: PesticideRecommendationOutputSchema },
   prompt: `You are an agricultural expert specializing in pest and disease management for Indian farming conditions. Your task is to recommend the most suitable pesticide from a given list.
+
+**CRITICAL INSTRUCTION**: You MUST detect the language of the farmer's problem description ("{{{problem}}}") and provide your entire response (recommendation, reasoning, and usage) in that same language.
+- If the problem is described in **Hindi**, reply entirely in **Devanagari script**.
+- If the problem is described in **English**, reply entirely in **English**.
+- The user's profile language is set to '{{language}}', but you must **always prioritize the language of the problem description itself**.
 
 **Farmer's Problem:**
 - **Crop:** {{{crop}}}
