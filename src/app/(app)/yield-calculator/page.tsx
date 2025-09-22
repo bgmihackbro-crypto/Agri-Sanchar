@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, Check, IndianRupee, X as XIcon, Trash2 } from 'lucide-react';
+import { Calculator, Check, IndianRupee, X as XIcon, Trash2, TrendingUp, TrendingDown, Scale } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 
@@ -61,7 +61,7 @@ export default function YieldCalculatorPage() {
         const revenue = netYield * sellingPrice;
         const totalCosts = productionCostPerAcre * area;
         const profit = revenue - totalCosts;
-        const roi = totalCosts > 0 ? (profit / totalCosts) * 100 : 0;
+        const roi = totalCosts > 0 ? (profit / totalCosts) * 100 : (profit > 0 ? Infinity : 0);
         const breakevenPrice = netYield > 0 ? totalCosts / netYield : 0;
 
         setResult({
@@ -75,7 +75,7 @@ export default function YieldCalculatorPage() {
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(value);
+        return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
     };
 
     const formatNumber = (value: number) => {
@@ -91,83 +91,78 @@ export default function YieldCalculatorPage() {
                 <p className="text-muted-foreground">Estimate your potential profit or loss for a crop.</p>
             </div>
 
-            <Card className="w-full max-w-lg mx-auto">
-                <CardHeader>
-                    <CardTitle>Enter Crop Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="area">Area (acres)</Label>
-                            <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Enter Crop Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="area">Area (acres)</Label>
+                                <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="yieldPerAcre">Expected Yield (kg/acre)</Label>
+                                <Input id="yieldPerAcre" type="number" placeholder="e.g., 2000" value={inputs.yieldPerAcre} onChange={handleInputChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="sellingPrice">Market Price (₹/kg)</Label>
+                                <Input id="sellingPrice" type="number" placeholder="e.g., 20" value={inputs.sellingPrice} onChange={handleInputChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="productionCost">Production Cost (₹/acre)</Label>
+                                <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="yieldPerAcre">Expected Yield (kg/acre)</Label>
-                            <Input id="yieldPerAcre" type="number" placeholder="e.g., 2000" value={inputs.yieldPerAcre} onChange={handleInputChange} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="sellingPrice">Market Price (₹/kg)</Label>
-                            <Input id="sellingPrice" type="number" placeholder="e.g., 20" value={inputs.sellingPrice} onChange={handleInputChange} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="productionCost">Production Cost (₹/acre)</Label>
-                            <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
-                        </div>
-                    </div>
-                    
-                </CardContent>
-                <CardFooter className="flex-col sm:flex-row justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
-                    <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Clear
-                    </Button>
-                    <Button onClick={handleCalculate} disabled={!inputs.area || !inputs.yieldPerAcre || !inputs.sellingPrice || !inputs.productionCost}>
-                        <Calculator className="mr-2 h-4 w-4" /> Calculate
-                    </Button>
-                </CardFooter>
+                        
+                    </CardContent>
+                    <CardFooter className="flex justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
+                        <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
+                            <Trash2 className="mr-2 h-4 w-4" /> Clear
+                        </Button>
+                        <Button onClick={handleCalculate} disabled={!inputs.area || !inputs.yieldPerAcre || !inputs.sellingPrice || !inputs.productionCost}>
+                            <Calculator className="mr-2 h-4 w-4" /> Calculate
+                        </Button>
+                    </CardFooter>
+                </Card>
 
-                {result && (
-                     <div className="border-t">
-                        <CardHeader>
-                            <CardTitle>Calculation Results</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <Alert variant={result.profit >= 0 ? "default" : "destructive"} className={result.profit >= 0 ? "bg-green-50 border-green-200" : ""}>
-                                {result.profit >= 0 ? <Check className="h-4 w-4" /> : <XIcon className="h-4 w-4" />}
-                                <AlertTitle className="text-xl font-bold">
-                                    {result.profit >= 0 ? "Estimated Profit" : "Estimated Loss"}
-                                </AlertTitle>
-                                <AlertDescription className="text-2xl font-bold">
-                                    {formatCurrency(result.profit)}
-                                </AlertDescription>
-                            </Alert>
-
-                             <div className="grid grid-cols-2 gap-4 text-sm">
+                 <Card>
+                     <CardHeader>
+                        <CardTitle>Calculation Results</CardTitle>
+                        <CardDescription>Based on the values you provided.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                    {result ? (
+                        <div className="space-y-3">
+                            <div className={`p-4 rounded-lg text-center ${result.profit >= 0 ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'}`}>
+                                <p className="text-sm font-semibold">{result.profit >= 0 ? "Estimated Profit" : "Estimated Loss"}</p>
+                                <p className="text-3xl font-bold">{formatCurrency(result.profit)}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="p-3 bg-muted rounded-lg">
-                                    <p className="text-muted-foreground">Total Revenue</p>
+                                    <p className="text-muted-foreground flex items-center gap-1.5"><TrendingUp className="h-4 w-4"/>Total Revenue</p>
                                     <p className="font-semibold text-lg">{formatCurrency(result.revenue)}</p>
                                 </div>
                                 <div className="p-3 bg-muted rounded-lg">
-                                    <p className="text-muted-foreground">Total Costs</p>
+                                    <p className="text-muted-foreground flex items-center gap-1.5"><TrendingDown className="h-4 w-4"/>Total Costs</p>
                                     <p className="font-semibold text-lg">{formatCurrency(result.totalCosts)}</p>
                                 </div>
-                                <div className="p-3 bg-muted rounded-lg">
-                                    <p className="text-muted-foreground">Net Yield</p>
-                                    <p className="font-semibold text-lg">{formatNumber(result.netYield)} kg</p>
-                                </div>
-                                <div className="p-3 bg-muted rounded-lg">
-                                    <p className="text-muted-foreground">Return on Investment (ROI)</p>
-                                    <p className="font-semibold text-lg">{result.roi.toFixed(2)}%</p>
-                                </div>
-                                <div className="p-3 bg-blue-50 border-blue-200 rounded-lg col-span-2">
-                                    <p className="text-blue-700">Breakeven Price</p>
-                                    <p className="font-semibold text-lg text-blue-900">{formatCurrency(result.breakevenPrice)} / kg</p>
-                                    <p className="text-xs text-blue-800">This is the minimum price you must sell at to cover your costs.</p>
+                                <div className="p-3 bg-muted rounded-lg col-span-2">
+                                    <p className="text-muted-foreground flex items-center gap-1.5"><Scale className="h-4 w-4"/>Breakeven Price (per kg)</p>
+                                    <p className="font-semibold text-lg">{formatCurrency(result.breakevenPrice)}</p>
                                 </div>
                             </div>
-                        </CardContent>
-                     </div>
-                )}
-            </Card>
+                        </div>
+                    ) : (
+                         <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+                            <Calculator className="h-12 w-12 mb-4" />
+                            <p>Your results will be displayed here.</p>
+                        </div>
+                    )}
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 }
