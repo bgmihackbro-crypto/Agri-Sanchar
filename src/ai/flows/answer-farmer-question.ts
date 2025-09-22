@@ -147,6 +147,7 @@ Format your diagnosis using Markdown. If the question is not about a problem, us
 {{/if}}
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
+When presenting information, use bold headings and numbered lists for clarity, not asterisks or dashes.
 
 <RAG_KNOWLEDGE>
   <GOVERNMENT_SCHEMES>
@@ -446,13 +447,4 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
-
-    
-
-    
-
-
-
-
-
 
