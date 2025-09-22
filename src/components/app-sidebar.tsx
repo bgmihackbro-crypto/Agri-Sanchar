@@ -15,6 +15,7 @@ import {
   Tractor,
   Landmark,
   LogOut,
+  Calculator,
 } from "lucide-react";
 import {
   SidebarContent,
@@ -52,6 +53,7 @@ export function AppSidebar() {
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
     { href: "/soil-testing", label: t.sidebar.soil, icon: FlaskConical },
+    { href: "/yield-calculator", label: "Yield Calculator", icon: Calculator },
     { href: "/profile", label: t.sidebar.profile, icon: User },
   ];
 

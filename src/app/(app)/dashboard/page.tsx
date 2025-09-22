@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -102,6 +102,15 @@ export default function DashboardPage() {
       badge: null,
       color: "bg-indigo-100 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800/50",
       iconColor: "text-indigo-600 dark:text-indigo-400",
+    },
+    {
+      title: "Yield Calculator",
+      href: "/yield-calculator",
+      icon: Calculator,
+      badge: "New",
+      badgeColor: "bg-blue-500",
+      color: "bg-gray-100 dark:bg-gray-900/30 border-gray-200 dark:border-gray-800/50",
+      iconColor: "text-gray-600 dark:text-gray-400",
     },
   ];
 

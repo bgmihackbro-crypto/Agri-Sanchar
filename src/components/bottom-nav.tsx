@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, Landmark, TrendingUp, Users } from "lucide-react";
+import { Home, User, Users, TrendingUp, Tractor } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -14,7 +14,7 @@ export function BottomNav() {
   const navLinks = [
     { href: "/dashboard", label: t.bottomNav.home, icon: Home },
     { href: "/community", label: t.bottomNav.community, icon: Users },
-    { href: "/schemes", label: t.sidebar.schemes, icon: Landmark },
+    { href: "/rental-equipment", label: t.sidebar.rental, icon: Tractor },
     { href: "/market", label: t.bottomNav.market, icon: TrendingUp },
     { href: "/profile", label: t.bottomNav.profile, icon: User },
   ];
