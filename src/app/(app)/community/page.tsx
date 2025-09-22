@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat, Building, Briefcase, Phone, MessageSquare } from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, Search, Share, Award, PlusCircle, Users, Crown, X, Image as ImageIcon, Video, Repeat, Building, Briefcase, Phone, MessageSquare, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import {
   Select,
@@ -24,7 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { createGroup, getGroups, type Group } from "@/lib/firebase/groups";
+import { createGroup, getGroups, type Group, addUserToGroup } from "@/lib/firebase/groups";
 import { useToast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Timestamp } from "firebase/firestore";
@@ -416,6 +416,9 @@ const initialGroupsData = [
   { id: 'group-4', name: 'Organic Farming Pune', city: 'Pune', description: 'A community for organic farmers in and around Pune.', createdBy: 'Admin', members: ['user-4'] },
   { id: 'group-5', name: 'Bengaluru Horticulturists', city: 'Bengaluru', description: 'For farmers growing fruits, vegetables, and flowers in Bengaluru.', createdBy: 'Admin', members: ['user-5'] },
   { id: 'group-6', name: 'Hyderabad Cotton & Chilli', city: 'Hyderabad', description: 'Market trends and farming techniques for cotton and chilli.', createdBy: 'Admin', members: ['user-6'] },
+  { id: 'group-7', name: 'Rajasthan Agri-Innovators', city: 'Jaipur', description: 'Sharing new techniques and technology for farming in Rajasthan.', createdBy: 'Admin', members: [] },
+  { id: 'group-8', name: 'UP Sugarcane Collective', city: 'Lucknow', description: 'A group for sugarcane farmers in Uttar Pradesh to discuss cultivation and pricing.', createdBy: 'Admin', members: [] },
+  { id: 'group-9', name: 'MP Soybean Producers', city: 'Indore', description: 'Market updates, pest control, and best practices for soybean cultivation in Madhya Pradesh.', createdBy: 'Admin', members: [] },
 ];
 
 type UserProfile = AppUserProfile;
@@ -1105,6 +1108,22 @@ export default function CommunityPage() {
         }
     };
 
+    const handleJoinGroup = (groupId: string, groupName: string) => {
+      if (!userProfile) {
+          toast({ variant: 'destructive', title: "Login Required", description: "You must be logged in to join a group." });
+          router.push('/login');
+          return;
+      }
+      
+      const result = addUserToGroup(groupId, userProfile.farmerId);
+      if (result.success) {
+          toast({ title: "Joined Successfully!", description: `You have joined the "${groupName}" group.` });
+          router.push(`/community/${groupId}`);
+      } else {
+          toast({ variant: 'destructive', title: "Failed to Join", description: result.error });
+      }
+    };
+
   const isProfileComplete = !!(userProfile?.state && userProfile.city);
 
   const userGroups = groups.filter(g => userProfile && g.members.includes(userProfile.farmerId));
@@ -1217,28 +1236,28 @@ export default function CommunityPage() {
             <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} t={t} />
         </div>
         
-        <Card>
-            <CardContent className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Select onValueChange={setFilterCategory} value={filterCategory}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t.community.filterTopic} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {allCategories.map(cat => <SelectItem key={cat} value={cat}>{cat === 'all' ? t.community.allTopics : cat}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                    <Select onValueChange={setFilterCity} value={filterCity}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t.community.filterLocation} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {allCities.map(city => <SelectItem key={city} value={city}>{city === 'all' ? t.community.allLocations : city}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-            </CardContent>
-        </Card>
+      <Card>
+          <CardContent className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Select onValueChange={setFilterCategory} value={filterCategory}>
+                      <SelectTrigger>
+                          <SelectValue placeholder={t.community.filterTopic} />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {allCategories.map(cat => <SelectItem key={cat} value={cat}>{cat === 'all' ? t.community.allTopics : cat}</SelectItem>)}
+                      </SelectContent>
+                  </Select>
+                  <Select onValueChange={setFilterCity} value={filterCity}>
+                      <SelectTrigger>
+                          <SelectValue placeholder={t.community.filterLocation} />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {allCities.map(city => <SelectItem key={city} value={city}>{city === 'all' ? t.community.allLocations : city}</SelectItem>)}
+                      </SelectContent>
+                  </Select>
+              </div>
+          </CardContent>
+      </Card>
 
 
       <PostDetailDialog 
@@ -1286,7 +1305,7 @@ export default function CommunityPage() {
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
-                    <div className="space-y-4 max-w-2xl mx-auto">
+                    <div className="space-y-4 max-w-xl mx-auto">
                         {myPosts.map((post) => (
                             <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} />
                         ))}
@@ -1296,7 +1315,16 @@ export default function CommunityPage() {
                 )}
             </TabsContent>
              <TabsContent value="local" className="pt-4 space-y-4">
-                <div className="flex justify-end">
+                <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
+                    <div className="w-full sm:max-w-xs relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                            placeholder="Search groups..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9"
+                        />
+                    </div>
                     {isProfileComplete ? (
                         <CreateGroupDialog onGroupCreated={handleGroupCreated} t={t} />
                     ) : (
@@ -1322,34 +1350,37 @@ export default function CommunityPage() {
                 ) : filteredGroups.length === 0 ? (
                     <p className="text-center text-muted-foreground pt-8">{t.community.noGroupsFound}</p>
                 ) : (
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredGroups.map(group => (
-                        <Card key={group.id}>
+                        <Card key={group.id} className="flex flex-col bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20">
                             <CardHeader>
                                 <div className="flex justify-between items-start">
-                                    <div>
-                                        <CardTitle className="text-lg">{group.name}</CardTitle>
-                                        <div className="text-sm text-muted-foreground">
+                                    <div className='flex-1'>
+                                        <CardTitle className="text-lg font-headline">{group.name}</CardTitle>
+                                        <div className="text-sm text-muted-foreground mt-1">
                                           <span>{group.city}</span>
-                                          <span className="mx-1">•</span>
-                                          <span className="flex items-center gap-1.5 -ml-1">
-                                             <Crown className="h-4 w-4 text-amber-500"/>
-                                             {group.createdBy}
-                                          </span>
                                         </div>
                                     </div>
-                                    <Badge variant="secondary" className="flex items-center gap-1">
-                                        <Users className="h-3 w-3"/>
-                                        {group.members.length}
-                                    </Badge>
+                                    <Avatar className="h-12 w-12 border-2 border-background">
+                                        <AvatarImage src={group.avatarUrl} />
+                                        <AvatarFallback>{group.name.substring(0, 2)}</AvatarFallback>
+                                    </Avatar>
                                 </div>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="flex-grow">
                                 <p className="text-sm text-muted-foreground line-clamp-2">{group.description || t.community.noGroupDescription}</p>
                             </CardContent>
-                            <CardFooter>
-                                <Button asChild className="w-full">
-                                    <Link href={`/community/${group.id}`}>{t.community.openChat}</Link>
+                            <CardFooter className="flex-col items-stretch gap-2">
+                                 <div className="flex items-center text-xs text-muted-foreground">
+                                    <Users className="h-4 w-4 mr-1.5"/>
+                                    <span>{group.members.length} members</span>
+                                    <span className="mx-2">•</span>
+                                    <Crown className="h-4 w-4 mr-1 text-amber-500"/>
+                                    <span>{group.createdBy}</span>
+                                </div>
+                                <Button onClick={() => handleJoinGroup(group.id, group.name)} className="w-full">
+                                    {userProfile && group.members.includes(userProfile.farmerId) ? t.community.openChat : 'Join Group'}
+                                    <ArrowRight className="ml-2 h-4 w-4"/>
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -1402,18 +1433,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
-
-    
-
-
-
-
-
-
-    
-
-
-
-    
