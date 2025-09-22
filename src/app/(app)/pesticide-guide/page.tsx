@@ -658,10 +658,10 @@ export default function PesticideGuidePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
                         {filteredPesticides.map((pesticide) => (
                         <Card key={pesticide.name} className="flex flex-col">
-                            <CardHeader>
+                            <CardHeader className="p-4">
                                 <div className="flex items-start justify-between">
-                                    <CardTitle className="font-headline text-lg">{pesticide.name}</CardTitle>
-                                    <div className={`p-2 rounded-lg ${pesticide.color}`}>
+                                    <CardTitle className="font-headline text-base">{pesticide.name}</CardTitle>
+                                    <div className={`p-1.5 rounded-md ${pesticide.color}`}>
                                         {getIcon(pesticide.type)}
                                     </div>
                                 </div>
@@ -670,12 +670,12 @@ export default function PesticideGuidePage() {
                                     <Badge variant="secondary">{pesticide.target}</Badge>
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="flex-grow">
-                            <p className="text-sm text-muted-foreground line-clamp-3">
+                            <CardContent className="flex-grow p-4 pt-0">
+                            <p className="text-xs text-muted-foreground line-clamp-2">
                                 {pesticide.description}
                             </p>
                             </CardContent>
-                            <CardFooter>
+                            <CardFooter className="p-4 pt-0">
                             <DetailDialog pesticide={pesticide} t={t} />
                             </CardFooter>
                         </Card>
