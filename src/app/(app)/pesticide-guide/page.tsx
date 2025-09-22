@@ -603,9 +603,9 @@ export default function PesticideGuidePage() {
             </TabsList>
             <TabsContent value="directory" className="pt-4">
                  <Card>
-                    <CardContent className="p-2 bg-primary/5">
-                        <div className="flex flex-col md:flex-row gap-2 flex-wrap">
-                            <div className="relative flex-grow min-w-[200px]">
+                    <CardContent className="p-4 bg-primary/5">
+                        <div className="flex flex-col md:flex-row gap-2 flex-wrap items-center">
+                            <div className="relative flex-grow w-full md:w-auto">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/70" />
                                 <Input
                                     placeholder={t.pesticideGuide.searchPlaceholder}
@@ -614,7 +614,7 @@ export default function PesticideGuidePage() {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <div className="flex-grow grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div className="flex-grow grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
                                 <Select onValueChange={setFilterType} value={filterType}>
                                     <SelectTrigger className="bg-background/70 border-primary/20">
                                         <SelectValue placeholder={t.pesticideGuide.filterType} />
@@ -690,7 +690,7 @@ export default function PesticideGuidePage() {
             </TabsContent>
             <TabsContent value="wizard" className="pt-4 space-y-4">
                  <Card className="bg-muted/30">
-                    <CardContent className="p-3">
+                    <CardContent className="p-4">
                         <div className="flex flex-col sm:flex-row gap-2">
                              <Input
                                 placeholder={t.pesticideGuide.cropPlaceholder}
@@ -699,12 +699,13 @@ export default function PesticideGuidePage() {
                                 disabled={isRecommending}
                                 className="bg-background"
                             />
-                             <Input
+                             <Textarea
                                 placeholder={t.pesticideGuide.problemPlaceholder}
                                 value={wizardProblem}
                                 onChange={(e) => setWizardProblem(e.target.value)}
                                 disabled={isRecommending}
                                 className="bg-background"
+                                rows={1}
                             />
                             <Button onClick={handleGetRecommendation} disabled={isRecommending || !wizardCrop || !wizardProblem} className="sm:w-auto w-full">
                                 {isRecommending ? <Spinner className="mr-2 h-4 w-4"/> : <Bot className="mr-2 h-4 w-4"/>}
@@ -769,3 +770,5 @@ export default function PesticideGuidePage() {
     </div>
   );
 }
+
+    
