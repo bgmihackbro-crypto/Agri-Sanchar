@@ -1207,48 +1207,14 @@ export default function CommunityPage() {
 
   return (
     <div className="space-y-6">
-       <div>
-        <h1 className="text-3xl font-bold font-headline">{t.community.title}</h1>
-        <p className="text-muted-foreground">
-          {t.community.description}
-        </p>
-      </div>
-
-       <div className="space-y-4">
-            <div className="flex items-center gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                        placeholder={t.community.searchPlaceholder}
-                        className="pl-9"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} t={t} />
+       <div className="flex justify-between items-center">
+            <div>
+                <h1 className="text-3xl font-bold font-headline">{t.community.title}</h1>
+                <p className="text-muted-foreground">
+                {t.community.description}
+                </p>
             </div>
-             <div className="flex flex-col md:flex-row gap-2">
-                <Select value={filterCategory} onValueChange={setFilterCategory}>
-                    <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder={t.community.filterTopic} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {allCategories.map(cat => (
-                            <SelectItem key={cat} value={cat}>{cat === 'all' ? t.community.allTopics : cat}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                <Select value={filterCity} onValueChange={setFilterCity}>
-                    <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder={t.community.filterLocation} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {allCities.map(city => (
-                             <SelectItem key={city} value={city}>{city === 'all' ? t.community.allLocations : city}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-             </div>
+            <NewPostDialog userProfile={userProfile} onPostCreated={handleNewPost} t={t} />
         </div>
 
       <PostDetailDialog 
