@@ -62,14 +62,6 @@ export default function DashboardPage() {
       color: "bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800/50",
       iconColor: "text-green-600 dark:text-green-400",
     },
-    {
-      title: t.dashboard.services.community.title,
-      href: "/community",
-      icon: Users,
-      badge: null,
-      color: "bg-pink-100 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800/50",
-      iconColor: "text-pink-600 dark:text-pink-400",
-    },
      {
       title: t.dashboard.services.soil.title,
       href: "/soil-testing",
