@@ -479,9 +479,6 @@ export default function PesticideGuidePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold font-headline">{t.pesticideGuide.title}</h1>
-        <p className="text-muted-foreground">
-          {t.pesticideGuide.description}
-        </p>
       </div>
 
        <Tabs defaultValue="directory" className="w-full">
