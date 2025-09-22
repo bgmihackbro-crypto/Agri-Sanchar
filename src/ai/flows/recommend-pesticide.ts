@@ -17,8 +17,8 @@ const PesticideRecommendationInputSchema = z.object({
 
 const PesticideRecommendationOutputSchema = z.object({
   recommendation: z.string().describe('The name of the recommended pesticide.'),
-  reasoning: z.string().describe('A detailed explanation for why this pesticide was recommended.'),
-  usage: z.string().describe('Instructions on how to use the recommended pesticide.'),
+  reasoning: z.string().describe('A brief, 1-2 sentence explanation for why this pesticide was recommended.'),
+  usage: z.string().describe('Brief instructions on how to use the recommended pesticide, including dosage.'),
 });
 export type PesticideRecommendationOutput = z.infer<typeof PesticideRecommendationOutputSchema>;
 
@@ -50,8 +50,11 @@ const prompt = ai.definePrompt({
 
 **Your Task:**
 1.  Analyze the farmer's problem and the list of available pesticides.
-2.  Choose the single BEST pesticide from the list to solve the problem. Consider the crop, the type of problem (pest, fungus, etc.), and whether an organic or chemical solution is more appropriate. Prioritize organic options if they are effective for the described problem.
-3.  Provide a clear recommendation in the required JSON format. For the 'recommendation' field, provide the exact name of the pesticide. For 'reasoning', explain why you chose this pesticide. For 'usage', briefly explain how to apply the pesticide, referencing its dosage from the data.
+2.  Choose the single BEST pesticide from the list to solve the problem. Consider the crop, the type of problem (pest, fungus, etc.), and whether an organic or chemical solution is more appropriate. Prioritize organic options if they are effective.
+3.  Provide a clear and **brief** recommendation in the required JSON format.
+    - For 'recommendation', provide only the exact name of the pesticide.
+    - For 'reasoning', provide a concise, 1-2 sentence explanation.
+    - For 'usage', briefly explain how to apply it, including dosage. Keep it short.
 `,
 });
 
