@@ -47,7 +47,6 @@ export function AppSidebar() {
 
   const links = [
     { href: "/dashboard", label: t.sidebar.dashboard, icon: LayoutDashboard },
-    { href: "/chatbot", label: t.sidebar.chatbot, icon: Bot },
     { href: "/schemes", label: t.sidebar.schemes, icon: Landmark },
     { href: "/community", label: t.sidebar.community, icon: Users },
     { href: "/market", label: t.sidebar.market, icon: TrendingUp },
