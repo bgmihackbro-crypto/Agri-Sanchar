@@ -9,14 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Calculator, Check, IndianRupee, X as XIcon, Trash2, ChevronDown } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface CalculatorInput {
     area: string;
     yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
-    lossPercentage: string;
     fixedCosts: string;
     otherIncome: string;
 }
@@ -35,7 +33,6 @@ const initialInputs: CalculatorInput = {
     yieldPerAcre: '',
     sellingPrice: '',
     productionCost: '',
-    lossPercentage: '0',
     fixedCosts: '0',
     otherIncome: '0',
 };
@@ -61,16 +58,13 @@ export default function YieldCalculatorPage() {
         const productionCostPerAcre = parseFloat(inputs.productionCost);
         const fixedCosts = parseFloat(inputs.fixedCosts) || 0;
         const otherIncome = parseFloat(inputs.otherIncome) || 0;
-        const lossPercentage = parseFloat(inputs.lossPercentage) || 0;
 
         if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
             setResult(null);
             return;
         }
 
-        const grossYield = area * yieldPerAcre;
-        const loss = grossYield * (lossPercentage / 100);
-        const netYield = grossYield - loss;
+        const netYield = area * yieldPerAcre;
         const revenue = netYield * sellingPrice;
         const variableCosts = productionCostPerAcre * area;
         const totalCosts = variableCosts + fixedCosts;
@@ -128,16 +122,13 @@ export default function YieldCalculatorPage() {
                             <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
+                    <Separator />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                            <div className="space-y-2">
-                            <Label htmlFor="lossPercentage">Post-harvest Loss (%)</Label>
-                            <Input id="lossPercentage" type="number" placeholder="e.g., 5" value={inputs.lossPercentage} onChange={handleInputChange} />
-                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
                             <Input id="fixedCosts" type="number" placeholder="e.g., 10000" value={inputs.fixedCosts} onChange={handleInputChange} />
                         </div>
-                            <div className="space-y-2 sm:col-span-2">
+                        <div className="space-y-2">
                             <Label htmlFor="otherIncome">Other Income (₹)</Label>
                             <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
                         </div>
