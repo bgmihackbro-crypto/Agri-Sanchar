@@ -213,10 +213,6 @@ export default function RentalPage() {
         const profile = localStorage.getItem('userProfile');
         if (profile) {
             setUserProfile(JSON.parse(profile));
-            const parsed = JSON.parse(profile);
-            if (parsed.city) {
-                setFilterLocation(parsed.city);
-            }
         }
         fetchRentals();
     }, []);
