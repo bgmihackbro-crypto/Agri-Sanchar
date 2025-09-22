@@ -98,24 +98,38 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
-        
-      </div>
-      
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
-        {serviceLinks.map((link, i) => (
-          <Card key={link.title} className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1", link.color)} style={{ animationDelay: `${0.3 + i * 0.05}s` }}>
+    <div
+      className="space-y-4 rounded-lg p-4"
+      style={{
+        backgroundImage: "url('https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div
+        className="space-y-4 rounded-lg p-4 backdrop-blur-sm"
+        style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
+      >
+        <div className="text-center">
+          <h1 className="text-2xl font-bold font-headline">{t.dashboard.servicesTitle}</h1>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
+          {serviceLinks.map((link, i) => (
+            <Card
+              key={link.title}
+              className={cn("flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up hover:-translate-y-1", link.color)}
+              style={{ animationDelay: `${0.3 + i * 0.05}s` }}
+            >
               <Link href={link.href} className="flex flex-col flex-grow items-center justify-center p-2 sm:p-3 text-center">
-                  <div className="p-2 sm:p-3 bg-background/50 rounded-lg mb-2">
-                      <link.icon className={cn("w-5 h-5 sm:w-6 sm:h-6", link.iconColor)} />
-                  </div>
-                  <CardTitle className="font-headline text-[11px] sm:text-xs leading-tight">{link.title}</CardTitle>
-                    {link.badge && <Badge className={`text-white text-[10px] ${link.badgeColor} absolute top-1.5 right-1.5`}>{link.badge}</Badge>}
-            </Link>
-          </Card>
-        ))}
+                <div className="p-2 sm:p-3 bg-background/50 rounded-lg mb-2">
+                  <link.icon className={cn("w-5 h-5 sm:w-6 sm:h-6", link.iconColor)} />
+                </div>
+                <CardTitle className="font-headline text-[11px] sm:text-xs leading-tight">{link.title}</CardTitle>
+                {link.badge && <Badge className={`text-white text-[10px] ${link.badgeColor} absolute top-1.5 right-1.5`}>{link.badge}</Badge>}
+              </Link>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
