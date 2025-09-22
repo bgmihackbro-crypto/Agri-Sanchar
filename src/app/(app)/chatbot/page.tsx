@@ -555,9 +555,8 @@ export default function ChatbotPage() {
                     <span className="sr-only">{t.chatbot.recordVoice}</span>
                 </Button>
             </div>
-            <Button type="submit" size="icon" className="h-full px-4" disabled={isLoading || (!input.trim() && !imageFile)}>
-              <Send className="h-5 w-5" />
-              <span className="sr-only">{t.chatbot.send}</span>
+            <Button type="submit" className="h-full px-6" disabled={isLoading || (!input.trim() && !imageFile)}>
+              {t.chatbot.send}
             </Button>
             <Input
               type="file"
@@ -572,5 +571,7 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
