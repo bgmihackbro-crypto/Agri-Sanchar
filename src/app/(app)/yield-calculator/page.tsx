@@ -128,29 +128,20 @@ export default function YieldCalculatorPage() {
                             <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
-                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
-                            <AccordionTrigger>
-                                
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                                     <div className="space-y-2">
-                                        <Label htmlFor="lossPercentage">Post-harvest Loss (%)</Label>
-                                        <Input id="lossPercentage" type="number" placeholder="e.g., 5" value={inputs.lossPercentage} onChange={handleInputChange} />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
-                                        <Input id="fixedCosts" type="number" placeholder="e.g., 10000" value={inputs.fixedCosts} onChange={handleInputChange} />
-                                    </div>
-                                     <div className="space-y-2 sm:col-span-2">
-                                        <Label htmlFor="otherIncome">Other Income (₹)</Label>
-                                        <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
-                                    </div>
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div className="space-y-2">
+                            <Label htmlFor="lossPercentage">Post-harvest Loss (%)</Label>
+                            <Input id="lossPercentage" type="number" placeholder="e.g., 5" value={inputs.lossPercentage} onChange={handleInputChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="fixedCosts">Fixed Costs (₹)</Label>
+                            <Input id="fixedCosts" type="number" placeholder="e.g., 10000" value={inputs.fixedCosts} onChange={handleInputChange} />
+                        </div>
+                            <div className="space-y-2 sm:col-span-2">
+                            <Label htmlFor="otherIncome">Other Income (₹)</Label>
+                            <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
+                        </div>
+                    </div>
                 </CardContent>
                 <CardFooter className="flex-col sm:flex-row justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
                     <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
