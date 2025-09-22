@@ -104,28 +104,28 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <h2 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h2>
-          <p className="text-muted-foreground mt-2">{t.dashboard.servicesDescription}</p>
+          <h2 className="text-2xl md:text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h2>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base">{t.dashboard.servicesDescription}</p>
       </div>
 
       <div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
           {serviceLinks.map((link, i) => (
             <Card key={link.title} className="flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
                 <Link href={link.href} className="flex flex-col flex-grow">
-                    <CardHeader className="relative">
+                    <CardHeader className="relative p-4">
                         <div className="flex items-start justify-between">
-                            <div className="p-3 bg-primary/10 rounded-xl">
-                                <link.icon className="w-6 h-6 text-primary" />
+                            <div className="p-2 md:p-3 bg-primary/10 rounded-lg md:rounded-xl">
+                                <link.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                             </div>
-                            {link.badge && <Badge className={`text-white ${link.badgeColor}`}>{link.badge}</Badge>}
+                            {link.badge && <Badge className={`text-white text-xs ${link.badgeColor}`}>{link.badge}</Badge>}
                         </div>
                     </CardHeader>
-                    <CardContent className="flex-grow flex flex-col">
-                        <CardTitle className="font-headline text-lg mb-2">{link.title}</CardTitle>
-                        <p className="text-muted-foreground text-sm">{link.description}</p>
+                    <CardContent className="flex-grow flex flex-col p-4 pt-0">
+                        <CardTitle className="font-headline text-base md:text-lg mb-1 leading-tight">{link.title}</CardTitle>
+                        <p className="text-muted-foreground text-xs md:text-sm line-clamp-2">{link.description}</p>
                     </CardContent>
               </Link>
             </Card>
