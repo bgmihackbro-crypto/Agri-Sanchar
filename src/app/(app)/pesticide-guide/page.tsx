@@ -489,7 +489,7 @@ export default function PesticideGuidePage() {
             <TabsContent value="directory" className="pt-4">
                  <Card>
                     <CardContent className="p-2 bg-primary/5">
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col md:flex-row gap-2">
                             <div className="relative flex-grow">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/70" />
                                 <Input
@@ -573,34 +573,30 @@ export default function PesticideGuidePage() {
                 )}
 
             </TabsContent>
-            <TabsContent value="wizard" className="pt-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t.pesticideGuide.wizardTitle}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Input
+            <TabsContent value="wizard" className="pt-4 space-y-4">
+                 <Card className="bg-muted/30">
+                    <CardContent className="p-3">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                             <Input
                                 placeholder={t.pesticideGuide.cropPlaceholder}
                                 value={wizardCrop}
                                 onChange={(e) => setWizardCrop(e.target.value)}
                                 disabled={isRecommending}
+                                className="bg-background"
                             />
+                             <Input
+                                placeholder={t.pesticideGuide.problemPlaceholder}
+                                value={wizardProblem}
+                                onChange={(e) => setWizardProblem(e.target.value)}
+                                disabled={isRecommending}
+                                className="bg-background"
+                            />
+                            <Button onClick={handleGetRecommendation} disabled={isRecommending || !wizardCrop || !wizardProblem} className="sm:w-auto w-full">
+                                {isRecommending ? <Spinner className="mr-2 h-4 w-4"/> : <Bot className="mr-2 h-4 w-4"/>}
+                                {isRecommending ? t.pesticideGuide.analyzing : t.pesticideGuide.getRecommendation}
+                            </Button>
                         </div>
-                        <Textarea
-                            placeholder={t.pesticideGuide.problemPlaceholder}
-                            rows={4}
-                            value={wizardProblem}
-                            onChange={(e) => setWizardProblem(e.target.value)}
-                            disabled={isRecommending}
-                        />
                     </CardContent>
-                    <CardFooter>
-                        <Button onClick={handleGetRecommendation} disabled={isRecommending || !wizardCrop || !wizardProblem}>
-                            {isRecommending ? <Spinner className="mr-2 h-4 w-4"/> : <Bot className="mr-2 h-4 w-4"/>}
-                            {isRecommending ? t.pesticideGuide.analyzing : t.pesticideGuide.getRecommendation}
-                        </Button>
-                    </CardFooter>
                 </Card>
                 
                 {isRecommending && (
