@@ -105,23 +105,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="relative rounded-xl overflow-hidden w-full h-64 md:h-80 animate-fade-in-up">
-        <Image
-          src="https://cdn.pixabay.com/photo/2010/12/13/10/18/watermelons-2636_1280.jpg"
-          alt="A field of watermelons"
-          fill
-          className="object-cover"
-          data-ai-hint="watermelons field"
-        />
-        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-white font-headline">Agri-Sanchar</h1>
-          <p className="mt-2 text-lg md:text-xl text-white/90">{t.dashboard.tagline}</p>
-          <p className="mt-4 max-w-2xl text-base text-white">
-            {t.dashboard.description}
-          </p>
-        </div>
-      </div>
-
       <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <h2 className="text-3xl font-bold font-headline">{t.dashboard.servicesTitle}</h2>
           <p className="text-muted-foreground mt-2">{t.dashboard.servicesDescription}</p>
