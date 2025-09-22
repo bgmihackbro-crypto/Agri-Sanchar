@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2 } from "lucide-react";
+import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/use-translation";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 
 type Message = {
   id: string;
@@ -39,6 +42,121 @@ type UserProfile = {
 }
 
 
+const CameraCaptureDialog = ({ open, onOpenChange, onCapture, t }: { open: boolean, onOpenChange: (open: boolean) => void, onCapture: (dataUri: string) => void, t: any }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+    const [capturedImage, setCapturedImage] = useState<string | null>(null);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        let stream: MediaStream | null = null;
+        const getCameraPermission = async () => {
+            if (!open || hasCameraPermission) return;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    setHasCameraPermission(true);
+                }
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                setHasCameraPermission(false);
+                toast({
+                    variant: 'destructive',
+                    title: t.detection.cameraDenied,
+                    description: t.detection.cameraDeniedDesc,
+                });
+            }
+        };
+
+        getCameraPermission();
+
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, [open, hasCameraPermission, toast, t]);
+
+    const handleCaptureClick = () => {
+        if (videoRef.current && canvasRef.current) {
+            const video = videoRef.current;
+            const canvas = canvasRef.current;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUri = canvas.toDataURL('image/jpeg');
+            setCapturedImage(dataUri);
+        }
+    };
+
+    const handleConfirm = () => {
+        if (capturedImage) {
+            onCapture(capturedImage);
+            onOpenChange(false);
+            setCapturedImage(null);
+        }
+    };
+    
+    const handleRetake = () => setCapturedImage(null);
+    
+    const handleDialogClose = (isOpen: boolean) => {
+        if (!isOpen) {
+             setCapturedImage(null);
+             setHasCameraPermission(null);
+        }
+        onOpenChange(isOpen);
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={handleDialogClose}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t.detection.captureButton}</DialogTitle>
+                </DialogHeader>
+                <div className="w-full aspect-video rounded-lg bg-muted overflow-hidden relative border">
+                     {capturedImage ? (
+                        <Image src={capturedImage} alt="Captured" layout="fill" objectFit="cover" />
+                    ) : (
+                        <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                    )}
+                     { hasCameraPermission === false && !capturedImage && (
+                        <div className="absolute inset-0 flex items-center justify-center p-4">
+                            <Alert variant="destructive">
+                                <AlertTitle>{t.detection.cameraRequired}</AlertTitle>
+                                <AlertDescription>{t.detection.cameraRequiredDesc}</AlertDescription>
+                            </Alert>
+                        </div>
+                    )}
+                </div>
+                <canvas ref={canvasRef} className="hidden" />
+                <DialogFooter>
+                    {capturedImage ? (
+                        <>
+                            <Button variant="outline" onClick={handleRetake}>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                {t.detection.retakeButton}
+                            </Button>
+                            <Button onClick={handleConfirm}>{t.chatbot.send}</Button>
+                        </>
+                    ) : (
+                        <>
+                            <DialogClose asChild>
+                                <Button variant="ghost">{t.soilTesting.cancel}</Button>
+                            </DialogClose>
+                            <Button onClick={handleCaptureClick} disabled={!hasCameraPermission}>
+                                <Camera className="mr-2 h-4 w-4" />
+                                {t.detection.captureButton}
+                            </Button>
+                        </>
+                    )}
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -48,6 +166,8 @@ export default function ChatbotPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [nowPlayingMessageId, setNowPlayingMessageId] = useState<string | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
   const { toast } = useToast();
   const { t, language } = useTranslation();
   
@@ -92,7 +212,7 @@ export default function ChatbotPage() {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+      scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
   
@@ -154,12 +274,12 @@ export default function ChatbotPage() {
     });
   };
 
-  const handleSubmit = async (e?: React.FormEvent) => {
+  const handleSubmit = async (e?: React.FormEvent, capturedPhotoUri?: string) => {
     if (e) {
       e.preventDefault();
     }
 
-    if ((!input.trim() && !imageFile) || isLoading) return;
+    if ((!input.trim() && !imageFile && !capturedPhotoUri) || isLoading) return;
 
     if (isRecording) {
       stopRecording();
@@ -169,7 +289,7 @@ export default function ChatbotPage() {
       id: `user-${Date.now()}`,
       role: "user",
       content: input,
-      ...(imageFile && { image: URL.createObjectURL(imageFile) }),
+      image: capturedPhotoUri || (imageFile ? URL.createObjectURL(imageFile) : undefined),
       timestamp: new Date(),
     };
     
@@ -183,13 +303,13 @@ export default function ChatbotPage() {
 
     let aiResponseContent = t.chatbot.aiProcessError;
     try {
-      let photoDataUri: string | undefined = undefined;
+      let photoDataUri: string | undefined = capturedPhotoUri;
       if (currentImageFile) {
         photoDataUri = await fileToDataUri(currentImageFile);
       }
 
       const response = await answerFarmerQuestion({
-        question: input,
+        question: input || t.detection.defaultQuestion,
         photoDataUri: photoDataUri,
         city: userProfile?.city,
         language: userProfile?.language,
@@ -281,9 +401,14 @@ export default function ChatbotPage() {
     setImageFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
+  
+  const handleCameraCapture = (dataUri: string) => {
+    handleSubmit(undefined, dataUri);
+  }
 
   return (
     <div className="h-full flex justify-center">
+      <CameraCaptureDialog open={isCameraOpen} onOpenChange={setIsCameraOpen} onCapture={handleCameraCapture} t={t} />
       <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-2xl">
         <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
@@ -299,7 +424,7 @@ export default function ChatbotPage() {
           }}
         >
           <div className="absolute inset-0 bg-white/80 dark:bg-black/80" />
-          <ScrollArea className="h-full pr-4 relative">
+          <ScrollArea className="h-full pr-4">
             <div className="space-y-4" ref={scrollAreaRef}>
               {messages.map((message) => (
                 <div
@@ -394,6 +519,16 @@ export default function ChatbotPage() {
             onSubmit={handleSubmit}
             className="flex w-full items-center space-x-2"
           >
+             <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setIsCameraOpen(true)}
+              disabled={isLoading}
+            >
+              <Camera className="h-4 w-4" />
+              <span className="sr-only">Use Camera</span>
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -432,5 +567,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
