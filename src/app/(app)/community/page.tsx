@@ -601,7 +601,7 @@ const PostCard = ({ post, onLike, onComment, userProfile, groups, onPostCreated,
       const mediaType = p.mediaType || 'image';
 
       return (
-         <div className={cn("mt-2 rounded-lg overflow-hidden border", isGrid ? 'aspect-square' : 'max-h-[50vh]')}>
+         <div className={cn("mt-2 rounded-lg overflow-hidden border max-h-[50vh]")}>
            {mediaType.startsWith('image') ? (
               <Image
                 src={p.image}
@@ -1296,9 +1296,11 @@ export default function CommunityPage() {
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
                 {myPosts.length > 0 ? (
-                    myPosts.map((post) => (
-                        <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} />
-                    ))
+                    <div className="space-y-4 max-w-2xl mx-auto">
+                        {myPosts.map((post) => (
+                            <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} />
+                        ))}
+                    </div>
                 ) : (
                     <p className="text-center text-muted-foreground pt-8">{t.community.noPostsYet}</p>
                 )}
@@ -1421,3 +1423,4 @@ export default function CommunityPage() {
 
 
     
+
