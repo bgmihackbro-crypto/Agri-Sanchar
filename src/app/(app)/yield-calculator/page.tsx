@@ -131,9 +131,7 @@ export default function YieldCalculatorPage() {
                      <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                             <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                     Additional Factors (Optional)
-                                </div>
+                                
                             </AccordionTrigger>
                             <AccordionContent>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -209,5 +207,3 @@ export default function YieldCalculatorPage() {
         </div>
     );
 }
-
-    
