@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw, Folder } from "lucide-react";
+import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -540,17 +540,6 @@ export default function ChatbotPage() {
             >
               <ImageIcon className="h-5 w-5" />
               <span className="sr-only">{t.chatbot.uploadImage}</span>
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => { /* Folder logic */ }}
-              disabled={isLoading}
-               className="text-muted-foreground"
-            >
-              <Folder className="h-5 w-5" />
-              <span className="sr-only">Browse files</span>
             </Button>
             <Input
               id="chatbot-input"
