@@ -335,7 +335,7 @@ export default function ChatbotPage() {
                         )}
                     </Button>
                     <div className="text-xs opacity-75 mb-1">{message.timestamp ? format(message.timestamp, "p"): ''}</div>
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-base whitespace-pre-wrap">{message.content}</p>
                     {message.image && (
                       <img
                         src={message.image}
