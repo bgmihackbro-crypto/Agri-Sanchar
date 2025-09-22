@@ -334,5 +334,3 @@ export default function GroupSettingsPage() {
     </div>
   );
 }
-
-    
