@@ -281,8 +281,8 @@ export default function ChatbotPage() {
   }
 
   return (
-    <div className="h-full">
-      <Card className="h-[calc(100vh-10rem)] flex flex-col">
+    <div className="h-full flex justify-center">
+      <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-2xl">
         <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
