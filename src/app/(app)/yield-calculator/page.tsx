@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -6,17 +5,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, Check, IndianRupee, X as XIcon, Trash2, ChevronDown, PlusCircle } from 'lucide-react';
+import { Calculator, Check, IndianRupee, X as XIcon, Trash2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface CalculatorInput {
     area: string;
     yieldPerAcre: string;
     sellingPrice: string;
     productionCost: string;
-    otherIncome: string;
 }
 
 interface CalculationResult {
@@ -33,7 +30,6 @@ const initialInputs: CalculatorInput = {
     yieldPerAcre: '',
     sellingPrice: '',
     productionCost: '',
-    otherIncome: '0',
 };
 
 export default function YieldCalculatorPage() {
@@ -55,7 +51,6 @@ export default function YieldCalculatorPage() {
         const yieldPerAcre = parseFloat(inputs.yieldPerAcre);
         const sellingPrice = parseFloat(inputs.sellingPrice);
         const productionCostPerAcre = parseFloat(inputs.productionCost);
-        const otherIncome = parseFloat(inputs.otherIncome) || 0;
 
         if (isNaN(area) || isNaN(yieldPerAcre) || isNaN(sellingPrice) || isNaN(productionCostPerAcre)) {
             setResult(null);
@@ -65,9 +60,9 @@ export default function YieldCalculatorPage() {
         const netYield = area * yieldPerAcre;
         const revenue = netYield * sellingPrice;
         const totalCosts = productionCostPerAcre * area;
-        const profit = revenue + otherIncome - totalCosts;
+        const profit = revenue - totalCosts;
         const roi = totalCosts > 0 ? (profit / totalCosts) * 100 : 0;
-        const breakevenPrice = netYield > 0 ? (totalCosts - otherIncome) / netYield : 0;
+        const breakevenPrice = netYield > 0 ? totalCosts / netYield : 0;
 
         setResult({
             netYield,
@@ -87,7 +82,7 @@ export default function YieldCalculatorPage() {
         return new Intl.NumberFormat('en-IN').format(value);
     }
 
-    const hasInputs = Object.values(inputs).some(v => v !== '' && v !== '0');
+    const hasInputs = Object.values(inputs).some(v => v !== '');
 
     return (
         <div className="space-y-6">
@@ -96,12 +91,12 @@ export default function YieldCalculatorPage() {
                 <p className="text-muted-foreground">Estimate your potential profit or loss for a crop.</p>
             </div>
 
-            <Card className="w-full max-w-2xl mx-auto">
+            <Card className="w-full max-w-lg mx-auto">
                 <CardHeader>
                     <CardTitle>Enter Crop Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <div className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="area">Area (acres)</Label>
                             <Input id="area" type="number" placeholder="e.g., 5" value={inputs.area} onChange={handleInputChange} />
@@ -119,13 +114,7 @@ export default function YieldCalculatorPage() {
                             <Input id="productionCost" type="number" placeholder="e.g., 12000" value={inputs.productionCost} onChange={handleInputChange} />
                         </div>
                     </div>
-                     <Separator />
-                     <div className="space-y-4 pt-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="otherIncome">Other Income (₹)</Label>
-                            <Input id="otherIncome" type="number" placeholder="e.g., from byproducts" value={inputs.otherIncome} onChange={handleInputChange} />
-                        </div>
-                    </div>
+                    
                 </CardContent>
                 <CardFooter className="flex-col sm:flex-row justify-between gap-2 bg-muted/50 p-4 rounded-b-lg">
                     <Button onClick={handleClear} variant="ghost" disabled={!hasInputs}>
@@ -152,7 +141,7 @@ export default function YieldCalculatorPage() {
                                 </AlertDescription>
                             </Alert>
 
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div className="p-3 bg-muted rounded-lg">
                                     <p className="text-muted-foreground">Total Revenue</p>
                                     <p className="font-semibold text-lg">{formatCurrency(result.revenue)}</p>
