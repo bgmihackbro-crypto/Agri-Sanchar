@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useTranslation } from '@/hooks/use-translation';
 import { schemes, type Scheme } from '@/lib/schemes';
-import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator, ListChecks, CaseUpper, StepForward, Quote } from 'lucide-react';
+import { Landmark, Info, ExternalLink, FileText, BadgeCheck, UserCheck, Milestone, HandCoins, Tractor, Droplets, BookUser, Calculator, ListChecks, CaseUpper, StepForward, Quote, Volume2, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
@@ -59,7 +59,7 @@ const BenefitIcon = ({ benefit, t }: { benefit: string, t: any }) => {
 
 
 export default function SchemesPage() {
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [recommendedSchemes, setRecommendedSchemes] = useState<Scheme[]>([]);
     const [otherSchemes, setOtherSchemes] = useState<Scheme[]>([]);
@@ -68,6 +68,34 @@ export default function SchemesPage() {
     const [sumInsured, setSumInsured] = useState('');
     const [cropType, setCropType] = useState<'kharif' | 'rabi' | ''>('');
     const [calculatedPremium, setCalculatedPremium] = useState<number | null>(null);
+
+    // State for text-to-speech
+    const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+    const [nowPlayingSchemeId, setNowPlayingSchemeId] = useState<string | null>(null);
+    const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+    useEffect(() => {
+        const populateVoiceList = () => {
+            if (typeof window === 'undefined' || !window.speechSynthesis) return;
+            const availableVoices = window.speechSynthesis.getVoices();
+            if (availableVoices.length > 0) {
+                setVoices(availableVoices);
+                window.speechSynthesis.onvoiceschanged = null;
+            }
+        };
+
+        populateVoiceList();
+        if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        return () => {
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+        };
+    }, []);
+
 
     useEffect(() => {
         const profile = localStorage.getItem('userProfile');
@@ -115,6 +143,52 @@ export default function SchemesPage() {
         setCalculatedPremium(premium);
     };
 
+    const speak = (scheme: Scheme) => {
+        if (nowPlayingSchemeId === scheme.id) {
+            window.speechSynthesis.cancel();
+            setNowPlayingSchemeId(null);
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+        
+        const textToSpeak = `
+            Scheme: ${scheme.name}.
+            Description: ${scheme.description}.
+            Benefits: ${scheme.benefits.join(', ')}.
+            Eligibility: ${scheme.eligibility.criteria.join(' ')}.
+        `;
+
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        const targetLang = language === 'Hindi' ? 'hi-IN' : 'en-US';
+        utterance.lang = targetLang;
+
+        let selectedVoice = null;
+        if (targetLang === 'hi-IN') {
+            selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
+                         || voices.find(voice => voice.lang === 'hi-IN');
+        } else {
+            selectedVoice = voices.find(voice => voice.lang.startsWith('en-') && voice.name.includes('Google'))
+                         || voices.find(voice => voice.lang.startsWith('en-'));
+        }
+        
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+
+        utterance.onstart = () => setNowPlayingSchemeId(scheme.id);
+        utterance.onend = () => setNowPlayingSchemeId(null);
+        utterance.onerror = (e) => {
+            if (e.error !== 'canceled') {
+                console.error("Speech synthesis error", e);
+            }
+            setNowPlayingSchemeId(null);
+        };
+        
+        utteranceRef.current = utterance;
+        window.speechSynthesis.speak(utterance);
+    };
+
     const successStories = [
         {
             name: "Gurpreet Singh",
@@ -153,7 +227,7 @@ export default function SchemesPage() {
                         {t.schemes.recommendedForYou}
                     </h2>
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {recommendedSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} />)}
+                        {recommendedSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} speak={speak} nowPlayingSchemeId={nowPlayingSchemeId} />)}
                     </div>
                 </div>
             )}
@@ -161,7 +235,7 @@ export default function SchemesPage() {
             <div className="mt-8">
                 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {otherSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} />)}
+                    {otherSchemes.map(scheme => <SchemeCard key={scheme.id} scheme={scheme} t={t} speak={speak} nowPlayingSchemeId={nowPlayingSchemeId} />)}
                 </div>
             </div>
 
@@ -241,7 +315,7 @@ export default function SchemesPage() {
     );
 }
 
-function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
+function SchemeCard({ scheme, t, speak, nowPlayingSchemeId }: { scheme: Scheme, t: any, speak: (scheme: Scheme) => void, nowPlayingSchemeId: string | null }) {
     return (
         <Dialog>
             <Card className="flex flex-col hover:shadow-lg transition-shadow duration-300">
@@ -276,8 +350,23 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
             <DialogContent className="sm:max-w-sm p-0">
                 <ScrollArea className="max-h-[80vh]">
                     <div className="p-6 space-y-4">
-                        <DialogHeader className="text-left">
-                            <DialogTitle className="text-2xl font-headline mb-1">{scheme.name}</DialogTitle>
+                        <DialogHeader className="text-left relative">
+                            <DialogTitle className="text-2xl font-headline mb-1 pr-10">{scheme.name}</DialogTitle>
+                             <Button
+                                size="icon"
+                                variant="ghost"
+                                className="absolute top-0 right-0 h-8 w-8"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    speak(scheme);
+                                }}
+                            >
+                                {nowPlayingSchemeId === scheme.id ? (
+                                    <Loader2 className="h-5 w-5 animate-spin"/>
+                                ) : (
+                                    <Volume2 className="h-5 w-5" />
+                                )}
+                            </Button>
                             <DialogDescription className="text-foreground">{scheme.description}</DialogDescription>
                         </DialogHeader>
                         
@@ -367,5 +456,7 @@ function SchemeCard({ scheme, t }: { scheme: Scheme, t: any }) {
 
 
       
+
+    
 
     
