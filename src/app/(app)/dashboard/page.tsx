@@ -149,30 +149,18 @@ export default function DashboardPage() {
                  >
                     {/* Front of the card */}
                     <Card
-                        className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group animate-fade-in-up [backface-visibility:hidden] cursor-pointer"
+                        className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group animate-fade-in-up [backface-visibility:hidden] cursor-pointer min-h-[160px] flex flex-col"
                         style={{ animationDelay: `${0.5 + i * 0.1}s` }}
                     >
-                        <CardContent className="p-0">
-                            <div className="relative h-40 w-full">
-                            <Image
-                                src={item.imageUrl}
-                                alt={item.title}
-                                fill
-                                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                data-ai-hint={item.imageHint}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                            <p className="absolute bottom-3 left-3 right-3 text-white font-bold leading-tight drop-shadow-md">
-                                {item.title}
-                            </p>
-                            </div>
-                            <div className="p-4 flex justify-between items-center bg-muted/50">
-                            <p className="text-xs text-muted-foreground font-semibold">
-                                {item.source}
-                            </p>
-                            <ArrowRight className="h-4 w-4 text-primary transition-transform duration-300 group-hover:translate-x-1" />
-                            </div>
-                        </CardContent>
+                        <CardHeader className="flex-grow">
+                            <CardTitle className="text-base font-semibold leading-tight">{item.title}</CardTitle>
+                        </CardHeader>
+                        <CardFooter className="p-4 flex justify-between items-center bg-muted/50">
+                        <p className="text-xs text-muted-foreground font-semibold">
+                            {item.source}
+                        </p>
+                        <ArrowRight className="h-4 w-4 text-primary transition-transform duration-300 group-hover:translate-x-1" />
+                        </CardFooter>
                     </Card>
                      {/* Back of the card */}
                     <Card
