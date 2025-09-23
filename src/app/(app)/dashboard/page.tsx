@@ -4,10 +4,10 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -228,8 +228,7 @@ export default function DashboardPage() {
                         className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col"
                     >
                          <CardHeader>
-                            <CardTitle className="text-base font-bold leading-tight">{item.title}</CardTitle>
-                             <CardDescription className="text-xs">{item.source}</CardDescription>
+                             <CardDescription className="text-xs font-bold">{item.source}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-grow overflow-y-auto text-sm">
                            <p>{item.details}</p>
