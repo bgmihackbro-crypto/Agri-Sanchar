@@ -314,8 +314,6 @@ export default function WeatherPage() {
             </Tabs>
         </>
       )}
-
     </div>
   );
-
-    
+}
