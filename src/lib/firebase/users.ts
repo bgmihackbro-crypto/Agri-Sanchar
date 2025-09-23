@@ -15,9 +15,10 @@ export interface UserProfile {
     age: string;
     dob: string;
     language: 'English' | 'Hindi';
-    userType: 'farmer' | 'expert' | 'ngo';
+    userType: 'farmer' | 'expert' | 'ngo' | 'admin';
     specialization?: string;
     organization?: string;
+    email?: string; // Add email for admin login
 }
 
 // In-memory/localStorage cache for user profiles to support simulation
@@ -27,6 +28,26 @@ if (typeof window !== 'undefined') {
     const storedProfiles = localStorage.getItem('userProfiles');
     if (storedProfiles) {
         userProfiles = JSON.parse(storedProfiles);
+    } else {
+        // Pre-seed an admin user if no profiles exist
+        const adminId = 'sim-admin@example.com';
+        userProfiles[adminId] = {
+            farmerId: 'AD-0000-0001',
+            name: 'Admin User',
+            phone: '+910000000000',
+            avatar: `https://picsum.photos/seed/admin/100/100`,
+            farmSize: '',
+            city: 'Delhi',
+            state: 'Delhi',
+            annualIncome: '',
+            gender: '',
+            age: '',
+            dob: '',
+            language: 'English',
+            userType: 'admin',
+            email: 'admin@example.com',
+        };
+        localStorage.setItem('userProfiles', JSON.stringify(userProfiles));
     }
 }
 
@@ -92,5 +113,3 @@ export const updateUserProfile = async (userId: string, updates: Partial<UserPro
         await setUserProfile(userId, newProfileData);
     }
 };
-
-    
