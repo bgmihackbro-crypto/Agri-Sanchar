@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator, ArrowRight, ArrowLeft, ExternalLink } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator, ArrowRight, Volume2, Loader2 } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -22,8 +22,35 @@ import { Button } from "@/components/ui/button";
 export default function DashboardPage() {
   
   const { addNotification } = useNotifications();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [flippedCard, setFlippedCard] = React.useState<number | null>(null);
+
+  const [voices, setVoices] = React.useState<SpeechSynthesisVoice[]>([]);
+  const [nowPlayingIndex, setNowPlayingIndex] = React.useState<number | null>(null);
+  const utteranceRef = React.useRef<SpeechSynthesisUtterance | null>(null);
+
+  React.useEffect(() => {
+    const populateVoiceList = () => {
+        if (typeof window === 'undefined' || !window.speechSynthesis) return;
+        const availableVoices = window.speechSynthesis.getVoices();
+        if (availableVoices.length > 0) {
+            setVoices(availableVoices);
+            window.speechSynthesis.onvoiceschanged = null; // Remove the listener after populating
+        }
+    };
+    
+    populateVoiceList();
+    if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    }
+    
+    return () => {
+      // Cleanup on component unmount
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   const handleSchemeClick = (e: React.MouseEvent, title: string) => {
       e.preventDefault(); // Prevent navigation for the old implementation
@@ -32,6 +59,46 @@ export default function DashboardPage() {
           description: t.dashboard.schemeNotification.description,
       });
   };
+
+  const speak = (text: string, index: number) => {
+    if (nowPlayingIndex === index) {
+      window.speechSynthesis.cancel();
+      setNowPlayingIndex(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel(); // Stop any currently playing speech
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    const targetLang = language === 'Hindi' ? 'hi-IN' : 'en-US';
+    utterance.lang = targetLang;
+
+    let selectedVoice = null;
+    if (targetLang === 'hi-IN') {
+        selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
+                     || voices.find(voice => voice.lang === 'hi-IN');
+    } else {
+        selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google')) 
+                     || voices.find(voice => voice.lang.startsWith('en-'));
+    }
+    
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+
+    utterance.onstart = () => setNowPlayingIndex(index);
+    utterance.onend = () => setNowPlayingIndex(null);
+    utterance.onerror = (e) => {
+        if (e.error !== 'canceled') {
+            console.error("Speech synthesis error", e);
+        }
+        setNowPlayingIndex(null);
+    }
+    
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
 
   const serviceLinks = [
     {
@@ -145,12 +212,12 @@ export default function DashboardPage() {
                         "relative transition-transform duration-700 [transform-style:preserve-3d]",
                         flippedCard === i && "[transform:rotateY(180deg)]"
                     )}
-                    onClick={() => setFlippedCard(flippedCard === i ? null : i)}
                  >
                     {/* Front of the card */}
                     <Card
                         className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group animate-fade-in-up [backface-visibility:hidden] cursor-pointer min-h-[160px] flex flex-col"
                         style={{ animationDelay: `${0.5 + i * 0.1}s` }}
+                        onClick={() => setFlippedCard(flippedCard === i ? null : i)}
                     >
                         <CardHeader className="flex-grow">
                             <CardTitle className="text-base font-semibold leading-tight">{item.title}</CardTitle>
@@ -165,9 +232,25 @@ export default function DashboardPage() {
                      {/* Back of the card */}
                     <Card
                         className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col"
+                        onClick={() => setFlippedCard(flippedCard === i ? null : i)}
                     >
-                         <CardHeader>
+                         <CardHeader className="relative">
                              <CardDescription className="text-xs font-bold">{item.source}</CardDescription>
+                             <Button
+                                size="icon"
+                                variant="ghost"
+                                className="absolute top-2 right-2 h-7 w-7"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    speak(item.details, i);
+                                }}
+                             >
+                                 {nowPlayingIndex === i ? (
+                                    <Loader2 className="h-4 w-4 animate-spin"/>
+                                ) : (
+                                    <Volume2 className="h-4 w-4" />
+                                )}
+                             </Button>
                         </CardHeader>
                         <CardContent className="flex-grow overflow-y-auto text-sm">
                            <p>{item.details}</p>
