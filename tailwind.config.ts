@@ -123,5 +123,23 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    function({ addUtilities }: { addUtilities: any }) {
+      addUtilities({
+        '.backface-visibility-hidden': {
+          'backface-visibility': 'hidden',
+        },
+        '.transform-style-preserve-3d': {
+          'transform-style': 'preserve-3d',
+        },
+        '.perspective-1000px': {
+          'perspective': '1000px',
+        },
+        '.transform-rotateY-180deg': {
+          'transform': 'rotateY(180deg)',
+        },
+      })
+    }
+  ],
 } satisfies Config;
