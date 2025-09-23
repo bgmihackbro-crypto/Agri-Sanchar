@@ -14,7 +14,7 @@ export function BottomNav() {
   const navLinks = [
     { href: "/dashboard", label: t.bottomNav.home, icon: Home },
     { href: "/community", label: t.bottomNav.community, icon: Users },
-    { href: "/rental", label: t.sidebar.rental, icon: Tractor },
+    { href: "/yield-calculator", label: t.bottomNav.calculator, icon: Calculator },
     { href: "/profile", label: t.bottomNav.profile, icon: User },
   ];
 
