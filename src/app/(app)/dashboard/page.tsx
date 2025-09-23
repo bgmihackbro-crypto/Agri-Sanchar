@@ -172,17 +172,6 @@ export default function DashboardPage() {
                         <CardContent className="flex-grow overflow-y-auto text-sm">
                            <p>{item.details}</p>
                         </CardContent>
-                        <CardFooter className="flex justify-between items-center border-t p-2">
-                             <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setFlippedCard(null); }}>
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                {t.dashboard.backButton}
-                            </Button>
-                            <Button variant="link" size="sm" asChild>
-                                <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
-                                    {t.dashboard.readMoreButton} <ExternalLink className="ml-2 h-3 w-3" />
-                                </a>
-                            </Button>
-                        </CardFooter>
                     </Card>
                 </div>
             ))}
