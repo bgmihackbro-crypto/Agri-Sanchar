@@ -101,40 +101,7 @@ export default function DashboardPage() {
     },
   ];
 
-  const newsAndEvents = [
-    {
-      title: "Drought conditions worsen in Marathwada, farmers await relief.",
-      source: "The Times of India",
-      imageUrl: "https://images.unsplash.com/photo-1476611338344-5f098524d452?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "cracked dry earth",
-      details: "Water scarcity has become a critical issue in the Marathwada region of Maharashtra, with several consecutive years of poor monsoons leading to severe drought. Reservoirs are at an all-time low, and groundwater levels have depleted drastically. Farmers are facing immense hardship, with crop failures leading to financial distress and migration. The government has announced relief measures, but farmers say it is not enough to cover their losses. Experts are calling for long-term solutions, including better water management and a shift towards drought-resistant crops.",
-      link: "#"
-    },
-    {
-      title: "Locust swarm spotted near Rajasthan border, alert issued.",
-      source: "NDTV",
-      imageUrl: "https://images.unsplash.com/photo-1594294861008-8fe08b8b0984?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "locust swarm",
-      details: "An alert has been issued in the border districts of Rajasthan after a swarm of locusts was sighted moving towards India from Pakistan. The agricultural department has initiated control measures, including spraying of pesticides, to prevent the insects from damaging crops. Farmers have been advised to stay vigilant and report any locust activity to the authorities immediately. Last year, a massive locust attack had caused widespread crop destruction in several states.",
-      link: "#"
-    },
-    {
-      title: "Rising fertilizer and fuel costs squeeze farmer profits.",
-      source: "Business Standard",
-      imageUrl: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "fertilizer bags",
-      details: "Farmers across the country are feeling the pinch of rising input costs. A sharp increase in the prices of diesel and fertilizers, such as DAP and urea, is significantly impacting their profitability. While the government has increased the Minimum Support Price (MSP) for several crops, farmers' organizations claim that the hike is insufficient to offset the rising cost of cultivation. They are demanding greater subsidies on agricultural inputs to ensure their economic viability.",
-      link: "#"
-    },
-    {
-      title: "Unseasonal rains damage standing crops in parts of Haryana.",
-      source: "The Tribune",
-      imageUrl: "https://images.unsplash.com/photo-1542601959-135897003c2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "damaged crops",
-      details: "Heavy, unseasonal rainfall accompanied by hailstorms has caused significant damage to standing wheat and mustard crops in several districts of Haryana. Farmers who were expecting a bumper harvest are now facing the prospect of heavy losses. The state government has ordered a special assessment to determine the extent of the damage and has promised compensation to the affected farmers. This event highlights the growing risks associated with climate change and extreme weather events.",
-      link: "#"
-    },
-  ];
+  const newsAndEvents = t.dashboard.newsAndEvents;
 
 
   return (
@@ -168,7 +135,7 @@ export default function DashboardPage() {
       
       <div className="space-y-4 pt-4">
         <div className="text-center">
-            <h1 className="text-2xl font-bold font-headline">Latest News &amp; Events</h1>
+            <h1 className="text-2xl font-bold font-headline">{t.dashboard.newsAndEventsTitle}</h1>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 [perspective:1000px]">
             {newsAndEvents.map((item, i) => (
@@ -220,11 +187,11 @@ export default function DashboardPage() {
                         <CardFooter className="flex justify-between items-center border-t p-2">
                              <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setFlippedCard(null); }}>
                                 <ArrowLeft className="mr-2 h-4 w-4" />
-                                Back
+                                {t.dashboard.backButton}
                             </Button>
                             <Button variant="link" size="sm" asChild>
                                 <a href={item.link} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
-                                    Read more <ExternalLink className="ml-2 h-3 w-3" />
+                                    {t.dashboard.readMoreButton} <ExternalLink className="ml-2 h-3 w-3" />
                                 </a>
                             </Button>
                         </CardFooter>
@@ -237,5 +204,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

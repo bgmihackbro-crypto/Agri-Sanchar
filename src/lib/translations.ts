@@ -106,7 +106,44 @@ export const translations = {
             schemeNotification: {
                 title: (scheme: string) => `New Update: ${scheme}`,
                 description: "Check the latest details about this government scheme and its benefits.",
-            }
+            },
+            newsAndEventsTitle: "Latest News & Events",
+            backButton: "Back",
+            readMoreButton: "Read more",
+            newsAndEvents: [
+                {
+                    title: "Drought conditions worsen in Marathwada, farmers await relief.",
+                    source: "The Times of India",
+                    imageUrl: "https://images.unsplash.com/photo-1476611338344-5f098524d452?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "cracked dry earth",
+                    details: "Water scarcity has become a critical issue in the Marathwada region of Maharashtra, with several consecutive years of poor monsoons leading to severe drought. Reservoirs are at an all-time low, and groundwater levels have depleted drastically. Farmers are facing immense hardship, with crop failures leading to financial distress and migration. The government has announced relief measures, but farmers say it is not enough to cover their losses. Experts are calling for long-term solutions, including better water management and a shift towards drought-resistant crops.",
+                    link: "#"
+                },
+                {
+                    title: "Locust swarm spotted near Rajasthan border, alert issued.",
+                    source: "NDTV",
+                    imageUrl: "https://images.unsplash.com/photo-1594294861008-8fe08b8b0984?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "locust swarm",
+                    details: "An alert has been issued in the border districts of Rajasthan after a swarm of locusts was sighted moving towards India from Pakistan. The agricultural department has initiated control measures, including spraying of pesticides, to prevent the insects from damaging crops. Farmers have been advised to stay vigilant and report any locust activity to the authorities immediately. Last year, a massive locust attack had caused widespread crop destruction in several states.",
+                    link: "#"
+                },
+                {
+                    title: "Rising fertilizer and fuel costs squeeze farmer profits.",
+                    source: "Business Standard",
+                    imageUrl: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "fertilizer bags",
+                    details: "Farmers across the country are feeling the pinch of rising input costs. A sharp increase in the prices of diesel and fertilizers, such as DAP and urea, is significantly impacting their profitability. While the government has increased the Minimum Support Price (MSP) for several crops, farmers' organizations claim that the hike is insufficient to offset the rising cost of cultivation. They are demanding greater subsidies on agricultural inputs to ensure their economic viability.",
+                    link: "#"
+                },
+                {
+                    title: "Unseasonal rains damage standing crops in parts of Haryana.",
+                    source: "The Tribune",
+                    imageUrl: "https://images.unsplash.com/photo-1542601959-135897003c2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "damaged crops",
+                    details: "Heavy, unseasonal rainfall accompanied by hailstorms has caused significant damage to standing wheat and mustard crops in several districts of Haryana. Farmers who were expecting a bumper harvest are now facing the prospect of heavy losses. The state government has ordered a special assessment to determine the extent of the damage and has promised compensation to the affected farmers. This event highlights the growing risks associated with climate change and extreme weather events.",
+                    link: "#"
+                },
+            ]
         },
         chatbot: {
             title: "AI Expert Chat",
@@ -846,7 +883,44 @@ aiThinking: "AI is thinking...",
              schemeNotification: {
                 title: (scheme: string) => `नई अपडेट: ${scheme}`,
                 description: "इस सरकारी योजना और इसके लाभों के बारे में नवीनतम विवरण देखें।",
-            }
+            },
+            newsAndEventsTitle: "नवीनतम समाचार और घटनाएँ",
+            backButton: "वापस",
+            readMoreButton: "और पढ़ें",
+            newsAndEvents: [
+                {
+                    title: "मराठवाड़ा में सूखे की स्थिति बिगड़ी, किसान राहत का इंतजार कर रहे हैं।",
+                    source: "द टाइम्स ऑफ इंडिया",
+                    imageUrl: "https://images.unsplash.com/photo-1476611338344-5f098524d452?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "cracked dry earth",
+                    details: "महाराष्ट्र के मराठवाड़ा क्षेत्र में पानी की कमी एक गंभीर मुद्दा बन गई है, लगातार कई वर्षों के खराब मानसून के कारण गंभीर सूखा पड़ा है। जलाशय सर्वकालिक निचले स्तर पर हैं, और भूजल स्तर में भारी गिरावट आई है। किसान भारी कठिनाई का सामना कर रहे हैं, फसल की विफलता से वित्तीय संकट और पलायन हो रहा है। सरकार ने राहत उपायों की घोषणा की है, लेकिन किसानों का कहना है कि यह उनके नुकसान की भरपाई के लिए पर्याप्त नहीं है। विशेषज्ञ बेहतर जल प्रबंधन और सूखा प्रतिरोधी फसलों की ओर बदलाव सहित दीर्घकालिक समाधानों की मांग कर रहे हैं।",
+                    link: "#"
+                },
+                {
+                    title: "राजस्थान सीमा के पास टिड्डियों का झुंड देखा गया, अलर्ट जारी।",
+                    source: "एनडीटीवी",
+                    imageUrl: "https://images.unsplash.com/photo-1594294861008-8fe08b8b0984?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "locust swarm",
+                    details: "पाकिस्तान से भारत की ओर बढ़ते टिड्डियों के झुंड को देखे जाने के बाद राजस्थान के सीमावर्ती जिलों में अलर्ट जारी किया गया है। कृषि विभाग ने कीड़ों को फसलों को नुकसान पहुँचाने से रोकने के लिए कीटनाशकों के छिड़काव सहित नियंत्रण उपाय शुरू किए हैं। किसानों को सतर्क रहने और किसी भी टिड्डी गतिविधि की सूचना तुरंत अधिकारियों को देने की सलाह दी गई है। पिछले साल, एक बड़े टिड्डी हमले ने कई राज्यों में बड़े पैमाने पर फसल को नष्ट कर दिया था।",
+                    link: "#"
+                },
+                {
+                    title: "बढ़ते उर्वरक और ईंधन की लागत ने किसानों के मुनाफे को निचोड़ दिया।",
+                    source: "बिजनेस स्टैंडर्ड",
+                    imageUrl: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "fertilizer bags",
+                    details: "देश भर के किसान बढ़ती इनपुट लागत की मार झेल रहे हैं। डीजल और उर्वरकों, जैसे डीएपी और यूरिया, की कीमतों में तेज वृद्धि उनके लाभप्रदता को काफी प्रभावित कर रही है। जबकि सरकार ने कई फसलों के लिए न्यूनतम समर्थन मूल्य (MSP) बढ़ाया है, किसान संगठनों का दावा है कि यह वृद्धि खेती की बढ़ती लागत की भरपाई के लिए अपर्याप्त है। वे अपनी आर्थिक व्यवहार्यता सुनिश्चित करने के लिए कृषि आदानों पर अधिक सब्सिडी की मांग कर रहे हैं।",
+                    link: "#"
+                },
+                {
+                    title: "हरियाणा के कुछ हिस्सों में बेमौसम बारिश ने खड़ी फसलों को नुकसान पहुँचाया।",
+                    source: "द ट्रिब्यून",
+                    imageUrl: "https://images.unsplash.com/photo-1542601959-135897003c2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    imageHint: "damaged crops",
+                    details: "ओलावृष्टि के साथ भारी, बेमौसम बारिश ने हरियाणा के कई जिलों में खड़ी गेहूं और सरसों की फसलों को काफी नुकसान पहुँचाया है। जो किसान बंपर फसल की उम्मीद कर रहे थे, वे अब भारी नुकसान की संभावना का सामना कर रहे हैं। राज्य सरकार ने नुकसान की सीमा निर्धारित करने के लिए एक विशेष मूल्यांकन का आदेश दिया है और प्रभावित किसानों को मुआवजे का वादा किया है। यह घटना जलवायु परिवर्तन और चरम मौसम की घटनाओं से जुड़े बढ़ते जोखिमों पर प्रकाश डालती है।",
+                    link: "#"
+                },
+            ]
         },
         chatbot: {
             title: "एआई विशेषज्ञ चैट",
@@ -1267,7 +1341,7 @@ aiThinking: "AI is thinking...",
                 benefitsSummary: "सौर पंप पर सब्सिडी",
                 benefits: ["स्टैंडअलोन सौर पंप स्थापित करने के लिए 60% तक की सब्सिडी।", "किसान अधिशेष सौर ऊर्जा को ग्रिड को बेच सकते हैं और अतिरिक्त आय अर्जित कर सकते हैं।", "सिंचाई के लिए डीजल पर निर्भरता कम करता है।"],
                 applicationProcess: [
-                    { step: "चरण 1: ऑनलाइन आवेदन", detail: "आधिकारिक राज्य नोडल एजेंसी पोर्टल के माध्यम से आवेदन करें।" },
+                    { step: "चरण 1: ऑनलाइन आवेदन", detail: "आधिकारिक राज्य नोedal एजेंसी पोर्टल के माध्यम से आवेदन करें।" },
                     { step: "चरण 2: व्यवहार्यता जांच", detail: "डिस्कॉम/एजेंसी तकनीकी व्यवहार्यता की जांच करेगी।" },
                     { step: "चरण 3: अपना हिस्सा चुकाएं", detail: "अनुमोदन के बाद अपनी लागत का हिस्सा चुकाएं।" },
                     { step: "चरण 4: स्थापना", detail: "विक्रेता सौर पंप या संयंत्र स्थापित करेगा।" },
@@ -1491,4 +1565,5 @@ export type Translations = typeof translations.English;
 
 
     
+
 
