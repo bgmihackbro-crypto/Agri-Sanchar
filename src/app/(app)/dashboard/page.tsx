@@ -115,32 +115,32 @@ export default function DashboardPage() {
 
   const newsAndEvents = [
     {
-      title: "New Government Scheme Launched for Small Farmers",
-      source: "PIB India",
-      imageUrl: "https://images.unsplash.com/photo-1620714223084-86c9df242d5d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "government building",
-      href: "/schemes"
+      title: "Drought conditions worsen in Marathwada, farmers await relief.",
+      source: "The Times of India",
+      imageUrl: "https://images.unsplash.com/photo-1476611338344-5f098524d452?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "cracked dry earth",
+      href: "/community"
     },
     {
-      title: "Weather Advisory: Heavy Rains Expected in Northern States",
-      source: "IMD",
-      imageUrl: "https://images.unsplash.com/photo-1596707153325-45c91da35478?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "rain clouds",
-      href: "/weather"
+      title: "Locust swarm spotted near Rajasthan border, alert issued.",
+      source: "NDTV",
+      imageUrl: "https://images.unsplash.com/photo-1594294861008-8fe08b8b0984?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "locust swarm",
+      href: "/detection"
     },
     {
-      title: "Onion Prices Surge in Major Mandis",
-      source: "AgriMarket Watch",
-      imageUrl: "https://images.unsplash.com/photo-1587049352851-8d4e89133924?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "onion market",
+      title: "Rising fertilizer and fuel costs squeeze farmer profits.",
+      source: "Business Standard",
+      imageUrl: "https://images.unsplash.com/photo-1625246333195-78d9c3874449?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "fertilizer bags",
       href: "/market"
     },
     {
-      title: "Online Workshop on Organic Farming Techniques",
-      source: "Krishi Vigyan Kendra",
-      imageUrl: "https://plus.unsplash.com/premium_photo-1678396913161-e8869a8435c2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      imageHint: "organic vegetables",
-      href: "/community"
+      title: "Unseasonal rains damage standing crops in parts of Haryana.",
+      source: "The Tribune",
+      imageUrl: "https://images.unsplash.com/photo-1542601959-135897003c2b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "damaged crops",
+      href: "/weather"
     },
   ];
 
