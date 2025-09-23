@@ -99,22 +99,6 @@ export default function DashboardPage() {
       color: "bg-red-100 dark:bg-red-900/30 border-red-200 dark:border-red-800/50",
       iconColor: "text-red-600 dark:text-red-400",
     },
-    {
-      title: t.sidebar.community,
-      href: "/community",
-      icon: Users,
-      badge: null,
-      color: "bg-teal-100 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800/50",
-      iconColor: "text-teal-600 dark:text-teal-400",
-    },
-     {
-      title: 'Yield Calculator',
-      href: "/yield-calculator",
-      icon: Calculator,
-      badge: null,
-      color: "bg-cyan-100 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800/50",
-      iconColor: "text-cyan-600 dark:text-cyan-400",
-    },
   ];
 
   const newsAndEvents = [
@@ -253,3 +237,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
