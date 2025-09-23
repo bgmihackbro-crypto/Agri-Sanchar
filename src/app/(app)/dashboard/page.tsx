@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator, ArrowRight, Volume2, Loader2 } from "lucide-react";
+import { MessageSquare, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator, ArrowRight, Volume2, Loader2 } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -104,7 +104,7 @@ export default function DashboardPage() {
     {
       title: t.dashboard.services.chatbot.title,
       href: "/chatbot",
-      icon: Bot,
+      icon: MessageSquare,
       badge: null,
       color: "bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/50",
       iconColor: "text-blue-600 dark:text-blue-400",
@@ -264,5 +264,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
