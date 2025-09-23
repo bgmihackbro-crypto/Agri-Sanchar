@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator } from "lucide-react";
+import { Bot, CloudSun, Search, TrendingUp, FlaskConical, Bug, Landmark, Users, Tractor, Calculator, ArrowRight } from "lucide-react";
 import React from 'react';
 import Image from "next/image";
 import { useNotifications } from "@/context/notification-context";
@@ -103,11 +103,51 @@ export default function DashboardPage() {
       color: "bg-teal-100 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800/50",
       iconColor: "text-teal-600 dark:text-teal-400",
     },
+     {
+      title: 'Yield Calculator',
+      href: "/yield-calculator",
+      icon: Calculator,
+      badge: null,
+      color: "bg-cyan-100 dark:bg-cyan-900/30 border-cyan-200 dark:border-cyan-800/50",
+      iconColor: "text-cyan-600 dark:text-cyan-400",
+    },
   ];
+
+  const newsAndEvents = [
+    {
+      title: "New Government Scheme Launched for Small Farmers",
+      source: "PIB India",
+      imageUrl: "https://images.unsplash.com/photo-1620714223084-86c9df242d5d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "government building",
+      href: "/schemes"
+    },
+    {
+      title: "Weather Advisory: Heavy Rains Expected in Northern States",
+      source: "IMD",
+      imageUrl: "https://images.unsplash.com/photo-1596707153325-45c91da35478?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "rain clouds",
+      href: "/weather"
+    },
+    {
+      title: "Onion Prices Surge in Major Mandis",
+      source: "AgriMarket Watch",
+      imageUrl: "https://images.unsplash.com/photo-1587049352851-8d4e89133924?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "onion market",
+      href: "/market"
+    },
+    {
+      title: "Online Workshop on Organic Farming Techniques",
+      source: "Krishi Vigyan Kendra",
+      imageUrl: "https://plus.unsplash.com/premium_photo-1678396913161-e8869a8435c2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      imageHint: "organic vegetables",
+      href: "/community"
+    },
+  ];
+
 
   return (
     <div
-      className="space-y-4"
+      className="space-y-8"
     >
       <div
         className="space-y-4"
@@ -133,6 +173,42 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+      
+      <div className="space-y-4 pt-4">
+        <div className="text-center">
+            <h1 className="text-2xl font-bold font-headline">Latest News &amp; Events</h1>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newsAndEvents.map((item, i) => (
+                 <Card 
+                    key={i} 
+                    className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group animate-fade-in-up"
+                    style={{ animationDelay: `${0.5 + i * 0.1}s` }}
+                >
+                    <Link href={item.href}>
+                        <CardContent className="p-0">
+                             <div className="relative h-40 w-full">
+                                <Image 
+                                    src={item.imageUrl} 
+                                    alt={item.title}
+                                    fill
+                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    data-ai-hint={item.imageHint}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                                <p className="absolute bottom-3 left-3 right-3 text-white font-bold leading-tight drop-shadow-md">{item.title}</p>
+                            </div>
+                            <div className="p-4 flex justify-between items-center bg-muted/50">
+                                <p className="text-xs text-muted-foreground font-semibold">{item.source}</p>
+                                <ArrowRight className="h-4 w-4 text-primary transition-transform duration-300 group-hover:translate-x-1" />
+                            </div>
+                        </CardContent>
+                    </Link>
+                </Card>
+            ))}
+        </div>
+      </div>
+
     </div>
   );
 }
