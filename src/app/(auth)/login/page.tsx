@@ -53,16 +53,18 @@ export default function LoginPage({
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const { t, language, setLanguage } = useTranslation();
+  const { t, language, setLanguage, isLoaded } = useTranslation();
   
   useEffect(() => {
-    const lang = localStorage.getItem('selectedLanguage');
-    if (lang === 'Hindi') {
-        setLanguage('Hindi');
-    } else {
-        setLanguage('English');
+    if (isLoaded) {
+      const lang = localStorage.getItem('selectedLanguage');
+      if (lang === 'Hindi') {
+          setLanguage('Hindi');
+      } else {
+          setLanguage('English');
+      }
     }
-  }, [setLanguage]);
+  }, [isLoaded, setLanguage]);
 
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,6 +141,14 @@ export default function LoginPage({
         setLoading(false);
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-sm animate-card-flip-in bg-green-100/80 backdrop-blur-sm border-green-200/50 dark:bg-green-900/80 dark:border-green-800/50">

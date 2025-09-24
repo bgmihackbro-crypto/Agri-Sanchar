@@ -12,23 +12,27 @@ import { Spinner } from '@/components/ui/spinner';
 export default function WelcomePage() {
     const router = useRouter();
     const { t, setLanguage } = useTranslation();
-    const [isChecking, setIsChecking] = useState(true);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        const storedLang = localStorage.getItem('selectedLanguage');
-        if (storedLang) {
-            router.push('/login');
-        } else {
-            setIsChecking(false);
+        setIsClient(true);
+    }, []);
+
+    useEffect(() => {
+        if (isClient) {
+            const storedLang = localStorage.getItem('selectedLanguage');
+            if (storedLang) {
+                router.push('/login');
+            }
         }
-    }, [router]);
+    }, [isClient, router]);
 
     const handleLanguageSelect = (language: 'English' | 'Hindi') => {
         setLanguage(language);
         router.push('/login');
     };
 
-    if (isChecking) {
+    if (!isClient) {
         return (
              <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden"
                  style={{
