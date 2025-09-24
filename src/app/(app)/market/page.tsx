@@ -295,7 +295,10 @@ export default function MarketPricesPage() {
             comparisonIcon = <ArrowDown className="h-4 w-4 text-red-500" />;
             priceColor = 'text-red-600';
         }
+    } else {
+        marketPriceText = buyerPrice.toLocaleString("en-IN");
     }
+
 
     return (
         <div className="flex justify-between items-center text-sm p-1.5 bg-muted/50 rounded-md">
@@ -506,5 +509,3 @@ export default function MarketPricesPage() {
     </div>
   );
 }
-
-    
