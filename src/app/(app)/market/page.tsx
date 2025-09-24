@@ -54,7 +54,11 @@ const buyerData = [
         type: "Wholesaler",
         location: "Ludhiana",
         contact: "+919876512345",
-        crops: ["Wheat", "Rice", "Maize"],
+        crops: [
+            { name: "Wheat", price: 2150 },
+            { name: "Rice", price: 3200 },
+            { name: "Maize", price: 1950 },
+        ],
     },
     {
         id: 'buyer-2',
@@ -63,7 +67,11 @@ const buyerData = [
         type: "Exporter",
         location: "Chandigarh",
         contact: "+919123456789",
-        crops: ["Tomato", "Potato", "Onion", "Chilli"],
+        crops: [
+            { name: "Tomato", price: 1800 },
+            { name: "Potato", price: 1650 },
+            { name: "Onion", price: 2250 },
+        ],
     },
     {
         id: 'buyer-3',
@@ -72,7 +80,11 @@ const buyerData = [
         type: "Wholesaler",
         location: "Pune",
         contact: "+919988776655",
-        crops: ["Onion", "Sugarcane", "Grapes"],
+        crops: [
+            { name: "Onion", price: 2300 },
+            { name: "Sugarcane", price: 315 },
+            { name: "Grapes", price: 8500 },
+        ],
     },
     {
         id: 'buyer-4',
@@ -81,7 +93,11 @@ const buyerData = [
         type: "Food Processor",
         location: "Nagpur",
         contact: "+919112233445",
-        crops: ["Orange", "Soybean", "Cotton"],
+        crops: [
+            { name: "Orange", price: 4200 },
+            { name: "Soybean", price: 4850 },
+            { name: "Cotton", price: 7100 },
+        ],
     }
 ]
 
@@ -396,53 +412,41 @@ export default function MarketPricesPage() {
                         <CardDescription>Connect directly with wholesalers, exporters, and food processors.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4 md:grid-cols-2">
-                        {buyerData.map((buyer) => {
-                            const buyerPrices = buyer.crops.map(crop => {
-                                // Find the price for this crop in the buyer's city.
-                                const priceData = prices?.find(p => p.commodity === crop && p.market === buyer.location);
-                                return { crop, price: priceData ? priceData.modal_price : null };
-                            });
-
-                            return (
-                                <Card key={buyer.id}>
-                                    <CardHeader className="flex flex-row items-center gap-4">
-                                        <Avatar className="h-16 w-16">
-                                            <AvatarImage src={buyer.avatar} />
-                                            <AvatarFallback>{buyer.name.substring(0,2)}</AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex-1">
-                                            <CardTitle className="text-lg">{buyer.name}</CardTitle>
-                                            <p className="text-sm text-muted-foreground">{buyer.type} - {buyer.location}</p>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-sm font-semibold mb-2">Buying Interest & Live Prices:</p>
-                                        <div className="space-y-1">
-                                            {buyerPrices.map(({crop, price}) => (
-                                                <div key={crop} className="flex justify-between items-center text-sm p-1.5 bg-muted/50 rounded-md">
-                                                    <span className="font-medium">{crop}</span>
-                                                    {price ? (
-                                                        <span className="font-bold flex items-center"><IndianRupee className="h-3.5 w-3.5 mr-0.5"/>{parseInt(price).toLocaleString("en-IN")}/q</span>
-                                                    ) : (
-                                                        <span className="text-xs text-muted-foreground">Price N/A</span>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="grid grid-cols-2 gap-2">
-                                        <Button variant="outline" asChild>
-                                            <a href={`tel:${buyer.contact}`}>
-                                                <Phone className="mr-2 h-4 w-4" /> Call
-                                            </a>
-                                        </Button>
-                                        <Button onClick={() => handleChat(buyer)}>
-                                            <MessageSquare className="mr-2 h-4 w-4"/> Chat
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            )
-                        })}
+                        {buyerData.map((buyer) => (
+                            <Card key={buyer.id}>
+                                <CardHeader className="flex flex-row items-center gap-4">
+                                    <Avatar className="h-16 w-16">
+                                        <AvatarImage src={buyer.avatar} />
+                                        <AvatarFallback>{buyer.name.substring(0,2)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <CardTitle className="text-lg">{buyer.name}</CardTitle>
+                                        <p className="text-sm text-muted-foreground">{buyer.type} - {buyer.location}</p>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm font-semibold mb-2">Their Offer Prices (per quintal):</p>
+                                    <div className="space-y-1">
+                                        {buyer.crops.map(({name, price}) => (
+                                            <div key={name} className="flex justify-between items-center text-sm p-1.5 bg-muted/50 rounded-md">
+                                                <span className="font-medium">{name}</span>
+                                                <span className="font-bold flex items-center"><IndianRupee className="h-3.5 w-3.5 mr-0.5"/>{price.toLocaleString("en-IN")}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                                <CardFooter className="grid grid-cols-2 gap-2">
+                                    <Button variant="outline" asChild>
+                                        <a href={`tel:${buyer.contact}`}>
+                                            <Phone className="mr-2 h-4 w-4" /> Call
+                                        </a>
+                                    </Button>
+                                    <Button onClick={() => handleChat(buyer)}>
+                                        <MessageSquare className="mr-2 h-4 w-4"/> Chat
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -450,3 +454,5 @@ export default function MarketPricesPage() {
     </div>
   );
 }
+
+    
