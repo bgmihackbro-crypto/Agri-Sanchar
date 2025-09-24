@@ -179,7 +179,7 @@ const ShareChatDialog = ({ message, userProfile, t }: { message: Message, userPr
         }
         setIsSharing(true);
         try {
-            const shareContent = `**Shared from AI Chatbot:**\n\n${message.content}`;
+            const shareContent = `**${t.chatbot.sharedFrom}:**\n\n${message.content}`;
             
             await sendMessage({
                 groupId: selectedGroup,
@@ -193,7 +193,7 @@ const ShareChatDialog = ({ message, userProfile, t }: { message: Message, userPr
                 onProgress: () => {},
             });
 
-            toast({ title: t.community.share.postShared, description: "Shared to group." });
+            toast({ title: t.community.share.postShared, description: t.chatbot.sharedToGroupSuccess });
             setIsOpen(false);
         } catch (error) {
             console.error("Error sharing post:", error);
@@ -214,7 +214,7 @@ const ShareChatDialog = ({ message, userProfile, t }: { message: Message, userPr
             category: "AI Tip",
             categoryColor: "bg-blue-500",
             time: t.community.post.justNow,
-            title: "Shared from AI Chatbot",
+            title: t.chatbot.sharedFrom,
             content: message.content,
             image: null,
             mediaType: null,
@@ -247,7 +247,7 @@ const ShareChatDialog = ({ message, userProfile, t }: { message: Message, userPr
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t.community.share.title}</DialogTitle>
-                    <DialogDescription>Share this helpful AI response with the community.</DialogDescription>
+                    <DialogDescription>{t.chatbot.shareDescription}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                      <Card className="bg-muted/50 p-4">

@@ -162,6 +162,9 @@ export const translations = {
             aiError: "I can’t provide that information at the moment.",
             aiProcessError: "Sorry, I could not process your request.",
             aiResponseError: "Sorry, I could not generate a response.",
+            sharedFrom: "Shared from AI Chatbot",
+            sharedToGroupSuccess: "Shared to group.",
+            shareDescription: "Share this helpful AI response with the community.",
         },
         detection: {
             title: "Pest & Disease Detection",
@@ -626,7 +629,7 @@ export const translations = {
                     title: "Mix and Prepare Final Sample",
                     description: "Break up any lumps, remove debris, and mix thoroughly. Air-dry the mixed soil in the shade, never in direct sunlight."
                 },
-                pack: {
+                 pack: {
                     title: "Pack and Label Correctly",
                     description: "From the dried sample, take about half a kilogram (500g). Pack it in a clean, labeled bag with your name, date, and field ID."
                 }
@@ -939,6 +942,9 @@ aiThinking: "AI is thinking...",
             aiError: "मैं इस समय वह जानकारी प्रदान नहीं कर सकता।",
             aiProcessError: "क्षमा करें, मैं आपके अनुरोध पर कार्रवाई नहीं कर सका।",
             aiResponseError: "क्षमा करें, मैं प्रतिक्रिया उत्पन्न नहीं कर सका।",
+            sharedFrom: "एआई चैटबॉट से साझा किया गया",
+            sharedToGroupSuccess: "समूह में साझा किया गया।",
+            shareDescription: "इस उपयोगी एआई प्रतिक्रिया को समुदाय के साथ साझा करें।",
         },
         detection: {
             title: "कीट और रोग का पता लगाना",
@@ -1403,7 +1409,7 @@ aiThinking: "AI is thinking...",
                     title: "अंतिम नमूना मिलाएं और तैयार करें",
                     description: "किसी भी गांठ को तोड़ें, मलबा हटाएं, और अच्छी तरह मिलाएं। मिली हुई मिट्टी को छाया में सुखाएं, कभी भी सीधी धूप में नहीं।"
                 },
-                pack: {
+                 pack: {
                     title: "सही ढंग से पैक और लेबल करें",
                     description: "सूखे नमूने से, लगभग आधा किलोग्राम (500 ग्राम) लें। इसे अपने नाम, तारीख और खेत की आईडी के साथ एक साफ, लेबल वाले बैग में पैक करें।"
                 }
@@ -1567,3 +1573,6 @@ export type Translations = typeof translations.English;
     
 
 
+
+
+    
