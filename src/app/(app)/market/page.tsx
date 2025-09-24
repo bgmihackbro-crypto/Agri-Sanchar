@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase, IndianRupee, ArrowDown, ArrowUp, Minus } from "lucide-react";
+import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase, IndianRupee, ArrowDown, ArrowUp, Minus, Package } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
@@ -43,9 +43,10 @@ import { getGroup, createGroup } from "@/lib/firebase/groups";
 import type { UserProfile } from "@/lib/firebase/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 
-type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
+type CombinedPriceData = PriceRecord & Partial<PricePrediction> & { availability?: number };
 
 const buyerData = [
     {
@@ -116,8 +117,10 @@ export default function MarketPricesPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
@@ -127,13 +130,11 @@ export default function MarketPricesPage() {
         const cities = indianCities[userState] || [];
         setAvailableCities(cities);
         setSelectedState(userState);
-        // Set default city from profile if available, but still fetch all India prices initially
         if (parsedProfile.city) {
             setSelectedCity(parsedProfile.city);
         }
       }
     }
-    // Fetch all India prices on initial load
     fetchPrices(null);
   }, []);
 
@@ -147,7 +148,6 @@ export default function MarketPricesPage() {
     const locationName = city || t.market.allIndia;
 
     try {
-      // 1. Fetch current prices
       const response = await answerFarmerQuestion({
         question: `Get prices for ${locationName}`,
         city: city || undefined,
@@ -156,8 +156,13 @@ export default function MarketPricesPage() {
       
       let currentPrices: PriceRecord[] = [];
       if (response.priceData && response.priceData.length > 0) {
-        currentPrices = response.priceData;
-        setPrices(currentPrices); // Show current prices immediately
+        // Simulate availability percentage
+        const pricesWithAvailability: CombinedPriceData[] = response.priceData.map(p => ({
+            ...p,
+            availability: Math.floor(Math.random() * 80) + 20 // Random % between 20 and 100
+        }));
+        currentPrices = pricesWithAvailability;
+        setPrices(pricesWithAvailability); 
          addNotification({
           title: t.market.notification.updated,
           description: t.market.notification.loaded(locationName),
@@ -180,7 +185,6 @@ export default function MarketPricesPage() {
       }
       setIsLoading(false);
 
-      // 2. Fetch AI predictions (only for single city view)
       if(currentPrices.length > 0 && city) {
         setIsPredicting(true);
         try {
@@ -190,8 +194,7 @@ export default function MarketPricesPage() {
           });
 
           if (predictionResponse && predictionResponse.predictions) {
-            // Merge predictions with current prices
-            const combinedData = currentPrices.map(p => {
+            const combinedData = prices!.map(p => {
               const prediction = predictionResponse.predictions.find(pred => pred.commodity === p.commodity);
               return { ...p, ...prediction };
             });
@@ -199,7 +202,6 @@ export default function MarketPricesPage() {
           }
         } catch (predError) {
           console.error("AI Prediction Error:", predError);
-          // Don't set a page-level error, just log it. The user will still see the live prices.
         } finally {
             setIsPredicting(false);
         }
@@ -220,7 +222,7 @@ export default function MarketPricesPage() {
     setAvailableCities(cities);
     setPrices(null);
     setError(null);
-    fetchPrices(null); // Fetch all India prices when state changes
+    fetchPrices(null);
   };
 
   const handleCityChange = (value: string) => {
@@ -280,6 +282,12 @@ export default function MarketPricesPage() {
           marketPrice: marketRecord ? parseInt(marketRecord.modal_price) : null,
       };
   };
+  
+    const getAvailabilityColor = (percentage: number) => {
+        if (percentage > 75) return "bg-green-500";
+        if (percentage > 40) return "bg-yellow-500";
+        return "bg-red-500";
+    }
 
   const PriceComparisonRow = ({ buyerPrice, marketPrice, cropName }: { buyerPrice: number, marketPrice: number | null, cropName: string }) => {
     let comparisonIcon = <Minus className="h-4 w-4 text-muted-foreground" />;
@@ -414,6 +422,7 @@ export default function MarketPricesPage() {
                         <TableRow>
                             <TableHead>{t.market.table.crop}</TableHead>
                             {isAllIndia && <TableHead>{t.market.table.market}</TableHead>}
+                            <TableHead>Availability</TableHead>
                             <TableHead className="text-right">{t.market.table.currentPrice}</TableHead>
                             {!isAllIndia && <TableHead className="text-right">{t.market.table.next2Weeks}</TableHead>}
                             {!isAllIndia && <TableHead className="text-right">{t.market.table.aiSuggestion}</TableHead>}
@@ -424,6 +433,14 @@ export default function MarketPricesPage() {
                             <TableRow key={index}>
                             <TableCell className="font-medium">{crop.commodity}</TableCell>
                             {isAllIndia && <TableCell>{crop.market}</TableCell>}
+                            <TableCell>
+                                {crop.availability !== undefined && (
+                                    <div className="flex items-center gap-2">
+                                        <Progress value={crop.availability} className={cn("h-2 w-16", getAvailabilityColor(crop.availability))} />
+                                        <span className="text-xs font-medium text-muted-foreground">{crop.availability}%</span>
+                                    </div>
+                                )}
+                            </TableCell>
                             <TableCell className="text-right font-bold">
                                 {parseInt(crop.modal_price).toLocaleString("en-IN")}
                             </TableCell>
