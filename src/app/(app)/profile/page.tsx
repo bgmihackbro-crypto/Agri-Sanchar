@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import { auth } from "@/lib/firebase";
 import { updateUserProfile, type UserProfile } from "@/lib/firebase/users";
+import { Spinner } from "@/components/ui/spinner";
 
 const generateId = (type: 'farmer' | 'expert' | 'ngo' = 'farmer') => {
     const prefix = {
