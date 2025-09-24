@@ -53,23 +53,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [profile, setProfile] = useState<UserProfile>({
-    farmerId: "",
-    name: "Farmer",
-    phone: "",
-    avatar: "https://picsum.photos/seed/farm-icon/100/100",
-    farmSize: "",
-    city: "",
-    state: "",
-    annualIncome: "",
-    gender: "",
-    age: "",
-    dob: "",
-    language: "English",
-    userType: "farmer",
-    specialization: "",
-    organization: "",
-  });
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -81,48 +65,46 @@ export default function ProfilePage() {
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
       
-      // If a language was just selected on the previous screen, set it.
       if (preselectedLang && !parsedProfile.language) {
           parsedProfile.language = preselectedLang;
       }
 
-      setProfile(prev => ({...prev, ...parsedProfile}));
+      setProfile(parsedProfile);
       if (parsedProfile.state) {
         setAvailableCities(indianCities[parsedProfile.state] || []);
       }
-       // If profile is incomplete, enter edit mode by default
       if (!parsedProfile.state || !parsedProfile.city) {
         setIsEditing(true);
       }
     } else {
-        // If no profile at all, send to login, as they shouldn't be here.
         router.push('/login');
     }
   }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setProfile((prev) => ({ ...prev, [id]: value }));
+    setProfile((prev) => (prev ? { ...prev, [id]: value } : null));
   };
 
   const handleStateChange = (value: string) => {
-    setProfile((prev) => ({ ...prev, state: value, city: "" })); // Reset city when state changes
+    setProfile((prev) => (prev ? { ...prev, state: value, city: "" } : null));
     setAvailableCities(indianCities[value] || []);
   };
 
   const handleCityChange = (value: string) => {
-    setProfile((prev) => ({ ...prev, city: value }));
+    setProfile((prev) => (prev ? { ...prev, city: value } : null));
   };
   
   const handleGenderChange = (value: string) => {
-    setProfile((prev) => ({ ...prev, gender: value }));
+    setProfile((prev) => (prev ? { ...prev, gender: value } : null));
   };
   
    const handleLanguageChange = (value: 'English' | 'Hindi') => {
-    setProfile((prev) => ({ ...prev, language: value }));
+    setProfile((prev) => (prev ? { ...prev, language: value } : null));
   };
 
   const handleUserTypeChange = (value: 'farmer' | 'expert' | 'ngo') => {
+    if (!profile) return;
     const originalId = profile.farmerId;
     const originalType = profile.userType;
     let newId = originalId;
@@ -131,16 +113,16 @@ export default function ProfilePage() {
         newId = generateId(value);
     }
     
-    setProfile((prev) => ({ 
+    setProfile((prev) => (prev ? { 
         ...prev, 
         userType: value,
         farmerId: newId,
-     }));
+     } : null));
   };
   
   const handleDobChange = (date: Date | undefined) => {
       if (date) {
-        setProfile((prev) => ({ ...prev, dob: date.toISOString() }));
+        setProfile((prev) => (prev ? { ...prev, dob: date.toISOString() } : null));
       }
   }
 
@@ -149,14 +131,14 @@ export default function ProfilePage() {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        setProfile((prev) => ({ ...prev, avatar: reader.result as string }));
+        setProfile((prev) => (prev ? { ...prev, avatar: reader.result as string } : null));
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleSave = async () => {
-    if (!profile.phone) {
+    if (!profile || !profile.phone) {
       toast({ variant: "destructive", title: "Not Authenticated", description: "Your phone number is missing. Please log in again." });
       router.push('/login');
       return;
@@ -174,12 +156,10 @@ export default function ProfilePage() {
     setIsEditing(false);
     
     try {
-      // Use the phone number to find the mock user ID
       const mockUserId = `sim-${profile.phone.replace('+91', '')}`;
       await updateUserProfile(mockUserId, profile);
       localStorage.setItem("userProfile", JSON.stringify(profile));
       
-      // We can now remove the temporary language selection
       localStorage.removeItem('selectedLanguage');
 
       toast({
@@ -187,18 +167,17 @@ export default function ProfilePage() {
         description: t.profile.toast.updatedDesc,
         action: <Check className="h-5 w-5 text-green-500" />,
       });
-      // Force a re-render in other components using the avatar
       window.dispatchEvent(new Event("storage"));
-      // Redirect to dashboard after saving, ensuring the profile is now complete.
       router.push('/dashboard');
     } catch (error) {
       console.error("Error saving profile:", error);
       toast({ variant: "destructive", title: "Save Failed", description: "Could not save your profile to the database." });
-      setIsEditing(true); // Re-enter editing mode on failure
+      setIsEditing(true);
     }
   };
 
   const getIdLabel = () => {
+    if (!profile) return "ID";
     switch (profile.userType) {
         case 'expert':
             return t.profile.expertId;
@@ -208,6 +187,14 @@ export default function ProfilePage() {
             return t.profile.farmerId;
     }
   };
+
+  if (!profile) {
+      return (
+          <div className="flex justify-center items-start py-8">
+              <Spinner />
+          </div>
+      )
+  }
 
 
   return (
@@ -532,5 +519,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-    

@@ -56,13 +56,11 @@ export default function SignupPage() {
   const { t, language, setLanguage } = useTranslation();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const lang = localStorage.getItem('selectedLanguage');
-        if (lang === 'Hindi') {
-            setLanguage('Hindi');
-        } else {
-            setLanguage('English');
-        }
+    const lang = localStorage.getItem('selectedLanguage');
+    if (lang === 'Hindi') {
+        setLanguage('Hindi');
+    } else {
+        setLanguage('English');
     }
   }, [setLanguage]);
 

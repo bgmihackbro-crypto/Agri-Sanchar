@@ -17,10 +17,8 @@ export default function WelcomePage() {
     useEffect(() => {
         const storedLang = localStorage.getItem('selectedLanguage');
         if (storedLang) {
-            // If language is already set, redirect to login
             router.push('/login');
         } else {
-            // Otherwise, show the language selection
             setIsChecking(false);
         }
     }, [router]);
