@@ -200,7 +200,7 @@ export default function SchemesPage() {
         {
             name: "Meena Devi",
             location: "Maharashtra",
-            avatar: "https://images.unsplash.com/photo-1601288496429-7de5f9118b62?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fA%3D%3D",
+            avatar: "https://images.unsplash.com/photo-1601288496429-7de5f9118b62?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             scheme: t.schemes.pmfby.name,
             story: "Last year, unseasonal rains destroyed my entire soyabean crop. Thanks to Fasal Bima Yojana, I got the insurance claim on time and was able to sow for the next season without any debt."
         },
