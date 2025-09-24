@@ -179,7 +179,7 @@ export default function SchemesPage() {
         utterance.onstart = () => setNowPlayingSchemeId(scheme.id);
         utterance.onend = () => setNowPlayingSchemeId(null);
         utterance.onerror = (e) => {
-            if (e.error !== 'canceled') {
+            if (e.error !== 'canceled' && e.error !== 'interrupted') {
                 console.error("Speech synthesis error", e);
             }
             setNowPlayingSchemeId(null);
@@ -452,11 +452,3 @@ function SchemeCard({ scheme, t, speak, nowPlayingSchemeId }: { scheme: Scheme, 
         </Dialog>
     );
 }
-
-
-
-      
-
-    
-
-    

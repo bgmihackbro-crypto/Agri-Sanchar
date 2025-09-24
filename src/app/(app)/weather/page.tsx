@@ -152,7 +152,7 @@ export default function WeatherPage() {
         utterance.onstart = () => setIsPlaying(true);
         utterance.onend = () => setIsPlaying(false);
         utterance.onerror = (e) => {
-            if (e.error !== 'canceled') {
+            if (e.error !== 'canceled' && e.error !== 'interrupted') {
                 console.error("Speech synthesis error", e);
             }
             setIsPlaying(false);

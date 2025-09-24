@@ -249,7 +249,7 @@ export default function ChatbotPage() {
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
-        if (e.error !== 'canceled') {
+        if (e.error !== 'canceled' && e.error !== 'interrupted') {
             console.error("Speech synthesis error", e);
             toast({ variant: 'destructive', title: t.chatbot.speechError, description: t.chatbot.speechErrorDesc });
         }
@@ -571,11 +571,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
-
-    

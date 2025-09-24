@@ -89,7 +89,7 @@ export default function DashboardPage() {
     utterance.onstart = () => setNowPlayingIndex(index);
     utterance.onend = () => setNowPlayingIndex(null);
     utterance.onerror = (e) => {
-        if (e.error !== 'canceled') {
+        if (e.error !== 'canceled' && e.error !== 'interrupted') {
             console.error("Speech synthesis error", e);
         }
         setNowPlayingIndex(null);
