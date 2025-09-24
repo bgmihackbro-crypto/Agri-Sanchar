@@ -131,24 +131,26 @@ Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engag
 - If the user asks in **English**, reply entirely in **English**.
 - The user's profile language is set to '{{language}}', but you must **always prioritize the language of the question itself**.
 
-**FORMATTING INSTRUCTIONS**:
-- Use bold headings, but do not use any asterisks (*) for formatting. For example, instead of "**My Heading**", just format the heading as bold.
-- Use numbered lists for steps or points (e.g., "1. First point.").
-- Do not use dashes (-) for lists.
+**FORMATTING INSTRUCTIONS FOR SPEECH**:
+- Your entire response will be read aloud by a text-to-speech engine.
+- Do NOT use any special characters for formatting like asterisks (*), hashtags (#), or numbered lists (1., 2.).
+- Write in simple, clear sentences and paragraphs.
+- Use headings, but make them natural parts of the sentence, for example: "Regarding your question about wheat..."
+- When giving steps, describe them in plain sentences, such as: "First, you should observe the leaves. Next, you can apply the recommended action."
 
-When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
+When you use the 'getMandiPrices' tool, you receive JSON data. Format this data into a human-readable list within your response. For example: "Here are the prices for [City]: The price for Wheat is [Price] per quintal." Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
 If asked for the current date, day, or time, use this: {{{currentDate}}}.
 
 {{#if photoDataUri}}
 A photo has been provided. You MUST analyze this photo in the context of the user's question. If the user is asking to identify a problem (like a disease or pest), perform a step-by-step diagnosis.
 
-1.  **Observation**: Describe what you see in the image (crop type, symptoms).
-2.  **Diagnosis**: Provide the most likely diagnosis.
-3.  **Recommended Action**: Give clear, actionable steps.
-4.  **Prevention**: Give advice on how to prevent this issue in the future.
+First, describe what you see in the image (crop type, symptoms).
+Second, provide the most likely diagnosis.
+Third, give clear, actionable steps as a recommendation.
+Fourth, give advice on how to prevent this issue in the future.
 
-Format your diagnosis using Markdown. If the question is not about a problem, use the image as context to answer the question. Here is the photo: {{media url=photoDataUri}}
+If the question is not about a problem, use the image as context to answer the question. Here is the photo: {{media url=photoDataUri}}
 {{/if}}
 
 You have access to the following information (RAG). Use it to answer common questions about government schemes and crop information. Do not mention that you have this information unless asked.
@@ -457,5 +459,3 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     }
   }
 );
-
-    
