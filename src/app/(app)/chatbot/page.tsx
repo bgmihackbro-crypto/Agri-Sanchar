@@ -551,7 +551,7 @@ export default function ChatbotPage() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
                 disabled={isLoading}
-                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-auto py-2"
+                className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-auto py-2"
                 />
                 <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-foreground h-8 w-8">
                     <Mic className="h-4 w-4" />
@@ -578,3 +578,4 @@ export default function ChatbotPage() {
     
 
     
+
