@@ -417,37 +417,43 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
   async (input) => {
-    // If the request is for JSON price data, call the tool directly and return.
-    if (input.returnJson) {
-      const priceData = await getMandiPrices({ city: input.city });
-      if (priceData.error) {
-        return { answer: priceData.error };
-      }
-      return { answer: '', priceData: priceData.records };
+    try {
+        // If the request is for JSON price data, call the tool directly and return.
+        if (input.returnJson) {
+            const priceData = await getMandiPrices({ city: input.city });
+            if (priceData.error) {
+                return { answer: priceData.error };
+            }
+            return { answer: '', priceData: priceData.records };
+        }
+
+        const currentDate = new Date().toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+        });
+        
+        const requestData = {
+            ...input,
+            currentDate,
+        };
+
+        const llmResponse = await answerFarmerQuestionPrompt(requestData);
+        const answer = llmResponse.text;
+
+        if (answer) {
+            return { answer: answer };
+        }
+
+        return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
+
+    } catch (err) {
+        console.error("Error in answerFarmerQuestionFlow:", err);
+        return { answer: "Sorry, I couldn't generate an answer right now. The AI service may be temporarily down. Please try again later." };
     }
-
-    const currentDate = new Date().toLocaleString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    });
-    
-    const requestData = {
-      ...input,
-      currentDate,
-    };
-
-    const llmResponse = await answerFarmerQuestionPrompt(requestData);
-    const answer = llmResponse.text;
-
-    if (answer) {
-      return { answer: answer };
-    }
-
-    return { answer: "Sorry, I couldn't generate an answer right now. Please try again or provide more details." };
   }
 );
