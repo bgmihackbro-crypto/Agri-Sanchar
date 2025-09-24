@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -120,6 +121,7 @@ export default function MarketPricesPage() {
 
     const savedProfile = localStorage.getItem("userProfile");
     let initialCity: string | null = null;
+    let doFetch = true;
 
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
@@ -129,13 +131,20 @@ export default function MarketPricesPage() {
         const cities = indianCities[userState] || [];
         setAvailableCities(cities);
         setSelectedState(userState);
-        if (parsedProfile.city) {
+        if (parsedProfile.city && availableCities.includes(parsedProfile.city)) {
             setSelectedCity(parsedProfile.city);
             initialCity = parsedProfile.city;
+            setIsAllIndia(false);
         }
       }
     }
-    fetchPrices(initialCity);
+    
+    if (initialCity) {
+      fetchPrices(initialCity);
+    } else {
+      fetchPrices(null);
+    }
+
   }, [isLoaded]);
 
   const fetchPrices = async (city: string | null) => {
@@ -172,9 +181,13 @@ export default function MarketPricesPage() {
       } else {
         setError(t.market.error.fetchFailed(locationName));
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setError(t.market.error.fetchFailed(locationName));
+      if (e.message.includes('FETCH_FAILED')) {
+          setError(t.market.error.fetchFailed(locationName));
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
         setIsLoading(false);
     }
@@ -227,7 +240,7 @@ export default function MarketPricesPage() {
   };
 
   const getPriceComparison = (commodity: string) => {
-      if (!prices) return { marketPrice: null, comparison: null };
+      if (!prices) return { marketPrice: null };
       const marketRecord = prices.find(p => p.commodity.toLowerCase() === commodity.toLowerCase());
       return {
           marketPrice: marketRecord ? parseInt(marketRecord.modal_price) : null,
@@ -243,7 +256,7 @@ export default function MarketPricesPage() {
   const PriceComparisonRow = ({ buyerPrice, marketPrice, cropName }: { buyerPrice: number, marketPrice: number | null, cropName: string }) => {
     let comparisonIcon = <Minus className="h-4 w-4 text-muted-foreground" />;
     let priceColor = 'text-muted-foreground';
-    let marketPriceText: string | number = 'N/A';
+    let marketPriceText: string | number;
 
     if (marketPrice !== null) {
         marketPriceText = marketPrice.toLocaleString("en-IN");
@@ -255,7 +268,7 @@ export default function MarketPricesPage() {
             priceColor = 'text-red-600';
         }
     } else {
-        marketPriceText = buyerPrice.toLocaleString("en-IN");
+        marketPriceText = buyerPrice.toLocaleString("en-IN"); // Fallback to buyer price
     }
 
 
