@@ -29,9 +29,8 @@ import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
 import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase, IndianRupee, ArrowDown, ArrowUp, Minus, Package } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
-import type { PriceRecord, PricePrediction } from "@/ai/types";
+import type { PriceRecord } from "@/ai/types";
 import { Spinner } from "@/components/ui/spinner";
 import { useNotifications } from "@/context/notification-context";
 import { useTranslation } from "@/hooks/use-translation";
@@ -46,7 +45,7 @@ import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
 
-type CombinedPriceData = PriceRecord & Partial<PricePrediction> & { availability?: number };
+type CombinedPriceData = PriceRecord & { availability?: number };
 
 const buyerData = [
     {
@@ -110,18 +109,19 @@ export default function MarketPricesPage() {
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   const [prices, setPrices] = useState<CombinedPriceData[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addNotification } = useNotifications();
   const [isAllIndia, setIsAllIndia] = useState(true);
-  const { t } = useTranslation();
+  const { t, isLoaded } = useTranslation();
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    if (!isLoaded) return;
+
     const savedProfile = localStorage.getItem("userProfile");
+    let initialCity: string | null = null;
+
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
       setUserProfile(parsedProfile);
@@ -132,15 +132,15 @@ export default function MarketPricesPage() {
         setSelectedState(userState);
         if (parsedProfile.city) {
             setSelectedCity(parsedProfile.city);
+            initialCity = parsedProfile.city;
         }
       }
     }
-    fetchPrices(null);
-  }, []);
+    fetchPrices(initialCity);
+  }, [isLoaded]);
 
   const fetchPrices = async (city: string | null) => {
     setIsLoading(true);
-    setIsPredicting(false);
     setPrices(null);
     setError(null);
     setIsAllIndia(city === null);
@@ -154,14 +154,11 @@ export default function MarketPricesPage() {
         returnJson: true,
       });
       
-      let currentPrices: PriceRecord[] = [];
       if (response.priceData && response.priceData.length > 0) {
-        // Simulate availability percentage
         const pricesWithAvailability: CombinedPriceData[] = response.priceData.map(p => ({
             ...p,
-            availability: Math.floor(Math.random() * 80) + 20 // Random % between 20 and 100
+            availability: Math.floor(Math.random() * 80) + 20
         }));
-        currentPrices = pricesWithAvailability;
         setPrices(pricesWithAvailability); 
          addNotification({
           title: t.market.notification.updated,
@@ -170,48 +167,17 @@ export default function MarketPricesPage() {
       } else if (response.answer === 'NO_DATA_FOUND') {
         setError(t.market.error.noData(locationName));
         setPrices([]);
-        setIsLoading(false);
-        return;
       } else if (response.answer === 'API_KEY_MISSING') {
         setError('API_KEY_MISSING');
         setPrices([]);
-        setIsLoading(false);
-        return;
-      }
-      else {
+      } else {
         setError(t.market.error.fetchFailed(locationName));
-        setIsLoading(false);
-        return;
       }
-      setIsLoading(false);
-
-      if(currentPrices.length > 0 && city) {
-        setIsPredicting(true);
-        try {
-          const predictionResponse = await predictCropPrices({
-            city: city,
-            prices: currentPrices,
-          });
-
-          if (predictionResponse && predictionResponse.predictions) {
-            const combinedData = prices!.map(p => {
-              const prediction = predictionResponse.predictions.find(pred => pred.commodity === p.commodity);
-              return { ...p, ...prediction };
-            });
-            setPrices(combinedData);
-          }
-        } catch (predError) {
-          console.error("AI Prediction Error:", predError);
-        } finally {
-            setIsPredicting(false);
-        }
-      }
-      
     } catch (e) {
       console.error(e);
       setError(t.market.error.fetchFailed(locationName));
-      setIsLoading(false);
-      setIsPredicting(false);
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -234,20 +200,6 @@ export default function MarketPricesPage() {
     }
   };
   
-  const getSuggestionBadge = (suggestion?: string) => {
-    if (!suggestion) return null;
-    switch (suggestion) {
-      case 'Sell':
-        return <Badge variant="destructive">{t.market.suggestion.sell}</Badge>;
-      case 'Hold/Buy':
-        return <Badge className="bg-green-600 text-white">{t.market.suggestion.holdBuy}</Badge>;
-      case 'Hold':
-        return <Badge variant="secondary">{t.market.suggestion.hold}</Badge>;
-      default:
-        return null;
-    }
-  };
-
   const handleChat = (buyer: (typeof buyerData)[0]) => {
       if (!userProfile) {
           return;
@@ -424,8 +376,6 @@ export default function MarketPricesPage() {
                             {isAllIndia && <TableHead>{t.market.table.market}</TableHead>}
                             <TableHead>Availability</TableHead>
                             <TableHead className="text-right">{t.market.table.currentPrice}</TableHead>
-                            {!isAllIndia && <TableHead className="text-right">{t.market.table.next2Weeks}</TableHead>}
-                            {!isAllIndia && <TableHead className="text-right">{t.market.table.aiSuggestion}</TableHead>}
                         </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -444,21 +394,6 @@ export default function MarketPricesPage() {
                             <TableCell className="text-right font-bold">
                                 {parseInt(crop.modal_price).toLocaleString("en-IN")}
                             </TableCell>
-                            
-                            {!isAllIndia && (
-                                <>
-                                <TableCell className="text-right">
-                                    {crop.nextTwoWeeksPrice ? (
-                                    <div className="flex items-center justify-end gap-2">
-                                        {crop.nextTwoWeeksPrice.toLocaleString("en-IN")}
-                                    </div>
-                                    ) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : <span className="text-muted-foreground">-</span>}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    {crop.suggestion ? getSuggestionBadge(crop.suggestion) : isPredicting ? <div className="flex justify-end"><Spinner className="h-4 w-4 animate-spin" /></div> : <span className="text-muted-foreground">-</span> }
-                                </TableCell>
-                                </>
-                            )}
                             </TableRow>
                         ))}
                         </TableBody>
