@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
@@ -37,293 +36,10 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import type { UserProfile as AppUserProfile } from "@/lib/firebase/users";
 import { useGroups } from "@/hooks/use-groups";
+import { getPosts, addPost, updatePost, type Post, type Comment } from "@/lib/firebase/posts";
 
 
 const allCitiesList = Object.values(indianCities).flat();
-
-
-const initialPostsData = [
-  {
-    id: 1,
-    author: "Balwinder Singh",
-    avatar: "https://picsum.photos/seed/wheat-field/40/40",
-    avatarHint: "wheat field",
-    location: "Amritsar",
-    category: "Pests",
-    categoryColor: "bg-red-500",
-    time: "2 hours ago",
-    title: "What is this on my wheat crop?",
-    content:
-      "My wheat crop is showing yellow spots on the leaves. What could be the issue? I've attached a photo.",
-    image: "https://images.unsplash.com/photo-1437252611977-07f74518abd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3aGVhdHxlbnwwfHx8fDE3NTg0NjMyMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "wheat disease",
-    mediaType: 'image',
-    likes: 12,
-    comments: [
-      { author: "AI Expert", content: "This looks like a nitrogen deficiency. Try applying a urea-based fertilizer.", isAi: true, isExpert: true, avatar: '' },
-      { author: "Gurpreet Kaur", content: "I had a similar issue. It was rust disease. Check for orange pustules.", avatar: 'https://picsum.photos/seed/farm-avatar-2/40/40' },
-    ],
-  },
-  {
-    id: 2,
-    author: "Rani Devi",
-    avatar: "https://picsum.photos/seed/rice-field/40/40",
-    avatarHint: "rice field",
-    location: "Ludhiana",
-    category: "Crops",
-    categoryColor: "bg-green-500",
-    time: "5 hours ago",
-    title: "Healthy rice paddy this season!",
-    content: "Sharing a picture of my healthy rice paddy this season! Good rainfall has helped a lot. How is everyone else's crop?",
-    image: "https://images.unsplash.com/photo-1562918105-15a13eef89ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyaWNlJTIwcGFkZHl8ZW58MHx8fHwxNzU4NDY2OTE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "rice paddy",
-    mediaType: 'image',
-    likes: 28,
-    comments: [
-        { author: "Sukhdev Singh", content: "Looks great, Rani ji! My crop is also doing well.", avatar: 'https://picsum.photos/seed/farm-avatar-3/40/40' },
-    ],
-  },
-   {
-    id: 3,
-    author: "Manpreet Kaur",
-    avatar: "https://picsum.photos/seed/tractor-purchase/40/40",
-    avatarHint: "tractor",
-    location: "Patiala",
-    category: "Equipment",
-    categoryColor: "bg-blue-500",
-    time: "1 day ago",
-    title: "Advice on buying a new tractor?",
-    content: "I'm planning to buy a new tractor for my 15-acre farm. Any recommendations on brands or models? My budget is around ₹6 lakh.",
-    image: 'https://images.unsplash.com/photo-1614977645540-7abd88ba8e56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0cmFjdG9yfGVufDB8fHx8MTc1ODM3Njk0NHww&ixlib=rb-4.1.0&q=80&w=1080',
-    mediaType: 'image',
-    imageHint: 'new tractor',
-    likes: 18,
-    comments: [],
-  },
-  {
-    id: 4,
-    author: "Vikram Kumar",
-    avatar: "https://picsum.photos/seed/vegetable-farm/40/40",
-    avatarHint: "vegetable farm",
-    location: "Jalandhar",
-    category: "Market",
-    categoryColor: "bg-orange-500",
-    time: "2 days ago",
-    title: "Great prices for tomatoes at Jalandhar mandi!",
-    content: "Just sold my tomato harvest at the Jalandhar mandi for a very good price. Demand is high right now. If you have ready produce, now is a good time to sell.",
-    image: "https://images.unsplash.com/photo-1598512752271-33f913a5af13?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    imageHint: "tomatoes market",
-    mediaType: 'image',
-    likes: 45,
-    comments: [],
-  },
-  {
-    id: 5,
-    author: "Jaswinder Singh",
-    avatar: "https://picsum.photos/seed/solar-pump/40/40",
-    avatarHint: "solar pump",
-    location: "Moga",
-    category: "Schemes",
-    categoryColor: "bg-purple-500",
-    time: "3 days ago",
-    title: "Has anyone used the PM-KUSUM scheme for solar pumps?",
-    content: "I am thinking of installing a solar water pump on my farm through the PM-KUSUM scheme. Has anyone gone through the process? Is the subsidy helpful?",
-    image: "https://images.unsplash.com/photo-1650530224334-476083f65bdd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNnx8c29sYXIlMjBwdW1wfGVufDB8fHx8MTc1ODQ2OTQyNHww&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "solar water pump",
-    mediaType: 'image',
-    likes: 31,
-    comments: [],
-  },
-  {
-    id: 6,
-    author: "Harpreet Gill",
-    avatar: "https://picsum.photos/seed/potato-crop/40/40",
-    avatarHint: "potato crop",
-    location: "Hoshiarpur",
-    category: "Crops",
-    categoryColor: "bg-green-500",
-    time: "4 days ago",
-    title: "New potato variety showing good results.",
-    content: "Tried a new variety of potato this year, 'Kufri Uday'. The yield is much better than the old one. Sharing a photo of the harvest.",
-    image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3RhdG98ZW58MHx8fHwxNzU4MzU5Mzg1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "potato harvest",
-    mediaType: 'image',
-    likes: 52,
-    comments: [],
-  },
-  {
-    id: 7,
-    author: "Amrita Kaur",
-    avatar: "https://picsum.photos/seed/organic-farm/40/40",
-    avatarHint: "organic farm",
-    location: "Faridkot",
-    category: "Fertilizers",
-    categoryColor: "bg-yellow-500",
-    time: "5 days ago",
-    title: "How to make organic fertilizer at home?",
-    content: "I want to move to organic farming. Can anyone share some simple methods to prepare jeevamrut or other organic fertilizers at home? Looking for low-cost methods.",
-    image: null,
-    mediaType: null,
-    likes: 25,
-    comments: [
-        { author: "AI Expert", content: "You can create Jeevamrut using cow dung, cow urine, jaggery, gram flour, and water. Mix them in a drum and let it ferment for 2-7 days.", isAi: true, isExpert: true, avatar: '' }
-    ],
-  },
-  {
-    id: 8,
-    author: "Sandeep Kumar",
-    avatar: "https://picsum.photos/seed/drip-irrigation/40/40",
-    avatarHint: "drip irrigation",
-    location: "Bathinda",
-    category: "Irrigation",
-    categoryColor: "bg-cyan-500",
-    time: "6 days ago",
-    title: "Drip irrigation saved my cotton crop",
-    content: "With the low rainfall this year, the drip irrigation system I installed was a lifesaver for my cotton crop. It used much less water and the yield was not affected. Highly recommend it.",
-    image: "https://images.unsplash.com/photo-1738598665698-7fd7af4b5e0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpcnJpZ2F0aW9ufGVufDB8fHx8MTc1ODQ3MDgwMHww&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "cotton crop",
-    mediaType: 'image',
-    likes: 68,
-    comments: [],
-  },
-  {
-    id: 9,
-    author: "Anil Kumar",
-    avatar: "https://picsum.photos/seed/cotton-pest/40/40",
-    avatarHint: "cotton plant",
-    location: "Nagpur",
-    category: "Pests",
-    categoryColor: "bg-red-500",
-    time: "1 day ago",
-    title: "Whitefly problem in my cotton crop",
-    content: "My cotton plants are infested with whiteflies. They are causing the leaves to turn yellow and sticky. What is the best way to control them organically?",
-    image: "https://images.unsplash.com/photo-1712471010183-8c30c4511467?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3R0b24lMjBjcm9wfGVufDB8fHx8MTc1ODQ2OTUyMHww&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "cotton pest",
-    mediaType: 'image',
-    likes: 22,
-    comments: [],
-  },
-  {
-    id: 10,
-    author: "Sunita Devi",
-    avatar: "https://picsum.photos/seed/marigold-farm/40/40",
-    avatarHint: "marigold farm",
-    location: "Bengaluru",
-    category: "Crops",
-    categoryColor: "bg-green-500",
-    time: "2 days ago",
-    title: "Thinking of switching to floriculture. Good idea?",
-    content: "I have a 2-acre plot and I am considering growing marigolds instead of vegetables. Is the market good for flowers in Bengaluru? What are the risks?",
-    image: "https://images.unsplash.com/photo-1626386622721-93ad18801266?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHwlMjBmbG9yaWN1bHR1cmUuJTIwfGVufDB8fHx8MTc1ODQ3MDg2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "marigold farm",
-    mediaType: 'image',
-    likes: 35,
-    comments: [],
-  },
-  {
-    id: 11,
-    author: "Rajesh Sharma",
-    avatar: "https://picsum.photos/seed/polyhouse/40/40",
-    avatarHint: "polyhouse",
-    location: "Pune",
-    category: "Equipment",
-    categoryColor: "bg-blue-500",
-    time: "3 days ago",
-    title: "Subsidy on polyhouse construction?",
-    content: "Does anyone know if there is a government subsidy available for constructing a polyhouse in Maharashtra? I want to grow high-value vegetables.",
-    image: "https://images.unsplash.com/photo-1658538678422-8d3e734477a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwb2x5aG91c2V8ZW58MHx8fHwxNzU4NDcwODk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "polyhouse farming",
-    mediaType: 'image',
-    likes: 41,
-    comments: [
-        { author: "AI Expert", content: "Yes, the National Horticulture Mission (NHM) provides subsidies for polyhouses. You can contact your district's horticulture office for details.", isAi: true, isExpert: true, avatar: '' }
-    ],
-  },
-  {
-    id: 12,
-    author: "Meena Kumari",
-    avatar: "https://picsum.photos/seed/onion-market/40/40",
-    avatarHint: "onion market",
-    location: "Indore",
-    category: "Market",
-    categoryColor: "bg-orange-500",
-    time: "4 days ago",
-    title: "Onion prices are expected to rise",
-    content: "I heard from a trader at the Indore mandi that onion prices might go up in the next few weeks due to low supply. Might be a good idea to hold your stock if you can.",
-    image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    imageHint: "onion market",
-    mediaType: 'image',
-    likes: 58,
-    comments: [],
-  },
-  {
-    id: 13,
-    author: "Arjun Reddy",
-    avatar: "https://picsum.photos/seed/kcc-card/40/40",
-    avatarHint: "credit card",
-    location: "Hyderabad",
-    category: "Schemes",
-    categoryColor: "bg-purple-500",
-    time: "5 days ago",
-    title: "How to apply for Kisan Credit Card (KCC)?",
-    content: "I need some funds to buy seeds and fertilizers for the upcoming season. How can I apply for a Kisan Credit Card? Is the process online?",
-    image: null,
-    mediaType: null,
-    likes: 19,
-    comments: [],
-  },
-  {
-    id: 14,
-    author: "Priya Singh",
-    avatar: "https://picsum.photos/seed/compost/40/40",
-    avatarHint: "compost",
-    location: "Jaipur",
-    category: "Fertilizers",
-    categoryColor: "bg-yellow-500",
-    time: "6 days ago",
-    title: "Is vermicompost better than cow dung manure?",
-    content: "I have been using cow dung manure for a long time. I hear a lot about vermicompost now. Is it really better? What are the benefits and costs?",
-    image: "https://images.unsplash.com/photo-1635574901622-8014a3ddead5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3clMjBkdW5nfGVufDB8fHx8MTc1ODQ2OTY4N3ww&ixlibrb-4.1.0&q=80&w=1080",
-    imageHint: "vermicompost",
-    mediaType: 'image',
-    likes: 33,
-    comments: [],
-  },
-  {
-    id: 15,
-    author: "Deepak Bose",
-    avatar: "https://picsum.photos/seed/canal-water/40/40",
-    avatarHint: "canal water",
-    location: "Kolkata",
-    category: "Irrigation",
-    categoryColor: "bg-cyan-500",
-    time: "1 week ago",
-    title: "Canal water schedule for this month?",
-    content: "Does anyone in the Howrah district have the canal water release schedule for this month? I need to plan my irrigation for my jute crop.",
-    image: "https://images.unsplash.com/photo-1588278367597-c97ecadadfec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYW5hbCUyMHdhdGVyfGVufDB8fHx8MTc1ODQ2OTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "jute irrigation",
-    mediaType: 'image',
-    likes: 15,
-    comments: [],
-  },
-  {
-    id: 16,
-    author: "Kavita Patel",
-    avatar: "https://picsum.photos/seed/sugarcane/40/40",
-    avatarHint: "sugarcane field",
-    location: "Lucknow",
-    category: "Pests",
-    categoryColor: "bg-red-500",
-    time: "1 week ago",
-    title: "How to control stem borer in sugarcane?",
-    content: "My sugarcane crop is under attack from stem borers. The shoots are drying up. Please suggest an effective and safe pesticide.",
-    image: "https://images.unsplash.com/photo-1679543321530-4378c81af100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdWdhcmNhbmV8ZW58MHx8fHwxNzU4NDY5MTI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    imageHint: "sugarcane pest",
-    mediaType: 'image',
-    likes: 29,
-    comments: [],
-  },
-];
 
 const staticExpertData = [
   {
@@ -423,16 +139,6 @@ const initialGroupsData = [
 ];
 
 type UserProfile = AppUserProfile;
-
-type Comment = {
-    author: string;
-    content: string;
-    isAi?: boolean;
-    isExpert?: boolean;
-    avatar: string;
-};
-
-export type Post = (typeof initialPostsData)[0] & { originalAuthor?: string };
 
 
 const ShareDialog = ({ post, groups, userProfile, onPostCreated, t }: { post: Post, groups: Group[], userProfile: UserProfile | null, onPostCreated: (post: Post) => void, t: any }) => {
@@ -1006,7 +712,8 @@ const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPost
 
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState<(Post)[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
@@ -1022,36 +729,30 @@ export default function CommunityPage() {
   useEffect(() => {
     if (!isLoaded) return;
 
-    // Load posts from localStorage or use initial data
-    const storedPosts = localStorage.getItem('community_posts');
-    if (storedPosts) {
-      setPosts(JSON.parse(storedPosts));
-    } else {
-      setPosts(initialPostsData);
-      localStorage.setItem('community_posts', JSON.stringify(initialPostsData));
-    }
+    const fetchPosts = async () => {
+        setIsLoadingPosts(true);
+        const storedPosts = await getPosts();
+        setPosts(storedPosts);
+        setIsLoadingPosts(false);
+    };
+    
+    fetchPosts();
 
     const profile = localStorage.getItem('userProfile');
     if (profile) {
         setUserProfile(JSON.parse(profile));
     }
-  }, [isLoaded]);
-
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'community_posts') {
-        const storedPosts = localStorage.getItem('community_posts');
-        if (storedPosts) {
-          setPosts(JSON.parse(storedPosts));
-        }
-      }
+    
+    const handleStorageChange = () => {
+        fetchPosts();
     };
 
     window.addEventListener('storage', handleStorageChange);
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, [isLoaded]);
+
   
   const expertData = useMemo(() => {
     let allExperts = [...staticExpertData];
@@ -1077,39 +778,38 @@ export default function CommunityPage() {
       fetchGroups();
   }
 
-  const handleNewPost = (newPost: Post) => {
-    setPosts(prevPosts => {
-        const updatedPosts = [newPost, ...prevPosts];
-        localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
-        return updatedPosts;
-    });
+  const handleNewPost = async (newPost: Post) => {
+    await addPost(newPost);
+    const updatedPosts = await getPosts();
+    setPosts(updatedPosts);
   };
   
-  const handleLike = (postId: number) => {
-        setPosts(prevPosts => {
-            const updatedPosts = prevPosts.map(p => (p.id === postId ? { ...p, likes: p.likes + 1 } : p));
-            localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
-            return updatedPosts;
-        });
-         if (selectedPost && selectedPost.id === postId) {
+  const handleLike = async (postId: number) => {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        await updatePost(postId, { likes: post.likes + 1 });
+        const updatedPosts = await getPosts();
+        setPosts(updatedPosts);
+        if (selectedPost && selectedPost.id === postId) {
             setSelectedPost(prev => prev ? { ...prev, likes: prev.likes + 1 } : null);
         }
-    };
+    }
+  };
 
-    const handleComment = (postId: number, newComment: Comment) => {
-        setPosts(prevPosts => {
-            const updatedPosts = prevPosts.map(p =>
-                p.id === postId ? { ...p, comments: [...p.comments, newComment] } : p
-            );
-            localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
-            return updatedPosts;
-        });
+  const handleComment = async (postId: number, newComment: Comment) => {
+     const post = posts.find(p => p.id === postId);
+     if (post) {
+        const updatedComments = [...post.comments, newComment];
+        await updatePost(postId, { comments: updatedComments });
+        const updatedPosts = await getPosts();
+        setPosts(updatedPosts);
         if (selectedPost && selectedPost.id === postId) {
-            setSelectedPost(prev => prev ? { ...prev, comments: [...prev.comments, newComment] } : null);
+            setSelectedPost(prev => prev ? { ...prev, comments: updatedComments } : null);
         }
-    };
+     }
+  };
 
-    const handleJoinGroup = (groupId: string, groupName: string) => {
+  const handleJoinGroup = (groupId: string, groupName: string) => {
       if (!userProfile) {
           toast({ variant: 'destructive', title: "Login Required", description: "You must be logged in to join a group." });
           router.push('/login');
@@ -1189,8 +889,8 @@ export default function CommunityPage() {
   }, [searchQuery, filteredPosts.length, filteredGroups.length, filteredExperts.length, activeTab]);
 
 
-  const allCategories = ['all', ...Array.from(new Set(initialPostsData.map(p => p.category)))];
-  const allCities = ['all', ...Array.from(new Set([...initialPostsData.map(p => p.location), ...expertData.map(e => e.location), ...initialGroupsData.map(g => g.city)]))];
+  const allCategories = ['all', ...Array.from(new Set(posts.map(p => p.category)))];
+  const allCities = ['all', ...Array.from(new Set([...posts.map(p => p.location), ...expertData.map(e => e.location), ...initialGroupsData.map(g => g.city)]))];
 
   const handleChat = (expert: (typeof expertData)[0]) => {
       if (!userProfile) {
@@ -1284,7 +984,9 @@ export default function CommunityPage() {
                 </TabsList>
             </div>
             <TabsContent value="home" className="pt-4">
-                {filteredPosts.length > 0 ? (
+                {isLoadingPosts ? (
+                    <div className="text-center py-16"><Spinner /></div>
+                ) : filteredPosts.length > 0 ? (
                     <div className="space-y-4 max-w-xl mx-auto">
                         {filteredPosts.map((post) => (
                            <PostCard 
@@ -1305,7 +1007,9 @@ export default function CommunityPage() {
                 )}
             </TabsContent>
             <TabsContent value="myposts" className="space-y-4 pt-4">
-                {myPosts.length > 0 ? (
+                 {isLoadingPosts ? (
+                    <div className="text-center py-16"><Spinner /></div>
+                ) : myPosts.length > 0 ? (
                     <div className="space-y-4 max-w-xl mx-auto">
                         {myPosts.map((post) => (
                             <PostCard key={post.id} post={post} onLike={handleLike} onComment={handleComment} userProfile={userProfile} groups={userGroups} onPostCreated={handleNewPost} t={t} />
@@ -1434,5 +1138,3 @@ export default function CommunityPage() {
     </div>
   );
 }
-
-    
