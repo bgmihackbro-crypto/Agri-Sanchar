@@ -251,7 +251,6 @@ export default function ChatbotPage() {
     utterance.onerror = (e) => {
         if (e.error !== 'canceled' && e.error !== 'interrupted') {
             console.error("Speech synthesis error", e);
-            toast({ variant: 'destructive', title: t.chatbot.speechError, description: t.chatbot.speechErrorDesc });
         }
         setNowPlayingMessageId(null);
     }
@@ -409,7 +408,7 @@ export default function ChatbotPage() {
   return (
     <div className="h-full flex justify-center">
       <CameraCaptureDialog open={isCameraOpen} onOpenChange={setIsCameraOpen} onCapture={handleCameraCapture} t={t} />
-      <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-2xl">
+      <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-xl">
         <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
@@ -443,7 +442,7 @@ export default function ChatbotPage() {
                   )}
                   <div
                     className={cn(
-                      "max-w-xs md:max-w-md lg:max-w-xl p-3 rounded-lg shadow-sm relative group",
+                      "max-w-xs md:max-w-md p-3 rounded-lg shadow-sm relative group",
                       message.role === "user"
                         ? "bg-muted"
                         : "bg-primary text-primary-foreground"
@@ -571,3 +570,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
