@@ -204,6 +204,9 @@ export default function ChatbotPage() {
       }
       if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel(); // This will stop any ongoing speech
+        if (utteranceRef.current) {
+            utteranceRef.current.onerror = null;
+        }
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
@@ -251,6 +254,7 @@ export default function ChatbotPage() {
     utterance.onerror = (e) => {
         if (e.error !== 'canceled' && e.error !== 'interrupted') {
             console.error("Speech synthesis error", e);
+            toast({ variant: 'destructive', title: t.chatbot.speechError, description: t.chatbot.speechErrorDesc });
         }
         setNowPlayingMessageId(null);
     }
@@ -494,40 +498,40 @@ export default function ChatbotPage() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="border-t pt-4 flex flex-col items-start gap-2">
+        <CardFooter className="border-t pt-2 pb-2 flex flex-col items-start gap-2">
            {imageFile && (
-            <div className="relative p-2 border rounded-md">
+            <div className="relative p-1.5 border rounded-md self-start ml-1">
               <Image
                 src={URL.createObjectURL(imageFile)}
                 alt="Selected image"
-                width={80}
-                height={80}
+                width={60}
+                height={60}
                 className="rounded-md object-cover"
               />
               <Button
                 variant="destructive"
                 size="icon"
-                className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                className="absolute -top-2 -right-2 h-5 w-5 rounded-full"
                 onClick={removeImage}
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" />
               </Button>
             </div>
           )}
           <form
             onSubmit={handleSubmit}
-            className="flex w-full items-start space-x-2"
+            className="flex w-full items-center space-x-2"
           >
-            <div className="flex-1 flex items-center space-x-2 bg-muted/50 p-2 rounded-lg">
+            <div className="flex-1 flex items-center space-x-1 bg-muted/50 p-1.5 rounded-lg">
                 <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsCameraOpen(true)}
                 disabled={isLoading}
-                className="text-foreground"
+                className="text-foreground h-8 w-8"
                 >
-                <Camera className="h-5 w-5" />
+                <Camera className="h-4 w-4" />
                 <span className="sr-only">Use Camera</span>
                 </Button>
                 <Button
@@ -536,26 +540,26 @@ export default function ChatbotPage() {
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
-                className="text-foreground"
+                className="text-foreground h-8 w-8"
                 >
-                <ImageIcon className="h-5 w-5" />
+                <ImageIcon className="h-4 w-4" />
                 <span className="sr-only">{t.chatbot.uploadImage}</span>
                 </Button>
                 <Input
                 id="chatbot-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={isRecording ? t.chatbot.listening : "Ask Anything..."}
+                placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
                 disabled={isLoading}
-                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base font-bold"
+                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-auto py-2"
                 />
-                <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-foreground">
-                    <Mic className="h-5 w-5" />
+                <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-foreground h-8 w-8">
+                    <Mic className="h-4 w-4" />
                     <span className="sr-only">{t.chatbot.recordVoice}</span>
                 </Button>
             </div>
-            <Button type="submit" className="h-full px-6" disabled={isLoading || (!input.trim() && !imageFile)}>
-              {t.chatbot.send}
+            <Button type="submit" size="icon" className="h-10 w-10 shrink-0" disabled={isLoading || (!input.trim() && !imageFile)}>
+              <Send className="h-4 w-4" />
             </Button>
             <Input
               type="file"
@@ -570,5 +574,7 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
 
     
