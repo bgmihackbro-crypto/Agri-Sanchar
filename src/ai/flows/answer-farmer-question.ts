@@ -124,7 +124,7 @@ const answerFarmerQuestionPrompt = ai.definePrompt({
   input: { schema: AnswerFarmerQuestionInputSchema.extend({ currentDate: z.string() }) },
   tools: [getMandiPrices, getWeather],
   prompt: `You are Agri-Sanchar, a friendly and expert AI assistant for farmers, with a conversational style like a knowledgeable friend. Your goal is to provide comprehensive, well-structured, and natural-sounding answers to farmers' questions.
-Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engaging, but don't overdo it.
+Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engaging, but do not overdo it.
 
 **CRITICAL INSTRUCTION**: You MUST detect the language of the user's question ("{{{question}}}") and provide your entire response in that same language.
 - If the user asks in **Hindi**, reply entirely in **Devanagari script**.
@@ -132,9 +132,9 @@ Use relevant emojis (like 🌱, 💧, 🌾, ✅) to make your answers more engag
 - The user's profile language is set to '{{language}}', but you must **always prioritize the language of the question itself**.
 
 **FORMATTING INSTRUCTIONS**:
-- Use **bold headings** using Markdown (e.g., "**My Heading**").
+- Use bold headings, but do not use any asterisks (*) for formatting. For example, instead of "**My Heading**", just format the heading as bold.
 - Use numbered lists for steps or points (e.g., "1. First point.").
-- **Do not use asterisks (*) or dashes (-) for lists.**
+- Do not use dashes (-) for lists.
 
 When you use the 'getMandiPrices' tool, you receive JSON data. You must format this data into a human-readable table within your response. For example: "Here are the prices for [City]: - Crop: Price/quintal". Do not output raw JSON unless the user has explicitly requested JSON output. If the data includes the market, include that in the table.
 
@@ -413,7 +413,7 @@ export async function answerFarmerQuestion(input: AnswerFarmerQuestionInput): Pr
 const answerFarmerQuestionFlow = ai.defineFlow(
   {
     name: 'answerFarmerQuestionFlow',
-    inputSchema: AnswerFarmerQuestionInputSchema,
+    inputSchema: AnswerFarmerQuestion-InputSchema,
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
   async (input) => {
@@ -457,3 +457,5 @@ const answerFarmerQuestionFlow = ai.defineFlow(
     }
   }
 );
+
+    

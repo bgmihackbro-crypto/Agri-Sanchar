@@ -439,7 +439,6 @@ export default function ChatbotPage() {
     
     setIsLoading(true);
 
-    let aiResponseContent = t.chatbot.aiProcessError;
     try {
       let photoDataUri: string | undefined = capturedPhotoUri;
       if (currentImageFile) {
@@ -452,22 +451,30 @@ export default function ChatbotPage() {
         city: userProfile?.city,
         language: userProfile?.language,
       });
-      aiResponseContent = response.answer ?? t.chatbot.aiResponseError;
+
+      const aiResponseContent = response.answer ?? t.chatbot.aiResponseError;
+      
+      const assistantMessage: Message = {
+        id: `asst-${Date.now()}`,
+        role: "assistant",
+        content: aiResponseContent,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      speak(assistantMessage);
+
     } catch (error) {
       console.error("AI Error:", error);
-      aiResponseContent = t.chatbot.aiError;
+      const assistantMessage: Message = {
+        id: `asst-${Date.now()}`,
+        role: "assistant",
+        content: t.chatbot.aiError,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
     }
 
-    const assistantMessage: Message = {
-      id: `asst-${Date.now()}`,
-      role: "assistant",
-      content: aiResponseContent,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
-    
-    speak(assistantMessage);
   };
 
   const startRecording = () => {
@@ -712,3 +719,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
