@@ -318,12 +318,11 @@ export default function ChatbotPage() {
     setUserProfile(profile);
 
     const populateVoiceList = () => {
-        if (typeof window === 'undefined' || !window.speechSynthesis) return;
-        const availableVoices = window.speechSynthesis.getVoices();
-        if (availableVoices.length > 0) {
-            setVoices(availableVoices);
-            window.speechSynthesis.onvoiceschanged = null;
-        }
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      const availableVoices = window.speechSynthesis.getVoices();
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
     };
     
     populateVoiceList();
@@ -332,13 +331,12 @@ export default function ChatbotPage() {
     }
     
     return () => {
-      // Cleanup when component unmounts
       if (recognitionRef.current) {
         recognitionRef.current.stop();
         recognitionRef.current = null;
       }
       if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.cancel(); // This will stop any ongoing speech
+        window.speechSynthesis.cancel();
         if (utteranceRef.current) {
             utteranceRef.current.onerror = null;
         }
@@ -355,8 +353,13 @@ export default function ChatbotPage() {
   }, [messages]);
   
   const speak = (message: Message) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis || voices.length === 0) {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
         toast({ variant: 'destructive', title: "Speech Error", description: "Text-to-speech is not supported on your browser." });
+        return;
+    }
+
+     if (voices.length === 0) {
+        toast({ variant: 'destructive', title: "Speech Error", description: "No voices available for text-to-speech." });
         return;
     }
 
@@ -375,7 +378,13 @@ export default function ChatbotPage() {
     utterance.lang = targetLang;
 
     // Find the best available voice
-    const selectedVoice = voices.find(voice => voice.lang === targetLang) || voices.find(voice => voice.lang.startsWith(targetLang.split('-')[0]));
+    let selectedVoice = voices.find(voice => voice.lang === targetLang && voice.name.includes('Google'));
+    if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang === targetLang);
+    }
+    if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang.split('-')[0]));
+    }
     
     if (selectedVoice) {
         utterance.voice = selectedVoice;
