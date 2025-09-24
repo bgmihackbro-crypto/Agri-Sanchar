@@ -53,19 +53,8 @@ export default function LoginPage({
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const { t, language, setLanguage, isLoaded } = useTranslation();
+  const { t, language, isLoaded } = useTranslation();
   
-  useEffect(() => {
-    if (isLoaded) {
-      const lang = localStorage.getItem('selectedLanguage');
-      if (lang === 'Hindi') {
-          setLanguage('Hindi');
-      } else {
-          setLanguage('English');
-      }
-    }
-  }, [isLoaded, setLanguage]);
-
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;

@@ -4,31 +4,36 @@
 import { useState, useEffect, useCallback } from 'react';
 import { translations, type Translations } from '@/lib/translations';
 
+type Language = 'English' | 'Hindi';
+
 export const useTranslation = () => {
-    const [language, setLanguageState] = useState<'English' | 'Hindi'>('English');
+    const [language, setLanguageState] = useState<Language>('English');
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        // This effect now only marks that the component has mounted on the client.
-        // It no longer tries to read from localStorage directly.
+        // This effect runs only on the client side after the component mounts.
+        // It's safe to access localStorage here.
+        const storedLang = localStorage.getItem('selectedLanguage') as Language;
+        if (storedLang && (storedLang === 'English' || storedLang === 'Hindi')) {
+            setLanguageState(storedLang);
+        }
         setIsLoaded(true);
     }, []);
 
-    const setLanguage = useCallback((lang: 'English' | 'Hindi') => {
+    const setLanguage = useCallback((lang: Language) => {
         setLanguageState(lang);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('selectedLanguage', lang);
-        }
+        // Persist the language choice to localStorage
+        localStorage.setItem('selectedLanguage', lang);
     }, []);
-
-    // The initial render will use English. The subsequent render after the effect in the component
-    // sets the language will use the correct translation.
-    const t = isLoaded ? (translations[language] || translations.English) : translations.English;
+    
+    // During server-side rendering or before the client-side effect runs, default to English.
+    // Once loaded on the client, it will use the correct language from the state.
+    const t = isLoaded ? translations[language] : translations.English;
 
     return {
         t,
         setLanguage,
         language,
-        isLoaded, // Expose isLoaded to allow components to wait for the client-side mount
+        isLoaded,
     };
 };
