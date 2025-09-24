@@ -36,6 +36,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import type { UserProfile as AppUserProfile } from "@/lib/firebase/users";
+import { useGroups } from "@/hooks/use-groups";
 
 
 const allCitiesList = Object.values(indianCities).flat();
@@ -431,7 +432,7 @@ type Comment = {
     avatar: string;
 };
 
-type Post = (typeof initialPostsData)[0] & { originalAuthor?: string };
+export type Post = (typeof initialPostsData)[0] & { originalAuthor?: string };
 
 
 const ShareDialog = ({ post, groups, userProfile, onPostCreated, t }: { post: Post, groups: Group[], userProfile: UserProfile | null, onPostCreated: (post: Post) => void, t: any }) => {
@@ -1005,9 +1006,7 @@ const PostDetailDialog = ({ post, userProfile, groups, onLike, onComment, onPost
 
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState<(Post)[]>(initialPostsData);
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [isLoadingGroups, setIsLoadingGroups] = useState(true);
+  const [posts, setPosts] = useState<(Post)[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
@@ -1016,48 +1015,42 @@ export default function CommunityPage() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const { toast } = useToast();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, isLoaded } = useTranslation();
+  const { groups, isLoading: isLoadingGroups, fetchGroups } = useGroups(userProfile);
 
-
-  const fetchGroups = () => {
-        setIsLoadingGroups(true);
-        try {
-            const allGroups = getGroups();
-            if (!localStorage.getItem('groups')) {
-                // If local storage is empty, populate with initial data
-                initialGroupsData.forEach(groupData => {
-                    const newGroupData = {
-                        ...groupData,
-                        ownerId: 'admin-user',
-                        avatarUrl: `https://picsum.photos/seed/${groupData.name.replace(/\s/g, '-')}/100/100`
-                    };
-                    createGroup(newGroupData);
-                });
-                setGroups(getGroups());
-            } else {
-                 setGroups(allGroups);
-            }
-        } catch (error) {
-            console.error("Error fetching groups:", error);
-        } finally {
-            setIsLoadingGroups(false);
-        }
-    };
 
   useEffect(() => {
+    if (!isLoaded) return;
+
+    // Load posts from localStorage or use initial data
+    const storedPosts = localStorage.getItem('community_posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    } else {
+      setPosts(initialPostsData);
+      localStorage.setItem('community_posts', JSON.stringify(initialPostsData));
+    }
+
     const profile = localStorage.getItem('userProfile');
     if (profile) {
         setUserProfile(JSON.parse(profile));
     }
+  }, [isLoaded]);
 
-    fetchGroups();
-
-    // Listen for storage changes to update the group list in real-time
-    window.addEventListener('storage', fetchGroups);
-    return () => {
-        window.removeEventListener('storage', fetchGroups);
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'community_posts') {
+        const storedPosts = localStorage.getItem('community_posts');
+        if (storedPosts) {
+          setPosts(JSON.parse(storedPosts));
+        }
+      }
     };
 
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   const expertData = useMemo(() => {
@@ -1085,24 +1078,32 @@ export default function CommunityPage() {
   }
 
   const handleNewPost = (newPost: Post) => {
-    setPosts(prevPosts => [newPost, ...prevPosts]);
+    setPosts(prevPosts => {
+        const updatedPosts = [newPost, ...prevPosts];
+        localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
+        return updatedPosts;
+    });
   };
   
   const handleLike = (postId: number) => {
-        setPosts(prevPosts =>
-            prevPosts.map(p => (p.id === postId ? { ...p, likes: p.likes + 1 } : p))
-        );
+        setPosts(prevPosts => {
+            const updatedPosts = prevPosts.map(p => (p.id === postId ? { ...p, likes: p.likes + 1 } : p));
+            localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
+            return updatedPosts;
+        });
          if (selectedPost && selectedPost.id === postId) {
             setSelectedPost(prev => prev ? { ...prev, likes: prev.likes + 1 } : null);
         }
     };
 
     const handleComment = (postId: number, newComment: Comment) => {
-        setPosts(prevPosts =>
-            prevPosts.map(p =>
+        setPosts(prevPosts => {
+            const updatedPosts = prevPosts.map(p =>
                 p.id === postId ? { ...p, comments: [...p.comments, newComment] } : p
-            )
-        );
+            );
+            localStorage.setItem('community_posts', JSON.stringify(updatedPosts));
+            return updatedPosts;
+        });
         if (selectedPost && selectedPost.id === postId) {
             setSelectedPost(prev => prev ? { ...prev, comments: [...prev.comments, newComment] } : null);
         }
@@ -1126,7 +1127,7 @@ export default function CommunityPage() {
 
   const isProfileComplete = !!(userProfile?.state && userProfile.city);
 
-  const userGroups = groups.filter(g => userProfile && g.members.includes(userProfile.farmerId));
+  const { userGroups } = useGroups(userProfile);
 
   const myPosts = posts.filter(p => userProfile && p.author === userProfile.name);
 
@@ -1433,3 +1434,5 @@ export default function CommunityPage() {
     </div>
   );
 }
+
+    

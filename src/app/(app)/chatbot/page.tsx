@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
-import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw } from "lucide-react";
+import { Bot, Image as ImageIcon, Mic, Send, User, X, Volume2, Loader2, Camera, RefreshCw, Share } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +21,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/use-translation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useGroups } from "@/hooks/use-groups";
+import type { Group } from "@/lib/firebase/groups";
+import { sendMessage } from "@/lib/firebase/chat";
+import type { Post } from "@/app/(app)/community/page";
 
 
 type Message = {
@@ -39,6 +46,7 @@ type UserProfile = {
   avatar: string;
   city?: string;
   language?: 'English' | 'Hindi';
+  farmerId: string;
 }
 
 
@@ -157,6 +165,132 @@ const CameraCaptureDialog = ({ open, onOpenChange, onCapture, t }: { open: boole
     )
 }
 
+const ShareChatDialog = ({ message, userProfile, t }: { message: Message, userProfile: UserProfile | null, t: any }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [isSharing, setIsSharing] = useState(false);
+    const { toast } = useToast();
+    const { userGroups } = useGroups(userProfile);
+
+    const handleShareToGroup = async () => {
+        if (!selectedGroup || !userProfile) {
+            toast({ variant: 'destructive', title: t.community.share.selectionRequired, description: t.community.share.selectGroup });
+            return;
+        }
+        setIsSharing(true);
+        try {
+            const shareContent = `**Shared from AI Chatbot:**\n\n${message.content}`;
+            
+            await sendMessage({
+                groupId: selectedGroup,
+                author: {
+                    id: userProfile.farmerId,
+                    name: userProfile.name,
+                    avatar: userProfile.avatar,
+                },
+                text: shareContent,
+                file: null,
+                onProgress: () => {},
+            });
+
+            toast({ title: t.community.share.postShared, description: "Shared to group." });
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Error sharing post:", error);
+            toast({ variant: 'destructive', title: t.community.share.error, description: t.community.share.errorDesc });
+        } finally {
+            setIsSharing(false);
+        }
+    };
+    
+    const handleShareToFeed = () => {
+        if (!userProfile) return;
+
+        const newPost: Post = {
+            id: Date.now(),
+            author: userProfile.name,
+            avatar: userProfile.avatar,
+            location: userProfile.city || "Unknown",
+            category: "AI Tip",
+            categoryColor: "bg-blue-500",
+            time: t.community.post.justNow,
+            title: "Shared from AI Chatbot",
+            content: message.content,
+            image: null,
+            mediaType: null,
+            imageHint: 'ai generated',
+            likes: 0,
+            comments: [],
+        };
+        
+        // This is a bit of a hack. We'll store the new post in localStorage
+        // and the community page will pick it up. A proper state management solution would be better.
+        const existingPosts = JSON.parse(localStorage.getItem('community_posts') || '[]');
+        localStorage.setItem('community_posts', JSON.stringify([newPost, ...existingPosts]));
+        window.dispatchEvent(new Event('storage')); // Notify other tabs/components
+
+        toast({ title: t.community.share.postShared, description: t.community.share.sharedToFeed });
+        setIsOpen(false);
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute -top-2 -left-2 h-7 w-7 text-primary-foreground opacity-70 group-hover:opacity-100 transition-opacity"
+                >
+                    <Share className="h-4 w-4" />
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t.community.share.title}</DialogTitle>
+                    <DialogDescription>Share this helpful AI response with the community.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                     <Card className="bg-muted/50 p-4">
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-4">{message.content}</p>
+                    </Card>
+
+                    <Button onClick={handleShareToFeed} className="w-full">
+                        {t.community.share.shareToFeed}
+                    </Button>
+
+                    <div className="relative">
+                        <Separator />
+                        <span className="absolute left-1/2 -top-3 -translate-x-1/2 bg-popover px-2 text-xs text-muted-foreground">{t.community.share.or}</span>
+                    </div>
+
+                     <div>
+                        <Label>{t.community.share.shareToGroup}</Label>
+                        <div className="flex gap-2 mt-2">
+                             <Select onValueChange={setSelectedGroup} value={selectedGroup}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={t.community.share.selectGroupPlaceholder} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {userGroups.length > 0 ? userGroups.map(group => (
+                                        <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
+                                    )) : <p className="p-4 text-sm text-muted-foreground">{t.community.share.noGroups}</p>}
+                                </SelectContent>
+                            </Select>
+                             <Button onClick={handleShareToGroup} disabled={isSharing || !selectedGroup}>
+                                {isSharing ? <Spinner className="mr-2 h-4 w-4" /> : <Send className="h-4 w-4" />}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>{t.community.group.cancel}</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+
 export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -169,7 +303,7 @@ export default function ChatbotPage() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const { toast } = useToast();
-  const { t, language } = useTranslation();
+  const { t, language, isLoaded } = useTranslation();
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -178,6 +312,7 @@ export default function ChatbotPage() {
 
 
   useEffect(() => {
+    if (!isLoaded) return;
     const savedProfile = localStorage.getItem("userProfile");
     const profile = savedProfile ? JSON.parse(savedProfile) : null;
     setUserProfile(profile);
@@ -211,7 +346,7 @@ export default function ChatbotPage() {
       }
     };
 
-  }, []);
+  }, [isLoaded]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -413,8 +548,8 @@ export default function ChatbotPage() {
     <div className="h-full flex justify-center">
       <CameraCaptureDialog open={isCameraOpen} onOpenChange={setIsCameraOpen} onCapture={handleCameraCapture} t={t} />
       <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-xl">
-        <CardHeader className="p-4">
-            <CardTitle className="flex items-center gap-2 font-headline text-xl">
+        <CardHeader className="p-4 border-b">
+            <CardTitle className="flex items-center gap-2 font-headline text-lg">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
             </CardTitle>
         </CardHeader>
@@ -427,8 +562,8 @@ export default function ChatbotPage() {
           }}
         >
           <div className="absolute inset-0 bg-white/80 dark:bg-black/80" />
-          <div className="h-full pr-4 overflow-y-auto" ref={scrollAreaRef}>
-            <div className="space-y-4">
+          <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
+            <div className="space-y-4 py-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -452,6 +587,9 @@ export default function ChatbotPage() {
                         : "bg-primary text-primary-foreground"
                     )}
                   >
+                     {message.role === 'assistant' && userProfile && (
+                        <ShareChatDialog message={message} userProfile={userProfile} t={t} />
+                     )}
                      <Button
                         variant="ghost"
                         size="icon"
@@ -496,7 +634,7 @@ export default function ChatbotPage() {
                 </div>
               )}
             </div>
-          </div>
+          </ScrollArea>
         </CardContent>
         <CardFooter className="border-t pt-2 pb-2 flex flex-col items-start gap-2">
            {imageFile && (
@@ -522,7 +660,7 @@ export default function ChatbotPage() {
             onSubmit={handleSubmit}
             className="flex w-full items-center space-x-2"
           >
-            <div className="flex-1 flex items-center space-x-1 bg-muted/50 p-1.5 rounded-lg">
+            <div className="flex-1 flex items-center space-x-1 bg-muted/50 p-1.5 rounded-lg border">
                 <Button
                 type="button"
                 variant="ghost"
@@ -551,7 +689,7 @@ export default function ChatbotPage() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={isRecording ? t.chatbot.listening : t.chatbot.placeholder}
                 disabled={isLoading}
-                className="bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-auto py-2"
+                className="bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm h-auto py-2"
                 />
                 <Button type="button" size="icon" onClick={toggleRecording} disabled={isLoading} variant={isRecording ? 'destructive': 'ghost'} className="text-foreground h-8 w-8">
                     <Mic className="h-4 w-4" />
@@ -576,6 +714,3 @@ export default function ChatbotPage() {
 }
 
     
-
-    
-
