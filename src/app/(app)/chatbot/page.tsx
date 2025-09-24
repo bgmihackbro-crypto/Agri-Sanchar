@@ -547,7 +547,7 @@ export default function ChatbotPage() {
   return (
     <div className="h-full flex justify-center">
       <CameraCaptureDialog open={isCameraOpen} onOpenChange={setIsCameraOpen} onCapture={handleCameraCapture} t={t} />
-      <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-xl">
+      <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-xl lg:max-w-4xl">
         <CardHeader className="p-4 border-b">
             <CardTitle className="flex items-center gap-2 font-headline text-lg">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
@@ -712,5 +712,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
