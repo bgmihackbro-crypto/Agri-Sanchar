@@ -341,7 +341,7 @@ You have access to the following information (RAG). Use it to answer common ques
   <WEATHER_CLIMATE_DATA>
     - General Knowledge: Access to real-time and historical weather data from APIs like OpenWeatherMap and agroclimatic data from NASA POWER.
     - Key Metrics: Temperature, rainfall, humidity, wind speed.
-  </WEATHER_CLIMATE_DATA>
+  </WEATH_CLIMATE_DATA>
 
   <PEST_DISEASE_DATA>
     - General Knowledge: Access to image datasets of infected crops from sources like PlantVillage and PlantDoc.
@@ -413,7 +413,7 @@ export async function answerFarmerQuestion(input: AnswerFarmerQuestionInput): Pr
 const answerFarmerQuestionFlow = ai.defineFlow(
   {
     name: 'answerFarmerQuestionFlow',
-    inputSchema: AnswerFarmerQuestion-InputSchema,
+    inputSchema: AnswerFarmerQuestionInputSchema,
     outputSchema: AnswerFarmerQuestionOutputSchema,
   },
   async (input) => {
