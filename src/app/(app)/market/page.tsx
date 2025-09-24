@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -265,7 +264,7 @@ export default function MarketPricesPage() {
             <span className="font-medium">{cropName}</span>
             <div className="flex items-center gap-3">
                  <div className={cn("font-bold flex items-center", priceColor)}>
-                    <span className="text-xs mr-1">Offer:</span>
+                    <span className="text-xs mr-1">{t.market.strategy.offer}:</span>
                     <IndianRupee className="h-3.5 w-3.5 mr-0.5"/>
                     {buyerPrice.toLocaleString("en-IN")}
                 </div>
@@ -273,7 +272,7 @@ export default function MarketPricesPage() {
                     {comparisonIcon}
                 </div>
                 <div className="font-bold flex items-center text-muted-foreground w-[80px] justify-end">
-                    <span className="text-xs mr-1">Market:</span>
+                    <span className="text-xs mr-1">{t.market.strategy.market}:</span>
                     <IndianRupee className="h-3.5 w-3.5 mr-0.5"/>
                     {marketPriceText}
                 </div>
@@ -294,8 +293,8 @@ export default function MarketPricesPage() {
 
        <Tabs defaultValue="prices" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="prices">Live Prices</TabsTrigger>
-                <TabsTrigger value="strategy">Market Strategy</TabsTrigger>
+                <TabsTrigger value="prices">{t.market.tabs.prices}</TabsTrigger>
+                <TabsTrigger value="strategy">{t.market.tabs.strategy}</TabsTrigger>
             </TabsList>
             <TabsContent value="prices" className="pt-4 space-y-6">
                  <Card>
@@ -410,8 +409,8 @@ export default function MarketPricesPage() {
             <TabsContent value="strategy" className="pt-4 space-y-6">
                  <Card>
                     <CardHeader>
-                        <CardTitle>Find Top Buyers</CardTitle>
-                        <CardDescription>Connect directly with wholesalers, exporters, and food processors.</CardDescription>
+                        <CardTitle>{t.market.strategy.findBuyers}</CardTitle>
+                        <CardDescription>{t.market.strategy.findBuyersDesc}</CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4 md:grid-cols-2">
                         {buyerData.map((buyer) => (
@@ -427,7 +426,7 @@ export default function MarketPricesPage() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm font-semibold mb-2">Price Comparison (per quintal):</p>
+                                    <p className="text-sm font-semibold mb-2">{t.market.strategy.priceComparison}:</p>
                                     <div className="space-y-1">
                                          {buyer.crops.map(({name, price}) => {
                                             const { marketPrice } = getPriceComparison(name);
@@ -445,11 +444,11 @@ export default function MarketPricesPage() {
                                 <CardFooter className="grid grid-cols-2 gap-2">
                                     <Button variant="outline" asChild>
                                         <a href={`tel:${buyer.contact}`}>
-                                            <Phone className="mr-2 h-4 w-4" /> Call
+                                            <Phone className="mr-2 h-4 w-4" /> {t.market.strategy.call}
                                         </a>
                                     </Button>
                                     <Button onClick={() => handleChat(buyer)}>
-                                        <MessageSquare className="mr-2 h-4 w-4"/> Chat
+                                        <MessageSquare className="mr-2 h-4 w-4"/> {t.market.strategy.chat}
                                     </Button>
                                 </CardFooter>
                             </Card>
