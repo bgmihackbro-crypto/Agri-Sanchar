@@ -359,7 +359,19 @@ export default function ChatbotPage() {
     }
 
      if (voices.length === 0) {
-        toast({ variant: 'destructive', title: "Speech Error", description: "No voices available for text-to-speech." });
+        // This is a fallback in case the voices are not loaded yet.
+        // It might not be perfect, but it's better than an error.
+        const populateAndSpeak = () => {
+            const availableVoices = window.speechSynthesis.getVoices();
+            if (availableVoices.length > 0) {
+                setVoices(availableVoices);
+                speak(message); // Retry speaking
+            } else {
+                 toast({ variant: 'destructive', title: "Speech Error", description: "No voices available for text-to-speech." });
+            }
+        };
+        window.speechSynthesis.onvoiceschanged = populateAndSpeak;
+        populateAndSpeak();
         return;
     }
 
@@ -377,19 +389,12 @@ export default function ChatbotPage() {
     const targetLang = isHindi ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
-    // Find the best available voice
-    let selectedVoice = voices.find(voice => voice.lang === targetLang && voice.name.includes('Google'));
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang === targetLang);
-    }
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang.startsWith(targetLang.split('-')[0]));
+    // Let the browser choose the best voice for the language
+    const voice = voices.find(v => v.lang === targetLang);
+    if (voice) {
+      utterance.voice = voice;
     }
     
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
-    }
-
     utterance.onstart = () => setNowPlayingMessageId(message.id);
     utterance.onend = () => setNowPlayingMessageId(null);
     utterance.onerror = (e) => {
@@ -725,5 +730,3 @@ export default function ChatbotPage() {
     </div>
   );
 }
-
-    
