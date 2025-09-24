@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase, IndianRupee } from "lucide-react";
+import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase, IndianRupee, ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +42,7 @@ import { useRouter } from "next/navigation";
 import { getGroup, createGroup } from "@/lib/firebase/groups";
 import type { UserProfile } from "@/lib/firebase/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
@@ -92,7 +93,7 @@ const buyerData = [
         avatar: "https://picsum.photos/seed/trader-4/80/80",
         type: "Food Processor",
         location: "Nagpur",
-        contact: "+919112233445",
+        contact: "+9112233445",
         crops: [
             { name: "Orange", price: 4200 },
             { name: "Soybean", price: 4850 },
@@ -272,6 +273,52 @@ export default function MarketPricesPage() {
       router.push(`/community/${newDmGroup.id}`);
   };
 
+  const getPriceComparison = (commodity: string) => {
+      if (!prices) return { marketPrice: null, comparison: null };
+      const marketRecord = prices.find(p => p.commodity.toLowerCase() === commodity.toLowerCase());
+      return {
+          marketPrice: marketRecord ? parseInt(marketRecord.modal_price) : null,
+      };
+  };
+
+  const PriceComparisonRow = ({ buyerPrice, marketPrice, cropName }: { buyerPrice: number, marketPrice: number | null, cropName: string }) => {
+    let comparisonIcon = <Minus className="h-4 w-4 text-muted-foreground" />;
+    let priceColor = 'text-muted-foreground';
+    let marketPriceText: string | number = 'N/A';
+
+    if (marketPrice !== null) {
+        marketPriceText = marketPrice.toLocaleString("en-IN");
+        if (buyerPrice > marketPrice) {
+            comparisonIcon = <ArrowUp className="h-4 w-4 text-green-500" />;
+            priceColor = 'text-green-600';
+        } else if (buyerPrice < marketPrice) {
+            comparisonIcon = <ArrowDown className="h-4 w-4 text-red-500" />;
+            priceColor = 'text-red-600';
+        }
+    }
+
+    return (
+        <div className="flex justify-between items-center text-sm p-1.5 bg-muted/50 rounded-md">
+            <span className="font-medium">{cropName}</span>
+            <div className="flex items-center gap-3">
+                 <div className={cn("font-bold flex items-center", priceColor)}>
+                    <span className="text-xs mr-1">Offer:</span>
+                    <IndianRupee className="h-3.5 w-3.5 mr-0.5"/>
+                    {buyerPrice.toLocaleString("en-IN")}
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                    {comparisonIcon}
+                </div>
+                <div className="font-bold flex items-center text-muted-foreground w-[80px] justify-end">
+                    <span className="text-xs mr-1">Market:</span>
+                    <IndianRupee className="h-3.5 w-3.5 mr-0.5"/>
+                    {marketPriceText}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
   return (
     <div className="space-y-6">
@@ -425,14 +472,19 @@ export default function MarketPricesPage() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm font-semibold mb-2">Their Offer Prices (per quintal):</p>
+                                    <p className="text-sm font-semibold mb-2">Price Comparison (per quintal):</p>
                                     <div className="space-y-1">
-                                        {buyer.crops.map(({name, price}) => (
-                                            <div key={name} className="flex justify-between items-center text-sm p-1.5 bg-muted/50 rounded-md">
-                                                <span className="font-medium">{name}</span>
-                                                <span className="font-bold flex items-center"><IndianRupee className="h-3.5 w-3.5 mr-0.5"/>{price.toLocaleString("en-IN")}</span>
-                                            </div>
-                                        ))}
+                                         {buyer.crops.map(({name, price}) => {
+                                            const { marketPrice } = getPriceComparison(name);
+                                            return (
+                                                <PriceComparisonRow
+                                                    key={name}
+                                                    buyerPrice={price}
+                                                    marketPrice={marketPrice}
+                                                    cropName={name}
+                                                />
+                                            );
+                                        })}
                                     </div>
                                 </CardContent>
                                 <CardFooter className="grid grid-cols-2 gap-2">
