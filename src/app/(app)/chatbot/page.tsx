@@ -322,12 +322,18 @@ export default function ChatbotPage() {
       const availableVoices = window.speechSynthesis.getVoices();
       if (availableVoices.length > 0) {
         setVoices(availableVoices);
+        window.speechSynthesis.onvoiceschanged = null; // Important: remove listener after getting voices
       }
     };
     
-    populateVoiceList();
-    if (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
-        window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    // Voices might load asynchronously. The 'onvoiceschanged' event is crucial.
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+        // First try to get them immediately
+        populateVoiceList();
+        // If they are not ready, set an event listener
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
     }
     
     return () => {
@@ -340,6 +346,7 @@ export default function ChatbotPage() {
         if (utteranceRef.current) {
             utteranceRef.current.onerror = null;
         }
+         // Clean up the event listener
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
@@ -358,20 +365,17 @@ export default function ChatbotPage() {
         return;
     }
 
-     if (voices.length === 0) {
-        // This is a fallback in case the voices are not loaded yet.
-        // It might not be perfect, but it's better than an error.
-        const populateAndSpeak = () => {
-            const availableVoices = window.speechSynthesis.getVoices();
-            if (availableVoices.length > 0) {
-                setVoices(availableVoices);
-                speak(message); // Retry speaking
-            } else {
-                 toast({ variant: 'destructive', title: "Speech Error", description: "No voices available for text-to-speech." });
-            }
+    // This is a fallback. If voices aren't loaded, wait for the event and retry.
+    if (voices.length === 0) {
+        window.speechSynthesis.onvoiceschanged = () => {
+             const availableVoices = window.speechSynthesis.getVoices();
+             setVoices(availableVoices);
+             // Important: Retry speaking after voices are loaded
+             if(availableVoices.length > 0) {
+                 speak(message);
+             }
         };
-        window.speechSynthesis.onvoiceschanged = populateAndSpeak;
-        populateAndSpeak();
+        toast({ variant: 'destructive', title: "Speech Error", description: "No voices available for text-to-speech." });
         return;
     }
 
@@ -389,10 +393,15 @@ export default function ChatbotPage() {
     const targetLang = isHindi ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
-    // Let the browser choose the best voice for the language
-    const voice = voices.find(v => v.lang === targetLang);
+    // Smart voice selection: Prefer Google voices, but fall back to any available voice for the language.
+    const voice = voices.find(v => v.lang === targetLang && v.name.includes('Google')) 
+               || voices.find(v => v.lang === targetLang);
+
     if (voice) {
       utterance.voice = voice;
+    } else {
+        // If no specific voice is found, we let the browser choose the best default for the lang.
+        console.warn(`No specific voice found for ${targetLang}. Using browser default.`);
     }
     
     utterance.onstart = () => setNowPlayingMessageId(message.id);
