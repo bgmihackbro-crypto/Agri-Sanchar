@@ -415,28 +415,6 @@ export default function MarketPricesPage() {
                 )}
             </TabsContent>
             <TabsContent value="strategy" className="pt-4 space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Startup Strategies for New Farmers</CardTitle>
-                        <CardDescription>Key advice to help you build a profitable farming business from the ground up.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 md:grid-cols-2">
-                        {strategyCards.map((card, index) => (
-                            <Card key={index} className="p-0 overflow-hidden">
-                                <CardHeader className="flex flex-row items-center gap-4 bg-primary/5 p-4">
-                                     <div className="p-3 bg-background rounded-lg border">
-                                        <card.icon className="h-6 w-6 text-primary" />
-                                    </div>
-                                    <CardTitle className="text-lg">{card.title}</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-4 pt-0">
-                                    <p className="text-sm text-muted-foreground">{card.description}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </CardContent>
-                </Card>
-
                  <Card>
                     <CardHeader>
                         <CardTitle>Find Top Buyers</CardTitle>
