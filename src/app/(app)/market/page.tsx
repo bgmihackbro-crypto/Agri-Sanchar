@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/table";
 import { indianStates } from "@/lib/indian-states";
 import { indianCities } from "@/lib/indian-cities";
-import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award } from "lucide-react";
+import { TrendingUp, MapPin, KeyRound, Leaf, Lightbulb, ShoppingCart, Award, Building, Phone, MessageSquare, Briefcase } from "lucide-react";
 import { answerFarmerQuestion } from "@/ai/flows/answer-farmer-question";
 import { predictCropPrices } from "@/ai/flows/predict-crop-prices";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +36,11 @@ import { useNotifications } from "@/context/notification-context";
 import { useTranslation } from "@/hooks/use-translation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { getGroup, createGroup } from "@/lib/firebase/groups";
+import type { UserProfile } from "@/lib/firebase/users";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
 type CombinedPriceData = PriceRecord & Partial<PricePrediction>;
@@ -63,6 +68,46 @@ const strategyCards = [
     },
 ];
 
+const buyerData = [
+    {
+        id: 'buyer-1',
+        name: "Punjab Agro Traders",
+        avatar: "https://picsum.photos/seed/trader-1/80/80",
+        type: "Wholesaler",
+        location: "Ludhiana",
+        contact: "+919876512345",
+        crops: ["Wheat", "Rice", "Maize"],
+    },
+    {
+        id: 'buyer-2',
+        name: "Veggie Exports Inc.",
+        avatar: "https://picsum.photos/seed/trader-2/80/80",
+        type: "Exporter",
+        location: "Chandigarh",
+        contact: "+919123456789",
+        crops: ["Tomato", "Potato", "Onion", "Chilli"],
+    },
+    {
+        id: 'buyer-3',
+        name: "Desai & Sons",
+        avatar: "https://picsum.photos/seed/trader-3/80/80",
+        type: "Wholesaler",
+        location: "Pune",
+        contact: "+919988776655",
+        crops: ["Onion", "Sugarcane", "Grapes"],
+    },
+    {
+        id: 'buyer-4',
+        name: "National Food Processors",
+        avatar: "https://picsum.photos/seed/trader-4/80/80",
+        type: "Food Processor",
+        location: "Nagpur",
+        contact: "+919112233445",
+        crops: ["Orange", "Soybean", "Cotton"],
+    }
+]
+
+
 export default function MarketPricesPage() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -74,11 +119,14 @@ export default function MarketPricesPage() {
   const { addNotification } = useNotifications();
   const [isAllIndia, setIsAllIndia] = useState(false);
   const { t } = useTranslation();
+  const router = useRouter();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
+      setUserProfile(parsedProfile);
       if (parsedProfile.state) {
         const userState = parsedProfile.state;
         const userCity = parsedProfile.city;
@@ -200,6 +248,33 @@ export default function MarketPricesPage() {
       default:
         return null;
     }
+  };
+
+  const handleChat = (buyer: (typeof buyerData)[0]) => {
+      if (!userProfile) {
+          return;
+      }
+
+      const dmGroupId = `dm-${userProfile.farmerId}-${buyer.id}`;
+      const existingDm = getGroup(dmGroupId);
+
+      if (existingDm) {
+          router.push(`/community/${dmGroupId}`);
+          return;
+      }
+
+      const newDmGroup = createGroup({
+          id: dmGroupId,
+          name: `Chat with ${buyer.name}`,
+          description: `Direct message channel between ${userProfile.name} and ${buyer.name}.`,
+          city: userProfile.city,
+          ownerId: userProfile.farmerId,
+          members: [userProfile.farmerId, buyer.id],
+          createdBy: userProfile.name,
+          avatarUrl: buyer.avatar,
+      });
+
+      router.push(`/community/${newDmGroup.id}`);
   };
 
 
@@ -338,7 +413,7 @@ export default function MarketPricesPage() {
                     </Card>
                 )}
             </TabsContent>
-            <TabsContent value="strategy" className="pt-4">
+            <TabsContent value="strategy" className="pt-4 space-y-6">
                 <Card>
                     <CardHeader>
                         <CardTitle>Startup Strategies for New Farmers</CardTitle>
@@ -360,10 +435,47 @@ export default function MarketPricesPage() {
                         ))}
                     </CardContent>
                 </Card>
+
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Find Top Buyers</CardTitle>
+                        <CardDescription>Connect directly with wholesalers, exporters, and food processors.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-4 md:grid-cols-2">
+                        {buyerData.map((buyer) => (
+                            <Card key={buyer.id}>
+                                <CardHeader className="flex flex-row items-center gap-4">
+                                    <Avatar className="h-16 w-16">
+                                        <AvatarImage src={buyer.avatar} />
+                                        <AvatarFallback>{buyer.name.substring(0,2)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <CardTitle className="text-lg">{buyer.name}</CardTitle>
+                                        <p className="text-sm text-muted-foreground">{buyer.type} - {buyer.location}</p>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm font-semibold mb-2">Interested in:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {buyer.crops.map(crop => <Badge key={crop} variant="secondary">{crop}</Badge>)}
+                                    </div>
+                                </CardContent>
+                                <CardFooter className="grid grid-cols-2 gap-2">
+                                    <Button variant="outline" asChild>
+                                        <a href={`tel:${buyer.contact}`}>
+                                            <Phone className="mr-2 h-4 w-4" /> Call
+                                        </a>
+                                    </Button>
+                                    <Button onClick={() => handleChat(buyer)}>
+                                        <MessageSquare className="mr-2 h-4 w-4"/> Chat
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </CardContent>
+                </Card>
             </TabsContent>
         </Tabs>
     </div>
   );
 }
-
-    
