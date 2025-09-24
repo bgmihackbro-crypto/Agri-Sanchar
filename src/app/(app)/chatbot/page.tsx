@@ -355,6 +355,11 @@ export default function ChatbotPage() {
   }, [messages]);
   
   const speak = (message: Message) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis || voices.length === 0) {
+        toast({ variant: 'destructive', title: "Speech Error", description: "Text-to-speech is not supported on your browser." });
+        return;
+    }
+
     if (nowPlayingMessageId === message.id) {
       window.speechSynthesis.cancel();
       setNowPlayingMessageId(null);
@@ -365,20 +370,12 @@ export default function ChatbotPage() {
 
     const utterance = new SpeechSynthesisUtterance(message.content);
     
-    // Simple language detection for voice selection
     const isHindi = /[\u0900-\u097F]/.test(message.content);
     const targetLang = isHindi ? 'hi-IN' : 'en-US';
     utterance.lang = targetLang;
 
-    let selectedVoice = null;
-    if (targetLang === 'hi-IN') {
-        selectedVoice = voices.find(voice => voice.lang === 'hi-IN' && voice.name.includes('Google')) 
-                     || voices.find(voice => voice.lang === 'hi-IN');
-    } else {
-        selectedVoice = voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Google') && voice.name.includes('Female')) 
-                     || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Samantha'))
-                     || voices.find(voice => voice.lang === 'en-US' && voice.name.includes('Female'));
-    }
+    // Find the best available voice
+    const selectedVoice = voices.find(voice => voice.lang === targetLang) || voices.find(voice => voice.lang.startsWith(targetLang.split('-')[0]));
     
     if (selectedVoice) {
         utterance.voice = selectedVoice;
