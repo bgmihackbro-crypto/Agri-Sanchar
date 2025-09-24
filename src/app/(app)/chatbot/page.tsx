@@ -413,8 +413,8 @@ export default function ChatbotPage() {
     <div className="h-full flex justify-center">
       <CameraCaptureDialog open={isCameraOpen} onOpenChange={setIsCameraOpen} onCapture={handleCameraCapture} t={t} />
       <Card className="h-[calc(100vh-10rem)] flex flex-col w-full max-w-xl">
-        <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline">
+        <CardHeader className="p-4">
+            <CardTitle className="flex items-center gap-2 font-headline text-xl">
                 <Bot className="h-6 w-6 text-primary" /> {t.chatbot.title}
             </CardTitle>
         </CardHeader>
